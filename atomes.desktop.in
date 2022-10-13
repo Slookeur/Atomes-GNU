@@ -1,0 +1,26 @@
+# This file is part of Atomes.
+#
+#Atomes is free software: you can redistribute it and/or modify it under the terms
+#of the GNU Affero General Public License as published by the Free Software Foundation,
+#either version 3 of the License, or (at your option) any later version.
+#
+#Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#See the GNU General Public License for more details.
+#
+#You should have received a copy of the GNU Affero General Public License along with Atomes.
+#If not, see <https://www.gnu.org/licenses/> */
+#
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Atomes
+GenericName=Atomes
+Comment=For more details: "https://atomes.ipcms.fr/"
+Exec=atomes %F
+Icon=DATADIR/icons/atomes.ico
+Terminal=false
+Type=Application
+MimeType=application/x-extension-awf;application/x-extension-apf;
+StartupNotify=false
+Categories=Education;Science;Chemistry;Physics;
