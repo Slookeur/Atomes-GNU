@@ -357,7 +357,6 @@ SUBDIRS = src
 atomes_docdir = ${docdir}
 atomes_doc_DATA = \
 	README.md \
-	COPYING \
 	AUTHORS \
 	ChangeLog
 
