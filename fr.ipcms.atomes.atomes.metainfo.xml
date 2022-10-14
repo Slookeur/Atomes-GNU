@@ -23,7 +23,7 @@
       QM-MM MD: CPMD and CP2K
     </p>
     <p>
-      To prepare the input files for these calculations is likely to be the key,  and most complicated step towards MD simulations. Atomes offers a user-friendly assistant to help and guide the scientist step by step to achieve this crucial step.
+      To prepare the input files for these calculations is likely to be the key, and most complicated step towards MD simulations. Atomes offers a user-friendly assistant to help and guide the scientist step by step to achieve this crucial step.
     </p>
   </description>
   
@@ -52,7 +52,20 @@
   <content_rating type="oars-1.1" />
   
   <releases>
-    <release version="1.1.6" date="2022-10-12">
+    <release version="1.1.7" date="2022-10-13">
+      <description>
+        <p>
+          <ul>
+            <li>
+              Bug correction:
+              callback.c: save workspace
+              atom_action.c: on remove, trigger re-calculate bonding
+            </li>
+          </ul>
+        </p>
+      </description>
+    </release>
+    <release version="1.1.6" date="2022-10-10">
       <description>
         <p>
           <ul>

@@ -1,5 +1,5 @@
 Name:           atomes
-Version:        1.1.6
+Version:        1.1.7
 Release:        1%{?dist}
 Summary:        An atomistic toolbox
 License:        AGPL-3.0-only
