@@ -2,7 +2,7 @@ Name:           atomes
 Version:        1.1.7
 Release:        8%{?dist}
 Summary:        An atomistic toolbox
-License:        AGPL-3.0-only
+License:        AGPL-3.0-or-later
 Source0:        https://github.com/Slookeur/%{name}/archive/refs/tags/v%{version}.tar.gz
 URL:            https://%{name}.ipcms.fr/
 
