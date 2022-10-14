@@ -1,6 +1,6 @@
 Name:           atomes
 Version:        1.1.7
-Release:        2%{?dist}
+Release:        8%{?dist}
 Summary:        An atomistic toolbox
 License:        AGPL-3.0-only
 Source0:        https://github.com/Slookeur/%{name}/archive/refs/tags/v%{version}.tar.gz
@@ -80,39 +80,39 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
 %{_mandir}/man1/%{name}.1.gz
 
 %changelog
-* Thu Oct 13 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-2
+* Thu Oct 13 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-8
 - Bug correction:
   callback.c: save workspace
   atom_action.c: on remove, trigger re-calculate bonding
 
-* Tue Oct 11 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.6-1
+* Tue Oct 11 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.6-7
 - Bug correction: 
   w_library.c: lib_preview_plot = NULL;
 - Improvements:
   main.c: -h
   glview.c: selection delay on mouse pressed/released
 
-* Fri Sep 23 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.5-1
+* Fri Sep 23 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.5-6
 - Bug correction:
   w_search.c: selection not to crash if atom_win is closed
 
-* Thu Sep 22 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.4-1
+* Thu Sep 22 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.4-5
 - Bug correction: 
   read_coord.c: Windows to handle properly EOL symbols
   m_curve.c: Windows to not crash when destroying label widget
   glview.c: correct GWARNING messages on widget scale
 
-* Thu Sep 15 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.3-1
+* Thu Sep 15 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.3-4
 - Bug correction: 
   read_opengl.c: correct 'read_atom_b'
   initring.c: coorect 'send_rings_opengl_'
 
-* Wed Sep 14 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.2-1
+* Wed Sep 14 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.2-3
 - Bug correction: 
   atom_action.c: recompute bonding on passivate
   bdcall.c: do not trigger menu init on passivate
 
-* Tue Sep 13 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.1-1
+* Tue Sep 13 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.1-2
 - Bug correction: 
   double click on workspace
 
