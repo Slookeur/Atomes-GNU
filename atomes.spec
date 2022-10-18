@@ -24,6 +24,7 @@ BuildRequires: libavcodec-free-devel
 BuildRequires: libavformat-free-devel
 BuildRequires: libswscale-free-devel
 BuildRequires: desktop-file-utils
+BuildRequires: libappstream-glib
 
 Requires: gtk3
 # Requires: libgfortran
@@ -83,6 +84,9 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_metainfodir}/fr.ipcms.%{name}.metainfo.xml
 
 %changelog
+* Tue Oct 18 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-2
+- Revised package
+
 * Thu Oct 13 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-1
 - Bug correction:
   callback.c: save workspace
