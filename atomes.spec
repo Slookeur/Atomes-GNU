@@ -37,6 +37,7 @@ Requires: freeglut
 Requires: mesa-libGLU
 # Requires: libepoxy
 Requires: desktop-file-utils
+Requires: libappstream-glib
 Requires: bash-completion
 
 Provides: %{name} = %{version}-%{release}
