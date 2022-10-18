@@ -944,11 +944,11 @@ install-data-local:
 	if [ ! -d $(DESTDIR)$(datadir)bash-completion/completions ]; then \
 		mkdir -p $(DESTDIR)$(datadir)/bash-completion/completions; \
 	fi
-	$(INSTALL_DATA) atomes-completion.sh $(DESTDIR)$(datadir)/bash-completion/completions/atomes
+	$(INSTALL_DATA) $(srcdir)/atomes-completion.sh $(DESTDIR)$(datadir)/bash-completion/completions/atomes
 	if [ ! -d $(DESTDIR)$(datadir)/metainfo ]; then \
 		mkdir -p $(DESTDIR)$(datadir)/metainfo; \
 	fi
-	$(INSTALL_DATA) fr.ipcms.atomes.metainfo.xml $(DESTDIR)$(datadir)/metainfo
+	$(INSTALL_DATA) $(srcdir)/fr.ipcms.atomes.metainfo.xml $(DESTDIR)$(datadir)/metainfo
 	appstream-util validate-relax --nonet $(DESTDIR)$(datadir)/metainfo/fr.ipcms.atomes.metainfo.xml
 	sed 's;DATADIR;$(pkgdatadir);1' $(srcdir)/atomes.desktop.in > $(srcdir)/atomes.desktop
 	$(INSTALL_DATA) $(srcdir)/atomes.desktop $(DESTDIR)$(pkgdatadir)
