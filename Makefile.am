@@ -70,8 +70,8 @@ install-data-local:
 	if [ ! -d $(DESTDIR)$(datadir)/metainfo ]; then \
 		mkdir -p $(DESTDIR)$(datadir)/metainfo; \
 	fi
-	$(INSTALL_DATA) fr.ipcms.atomes.atomes.metainfo.xml $(DESTDIR)$(datadir)/metainfo
-	appstream-util validate-relax --nonet $(DESTDIR)$(datadir)/metainfo/fr.ipcms.atomes.atomes.metainfo.xml
+	$(INSTALL_DATA) fr.ipcms.atomes.metainfo.xml $(DESTDIR)$(datadir)/metainfo
+	appstream-util validate-relax --nonet $(DESTDIR)$(datadir)/metainfo/fr.ipcms.atomes.metainfo.xml
 	sed 's;DATADIR;$(pkgdatadir);1' $(srcdir)/atomes.desktop.in > $(srcdir)/atomes.desktop
 	$(INSTALL_DATA) $(srcdir)/atomes.desktop $(DESTDIR)$(pkgdatadir)
 	if [ ! -d $(DESTDIR)$(datadir)/applications ]; then \
@@ -103,7 +103,7 @@ uninstall-local:
 	-rm -f $(DESTDIR)$(atomes_mandir)/man1/atomes.*
 	-rm -f $(DESTDIR)$(datadir)/applications/atomes.desktop
 	-rm -f $(DESTDIR)$(datadir)/bash-completion/completion/atomes
-	-rm -f $(DESTDIR)$(datadir)/metainfo/fr.ipcms.atomes.atomes.metainfo.xml
+	-rm -f $(DESTDIR)$(datadir)/metainfo/fr.ipcms.atomes.metainfo.xml
 	update-mime-database $(DESTDIR)$(datadir)/mime &> /dev/null || :
 	update-desktop-database &> /dev/null || :
 	touch --no-create $(DESTDIR)$(datadir)/icons/hicolor

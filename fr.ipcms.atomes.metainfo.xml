@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2022 Sébastien Le Roux -->
+<component type="desktop-application">
+  <id>fr.ipcms.atomes</id>
+  
+  <name>Atomes</name>
+  <summary>An atomistic toolbox</summary>
+  
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>AGPL-3.0-or-later</project_license>
+  
+  <description>
+    <p>
+      Atomes: a toolbox to analyze, to visualize  and to create/edit three-dimensional atomistic models. It offers a workspace that allows to have many projects opened simultaneously. The different projects in the workspace can exchange data:  analysis results, atomic coordinates... Atomes also provides an advanced input preparation system  for further calculations using well known molecular dynamics codes:
+    </p>
+    <p>
+      Classical MD: DLPOLY and LAMMPS
+    </p>
+    <p>
+      ab-initio MD: CPMD and CP2K
+    </p>
+    <p>
+      QM-MM MD: CPMD and CP2K
+    </p>
+    <p>
+      To prepare the input files for these calculations is likely to be the key, and most complicated step towards MD simulations. Atomes offers a user-friendly assistant to help and guide the scientist step by step to achieve this crucial step.
+    </p>
+  </description>
+  
+  <launchable type="desktop-id">atomes.desktop</launchable>
+  
+  <screenshots>
+    <screenshot type="default">
+      <image>https://atomes.ipcms.fr/wp-content/uploads/2022/08/Ni-Phth-1024x512.jpeg</image>
+    </screenshot>
+    <screenshot>
+      <image>https://atomes.ipcms.fr/wp-content/uploads/2022/08/lGeSe-1024x625.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://atomes.ipcms.fr/wp-content/uploads/2022/08/workm2-1024x647.png</image>
+    </screenshot>
+  </screenshots>
+  
+  <url type="homepage">https://atomes.ipcms.fr/</url>
+  <developer_name>Dr. Sébastien Le Roux</developer_name>
+  <update_contact>atomes_AT_ipcms.unistra.fr</update_contact>
+  
+  <provides>
+    <binary>atomes</binary>
+  </provides>
+  
+  <content_rating type="oars-1.1" />
+  
+  <releases>
+    <release version="1.1.7" date="2022-10-13">
+      <description>
+        <p>
+          <ul>
+            <li>
+              Bug correction:
+              callback.c: save workspace
+              atom_action.c: on remove, trigger re-calculate bonding
+            </li>
+          </ul>
+        </p>
+      </description>
+    </release>
+    <release version="1.1.6" date="2022-10-10">
+      <description>
+        <p>
+          <ul>
+            <li>
+              Bug correction:
+              w_library.c: lib_preview_plot = NULL;
+            </li>
+            <li>
+              Improvements: 
+              main.c: -h
+              glview.c: selection delay on mouse pressed/released
+            </li>
+          </ul>
+        </p>
+      </description>
+    </release>
+  </releases>
+  
+</component>
