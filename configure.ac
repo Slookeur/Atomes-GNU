@@ -131,6 +131,11 @@ echo "#define FCFLAGS \""$FCFLAGS"\"" >> src/version.h
 echo "#define CC \""$CC"\"" >> src/version.h
 echo "#define CFLAGS \""$CFLAGS"\"" >> src/version.h
 
+dnl Flatpak 
+AC_ARG_ENABLE([flatpak],
+	     [  --enable-flatpak        to build the Flatpak])
+AM_CONDITIONAL([FLATPAK], [test "x$flatpak" != "xno"])
+
 AC_CONFIG_FILES([
  Makefile
  src/Makefile

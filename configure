@@ -619,6 +619,8 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+FLATPAK_FALSE
+FLATPAK_TRUE
 FCFLAGS_F90
 FCFLAGS_f90
 FCLIBS
@@ -743,6 +745,7 @@ ac_user_opts='
 enable_option_checking
 enable_silent_rules
 enable_dependency_tracking
+enable_flatpak
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1402,6 +1405,7 @@ Optional Features:
                           do not reject slow dependency extractors
   --disable-dependency-tracking
                           speeds up one-time build
+  --enable-flatpak        to build the Flatpak
 
 Some influential environment variables:
   CC          C compiler command
@@ -6832,6 +6836,21 @@ echo "#define FCFLAGS \""$FCFLAGS"\"" >> src/version.h
 echo "#define CC \""$CC"\"" >> src/version.h
 echo "#define CFLAGS \""$CFLAGS"\"" >> src/version.h
 
+# Check whether --enable-flatpak was given.
+if test ${enable_flatpak+y}
+then :
+  enableval=$enable_flatpak;
+fi
+
+ if test "x$flatpak" != "xno"; then
+  FLATPAK_TRUE=
+  FLATPAK_FALSE='#'
+else
+  FLATPAK_TRUE='#'
+  FLATPAK_FALSE=
+fi
+
+
 ac_config_files="$ac_config_files Makefile src/Makefile"
 
 
@@ -6966,6 +6985,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${FLATPAK_TRUE}" && test -z "${FLATPAK_FALSE}"; then
+  as_fn_error $? "conditional \"FLATPAK\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

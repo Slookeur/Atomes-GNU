@@ -1218,15 +1218,20 @@ fi
 ])
 m4trace:configure.ac:122: -1- AX_CHECK_COMPILER_FLAGS([$FCFLAGS])
 m4trace:configure.ac:124: -1- m4_pattern_allow([^FCLIBS$])
-m4trace:configure.ac:139: -1- m4_pattern_allow([^LIB@&t@OBJS$])
-m4trace:configure.ac:139: -1- m4_pattern_allow([^LTLIBOBJS$])
-m4trace:configure.ac:139: -1- AM_CONDITIONAL([am__EXEEXT], [test -n "$EXEEXT"])
-m4trace:configure.ac:139: -1- m4_pattern_allow([^am__EXEEXT_TRUE$])
-m4trace:configure.ac:139: -1- m4_pattern_allow([^am__EXEEXT_FALSE$])
-m4trace:configure.ac:139: -1- _AM_SUBST_NOTMAKE([am__EXEEXT_TRUE])
-m4trace:configure.ac:139: -1- _AM_SUBST_NOTMAKE([am__EXEEXT_FALSE])
-m4trace:configure.ac:139: -1- _AC_AM_CONFIG_HEADER_HOOK(["$ac_file"])
-m4trace:configure.ac:139: -1- _AM_OUTPUT_DEPENDENCY_COMMANDS
-m4trace:configure.ac:139: -1- AM_RUN_LOG([cd "$am_dirpart" \
+m4trace:configure.ac:137: -1- AM_CONDITIONAL([FLATPAK], [test "x$flatpak" != "xno"])
+m4trace:configure.ac:137: -1- m4_pattern_allow([^FLATPAK_TRUE$])
+m4trace:configure.ac:137: -1- m4_pattern_allow([^FLATPAK_FALSE$])
+m4trace:configure.ac:137: -1- _AM_SUBST_NOTMAKE([FLATPAK_TRUE])
+m4trace:configure.ac:137: -1- _AM_SUBST_NOTMAKE([FLATPAK_FALSE])
+m4trace:configure.ac:144: -1- m4_pattern_allow([^LIB@&t@OBJS$])
+m4trace:configure.ac:144: -1- m4_pattern_allow([^LTLIBOBJS$])
+m4trace:configure.ac:144: -1- AM_CONDITIONAL([am__EXEEXT], [test -n "$EXEEXT"])
+m4trace:configure.ac:144: -1- m4_pattern_allow([^am__EXEEXT_TRUE$])
+m4trace:configure.ac:144: -1- m4_pattern_allow([^am__EXEEXT_FALSE$])
+m4trace:configure.ac:144: -1- _AM_SUBST_NOTMAKE([am__EXEEXT_TRUE])
+m4trace:configure.ac:144: -1- _AM_SUBST_NOTMAKE([am__EXEEXT_FALSE])
+m4trace:configure.ac:144: -1- _AC_AM_CONFIG_HEADER_HOOK(["$ac_file"])
+m4trace:configure.ac:144: -1- _AM_OUTPUT_DEPENDENCY_COMMANDS
+m4trace:configure.ac:144: -1- AM_RUN_LOG([cd "$am_dirpart" \
       && sed -e '/# am--include-marker/d' "$am_filepart" \
         | $MAKE -f - am--depfiles])
