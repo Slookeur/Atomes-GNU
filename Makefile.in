@@ -156,8 +156,8 @@ am__uninstall_files_from_dir = { \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
 am__installdirs = "$(DESTDIR)$(atomes_docdir)" \
-	"$(DESTDIR)$(atomes_mandir)" "$(DESTDIR)$(atomes_metadir)"
-DATA = $(atomes_doc_DATA) $(atomes_man_DATA) $(atomes_meta_DATA)
+	"$(DESTDIR)$(atomes_mandir)"
+DATA = $(atomes_doc_DATA) $(atomes_man_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 am__recursive_targets = \
@@ -364,11 +364,7 @@ atomes_mandir = ${mandir}/man1/
 atomes_man_DATA = \
 	atomes.1.gz 
 
-atomes_metadir = ${datadir}/metainfo/
-atomes_meta_DATA = \
-	fr.ipcms.atomes.metainfo.xml
-
-EXTRA_DIST = $(atomes_doc_DATA) $(atomes_man_DATA) ${atomes_meta_DATA}
+EXTRA_DIST = $(atomes_doc_DATA) $(atomes_man_DATA)
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -463,27 +459,6 @@ uninstall-atomes_manDATA:
 	@list='$(atomes_man_DATA)'; test -n "$(atomes_mandir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(atomes_mandir)'; $(am__uninstall_files_from_dir)
-install-atomes_metaDATA: $(atomes_meta_DATA)
-	@$(NORMAL_INSTALL)
-	@list='$(atomes_meta_DATA)'; test -n "$(atomes_metadir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(atomes_metadir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(atomes_metadir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(atomes_metadir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(atomes_metadir)" || exit $$?; \
-	done
-
-uninstall-atomes_metaDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(atomes_meta_DATA)'; test -n "$(atomes_metadir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(atomes_metadir)'; $(am__uninstall_files_from_dir)
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run 'make' without going through this Makefile.
@@ -792,7 +767,7 @@ check: check-recursive
 all-am: Makefile $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(atomes_docdir)" "$(DESTDIR)$(atomes_mandir)" "$(DESTDIR)$(atomes_metadir)"; do \
+	for dir in "$(DESTDIR)$(atomes_docdir)" "$(DESTDIR)$(atomes_mandir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -847,7 +822,7 @@ info: info-recursive
 info-am:
 
 install-data-am: install-atomes_docDATA install-atomes_manDATA \
-	install-atomes_metaDATA install-data-local
+	install-data-local
 
 install-dvi: install-dvi-recursive
 
@@ -894,7 +869,7 @@ ps: ps-recursive
 ps-am:
 
 uninstall-am: uninstall-atomes_docDATA uninstall-atomes_manDATA \
-	uninstall-atomes_metaDATA uninstall-local
+	uninstall-local
 
 .MAKE: $(am__recursive_targets) all install-am install-strip
 
@@ -905,17 +880,16 @@ uninstall-am: uninstall-atomes_docDATA uninstall-atomes_manDATA \
 	dist-zstd distcheck distclean distclean-generic distclean-hdr \
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-atomes_docDATA install-atomes_manDATA \
-	install-atomes_metaDATA install-data install-data-am \
-	install-data-local install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
-	pdf-am ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-atomes_docDATA uninstall-atomes_manDATA \
-	uninstall-atomes_metaDATA uninstall-local
+	install-atomes_docDATA install-atomes_manDATA install-data \
+	install-data-am install-data-local install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am uninstall-atomes_docDATA uninstall-atomes_manDATA \
+	uninstall-local
 
 .PRECIOUS: Makefile
 
@@ -967,15 +941,18 @@ install-data-local:
 			fi \
 		done \
 	fi 
+# Bash completion
 	if [ ! -d $(DESTDIR)$(datadir)/bash-completion/completions ]; then \
 		mkdir -p $(DESTDIR)$(datadir)/bash-completion/completions; \
 	fi
 	$(INSTALL_DATA) $(srcdir)/atomes-completion.sh $(DESTDIR)$(datadir)/bash-completion/completions/atomes
+# Meta info
 	if [ ! -d $(DESTDIR)$(datadir)/metainfo ]; then \
 		mkdir -p $(DESTDIR)$(datadir)/metainfo; \
 	fi
 	$(INSTALL_DATA) $(srcdir)/fr.ipcms.atomes.metainfo.xml $(DESTDIR)$(datadir)/metainfo
 	appstream-util validate-relax --nonet $(DESTDIR)$(datadir)/metainfo/fr.ipcms.atomes.metainfo.xml
+# Desktop file
 	sed 's;DATADIR;$(pkgdatadir);1' $(srcdir)/atomes.desktop.in > $(srcdir)/atomes.desktop
 	$(INSTALL_DATA) $(srcdir)/atomes.desktop $(DESTDIR)$(pkgdatadir)
 	if [ ! -d $(DESTDIR)$(datadir)/applications ]; then \

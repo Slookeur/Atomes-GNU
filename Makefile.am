@@ -14,11 +14,7 @@ atomes_mandir = ${mandir}/man1/
 atomes_man_DATA = \
 	atomes.1.gz 
 
-atomes_metadir = ${datadir}/metainfo/
-atomes_meta_DATA = \
-	fr.ipcms.atomes.metainfo.xml
-
-EXTRA_DIST = $(atomes_doc_DATA) $(atomes_man_DATA) ${atomes_meta_DATA}
+EXTRA_DIST = $(atomes_doc_DATA) $(atomes_man_DATA)
 
 install-data-local:
 	@$(NORMAL_INSTALL)
@@ -67,15 +63,18 @@ install-data-local:
 			fi \
 		done \
 	fi 
+# Bash completion
 	if [ ! -d $(DESTDIR)$(datadir)/bash-completion/completions ]; then \
 		mkdir -p $(DESTDIR)$(datadir)/bash-completion/completions; \
 	fi
 	$(INSTALL_DATA) $(srcdir)/atomes-completion.sh $(DESTDIR)$(datadir)/bash-completion/completions/atomes
+# Meta info
 	if [ ! -d $(DESTDIR)$(datadir)/metainfo ]; then \
 		mkdir -p $(DESTDIR)$(datadir)/metainfo; \
 	fi
 	$(INSTALL_DATA) $(srcdir)/fr.ipcms.atomes.metainfo.xml $(DESTDIR)$(datadir)/metainfo
 	appstream-util validate-relax --nonet $(DESTDIR)$(datadir)/metainfo/fr.ipcms.atomes.metainfo.xml
+# Desktop file
 	sed 's;DATADIR;$(pkgdatadir);1' $(srcdir)/atomes.desktop.in > $(srcdir)/atomes.desktop
 	$(INSTALL_DATA) $(srcdir)/atomes.desktop $(DESTDIR)$(pkgdatadir)
 	if [ ! -d $(DESTDIR)$(datadir)/applications ]; then \
