@@ -14,7 +14,11 @@ atomes_mandir = ${mandir}/man1/
 atomes_man_DATA = \
 	atomes.1.gz 
 
-EXTRA_DIST = $(atomes_doc_DATA) $(atomes_man_DATA)
+atomes_metadir = ${datadir}/metainfo/
+atomes_meta_DATA = \
+	fr.ipcms.atomes.metainfo.xml
+
+EXTRA_DIST = $(atomes_doc_DATA) $(atomes_man_DATA) ${atomes_meta_DATA}
 
 install-data-local:
 	@$(NORMAL_INSTALL)
