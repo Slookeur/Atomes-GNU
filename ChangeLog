@@ -28,7 +28,7 @@
          Release of version 1.1.3
          * Bug correction: 
 	 	read_opengl.c: correct 'read_atom_b'
-		initring.c: coorect 'send_rings_opengl_'
+		initring.c: correct 'send_rings_opengl_'
 
 2022-09-14 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
          Release of version 1.1.2

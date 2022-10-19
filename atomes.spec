@@ -1,7 +1,7 @@
 Name:           atomes
 %global upname Atomes-GNU
 Version:        1.1.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        An atomistic toolbox
 License:        AGPL-3.0-or-later
 Source0:        https://github.com/Slookeur/%{upname}/archive/refs/tags/v%{version}.tar.gz
@@ -27,18 +27,15 @@ BuildRequires: desktop-file-utils
 BuildRequires: libappstream-glib
 
 Requires: gtk3
-# Requires: libgfortran
-# Requires: libxml2
-# Requires: libavutil-free
-# Requires: libavcodec-free
-# Requires: libavformat-free
-# Requires: libswscale-free
+Requires: libgfortran
+Requires: libxml2
+Requires: libavutil-free
+Requires: libavcodec-free
+Requires: libavformat-free
+Requires: libswscale-free
 Requires: freeglut
 Requires: mesa-libGLU
-# Requires: libepoxy
-Requires: desktop-file-utils
-Requires: libappstream-glib
-Requires: bash-completion
+Requires: libepoxy
 
 Provides: %{name} = %{version}-%{release}
 
@@ -85,6 +82,9 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_metainfodir}/fr.ipcms.%{name}.metainfo.xml
 
 %changelog
+* Wed Oct 19 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-3
+- Revised package
+
 * Tue Oct 18 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-2
 - Revised package
 
