@@ -32,9 +32,15 @@ Atomes offers a user-friendly assistant to help and guide the user step by step 
 
 To build ***Atomes***: 
 
-> ./configure
+```
+./configure
+```
 
-> make
+Followed by:
+
+```
+make
+```
 
 ### Build options
 
@@ -46,15 +52,17 @@ To build ***Atomes***:
 
 And change: 
 
-> PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.16])
-
-> dnl PKG_CHECK_MODULES(GTK, [gtk4 >= 4.60])
+```
+PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.16])
+dnl PKG_CHECK_MODULES(GTK, [gtk4 >= 4.60])
+```
 
 To:
 
-> dnl PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.16])
-
-> PKG_CHECK_MODULES(GTK, [gtk4 >= 4.60])
+```
+dnl PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.16])
+PKG_CHECK_MODULES(GTK, [gtk4 >= 4.60])
+```
 
   2. Edit the file `scr/Makefile.am`
 
@@ -68,11 +76,13 @@ To:
 
   3. Update the `configure` script:
 
-> rm -f aclocal.m4
-> rm -f configure~
-> aclocal
-> autoconf
-> automake --add-missing
+```
+rm -f aclocal.m4
+rm -f configure~
+aclocal
+autoconf
+automake --add-missing
+```
 
   4. Build ***Atomes***
 
@@ -97,17 +107,21 @@ And remove all:
 
   2. Update the `configure` script:
 
-> rm -f aclocal.m4
-> rm -f configure~
-> aclocal
-> autoconf
-> automake --add-missing
+```
+rm -f aclocal.m4
+rm -f configure~
+aclocal
+autoconf
+automake --add-missing
+```
 
   3. Build ***Atomes***
 
 ## Install ***Atomes***
 
-> make install
+```
+make install
+```
 
 ## Who's behind ***Atomes***
 
