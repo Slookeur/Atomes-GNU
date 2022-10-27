@@ -52,12 +52,32 @@
   <content_rating type="oars-1.1" />
   
   <releases>
+    <release version="1.1.8" date="2022-10-27">
+      <description>
+        <p>Release of version 1.1.8:</p>
+        <ul>
+          <li>Bug corrections:
+	    <ul>
+              <li>edit_menu.c: correction for lattice parameter updates</li>
+              <li>gui.c: cut_sel and cut_lab pointers for 3D window actions</li>
+              <li>popup.c: corrections to use cut_sel and cut_lab</li>
+              <li>glwindow.c: corrections to use cut_sel and cut_lab</li>
+              <li>closep.c: corrections to close volume_win and model_win[2]</li>
+              <li>atom_action.c: corrections to properly trigger bond udpates or not</li>
+              <li>atom_remove.c: corrections to adjust bonds id</li>
+              <li>atom_remove.c: corrections if fragments are removed</li>
+              <li>ogl_text.c: correction buffer size strings for measures</li>
+              <li>callbacks.c: correction when reading workspace remember name</li>
+          </li>
+        </ul>
+      </description>
+    </release>
     <release version="1.1.7" date="2022-10-13">
       <description>
         <p>Release of version 1.1.7:</p>
         <ul>
-          <li>Bug correction:
-	    <ul>
+          <li>Bug corrections:
+            <ul>
               <li>callback.c: save workspace</li>
               <li>atom_action.c: on remove, trigger re-calculate bonding</li>
             </ul>
@@ -95,9 +115,9 @@
       <description>
         <p>Release of version 1.1.4:</p>
         <ul>
-          <li>Bug correction:
-	    <ul>
-	      <li>read_coord.c: Windows to handle properly EOL symbols</li>
+          <li>Bug corrections:
+            <ul>
+              <li>read_coord.c: Windows to handle properly EOL symbols</li>
               <li>m_curve.c: Windows to not crash when destroying label widget</li>
               <li>glview.c: correct GWARNING messages on widget scale</li>
             </ul>
@@ -109,9 +129,9 @@
       <description>
         <p>Release of version 1.1.3:</p>
         <ul>
-          <li>Bug correction:
-	    <ul>
-	      <li>read_opengl.c: correct 'read_atom_b'</li>
+          <li>Bug corrections:
+            <ul>
+              <li>read_opengl.c: correct 'read_atom_b'</li>
               <li>initring.c: correct 'send_rings_opengl_'</li>
             </ul>
           </li>
@@ -122,9 +142,9 @@
       <description>
         <p>Release of version 1.1.2:</p>
         <ul>
-          <li>Bug correction:
-	    <ul>
-	      <li>atom_action.c: recompute bonding on passivate</li>
+          <li>Bug corrections:
+            <ul>
+              <li>atom_action.c: recompute bonding on passivate</li>
               <li>bdcall.c: do not trigger menu init on passivate</li>
             </ul>
           </li>
@@ -136,8 +156,8 @@
         <p>Release of version 1.1.1:</p>
         <ul>
           <li>Bug correction:
-	    <ul>
-	      <li>double click on workspace</li>
+            <ul>
+              <li>workspace.c: double click on workspace</li>
             </ul>
           </li>
         </ul>
