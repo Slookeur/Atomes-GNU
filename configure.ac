@@ -8,7 +8,7 @@ m4_define(atomes_minor_version, 1)
 m4_define(atomes_patch_version, 8)
 m4_define(atomes_version, atomes_major_version.atomes_minor_version.atomes_patch_version)
 m4_define(atomes_url, https://atomes.ipcms.fr)
-m4_define(atomes_tar, atomes)
+m4_define(atomes_tar, Atomes-GNU)
 
 AC_INIT([atomes], [atomes_version], [sebastien.leroux@ipcms.unistra.fr], [atomes_tar], [atomes_url])
 
