@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+AUTOMAKE_OPTIONS = foreign
+
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_LIB_DIR=\""$(datadir)/atomes/library"\" \
@@ -94,6 +96,9 @@ bin_PROGRAMS = atomes
 atomes_fortran_modules = $(for)parameters.F90 \
 			 $(for)mendeleiev.F90
 
+atomes_fortran_mod: $(atomes_fortran_modules)
+	$(FC) $(FCFLAGS) $(AM_FFLAGS) -c $< -o $@
+
 atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)allochem.F90 \
 			$(for)allocmsd.F90 \
@@ -133,11 +138,7 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)writedata.F90 \
 			$(for)xyz.F90
 
-$(atomes_fortran_files): $(atomes_fortran_modules)
-
-atomes_fortran_SOURCES = $(atomes_fortran_files)
-
-atomes_main = global.c
+atomes_fortran: $(atomes_fortran_mod) $(atomes_fortran_files)
 
 atomes_gui = $(gui)bdcall.c \
 	     $(gui)calc_menu.c \
@@ -381,7 +382,7 @@ clean: clean-am
 	-rm -f */*/*.o
 
 atomes_SOURCES = \
-	$(atomes_fortran_SOURCES) \
+	$(atomes_fortran) \
 	$(atomes_includes) \
 	global.c \
 	$(atomes_gui) \

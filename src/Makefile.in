@@ -101,27 +101,8 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__objects_1 = $(for)allocbonds.$(OBJEXT) $(for)allochem.$(OBJEXT) \
-	$(for)allocmsd.$(OBJEXT) $(for)angles.$(OBJEXT) \
-	$(for)bonds.$(OBJEXT) $(for)c3d.$(OBJEXT) \
-	$(for)chains.$(OBJEXT) $(for)chains_ogl.$(OBJEXT) \
-	$(for)chemistry.$(OBJEXT) $(for)cqvf.$(OBJEXT) \
-	$(for)dmtx.$(OBJEXT) $(for)dvtb.$(OBJEXT) $(for)escs.$(OBJEXT) \
-	$(for)fzbt.$(OBJEXT) $(for)gr.$(OBJEXT) $(for)grfft.$(OBJEXT) \
-	$(for)initchains.$(OBJEXT) $(for)init.$(OBJEXT) \
-	$(for)initrings.$(OBJEXT) $(for)lattice.$(OBJEXT) \
-	$(for)molecules.$(OBJEXT) $(for)msd.$(OBJEXT) \
-	$(for)pdb.$(OBJEXT) $(for)prepdata.$(OBJEXT) \
-	$(for)resrings.$(OBJEXT) $(for)rings-guttman.$(OBJEXT) \
-	$(for)rings-king.$(OBJEXT) $(for)rings_ogl.$(OBJEXT) \
-	$(for)rings-primitive.$(OBJEXT) $(for)sk.$(OBJEXT) \
-	$(for)spherical.$(OBJEXT) $(for)sq.$(OBJEXT) \
-	$(for)threads.$(OBJEXT) $(for)trj.$(OBJEXT) \
-	$(for)utils.$(OBJEXT) $(for)vas.$(OBJEXT) \
-	$(for)writedata.$(OBJEXT) $(for)xyz.$(OBJEXT)
-am__objects_2 = $(am__objects_1)
-am__objects_3 =
-am__objects_4 = $(gui)bdcall.$(OBJEXT) $(gui)calc_menu.$(OBJEXT) \
+am__objects_1 =
+am__objects_2 = $(gui)bdcall.$(OBJEXT) $(gui)calc_menu.$(OBJEXT) \
 	$(gui)callbacks.$(OBJEXT) $(gui)chainscall.$(OBJEXT) \
 	$(gui)edit_menu.$(OBJEXT) $(gui)grcall.$(OBJEXT) \
 	$(gui)gtk-misc.$(OBJEXT) $(gui)gui.$(OBJEXT) \
@@ -130,15 +111,15 @@ am__objects_4 = $(gui)bdcall.$(OBJEXT) $(gui)calc_menu.$(OBJEXT) \
 	$(gui)ringscall.$(OBJEXT) $(gui)spcall.$(OBJEXT) \
 	$(gui)sqcall.$(OBJEXT) $(gui)tools.$(OBJEXT) \
 	$(gui)work_menu.$(OBJEXT) $(gui)xmlrw.$(OBJEXT)
-am__objects_5 = $(lic)valid.$(OBJEXT)
-am__objects_6 = $(work)modelinfo.$(OBJEXT) $(work)workinfo.$(OBJEXT) \
+am__objects_3 = $(lic)valid.$(OBJEXT)
+am__objects_4 = $(work)modelinfo.$(OBJEXT) $(work)workinfo.$(OBJEXT) \
 	$(work)workspace.$(OBJEXT)
-am__objects_7 = $(read)read_c3d.$(OBJEXT) $(read)read_cif.$(OBJEXT) \
+am__objects_5 = $(read)read_c3d.$(OBJEXT) $(read)read_cif.$(OBJEXT) \
 	$(read)read_coord.$(OBJEXT) $(read)read_hist.$(OBJEXT) \
 	$(read)read_npt.$(OBJEXT) $(read)read_pdb.$(OBJEXT) \
 	$(read)read_trj.$(OBJEXT) $(read)read_vas.$(OBJEXT) \
 	$(read)read_xyz.$(OBJEXT)
-am__objects_8 = $(am__objects_7) $(proj)close_p.$(OBJEXT) \
+am__objects_6 = $(am__objects_5) $(proj)close_p.$(OBJEXT) \
 	$(proj)debugio.$(OBJEXT) $(proj)init_p.$(OBJEXT) \
 	$(proj)open_p.$(OBJEXT) $(proj)project.$(OBJEXT) \
 	$(proj)read_bond.$(OBJEXT) $(proj)read_curve.$(OBJEXT) \
@@ -148,26 +129,26 @@ am__objects_8 = $(am__objects_7) $(proj)close_p.$(OBJEXT) \
 	$(proj)save_field.$(OBJEXT) $(proj)save_mol.$(OBJEXT) \
 	$(proj)save_opengl.$(OBJEXT) $(proj)save_p.$(OBJEXT) \
 	$(proj)save_qm.$(OBJEXT) $(proj)update_p.$(OBJEXT)
-am__objects_9 = $(cp2k)cp2k_basis.$(OBJEXT) \
+am__objects_7 = $(cp2k)cp2k_basis.$(OBJEXT) \
 	$(cp2k)cp2k_files.$(OBJEXT) $(cp2k)cp2k_gth-basis.$(OBJEXT) \
 	$(cp2k)cp2k_init.$(OBJEXT) $(cp2k)cp2k_mol.$(OBJEXT) \
 	$(cp2k)cp2k_molopt-basis.$(OBJEXT) $(cp2k)cp2k_pot.$(OBJEXT) \
 	$(cp2k)cp2k_print.$(OBJEXT)
-am__objects_10 = $(cpmd)cpmd_atoms.$(OBJEXT) \
-	$(cpmd)cpmd_init.$(OBJEXT) $(cpmd)cpmd_nose.$(OBJEXT) \
-	$(cpmd)cpmd_print.$(OBJEXT) $(cpmd)cpmd_restart.$(OBJEXT)
-am__objects_11 = $(dlpoly)dlp_active.$(OBJEXT) \
+am__objects_8 = $(cpmd)cpmd_atoms.$(OBJEXT) $(cpmd)cpmd_init.$(OBJEXT) \
+	$(cpmd)cpmd_nose.$(OBJEXT) $(cpmd)cpmd_print.$(OBJEXT) \
+	$(cpmd)cpmd_restart.$(OBJEXT)
+am__objects_9 = $(dlpoly)dlp_active.$(OBJEXT) \
 	$(dlpoly)dlp_atom.$(OBJEXT) $(dlpoly)dlp_comp.$(OBJEXT) \
 	$(dlpoly)dlp_control.$(OBJEXT) $(dlpoly)dlp_copy.$(OBJEXT) \
 	$(dlpoly)dlp_edit.$(OBJEXT) $(dlpoly)dlp_ff_match.$(OBJEXT) \
 	$(dlpoly)dlp_field.$(OBJEXT) $(dlpoly)dlp_init.$(OBJEXT) \
 	$(dlpoly)dlp_mol.$(OBJEXT) $(dlpoly)dlp_print.$(OBJEXT) \
 	$(dlpoly)dlp_viz.$(OBJEXT)
-am__objects_12 = $(lammps)la_print.$(OBJEXT)
-am__objects_13 = $(calc)calc.$(OBJEXT) $(am__objects_9) \
-	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
+am__objects_10 = $(lammps)la_print.$(OBJEXT)
+am__objects_11 = $(calc)calc.$(OBJEXT) $(am__objects_7) \
+	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
 	$(fields)force_fields.$(OBJEXT)
-am__objects_14 = $(curve)cedit.$(OBJEXT) $(curve)curve.$(OBJEXT) \
+am__objects_12 = $(curve)cedit.$(OBJEXT) $(curve)curve.$(OBJEXT) \
 	$(curve)cwidget.$(OBJEXT) $(curve)datab.$(OBJEXT) \
 	$(curve)draw.$(OBJEXT) $(curve)frame.$(OBJEXT) \
 	$(curve)glyph.$(OBJEXT) $(curve)labels.$(OBJEXT) \
@@ -178,7 +159,7 @@ am__objects_14 = $(curve)cedit.$(OBJEXT) $(curve)curve.$(OBJEXT) \
 	$(curve)w_curve.$(OBJEXT) $(curve)w_data.$(OBJEXT) \
 	$(curve)w_img.$(OBJEXT) $(curve)xaxis.$(OBJEXT) \
 	$(curve)yaxis.$(OBJEXT)
-am__objects_15 = $(glwin)color_box.$(OBJEXT) \
+am__objects_13 = $(glwin)color_box.$(OBJEXT) \
 	$(glwin)glwindow.$(OBJEXT) $(glwin)initchain.$(OBJEXT) \
 	$(glwin)initcoord.$(OBJEXT) $(glwin)initmol.$(OBJEXT) \
 	$(glwin)initring.$(OBJEXT) $(glwin)m_anim.$(OBJEXT) \
@@ -201,13 +182,13 @@ am__objects_15 = $(glwin)color_box.$(OBJEXT) \
 	$(glwin)w_record.$(OBJEXT) $(glwin)w_rings.$(OBJEXT) \
 	$(glwin)w_search.$(OBJEXT) $(glwin)w_sequencer.$(OBJEXT) \
 	$(glwin)w_spiner.$(OBJEXT) $(glwin)w_volumes.$(OBJEXT)
-am__objects_16 = $(gldraw)d_atoms.$(OBJEXT) $(gldraw)d_axis.$(OBJEXT) \
+am__objects_14 = $(gldraw)d_atoms.$(OBJEXT) $(gldraw)d_axis.$(OBJEXT) \
 	$(gldraw)d_bonds.$(OBJEXT) $(gldraw)d_box.$(OBJEXT) \
 	$(gldraw)d_label.$(OBJEXT) $(gldraw)d_measures.$(OBJEXT) \
 	$(gldraw)d_poly.$(OBJEXT) $(gldraw)d_rings.$(OBJEXT) \
 	$(gldraw)d_selection.$(OBJEXT) $(gldraw)image.$(OBJEXT) \
 	$(gldraw)movie.$(OBJEXT) $(gldraw)ogl_text.$(OBJEXT)
-am__objects_17 = $(gledit)atom_action.$(OBJEXT) \
+am__objects_15 = $(gledit)atom_action.$(OBJEXT) \
 	$(gledit)atom_coord.$(OBJEXT) $(gledit)atom_edit.$(OBJEXT) \
 	$(gledit)atom_geo.$(OBJEXT) $(gledit)atom_insert.$(OBJEXT) \
 	$(gledit)atom_move.$(OBJEXT) $(gledit)atom_object.$(OBJEXT) \
@@ -219,21 +200,20 @@ am__objects_17 = $(gledit)atom_action.$(OBJEXT) \
 	$(gledit)cell_density.$(OBJEXT) $(gledit)cell_edit.$(OBJEXT) \
 	$(gledit)cell_extra.$(OBJEXT) $(gledit)cell_pixel.$(OBJEXT) \
 	$(gledit)cell_shift.$(OBJEXT) $(gledit)cell_super.$(OBJEXT)
-am__objects_18 = $(am__objects_15) $(am__objects_16) $(am__objects_17) \
+am__objects_16 = $(am__objects_13) $(am__objects_14) $(am__objects_15) \
 	$(ogl)arcball.$(OBJEXT) $(ogl)glview.$(OBJEXT) \
 	$(ogl)ogl_draw.$(OBJEXT) $(ogl)ogl_shaders.$(OBJEXT) \
 	$(ogl)ogl_shading.$(OBJEXT) $(ogl)ogl_utils.$(OBJEXT) \
 	$(ogl)selection.$(OBJEXT)
-am_atomes_OBJECTS = $(am__objects_2) $(am__objects_3) global.$(OBJEXT) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
-	$(am__objects_8) $(am__objects_13) $(am__objects_14) \
-	$(am__objects_18)
+am_atomes_OBJECTS = $(am__objects_1) global.$(OBJEXT) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) $(am__objects_6) \
+	$(am__objects_11) $(am__objects_12) $(am__objects_16)
 atomes_OBJECTS = $(am_atomes_OBJECTS)
 am__DEPENDENCIES_1 =
 atomes_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-atomes_LINK = $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(atomes_LDFLAGS) \
+atomes_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(atomes_LDFLAGS) \
 	$(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -382,19 +362,6 @@ am__depfiles_remade = ./$(DEPDIR)/$(calc)calc.Po \
 	./$(DEPDIR)/$(work)modelinfo.Po ./$(DEPDIR)/$(work)workinfo.Po \
 	./$(DEPDIR)/$(work)workspace.Po ./$(DEPDIR)/global.Po
 am__mv = mv -f
-PPFCCOMPILE = $(FC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_FCFLAGS) $(FCFLAGS)
-AM_V_PPFC = $(am__v_PPFC_@AM_V@)
-am__v_PPFC_ = $(am__v_PPFC_@AM_DEFAULT_V@)
-am__v_PPFC_0 = @echo "  PPFC    " $@;
-am__v_PPFC_1 = 
-FCLD = $(FC)
-FCLINK = $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
-	$@
-AM_V_FCLD = $(am__v_FCLD_@AM_V@)
-am__v_FCLD_ = $(am__v_FCLD_@AM_DEFAULT_V@)
-am__v_FCLD_0 = @echo "  FCLD    " $@;
-am__v_FCLD_1 = 
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 AM_V_CC = $(am__v_CC_@AM_V@)
@@ -554,6 +521,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_LIB_DIR=\""$(datadir)/atomes/library"\" \
@@ -681,8 +649,6 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)writedata.F90 \
 			$(for)xyz.F90
 
-atomes_fortran_SOURCES = $(atomes_fortran_files)
-atomes_main = global.c
 atomes_gui = $(gui)bdcall.c \
 	     $(gui)calc_menu.c \
 	     $(gui)callbacks.c \
@@ -917,7 +883,7 @@ atomes_includes = config.h \
 		  $(ogl)ogl_shading.h
 
 atomes_SOURCES = \
-	$(atomes_fortran_SOURCES) \
+	$(atomes_fortran) \
 	$(atomes_includes) \
 	global.c \
 	$(atomes_gui) \
@@ -933,7 +899,7 @@ atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .F90 .c .o .obj
+.SUFFIXES: .c .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -943,9 +909,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/Makefile
+	  $(AUTOMAKE) --foreign src/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -1008,7 +974,7 @@ clean-binPROGRAMS:
 
 atomes$(EXEEXT): $(atomes_OBJECTS) $(atomes_DEPENDENCIES) $(EXTRA_atomes_DEPENDENCIES) 
 	@rm -f atomes$(EXEEXT)
-	$(AM_V_FCLD)$(atomes_LINK) $(atomes_OBJECTS) $(atomes_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(atomes_LINK) $(atomes_OBJECTS) $(atomes_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1207,12 +1173,6 @@ $(am__depfiles_remade):
 	@echo '# dummy' >$@-t && $(am__mv) $@-t $@
 
 am--depfiles: $(am__depfiles_remade)
-
-.F90.o:
-	$(AM_V_PPFC)$(PPFCCOMPILE) -c -o $@ $<
-
-.F90.obj:
-	$(AM_V_PPFC)$(PPFCCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -1803,7 +1763,10 @@ uninstall-am: uninstall-binPROGRAMS
 .PRECIOUS: Makefile
 
 
-$(atomes_fortran_files): $(atomes_fortran_modules)
+atomes_fortran_mod: $(atomes_fortran_modules)
+	$(FC) $(FCFLAGS) $(AM_FFLAGS) -c $< -o $@
+
+atomes_fortran: $(atomes_fortran_mod) $(atomes_fortran_files)
 
 clean: clean-am
 	-rm -f *.mod
