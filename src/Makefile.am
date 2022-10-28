@@ -94,45 +94,48 @@ bin_PROGRAMS = atomes
 atomes_fortran_modules = $(for)parameters.F90 \
 			 $(for)mendeleiev.F90
 
-atomes_fortran_SOURCES = $(atomes_fortran_modules) \
-			 $(for)allocbonds.F90 \
-			 $(for)allochem.F90 \
-			 $(for)allocmsd.F90 \
-			 $(for)angles.F90 \
-			 $(for)bonds.F90 \
-			 $(for)c3d.F90 \
-			 $(for)chains.F90 \
-			 $(for)chains_ogl.F90 \
-			 $(for)chemistry.F90 \
-			 $(for)cqvf.F90 \
-			 $(for)dmtx.F90 \
-			 $(for)dvtb.F90 \
-			 $(for)escs.F90 \
-			 $(for)fzbt.F90 \
-			 $(for)gr.F90 \
-			 $(for)grfft.F90 \
-			 $(for)initchains.F90 \
-			 $(for)init.F90 \
-			 $(for)initrings.F90 \
-			 $(for)lattice.F90 \
-			 $(for)molecules.F90 \
-			 $(for)msd.F90 \
-			 $(for)pdb.F90 \
-			 $(for)prepdata.F90 \
-			 $(for)resrings.F90 \
-			 $(for)rings-guttman.F90 \
-			 $(for)rings-king.F90 \
-			 $(for)rings_ogl.F90 \
-			 $(for)rings-primitive.F90 \
-			 $(for)sk.F90 \
-			 $(for)spherical.F90 \
-			 $(for)sq.F90 \
-			 $(for)threads.F90 \
-			 $(for)trj.F90 \
-			 $(for)utils.F90 \
-			 $(for)vas.F90 \
-			 $(for)writedata.F90 \
-			 $(for)xyz.F90
+atomes_fortran_files = $(for)allocbonds.F90 \
+			$(for)allochem.F90 \
+			$(for)allocmsd.F90 \
+			$(for)angles.F90 \
+			$(for)bonds.F90 \
+			$(for)c3d.F90 \
+			$(for)chains.F90 \
+			$(for)chains_ogl.F90 \
+			$(for)chemistry.F90 \
+			$(for)cqvf.F90 \
+			$(for)dmtx.F90 \
+			$(for)dvtb.F90 \
+			$(for)escs.F90 \
+			$(for)fzbt.F90 \
+			$(for)gr.F90 \
+			$(for)grfft.F90 \
+			$(for)initchains.F90 \
+			$(for)init.F90 \
+			$(for)initrings.F90 \
+			$(for)lattice.F90 \
+			$(for)molecules.F90 \
+			$(for)msd.F90 \
+			$(for)pdb.F90 \
+			$(for)prepdata.F90 \
+			$(for)resrings.F90 \
+			$(for)rings-guttman.F90 \
+			$(for)rings-king.F90 \
+			$(for)rings_ogl.F90 \
+			$(for)rings-primitive.F90 \
+			$(for)sk.F90 \
+			$(for)spherical.F90 \
+			$(for)sq.F90 \
+			$(for)threads.F90 \
+			$(for)trj.F90 \
+			$(for)utils.F90 \
+			$(for)vas.F90 \
+			$(for)writedata.F90 \
+			$(for)xyz.F90
+
+atomes_fortran_SOURCES = $(atomes_fortran_modules) $(atomes_fortran_files)
+
+$(atomes_fortran_files): $(atomes_fotran_modules)
 
 atomes_main = global.c
 
