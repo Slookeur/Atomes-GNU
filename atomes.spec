@@ -1,7 +1,7 @@
 Name:           atomes
 %global upname Atomes-GNU
-Version:        1.1.8
-Release:        3%{?dist}
+Version:        1.1.9
+Release:        1%{?dist}
 Summary:        An atomistic toolbox
 License:        AGPL-3.0-or-later
 Source0:        https://github.com/Slookeur/%{upname}/archive/refs/tags/v%{version}.tar.gz
@@ -86,6 +86,15 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_metainfodir}/fr.ipcms.%{name}.metainfo.xml
 
 %changelog
+* Fri Oct 28 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.9-1
+-Bug corrections:
+  glwin.h: float shift[4], label_format[3]
+  m_poly.c: olg_clones[6] -> olg_clones[5]
+  read_bond.c: update_mol
+  edit_menu.c: cshift[i+3] -> cshift[i]
+  gui.c: cut_sel and cut_lab pointers for 3D window actions
+  dlp_atom.c: compare_non_bonded
+
 * Fri Oct 28 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.8-3
 - Revised package
 

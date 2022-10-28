@@ -5,7 +5,7 @@ AC_PREREQ(2.59)
 
 m4_define(atomes_major_version, 1)
 m4_define(atomes_minor_version, 1)
-m4_define(atomes_patch_version, 8)
+m4_define(atomes_patch_version, 9)
 m4_define(atomes_version, atomes_major_version.atomes_minor_version.atomes_patch_version)
 m4_define(atomes_url, https://atomes.ipcms.fr)
 m4_define(atomes_tar, atomes)
@@ -124,6 +124,39 @@ AX_CHECK_COMPILER_FLAGS([$FCFLAGS])
 AC_FC_LIBRARY_LDFLAGS
 AC_FC_FREEFORM
 AC_LANG_POP([Fortran])
+
+dnl ***************************************************************************
+dnl Check for windows
+dnl ***************************************************************************
+
+case $host in
+  *mingw* | pw32* | cygwin*)
+    platform_win32=yes
+    echo "Building win32 application"
+    ;;
+  *)
+    platform_win32=no
+    ;;
+esac
+AM_CONDITIONAL(PLATFORM_WIN32, test x"$platform_win32" = "xyes")
+
+case $host in
+  *mingw*)
+    native_win32=yes
+    echo "Building native win32 application"
+    ;;
+  *)
+    native_win32=no
+    ;;
+esac
+AM_CONDITIONAL(NATIVE_WIN32, test x"$native_win32" = "xyes")
+
+if test "$native_win32" = "yes"; then
+  AC_CHECK_TOOL(WINDRES, windres, no)
+  if test "$WINDRES" = no; then
+    AC_MSG_ERROR([*** Could not find an implementation of windres in your PATH.])
+  fi
+fi
 
 cat lic > src/version.h
 echo "#define FC \""$FC"\"" >> src/version.h

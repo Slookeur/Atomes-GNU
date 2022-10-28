@@ -52,6 +52,23 @@
   <content_rating type="oars-1.1" />
   
   <releases>
+    <release version="1.1.9" date="2022-10-28">
+      <description>
+        <p>Release of version 1.1.9:</p>
+        <ul>
+          <li>Bug corrections:
+	    <ul>
+              <li>glwin.h: float shift[4], label_format[3]</li>
+              <li>m_poly.c: olg_clones[6] -> olg_clones[5]</li>
+              <li>read_bond.c: update_mol</li>
+              <li>edit_menu.c: cshift[i+3] -> cshift[i]</li>
+              <li>gui.c: cut_sel and cut_lab pointers for 3D window actions</li>
+              <li>dlp_atom.c: compare_non_bonded</li>
+            </ul>
+          </li>
+        </ul>
+      </description>
+    </release>
     <release version="1.1.8" date="2022-10-27">
       <description>
         <p>Release of version 1.1.8:</p>

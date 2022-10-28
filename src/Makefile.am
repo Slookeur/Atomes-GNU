@@ -1,7 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
-AUTOMAKE_OPTIONS = foreign
-
+if NATIVE_WIN32
+AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS -DOPENMP -fopenmp \
+		$(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
+else
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_LIB_DIR=\""$(datadir)/atomes/library"\" \
@@ -65,6 +67,7 @@ AM_CPPFLAGS = \
 	-DPACKAGE_SGTC=\""$(datadir)/atomes/pixmaps/bravais/Triclinic.png"\" \
 	-DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS -DOPENMP -fopenmp \
 	$(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
+endif
 
 AM_FFLAGS = -DOPENMP -fopenmp
 
@@ -95,6 +98,9 @@ bin_PROGRAMS = atomes
 
 atomes_fortran_modules = $(for)parameters.F90 \
 			 $(for)mendeleiev.F90
+
+atomes_fortran_mod: $(atomes_fortran_modules)
+	$(FC) $(FCFLAGS) $(AM_FFLAGS) -c $< -o $@
 
 atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)allochem.F90 \
@@ -135,7 +141,7 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)writedata.F90 \
 			$(for)xyz.F90
 
-atomes_fortran: $(atomes_fortran_modules) $(atomes_fortran_files)
+atomes_fortran: $(atomes_fortran_mod) $(atomes_fortran_files)
 
 atomes_gui = $(gui)bdcall.c \
 	     $(gui)calc_menu.c \
@@ -393,3 +399,11 @@ atomes_SOURCES = \
 atomes_LDFLAGS = -DOPENMP -fopenmp
 
 atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS)
+
+if NATIVE_WIN32
+  EXTRA_DIST = atomes.rc.in
+  atomes_LDADD += winatomes.o
+endif
+
+winatomes.o: atomes.rc
+	$(WINDRES) $< $@
