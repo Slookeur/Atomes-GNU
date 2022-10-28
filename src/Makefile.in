@@ -101,25 +101,25 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__objects_1 = $(for)parameters.$(OBJEXT) $(for)mendeleiev.$(OBJEXT)
-am__objects_2 = $(am__objects_1) $(for)allocbonds.$(OBJEXT) \
-	$(for)allochem.$(OBJEXT) $(for)allocmsd.$(OBJEXT) \
-	$(for)angles.$(OBJEXT) $(for)bonds.$(OBJEXT) \
-	$(for)c3d.$(OBJEXT) $(for)chains.$(OBJEXT) \
-	$(for)chains_ogl.$(OBJEXT) $(for)chemistry.$(OBJEXT) \
-	$(for)cqvf.$(OBJEXT) $(for)dmtx.$(OBJEXT) $(for)dvtb.$(OBJEXT) \
-	$(for)escs.$(OBJEXT) $(for)fzbt.$(OBJEXT) $(for)gr.$(OBJEXT) \
-	$(for)grfft.$(OBJEXT) $(for)initchains.$(OBJEXT) \
-	$(for)init.$(OBJEXT) $(for)initrings.$(OBJEXT) \
-	$(for)lattice.$(OBJEXT) $(for)molecules.$(OBJEXT) \
-	$(for)msd.$(OBJEXT) $(for)pdb.$(OBJEXT) \
-	$(for)prepdata.$(OBJEXT) $(for)resrings.$(OBJEXT) \
-	$(for)rings-guttman.$(OBJEXT) $(for)rings-king.$(OBJEXT) \
-	$(for)rings_ogl.$(OBJEXT) $(for)rings-primitive.$(OBJEXT) \
-	$(for)sk.$(OBJEXT) $(for)spherical.$(OBJEXT) \
-	$(for)sq.$(OBJEXT) $(for)threads.$(OBJEXT) $(for)trj.$(OBJEXT) \
+am__objects_1 = $(for)allocbonds.$(OBJEXT) $(for)allochem.$(OBJEXT) \
+	$(for)allocmsd.$(OBJEXT) $(for)angles.$(OBJEXT) \
+	$(for)bonds.$(OBJEXT) $(for)c3d.$(OBJEXT) \
+	$(for)chains.$(OBJEXT) $(for)chains_ogl.$(OBJEXT) \
+	$(for)chemistry.$(OBJEXT) $(for)cqvf.$(OBJEXT) \
+	$(for)dmtx.$(OBJEXT) $(for)dvtb.$(OBJEXT) $(for)escs.$(OBJEXT) \
+	$(for)fzbt.$(OBJEXT) $(for)gr.$(OBJEXT) $(for)grfft.$(OBJEXT) \
+	$(for)initchains.$(OBJEXT) $(for)init.$(OBJEXT) \
+	$(for)initrings.$(OBJEXT) $(for)lattice.$(OBJEXT) \
+	$(for)molecules.$(OBJEXT) $(for)msd.$(OBJEXT) \
+	$(for)pdb.$(OBJEXT) $(for)prepdata.$(OBJEXT) \
+	$(for)resrings.$(OBJEXT) $(for)rings-guttman.$(OBJEXT) \
+	$(for)rings-king.$(OBJEXT) $(for)rings_ogl.$(OBJEXT) \
+	$(for)rings-primitive.$(OBJEXT) $(for)sk.$(OBJEXT) \
+	$(for)spherical.$(OBJEXT) $(for)sq.$(OBJEXT) \
+	$(for)threads.$(OBJEXT) $(for)trj.$(OBJEXT) \
 	$(for)utils.$(OBJEXT) $(for)vas.$(OBJEXT) \
 	$(for)writedata.$(OBJEXT) $(for)xyz.$(OBJEXT)
+am__objects_2 = $(am__objects_1)
 am__objects_3 =
 am__objects_4 = $(gui)bdcall.$(OBJEXT) $(gui)calc_menu.$(OBJEXT) \
 	$(gui)callbacks.$(OBJEXT) $(gui)chainscall.$(OBJEXT) \
@@ -642,46 +642,46 @@ AM_CFLAGS = $(includes) -fopenmp
 atomes_fortran_modules = $(for)parameters.F90 \
 			 $(for)mendeleiev.F90
 
-atomes_fortran_SOURCES = $(atomes_fortran_modules) \
-			 $(for)allocbonds.F90 \
-			 $(for)allochem.F90 \
-			 $(for)allocmsd.F90 \
-			 $(for)angles.F90 \
-			 $(for)bonds.F90 \
-			 $(for)c3d.F90 \
-			 $(for)chains.F90 \
-			 $(for)chains_ogl.F90 \
-			 $(for)chemistry.F90 \
-			 $(for)cqvf.F90 \
-			 $(for)dmtx.F90 \
-			 $(for)dvtb.F90 \
-			 $(for)escs.F90 \
-			 $(for)fzbt.F90 \
-			 $(for)gr.F90 \
-			 $(for)grfft.F90 \
-			 $(for)initchains.F90 \
-			 $(for)init.F90 \
-			 $(for)initrings.F90 \
-			 $(for)lattice.F90 \
-			 $(for)molecules.F90 \
-			 $(for)msd.F90 \
-			 $(for)pdb.F90 \
-			 $(for)prepdata.F90 \
-			 $(for)resrings.F90 \
-			 $(for)rings-guttman.F90 \
-			 $(for)rings-king.F90 \
-			 $(for)rings_ogl.F90 \
-			 $(for)rings-primitive.F90 \
-			 $(for)sk.F90 \
-			 $(for)spherical.F90 \
-			 $(for)sq.F90 \
-			 $(for)threads.F90 \
-			 $(for)trj.F90 \
-			 $(for)utils.F90 \
-			 $(for)vas.F90 \
-			 $(for)writedata.F90 \
-			 $(for)xyz.F90
+atomes_fortran_files = $(for)allocbonds.F90 \
+			$(for)allochem.F90 \
+			$(for)allocmsd.F90 \
+			$(for)angles.F90 \
+			$(for)bonds.F90 \
+			$(for)c3d.F90 \
+			$(for)chains.F90 \
+			$(for)chains_ogl.F90 \
+			$(for)chemistry.F90 \
+			$(for)cqvf.F90 \
+			$(for)dmtx.F90 \
+			$(for)dvtb.F90 \
+			$(for)escs.F90 \
+			$(for)fzbt.F90 \
+			$(for)gr.F90 \
+			$(for)grfft.F90 \
+			$(for)initchains.F90 \
+			$(for)init.F90 \
+			$(for)initrings.F90 \
+			$(for)lattice.F90 \
+			$(for)molecules.F90 \
+			$(for)msd.F90 \
+			$(for)pdb.F90 \
+			$(for)prepdata.F90 \
+			$(for)resrings.F90 \
+			$(for)rings-guttman.F90 \
+			$(for)rings-king.F90 \
+			$(for)rings_ogl.F90 \
+			$(for)rings-primitive.F90 \
+			$(for)sk.F90 \
+			$(for)spherical.F90 \
+			$(for)sq.F90 \
+			$(for)threads.F90 \
+			$(for)trj.F90 \
+			$(for)utils.F90 \
+			$(for)vas.F90 \
+			$(for)writedata.F90 \
+			$(for)xyz.F90
 
+atomes_fortran_SOURCES = $(atomes_fortran_files)
 atomes_main = global.c
 atomes_gui = $(gui)bdcall.c \
 	     $(gui)calc_menu.c \
@@ -1802,6 +1802,8 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
+
+$(atomes_fortran_files): $(atomes_fortran_modules)
 
 clean: clean-am
 	-rm -f *.mod

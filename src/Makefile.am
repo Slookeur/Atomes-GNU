@@ -133,9 +133,9 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)writedata.F90 \
 			$(for)xyz.F90
 
-atomes_fortran_SOURCES = $(atomes_fortran_modules) $(atomes_fortran_files)
+$(atomes_fortran_files): $(atomes_fortran_modules)
 
-$(atomes_fortran_files): $(atomes_fotran_modules)
+atomes_fortran_SOURCES = $(atomes_fortran_files)
 
 atomes_main = global.c
 
