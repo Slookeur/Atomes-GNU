@@ -523,6 +523,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+atomes_LDFLAGS = -DOPENMP -fopenmp
+atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) \
+	$(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS) \
+	$(am__append_1)
 @NATIVE_WIN32_FALSE@AM_CPPFLAGS = \
 @NATIVE_WIN32_FALSE@	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 @NATIVE_WIN32_FALSE@	-DPACKAGE_LIB_DIR=\""$(datadir)/atomes/library"\" \
@@ -584,10 +588,10 @@ top_srcdir = @top_srcdir@
 @NATIVE_WIN32_FALSE@	-DPACKAGE_SGMP=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-P.png"\" \
 @NATIVE_WIN32_FALSE@	-DPACKAGE_SGMI=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-I.png"\" \
 @NATIVE_WIN32_FALSE@	-DPACKAGE_SGTC=\""$(datadir)/atomes/pixmaps/bravais/Triclinic.png"\" \
-@NATIVE_WIN32_FALSE@	-DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS -DOPENMP -fopenmp \
+@NATIVE_WIN32_FALSE@	-DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(atomes_LDFLAGS) \
 @NATIVE_WIN32_FALSE@	$(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
 
-@NATIVE_WIN32_TRUE@AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS -DOPENMP -fopenmp \
+@NATIVE_WIN32_TRUE@AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS $(atomes_LDFLAGS) \
 @NATIVE_WIN32_TRUE@		$(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
 
 AM_FFLAGS = -DOPENMP -fopenmp
@@ -898,10 +902,6 @@ atomes_SOURCES = \
 	$(atomes_curve) \
 	$(atomes_opengl)
 
-atomes_LDFLAGS = -DOPENMP -fopenmp
-atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) \
-	$(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS) \
-	$(am__append_1)
 @NATIVE_WIN32_TRUE@EXTRA_DIST = atomes.rc.in
 all: all-am
 
@@ -1770,10 +1770,7 @@ uninstall-am: uninstall-binPROGRAMS
 .PRECIOUS: Makefile
 
 
-atomes_fortran_mod: $(atomes_fortran_modules)
-	$(FC) $(FCFLAGS) $(AM_FFLAGS) -c $< -o $@
-
-atomes_fortran: $(atomes_fortran_mod) $(atomes_fortran_files)
+atomes_fortran: $(atomes_fortran_modules) $(atomes_fortran_files)
 
 clean: clean-am
 	-rm -f *.mod

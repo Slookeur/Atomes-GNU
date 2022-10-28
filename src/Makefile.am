@@ -1,7 +1,11 @@
 ## Process this file with automake to produce Makefile.in
 
+atomes_LDFLAGS = -DOPENMP -fopenmp
+
+atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS)
+
 if NATIVE_WIN32
-AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS -DOPENMP -fopenmp \
+AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS $(atomes_LDFLAGS) \
 		$(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
 else
 AM_CPPFLAGS = \
@@ -65,7 +69,7 @@ AM_CPPFLAGS = \
 	-DPACKAGE_SGMP=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-P.png"\" \
 	-DPACKAGE_SGMI=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-I.png"\" \
 	-DPACKAGE_SGTC=\""$(datadir)/atomes/pixmaps/bravais/Triclinic.png"\" \
-	-DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS -DOPENMP -fopenmp \
+	-DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(atomes_LDFLAGS) \
 	$(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
 endif
 
@@ -98,9 +102,6 @@ bin_PROGRAMS = atomes
 
 atomes_fortran_modules = $(for)parameters.F90 \
 			 $(for)mendeleiev.F90
-
-atomes_fortran_mod: $(atomes_fortran_modules)
-	$(FC) $(FCFLAGS) $(AM_FFLAGS) -c $< -o $@
 
 atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)allochem.F90 \
@@ -141,7 +142,7 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)writedata.F90 \
 			$(for)xyz.F90
 
-atomes_fortran: $(atomes_fortran_mod) $(atomes_fortran_files)
+atomes_fortran: $(atomes_fortran_modules) $(atomes_fortran_files)
 
 atomes_gui = $(gui)bdcall.c \
 	     $(gui)calc_menu.c \
@@ -395,10 +396,6 @@ atomes_SOURCES = \
 	$(atomes_calc) \
 	$(atomes_curve) \
 	$(atomes_opengl)
-
-atomes_LDFLAGS = -DOPENMP -fopenmp
-
-atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS)
 
 if NATIVE_WIN32
   EXTRA_DIST = atomes.rc.in
