@@ -73,7 +73,7 @@ AM_CPPFLAGS = \
 	$(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
 endif
 
-AM_FFLAGS = -DOPENMP -fopenmp
+AM_FFLAGS = $(atomes_LDFLAGS)
 
 for = fortran/
 gui = gui/
@@ -96,7 +96,7 @@ gledit = opengl/edit/
 inc = -I$(lic) -I$(gui) -I$(work) -I$(proj) -I$(read) -I$(calc) -I$(dlpoly) -I$(lammps) -I$(fields) -I$(cpmd) -I$(cp2k) -I$(curve) -I$(glwin) -I$(gledit) -I$(gldraw) -I$(ogl) -I.
 includes = $(inc) -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 
-AM_CFLAGS = $(includes) -fopenmp
+AM_CFLAGS = $(includes) $(atomes_LDFLAGS)
 
 bin_PROGRAMS = atomes
 
@@ -142,7 +142,7 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)writedata.F90 \
 			$(for)xyz.F90
 
-atomes_fortran: $(atomes_fortran_modules) $(atomes_fortran_files)
+atomes_fortran = $(atomes_fortran_modules) $(atomes_fortran_files)
 
 atomes_gui = $(gui)bdcall.c \
 	     $(gui)calc_menu.c \
