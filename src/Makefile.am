@@ -143,6 +143,7 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)xyz.F90
 
 atomes_fortran = $(atomes_fortran_modules) $(atomes_fortran_files)
+$(patsubst %.F90,%.o,$(atomes_fortran_files)): $(patsubst %.F90,%.o,$(atomes_fortran_modules))
 
 atomes_gui = $(gui)bdcall.c \
 	     $(gui)calc_menu.c \

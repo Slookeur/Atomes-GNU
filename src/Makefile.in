@@ -1810,6 +1810,7 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
+$(patsubst %.F90,%.o,$(atomes_fortran_files)): $(patsubst %.F90,%.o,$(atomes_fortran_modules))
 
 clean: clean-am
 	-rm -f *.mod
