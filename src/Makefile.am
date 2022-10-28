@@ -96,9 +96,6 @@ bin_PROGRAMS = atomes
 atomes_fortran_modules = $(for)parameters.F90 \
 			 $(for)mendeleiev.F90
 
-atomes_fortran_mod: $(atomes_fortran_modules)
-	$(FC) $(FCFLAGS) $(AM_FFLAGS) -c $< -o $@
-
 atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)allochem.F90 \
 			$(for)allocmsd.F90 \
@@ -138,7 +135,7 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)writedata.F90 \
 			$(for)xyz.F90
 
-atomes_fortran: $(atomes_fortran_mod) $(atomes_fortran_files)
+atomes_fortran: $(atomes_fortran_modules) $(atomes_fortran_files)
 
 atomes_gui = $(gui)bdcall.c \
 	     $(gui)calc_menu.c \
