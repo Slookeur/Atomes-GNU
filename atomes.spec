@@ -1,7 +1,7 @@
 Name:           atomes
 %global upname Atomes-GNU
 Version:        1.1.9
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        An atomistic toolbox
 License:        AGPL-3.0-or-later
 Source0:        https://github.com/Slookeur/%{upname}/archive/refs/tags/v%{version}.tar.gz
@@ -66,7 +66,8 @@ step by step to achieve this crucial step.
 
 %build
 %configure
-make %{?_smp_mflags}
+#make %%{?_smp_mflags}
+%make_build
 
 %install
 %make_install
@@ -86,17 +87,14 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_metainfodir}/fr.ipcms.%{name}.metainfo.xml
 
 %changelog
+* Fri Oct 31 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.9-3
+- Revised package
+
 * Fri Oct 28 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.9-2
 - Revised package
 
 * Fri Oct 28 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.9-1
--Bug corrections:
-  glwin.h: float shift[4], label_format[3]
-  m_poly.c: olg_clones[6] -> olg_clones[5]
-  read_bond.c: update_mol
-  edit_menu.c: cshift[i+3] -> cshift[i]
-  gui.c: cut_sel and cut_lab pointers for 3D window actions
-  dlp_atom.c: compare_non_bonded
+- Bug corrections
 
 * Fri Oct 28 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.8-3
 - Revised package
@@ -105,17 +103,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 - Revised package
 
 * Thu Oct 27 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.8-1
-- Bug corrections:
-  edit_menu.c: correction for lattice parameter updates
-  gui.c: cut_sel and cut_lab pointers for 3D window actions
-  popup.c: corrections to use cut_sel and cut_lab
-  glwindow.c: corrections to use cut_sel and cut_lab
-  closep.c: corrections to close volume_win and model_win[2]
-  atom_action.c: corrections to properly trigger bond udpates or not
-  atom_remove.c: corrections to adjust bonds id
-  atom_remove.c: corrections if fragments are removed
-  ogl_text.c: correction buffer size strings for measures
-  callbacks.c: correction when reading workspace remember name
+- Bug corrections
 
 * Fri Oct 21 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-6
 - Revised package
@@ -133,40 +121,25 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 - Revised package
 
 * Thu Oct 13 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-1
-- Bug corrections:
-  callback.c: save workspace
-  atom_action.c: on remove, trigger re-calculate bonding
+- Bug corrections
 
 * Tue Oct 11 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.6-1
-- Bug corrections: 
-  w_library.c: lib_preview_plot = NULL;
-- Improvements:
-  main.c: -h
-  glview.c: selection delay on mouse pressed/released
+- Bug corrections & improvements
 
 * Fri Sep 23 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.5-1
-- Bug correction:
-  w_search.c: selection not to crash if atom_win is closed
+- Bug correction
 
 * Thu Sep 22 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.4-1
-- Bug corrections: 
-  read_coord.c: Windows to handle properly EOL symbols
-  m_curve.c: Windows to not crash when destroying label widget
-  glview.c: correct GWARNING messages on widget scale
+- Bug corrections
 
 * Thu Sep 15 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.3-1
-- Bug corrections: 
-  read_opengl.c: correct 'read_atom_b'
-  initring.c: coorect 'send_rings_opengl_'
+- Bug corrections
 
 * Wed Sep 14 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.2-1
-- Bug corrections: 
-  atom_action.c: recompute bonding on passivate
-  bdcall.c: do not trigger menu init on passivate
+- Bug corrections
 
 * Tue Sep 13 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.1-1
-- Bug correction: 
-  workspace.c: double click on workspace
+- Bug correction
 
 * Mon Aug 29 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.0-1
 - Initial release of the Atomes program v1.1.0
