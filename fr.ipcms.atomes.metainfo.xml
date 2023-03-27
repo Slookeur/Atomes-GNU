@@ -59,7 +59,7 @@
           <li>Bug corrections:
             <ul>
 	      <li>dmtx.F90: ADAPT_CUT</li>
-	      <li>callbacks.c: removed 'if (oap < 2)'</li>
+	      <li>callbacks.c: removed 'if (oap sup  2)'</li>
             </ul>
           </li>
         </ul>

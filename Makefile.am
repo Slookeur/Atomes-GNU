@@ -2,6 +2,8 @@
 
 SUBDIRS = src
 
+atomes_desktopdir = ${datadir}/applications
+
 atomes_docdir = ${docdir}
 atomes_doc_DATA = \
 	README.md \
@@ -60,25 +62,25 @@ install-data-local:
 		done \
 	fi 
 # Bash completion
-	if [ ! -d /bash-completion/completions ]; then \
-		mkdir -p /bash-completion/completions; \
+	if [ ! -d $(datadir)/bash-completion/completions ]; then \
+		mkdir -p $(datadir)/bash-completion/completions; \
 	fi
 	$(INSTALL_DATA) $(srcdir)/atomes-completion.sh $(datadir)/bash-completion/completions/atomes
 # Meta info
-	if [ ! -d /metainfo ]; then \
-		mkdir -p /metainfo; \
+	if [ ! -d $(datadir)/metainfo ]; then \
+		mkdir -p $(datadir)/metainfo; \
 	fi
 	$(INSTALL_DATA) $(srcdir)/fr.ipcms.atomes.metainfo.xml $(datadir)/metainfo
-	appstream-util validate-relax --nonet /metainfo/fr.ipcms.atomes.metainfo.xml
+	appstream-util validate-relax --nonet $(datadir)/metainfo/fr.ipcms.atomes.metainfo.xml
 # Desktop file
 	sed 's;DATADIR;$(pkgdatadir);1' $(srcdir)/atomes.desktop.in > $(srcdir)/atomes.desktop
-	if [ ! -d /applications ]; then \
-		mkdir -p /applications; \
+	if [ ! -d $(datadir)/applications ]; then \
+		mkdir -p $(datadir)/applications; \
 	fi
-	$(INSTALL_DATA) $(srcdir)/atomes.desktop  $(datadir)/applications/atomes.desktop
+	$(INSTALL_DATA) $(srcdir)/atomes.desktop  $(atomes_desktopdir)/atomes.desktop
 	desktop-file-install --vendor="" \
 		--dir=/applications -m 644 \
-		/applications/atomes.desktop
+		$(atomes_desktopdir)/atomes.desktop
 	update-mime-database /mime &> /dev/null || :
 	update-desktop-database &> /dev/null || :
 	touch --no-create /icons/hicolor
@@ -95,7 +97,7 @@ uninstall-local:
 	-rm -rf $(pkgdatadir)/library/*
 	-rmdir $(pkgdatadir)/library
 	-rmdir $(pkgdatadir)
-	-rm -f $(datadir)/applications/atomes.desktop
+	-rm -f $(atomes_desktopdir)/atomes.desktop
 	-rm -f $(datadir)/bash-completion/completions/atomes
 	-rm -f $(datadir)/metainfo/fr.ipcms.atomes.metainfo.xml
 	-rmdir $(atomes_docdir)
