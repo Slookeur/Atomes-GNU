@@ -355,6 +355,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = src
+atomes_desktopdir = ${datadir}/applications
 atomes_docdir = ${docdir}
 atomes_doc_DATA = \
 	README.md \
@@ -957,10 +958,10 @@ install-data-local:
 	if [ ! -d $(datadir)/applications ]; then \
 		mkdir -p $(datadir)/applications; \
 	fi
-	$(INSTALL_DATA) $(srcdir)/atomes.desktop  $(desktopdir)/atomes.desktop
+	$(INSTALL_DATA) $(srcdir)/atomes.desktop  $(atomes_desktopdir)/atomes.desktop
 	desktop-file-install --vendor="" \
 		--dir=/applications -m 644 \
-		/applications/atomes.desktop
+		$(atomes_desktopdir)/atomes.desktop
 	update-mime-database /mime &> /dev/null || :
 	update-desktop-database &> /dev/null || :
 	touch --no-create /icons/hicolor
@@ -977,7 +978,7 @@ uninstall-local:
 	-rm -rf $(pkgdatadir)/library/*
 	-rmdir $(pkgdatadir)/library
 	-rmdir $(pkgdatadir)
-	-rm -f $(desktopdir)/applications/atomes.desktop
+	-rm -f $(atomes_desktopdir)/atomes.desktop
 	-rm -f $(datadir)/bash-completion/completions/atomes
 	-rm -f $(datadir)/metainfo/fr.ipcms.atomes.metainfo.xml
 	-rmdir $(atomes_docdir)
