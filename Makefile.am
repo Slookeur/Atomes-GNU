@@ -104,9 +104,9 @@ uninstall-local:
 	-rm -f $(atomes_metadir)/fr.ipcms.atomes.metainfo.xml
 	-rm -f $(atomes_bashdir)/atomes
 	-rmdir $(atomes_docdir)
-	update-mime-database $(atomes_pkgdatadir)/mime &> /dev/null || :
+	update-mime-database $(atomes_datadir)/mime &> /dev/null || :
 	update-desktop-database &> /dev/null || :
-	touch --no-create $(atomes_pkgdatadir)/icons/hicolor
+	touch --no-create $(atomes_datadir)/icons/hicolor
 	if [ -u `which gtk-update-icon-cache` ]; then \
-	  gtk-update-icon-cache -q $(atomes_pkgdatadir)/icons/hicolor; \
+	  gtk-update-icon-cache -q $(atomes_datadir)/icons/hicolor; \
 	fi
