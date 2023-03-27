@@ -2,25 +2,25 @@
 
 SUBDIRS = src
 
-atomes_desktopdir = ${datadir}/applications
+atomes_desktopdir = $(datadir)/applications
 
-atomes_docdir = ${docdir}
+atomes_docdir = $(docdir)
 atomes_doc_DATA = \
 	README.md \
 	AUTHORS \
 	ChangeLog
 
-atomes_mandir = ${mandir}/man1/
+atomes_mandir = $(mandir)/man1/
 atomes_man_DATA = \
 	atomes.1.gz 
 
 install-data-local:
 	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/icons; then \
-		$(mkinstalldirs) $(pkgdatadir)/icons; \
+		$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/icons; \
 		for icon in $(srcdir)/icons/*; do \
 			if test -f $$icon; then \
-				$(INSTALL_DATA) $$icon $(pkgdatadir)/icons; \
+				$(INSTALL_DATA) $$icon $(DESTDIR)$(pkgdatadir)/icons; \
 			fi \
 		done \
 	fi
