@@ -82,13 +82,13 @@ install-data-local:
 	fi
 	$(INSTALL_DATA) $(srcdir)/atomes.desktop  $(atomes_desktopdir)/atomes.desktop
 	desktop-file-install --vendor="" \
-		--dir=/applications -m 644 \
+		--dir=$(atomes_desktopdir) -m 644 \
 		$(atomes_desktopdir)/atomes.desktop
-	update-mime-database /mime &> /dev/null || :
+	update-mime-database $(atomes_datadir)/mime &> /dev/null || :
 	update-desktop-database &> /dev/null || :
-	touch --no-create /icons/hicolor
+	touch --no-create $(atomes_datadir)/icons/hicolor
 	if [ -u `which gtk-update-icon-cache` ]; then \
-	  	gtk-update-icon-cache -q /icons/hicolor; \
+	  	gtk-update-icon-cache -q $(atomes_datadir)/icons/hicolor; \
 	fi
 	
 # Remove doc directordy on uninstall
