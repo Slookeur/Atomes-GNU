@@ -81,12 +81,18 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_bindir}/%{name}
 %{_datadir}/doc/%{name}/
 %{_datadir}/%{name}/
+%{_datadir}/%{name}/icons/
+%{_datadir}/%{name}/library/
+%{_datadir}/%{name}/pixmaps/
 %{_datadir}/bash-completion/completions/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_mandir}/man1/%{name}.1.gz
 %{_metainfodir}/fr.ipcms.%{name}.metainfo.xml
 
 %changelog
+* Mon Mar 27 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-1
+- Bug correction
+
 * Fri Nov 04 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.10-1
 - Bug correction
 

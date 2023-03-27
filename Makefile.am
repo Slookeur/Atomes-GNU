@@ -15,12 +15,11 @@ atomes_man_DATA = \
 	atomes.1.gz 
 
 install-data-local:
-	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/icons; then \
-		$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/icons; \
+		$(mkinstalldirs) $(pkgdatadir)/icons; \
 		for icon in $(srcdir)/icons/*; do \
 			if test -f $$icon; then \
-				$(INSTALL_DATA) $$icon $(DESTDIR)$(pkgdatadir)/icons; \
+				$(INSTALL_DATA) $$icon $(pkgdatadir)/icons; \
 			fi \
 		done \
 	fi
