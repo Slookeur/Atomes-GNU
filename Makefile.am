@@ -8,17 +8,15 @@ atomes_desktopdir = $(DESTDIR)$(datadir)/applications
 atomes_metadir = $(DESTDIR)$(datadir)/metainfo
 atomes_bashdir = $(DESTDIR)$(datadir)/bash-completion/completions
 
-atomes_docdir = $(DESTDIR)$(docdir)
+atomes_docdir = $(docdir)
 atomes_doc_DATA = \
 	README.md \
 	AUTHORS \
 	ChangeLog
 
-atomes_mandir = $(DESTDIR)$(mandir)/man1/
+atomes_mandir = $(mandir)/man1/
 atomes_man_DATA = \
 	atomes.1.gz 
-
-EXTRA_DIST = $(atomes_doc_DATA) $(atomes_man_DATA)
 
 install-data-local:
 	if test -d $(srcdir)/icons; then \
