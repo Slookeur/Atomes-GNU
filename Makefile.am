@@ -16,7 +16,7 @@ atomes_man_DATA = \
 
 install-data-local:
 	if test -d $(pkgdatadir); then \
-		$(mkinstalldirs) $(pkgdatadir) \
+		$(mkinstalldirs) $(pkgdatadir); \
 	fi
 	if test -d $(srcdir)/icons; then \
 		$(mkinstalldirs) $(pkgdatadir)/icons; \
