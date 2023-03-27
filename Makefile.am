@@ -15,6 +15,7 @@ atomes_man_DATA = \
 	atomes.1.gz 
 
 install-data-local:
+	@$(NORMAL_INSTALL)
 	if test -d $(pkgdatadir); then \
 		$(mkinstalldirs) $(pkgdatadir); \
 	fi
@@ -65,19 +66,19 @@ install-data-local:
 	fi 
 # Bash completion
 	if [ ! -d $(datadir)/bash-completion/completions ]; then \
-		mkdir -p $(datadir)/bash-completion/completions; \
+		$(mkinstalldirs) $(datadir)/bash-completion/completions; \
 	fi
 	$(INSTALL_DATA) $(srcdir)/atomes-completion.sh $(datadir)/bash-completion/completions/atomes
 # Meta info
 	if [ ! -d $(datadir)/metainfo ]; then \
-		mkdir -p $(datadir)/metainfo; \
+		$(mkinstalldirs) -p $(datadir)/metainfo; \
 	fi
 	$(INSTALL_DATA) $(srcdir)/fr.ipcms.atomes.metainfo.xml $(datadir)/metainfo
 	appstream-util validate-relax --nonet $(datadir)/metainfo/fr.ipcms.atomes.metainfo.xml
 # Desktop file
 	sed 's;DATADIR;$(pkgdatadir);1' $(srcdir)/atomes.desktop.in > $(srcdir)/atomes.desktop
 	if [ ! -d $(datadir)/applications ]; then \
-		mkdir -p $(datadir)/applications; \
+		$(mkinstalldirs) -p $(datadir)/applications; \
 	fi
 	$(INSTALL_DATA) $(srcdir)/atomes.desktop  $(atomes_desktopdir)/atomes.desktop
 	desktop-file-install --vendor="" \
