@@ -76,7 +76,7 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/fr.ipcms.atomes.metainfo.xml $(atomes_metadir)
 	appstream-util validate-relax --nonet $(atomes_metadir)/fr.ipcms.atomes.metainfo.xml
 # Desktop file
-	sed 's;DATADIR;$(atomes_pkgdatadir);1' $(srcdir)/atomes.desktop.in > $(srcdir)/atomes.desktop
+	sed 's;DATADIR;$(pkgdatadir);1' $(srcdir)/atomes.desktop.in > $(srcdir)/atomes.desktop
 	if [ ! -d $(atomes_desktopdir) ]; then \
 		$(mkinstalldirs) $(atomes_desktopdir); \
 	fi
