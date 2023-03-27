@@ -1,12 +1,20 @@
-## Process this file with automake to produce Makefile.in
-
-atomes_LDFLAGS = -DOPENMP -fopenmp
+# Setup the name of the program to be generated, using:
+bin_PROGRAMS = atomes
 
 atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS)
 
+# Create a variable to store the CFLAGS for all the required libraries
+LIBS_CFLAGS = $(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
+
+# To turn OpenMP on/off
+OpenMP_FLAGS = -DOPENMP -fopenmp
+
+# Use AM_LDFLAGS to define additional linker flags:
+AM_LDFLAGS = $(OpenMP_FLAGS)
+
+# Use AM_CPPFLAGS to define additional preprocessor flags:
 if NATIVE_WIN32
-AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS $(atomes_LDFLAGS) \
-		$(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
+AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) 
 else
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
@@ -69,11 +77,11 @@ AM_CPPFLAGS = \
 	-DPACKAGE_SGMP=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-P.png"\" \
 	-DPACKAGE_SGMI=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-I.png"\" \
 	-DPACKAGE_SGTC=\""$(datadir)/atomes/pixmaps/bravais/Triclinic.png"\" \
-	-DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(atomes_LDFLAGS) \
-	$(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
+	-DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS)
 endif
 
-AM_FFLAGS = $(atomes_LDFLAGS)
+# Use AM_FFLAGS to define additional Fortran 90 flags:
+AM_FFLAGS = $(OpenMP_FLAGS)
 
 for = fortran/
 gui = gui/
@@ -94,11 +102,10 @@ gldraw = opengl/draw/
 gledit = opengl/edit/
 
 inc = -I$(lic) -I$(gui) -I$(work) -I$(proj) -I$(read) -I$(calc) -I$(dlpoly) -I$(lammps) -I$(fields) -I$(cpmd) -I$(cp2k) -I$(curve) -I$(glwin) -I$(gledit) -I$(gldraw) -I$(ogl) -I.
-includes = $(inc) -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+includes = $(inc) -DGTK_DISABLE_DEPRECATED
 
-AM_CFLAGS = $(includes) $(atomes_LDFLAGS)
-
-bin_PROGRAMS = atomes
+# Use AM_CFLAGS to define additional C flags:
+AM_CFLAGS = $(includes) $(OpenMP_FLAGS) $(LIBS_CFLAGS)
 
 atomes_fortran_modules = $(for)parameters.F90 \
 			 $(for)mendeleiev.F90
@@ -142,6 +149,7 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)writedata.F90 \
 			$(for)xyz.F90
 
+# Rules to ensure that Fortran modules are compiled before Fortran files
 atomes_fortran = $(atomes_fortran_modules) $(atomes_fortran_files)
 $(patsubst %.F90,%.o,$(atomes_fortran_files)): $(patsubst %.F90,%.o,$(atomes_fortran_modules))
 
@@ -381,11 +389,12 @@ atomes_includes = config.h \
 		  $(ogl)math_3d.h \
 		  $(ogl)ogl_shading.h
 
-clean: clean-am
+clean: 
 	-rm -f *.mod
 	-rm -f */*.o
 	-rm -f */*/*.o
 
+# List the files required to build the program
 atomes_SOURCES = \
 	$(atomes_fortran) \
 	$(atomes_includes) \

@@ -235,8 +235,6 @@ am__DEPENDENCIES_1 =
 atomes_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) $(am__append_1)
-atomes_LINK = $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(atomes_LDFLAGS) \
-	$(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -557,10 +555,18 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-atomes_LDFLAGS = -DOPENMP -fopenmp
 atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) \
 	$(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS) \
 	$(am__append_1)
+
+# Create a variable to store the CFLAGS for all the required libraries
+LIBS_CFLAGS = $(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
+
+# To turn OpenMP on/off
+OpenMP_FLAGS = -DOPENMP -fopenmp
+
+# Use AM_LDFLAGS to define additional linker flags:
+AM_LDFLAGS = $(OpenMP_FLAGS)
 @NATIVE_WIN32_FALSE@AM_CPPFLAGS = \
 @NATIVE_WIN32_FALSE@	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 @NATIVE_WIN32_FALSE@	-DPACKAGE_LIB_DIR=\""$(datadir)/atomes/library"\" \
@@ -622,13 +628,14 @@ atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) \
 @NATIVE_WIN32_FALSE@	-DPACKAGE_SGMP=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-P.png"\" \
 @NATIVE_WIN32_FALSE@	-DPACKAGE_SGMI=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-I.png"\" \
 @NATIVE_WIN32_FALSE@	-DPACKAGE_SGTC=\""$(datadir)/atomes/pixmaps/bravais/Triclinic.png"\" \
-@NATIVE_WIN32_FALSE@	-DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(atomes_LDFLAGS) \
-@NATIVE_WIN32_FALSE@	$(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
+@NATIVE_WIN32_FALSE@	-DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS)
 
-@NATIVE_WIN32_TRUE@AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS $(atomes_LDFLAGS) \
-@NATIVE_WIN32_TRUE@		$(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
 
-AM_FFLAGS = $(atomes_LDFLAGS)
+# Use AM_CPPFLAGS to define additional preprocessor flags:
+@NATIVE_WIN32_TRUE@AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) 
+
+# Use AM_FFLAGS to define additional Fortran 90 flags:
+AM_FFLAGS = $(OpenMP_FLAGS)
 for = fortran/
 gui = gui/
 lic = lic/
@@ -647,8 +654,10 @@ glwin = opengl/win/
 gldraw = opengl/draw/
 gledit = opengl/edit/
 inc = -I$(lic) -I$(gui) -I$(work) -I$(proj) -I$(read) -I$(calc) -I$(dlpoly) -I$(lammps) -I$(fields) -I$(cpmd) -I$(cp2k) -I$(curve) -I$(glwin) -I$(gledit) -I$(gldraw) -I$(ogl) -I.
-includes = $(inc) -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
-AM_CFLAGS = $(includes) $(atomes_LDFLAGS)
+includes = $(inc) -DGTK_DISABLE_DEPRECATED
+
+# Use AM_CFLAGS to define additional C flags:
+AM_CFLAGS = $(includes) $(OpenMP_FLAGS) $(LIBS_CFLAGS)
 atomes_fortran_modules = $(for)parameters.F90 \
 			 $(for)mendeleiev.F90
 
@@ -691,6 +700,8 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)writedata.F90 \
 			$(for)xyz.F90
 
+
+# Rules to ensure that Fortran modules are compiled before Fortran files
 atomes_fortran = $(atomes_fortran_modules) $(atomes_fortran_files)
 atomes_gui = $(gui)bdcall.c \
 	     $(gui)calc_menu.c \
@@ -925,6 +936,8 @@ atomes_includes = config.h \
 		  $(ogl)math_3d.h \
 		  $(ogl)ogl_shading.h
 
+
+# List the files required to build the program
 atomes_SOURCES = \
 	$(atomes_fortran) \
 	$(atomes_includes) \
@@ -1016,7 +1029,7 @@ clean-binPROGRAMS:
 
 atomes$(EXEEXT): $(atomes_OBJECTS) $(atomes_DEPENDENCIES) $(EXTRA_atomes_DEPENDENCIES) 
 	@rm -f atomes$(EXEEXT)
-	$(AM_V_FCLD)$(atomes_LINK) $(atomes_OBJECTS) $(atomes_LDADD) $(LIBS)
+	$(AM_V_FCLD)$(FCLINK) $(atomes_OBJECTS) $(atomes_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1812,7 +1825,7 @@ uninstall-am: uninstall-binPROGRAMS
 
 $(patsubst %.F90,%.o,$(atomes_fortran_files)): $(patsubst %.F90,%.o,$(atomes_fortran_modules))
 
-clean: clean-am
+clean: 
 	-rm -f *.mod
 	-rm -f */*.o
 	-rm -f */*/*.o
