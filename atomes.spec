@@ -81,9 +81,6 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_bindir}/%{name}
 %{_datadir}/doc/%{name}/
 %{_datadir}/%{name}/
-%{_datadir}/%{name}/icons/
-%{_datadir}/%{name}/library/
-%{_datadir}/%{name}/pixmaps/
 %{_datadir}/bash-completion/completions/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_mandir}/man1/%{name}.1.gz
