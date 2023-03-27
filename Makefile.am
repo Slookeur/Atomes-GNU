@@ -18,6 +18,8 @@ atomes_mandir = $(DESTDIR)$(mandir)/man1/
 atomes_man_DATA = \
 	atomes.1.gz 
 
+EXTRA_DIST = $(atomes_doc_DATA) $(atomes_man_DATA)
+
 install-data-local:
 	if test -d $(srcdir)/icons; then \
 		$(mkinstalldirs) $(atomes_pkgdatadir)/icons; \
