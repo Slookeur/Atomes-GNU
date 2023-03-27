@@ -1,6 +1,6 @@
 Name:           atomes
 %global upname Atomes-GNU
-Version:        1.1.10
+Version:        1.1.11
 Release:        1%{?dist}
 Summary:        An atomistic toolbox
 License:        AGPL-3.0-or-later
