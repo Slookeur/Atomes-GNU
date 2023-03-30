@@ -1,7 +1,7 @@
 Name:           atomes
 %global upname Atomes-GNU
 Version:        1.1.11
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        An atomistic toolbox
 License:        AGPL-3.0-or-later
 Source0:        https://github.com/Slookeur/%{upname}/archive/refs/tags/v%{version}.tar.gz
@@ -33,7 +33,6 @@ BuildRequires: pkgconfig(libswscale)
 
 # Runtime requirements
 Requires: gtk3
-Requires: pangoft2
 Requires: mesa-libGLU
 
 Provides: %{name} = %{version}-%{release}
@@ -83,7 +82,19 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_metainfodir}/fr.ipcms.%{name}.metainfo.xml
 
 %changelog
-* Mon Mar 27 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-3
+* Thu Mar 30 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-4
+- Revised package
+
+* Thu Mar 30 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-3
+- Revised package
+
+* Wed Mar 29 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-2
+- Revised package
+
+* Wed Mar 29 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-1
+- Revised package
+
+* Mon Mar 27 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-0
 - Bug correction
 
 * Fri Nov 04 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.10-1
