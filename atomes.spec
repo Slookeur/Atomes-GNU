@@ -1,7 +1,7 @@
 Name:           atomes
 %global upname Atomes-GNU
 Version:        1.1.11
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        An atomistic toolbox
 License:        AGPL-3.0-or-later
 Source0:        https://github.com/Slookeur/%{upname}/archive/refs/tags/v%{version}.tar.gz
@@ -23,24 +23,18 @@ BuildRequires: libappstream-glib
 # pkg-config 
 BuildRequires: pkgconfig(gtk+-3.0)
 BuildRequires: pkgconfig(libxml-2.0)
+BuildRequires: pkgconfig(pangoft2)
 BuildRequires: pkgconfig(glu)
-BuildRequires: pkgconfig(glut)
 BuildRequires: pkgconfig(epoxy)
 BuildRequires: pkgconfig(libavutil)
 BuildRequires: pkgconfig(libavcodec)
 BuildRequires: pkgconfig(libavformat)
 BuildRequires: pkgconfig(libswscale)
 
-# For Suse-based linux
-%if 0%{?suse_version}
-BuildRequires: update-desktop-files
-%endif
- 
+# Runtime requirements
 Requires: gtk3
-Requires: freeglut
+Requires: pangoft2
 Requires: mesa-libGLU
-
-Provides: %{name} = %{version}-%{release}
 
 %description
 Atomes: a toolbox to analyze, to visualize 
