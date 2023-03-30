@@ -1,7 +1,7 @@
 Name:           atomes
 %global upname Atomes-GNU
 Version:        1.1.11
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        An atomistic toolbox
 License:        AGPL-3.0-or-later
 Source0:        https://github.com/Slookeur/%{upname}/archive/refs/tags/v%{version}.tar.gz
@@ -35,6 +35,8 @@ BuildRequires: pkgconfig(libswscale)
 Requires: gtk3
 Requires: pangoft2
 Requires: mesa-libGLU
+
+Provides: %{name} = %{version}-%{release}
 
 %description
 Atomes: a toolbox to analyze, to visualize 
