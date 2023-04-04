@@ -1,7 +1,7 @@
 Name:           atomes
 %global upname Atomes-GNU
 Version:        1.1.11
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        An atomistic toolbox
 License:        AGPL-3.0-or-later
 Source0:        https://github.com/Slookeur/%{upname}/archive/refs/tags/v%{version}.tar.gz
@@ -69,19 +69,26 @@ step by step to achieve this crucial step.
 
 %check
 desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
-appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{name}.metainfo.xml
+appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{name}.appdata.xml
 
 %files
 %license COPYING
 %{_bindir}/%{name}
 %{_datadir}/doc/%{name}/
+%{_mandir}/man1/%{name}.1.gz
 %{_datadir}/%{name}/
 %{_datadir}/bash-completion/completions/%{name}
 %{_datadir}/applications/%{name}.desktop
-%{_mandir}/man1/%{name}.1.gz
-%{_metainfodir}/fr.ipcms.%{name}.metainfo.xml
+%{_datadir}/mime/packages/%{name}-mime.xml
+%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+%{_datadir}/icons/hicolor/scalable/mimetypes/%{name}-workspace.svg
+%{_datadir}/icons/hicolor/scalable/mimetypes/%{name}-project.svg
+%{_metainfodir}/fr.ipcms.%{name}.appdata.xml
 
 %changelog
+* Thu Apr 04 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-5
+- Revised package
+
 * Thu Mar 30 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-4
 - Revised package
 

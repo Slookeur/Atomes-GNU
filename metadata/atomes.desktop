@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Atomes
+GenericName=Atomes
+Comment=An atomic scale toolbox
+Icon=atomes
+Exec=atomes %F
+Terminal=false
+MimeType=application/x-extension-awf;application/x-extension-apf;
+StartupNotify=true
+Categories=Education;Science;Chemistry;Physics;
