@@ -70,6 +70,8 @@ step by step to achieve this crucial step.
 %check
 desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
 appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{name}.appdata.xml
+update-mime-database %{buildroot}/%{_datadir}/mime
+update-desktop-database %{buildroot}/%{_datadir}/applications
 
 %files
 %license COPYING

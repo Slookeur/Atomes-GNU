@@ -96,7 +96,6 @@ install-data-local:
 	if [ -u `which gtk-update-icon-cache` ]; then \
 	  	gtk-update-icon-cache -q $(atomes_datadir)/icons/hicolor; \
 	fi
-	update-mime-database $(atomes_datadir)/mime &> /dev/null || :
 	desktop-file-install --vendor="" \
 		--dir=$(atomes_desktopdir) -m 644 \
 		$(atomes_desktopdir)/atomes.desktop
