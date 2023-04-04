@@ -70,8 +70,6 @@ step by step to achieve this crucial step.
 %check
 desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
 appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{name}.appdata.xml
-update-mime-database %{buildroot}/%{_datadir}/mime
-update-desktop-database %{buildroot}/%{_datadir}/applications
 
 %files
 %license COPYING
@@ -80,8 +78,8 @@ update-desktop-database %{buildroot}/%{_datadir}/applications
 %{_mandir}/man1/%{name}.1.gz
 %{_datadir}/%{name}/
 %{_datadir}/bash-completion/completions/%{name}
-%{_datadir}/applications/%{name}.desktop
-%{_datadir}/mime/packages/%{name}-mime.xml
+%{_datadir}/applications
+%{_datadir}/mime
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_datadir}/icons/hicolor/scalable/mimetypes/%{name}-workspace.svg
 %{_datadir}/icons/hicolor/scalable/mimetypes/%{name}-project.svg
