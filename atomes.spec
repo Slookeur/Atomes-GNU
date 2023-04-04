@@ -86,7 +86,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_metainfodir}/fr.ipcms.%{name}.appdata.xml
 
 %changelog
-* Thu Apr 04 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-5
+* Tue Apr 04 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-5
 - Revised package
 
 * Thu Mar 30 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-4
