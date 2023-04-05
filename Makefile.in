@@ -975,13 +975,13 @@ install-data-local:
 	if [ -u `which gtk-update-icon-cache` ]; then \
 	  	gtk-update-icon-cache -q $(atomes_iconsdir); \
 	fi
-	if [ -z "$(DESTDIR)" ]; then \
-		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
-	fi
 	desktop-file-install --vendor="" \
 		--dir=$(atomes_desktopdir) -m 644 \
 		$(atomes_desktopdir)/atomes.desktop
-	update-desktop-database $(atomes_desktopdir) &> /dev/null || :
+	if [ -z "$(DESTDIR)" ]; then \
+		update-desktop-database $(atomes_desktopdir) &> /dev/null || :; \
+		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
+	fi
 
 # Remove doc directordy on uninstall
 uninstall-local:
@@ -998,12 +998,12 @@ uninstall-local:
 	-rm -f $(atomes_mimedir)/atomes-mime.xml
 	-rm -f $(atomes_bashdir)/atomes
 	-rmdir $(atomes_docdir)
-	update-desktop-database $(atomes_desktopdir) &> /dev/null || :
 	touch --no-create $(atomes_iconsdir)
 	if [ -u `which gtk-update-icon-cache` ]; then \
 		gtk-update-icon-cache -q $(atomes_iconsdir); \
 	fi
 	if [ -z "$(DESTDIR)" ]; then \
+		update-desktop-database $(atomes_desktopdir) &> /dev/null || :; \
 		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
 	fi
 
