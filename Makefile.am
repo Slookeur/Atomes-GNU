@@ -91,8 +91,7 @@ install-data-local:
 	if [ -u `which gtk-update-icon-cache` ]; then \
 	  	gtk-update-icon-cache -q $(atomes_iconsdir); \
 	fi
-	echo "DISTDIR= "${DISTDIR}
-	if [ -z "${DISTDIR}" ]; then \
+	if [ -z "$(DESTDIR)" ]; then \
 		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
 	fi
 	desktop-file-install --vendor="" \
@@ -120,6 +119,6 @@ uninstall-local:
 	if [ -u `which gtk-update-icon-cache` ]; then \
 		gtk-update-icon-cache -q $(atomes_iconsdir); \
 	fi
-	if [ -z "${DISTDIR}" ]; then \
+	if [ -z "$(DESTDIR)" ]; then \
 		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
 	fi
