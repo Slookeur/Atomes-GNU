@@ -79,7 +79,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_datadir}/%{name}/
 %{_datadir}/bash-completion/completions/%{name}
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/mime/packages/%{name}.xml
+%{_datadir}/mime/packages/%{name}-mime.xml
 %{_datadir}/pixmaps/%{name}.svg
 %{_datadir}/pixmaps/%{name}-workspace.svg
 %{_datadir}/pixmaps/%{name}-project.svg
