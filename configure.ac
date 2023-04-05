@@ -31,9 +31,13 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 
 
 dnl ***************************************************************************
-dnl Check for 'pkg-config'
+dnl Check for utilities
 dnl ***************************************************************************
 AC_CHECK_PROG([PKG_CONFIG], [pkg-config], [pkg-config], [no])
+AC_CHECK_PROG([UP_MIME], [update-mime-database], [update-mime-database], [no])
+AC_CHECK_PROG([UP_DESKTOP], [update-desktop-database], [update-desktop-database], [no])
+AC_CHECK_PROG([UP_APPSTREAM], [appstream-util], [appstream-util], [no])
+
 
 dnl ***************************************************************************
 dnl Check for required librairies

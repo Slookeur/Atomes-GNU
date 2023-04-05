@@ -670,6 +670,9 @@ GTK_LIBS
 GTK_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
+UP_APPSTREAM
+UP_DESKTOP
+UP_MIME
 PKG_CONFIG
 GETTEXT_PACKAGE
 ATOMES_PATCH_VERSION
@@ -3106,6 +3109,136 @@ else
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
 fi
+
+
+# Extract the first word of "update-mime-database", so it can be a program name with args.
+set dummy update-mime-database; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_prog_UP_MIME+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if test -n "$UP_MIME"; then
+  ac_cv_prog_UP_MIME="$UP_MIME" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_prog_UP_MIME="update-mime-database"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_UP_MIME" && ac_cv_prog_UP_MIME="no"
+fi
+fi
+UP_MIME=$ac_cv_prog_UP_MIME
+if test -n "$UP_MIME"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $UP_MIME" >&5
+printf "%s\n" "$UP_MIME" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+# Extract the first word of "update-desktop-database", so it can be a program name with args.
+set dummy update-desktop-database; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_prog_UP_DESKTOP+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if test -n "$UP_DESKTOP"; then
+  ac_cv_prog_UP_DESKTOP="$UP_DESKTOP" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_prog_UP_DESKTOP="update-desktop-database"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_UP_DESKTOP" && ac_cv_prog_UP_DESKTOP="no"
+fi
+fi
+UP_DESKTOP=$ac_cv_prog_UP_DESKTOP
+if test -n "$UP_DESKTOP"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $UP_DESKTOP" >&5
+printf "%s\n" "$UP_DESKTOP" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+# Extract the first word of "appstream-util", so it can be a program name with args.
+set dummy appstream-util; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_prog_UP_APPSTREAM+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if test -n "$UP_APPSTREAM"; then
+  ac_cv_prog_UP_APPSTREAM="$UP_APPSTREAM" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_prog_UP_APPSTREAM="appstream-util"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_UP_APPSTREAM" && ac_cv_prog_UP_APPSTREAM="no"
+fi
+fi
+UP_APPSTREAM=$ac_cv_prog_UP_APPSTREAM
+if test -n "$UP_APPSTREAM"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $UP_APPSTREAM" >&5
+printf "%s\n" "$UP_APPSTREAM" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
 
 
 

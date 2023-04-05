@@ -4,8 +4,7 @@ SUBDIRS = src
 
 atomes_datadir = $(DESTDIR)$(datadir)
 atomes_pkgdatadir = $(DESTDIR)$(pkgdatadir)
-atomes_icondir = $(atomes_datadir)/icons/hicolor/scalable/apps
-mime_iconsdir = $(atomes_datadir)/icons/hicolor/scalable/mimetypes
+atomes_iconsdir = $(atomes_datadir)/pixmaps
 atomes_desktopdir = $(atomes_datadir)/applications
 atomes_mimedir = $(atomes_datadir)/mime/packages/
 atomes_metadir = $(atomes_datadir)/metainfo
@@ -64,17 +63,13 @@ install-data-local:
 		$(mkinstalldirs) $(atomes_bashdir); \
 	fi
 	$(INSTALL_DATA) $(srcdir)/atomes-completion.sh $(atomes_bashdir)/atomes
-# Program's icon
-	if [ ! -d $(atomes_icondir) ]; then \
-		$(mkinstalldirs) $(atomes_icondir); \
+# Program's icons
+	if [ ! -d $(atomes_iconsdir) ]; then \
+		$(mkinstalldirs) $(atomes_iconsdir); \
 	fi
-	$(INSTALL_DATA) $(srcdir)/metadata/icons/atomes.svg $(atomes_icondir)
-# Custom MIME types icons
-	if [ ! -d $(mime_iconsdir) ]; then \
-		$(mkinstalldirs) $(mime_iconsdir); \
-	fi
-	$(INSTALL_DATA) $(srcdir)/metadata/icons/atomes-workspace.svg $(mime_iconsdir)
-	$(INSTALL_DATA) $(srcdir)/metadata/icons/atomes-project.svg $(mime_iconsdir)
+	$(INSTALL_DATA) $(srcdir)/metadata/icons/atomes.svg $(atomes_iconsdir)
+	$(INSTALL_DATA) $(srcdir)/metadata/icons/atomes-workspace.svg $(atomes_iconsdir)
+	$(INSTALL_DATA) $(srcdir)/metadata/icons/atomes-project.svg $(atomes_iconsdir)
 # Custom MIME types
 	if [ ! -d $(atomes_mimedir) ]; then \
 		$(mkinstalldirs) $(atomes_mimedir); \
@@ -92,11 +87,13 @@ install-data-local:
 	fi
 	$(INSTALL_DATA) $(srcdir)/metadata/atomes.desktop  $(atomes_desktopdir)/atomes.desktop
 # Finalize
-	touch --no-create $(atomes_datadir)/icons/hicolor
+	touch --no-create $(atomes_iconsdir)/pixmaps
 	if [ -u `which gtk-update-icon-cache` ]; then \
-	  	gtk-update-icon-cache -q $(atomes_datadir)/icons/hicolor; \
+	  	gtk-update-icon-cache -q $(atomes_iconsdir); \
 	fi
-	update-mime-database $(atomes_datadir)/mime &> /dev/null || :
+	if [ -z "$(DISTDIR)" ]; then \
+		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
+	fi
 	desktop-file-install --vendor="" \
 		--dir=$(atomes_desktopdir) -m 644 \
 		$(atomes_desktopdir)/atomes.desktop
@@ -109,17 +106,19 @@ uninstall-local:
 	-rm -rf $(atomes_pkgdatadir)/library/*
 	-rmdir $(atomes_pkgdatadir)/library
 	-rmdir $(atomes_pkgdatadir)
-	-rm -rf $(atomes_icondir)/atomes.svg
-	-rm -rf $(mime_iconsdir)/atomes-workspace.svg
-	-rm -rf $(mime_iconsdir)/atomes-project.svg
+	-rm -rf $(atomes_iconsdir)/atomes.svg
+	-rm -rf $(atomes_iconsdir)/atomes-workspace.svg
+	-rm -rf $(atomes_iconsdir)/atomes-project.svg
 	-rm -f $(atomes_desktopdir)/atomes.desktop
 	-rm -f $(atomes_metadir)/fr.ipcms.atomes.appdata.xml
 	-rm -f $(atomes_mimedir)/atomes-mime.xml
 	-rm -f $(atomes_bashdir)/atomes
 	-rmdir $(atomes_docdir)
-	update-mime-database $(atomes_datadir)/mime &> /dev/null || :
-	update-desktop-database &> /dev/null || :
-	touch --no-create $(atomes_datadir)/icons/hicolor
+	update-desktop-database $(atomes_desktopdir) &> /dev/null || :
+	touch --no-create $(atomes_iconsdir)
 	if [ -u `which gtk-update-icon-cache` ]; then \
-	  gtk-update-icon-cache -q $(atomes_datadir)/icons/hicolor; \
+		gtk-update-icon-cache -q $(atomes_iconsdir); \
+	fi
+	if [ -z "$(DISTDIR)" ]; then \
+		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
 	fi
