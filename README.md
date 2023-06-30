@@ -54,14 +54,14 @@ And change:
 
 ```
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.16])
-dnl PKG_CHECK_MODULES(GTK, [gtk4 >= 4.60])
+dnl PKG_CHECK_MODULES(GTK, [gtk4 >= 4.6])
 ```
 
 To:
 
 ```
 dnl PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.16])
-PKG_CHECK_MODULES(GTK, [gtk4 >= 4.60])
+PKG_CHECK_MODULES(GTK, [gtk4 >= 4.6])
 ```
 
   2. Edit the file `src/Makefile.am`

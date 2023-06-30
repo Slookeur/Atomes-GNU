@@ -44,7 +44,7 @@ dnl Check for required librairies
 dnl ***************************************************************************
 
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.16])
-dnl PKG_CHECK_MODULES(GTK, [gtk4 >= 4.60])
+dnl PKG_CHECK_MODULES(GTK, [gtk4 >= 4.6])
 PKG_CHECK_MODULES(LIBXML2, [libxml-2.0 >= 2.4.0])
 PKG_CHECK_MODULES(PANGOFT2, [pangoft2])
 PKG_CHECK_MODULES(FFMPEG, [libavcodec libavformat libavutil libswscale])
