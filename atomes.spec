@@ -1,7 +1,7 @@
 Name:           atomes
 %global upname Atomes-GNU
-Version:        1.1.11
-Release:        8%{?dist}
+Version:        1.1.12
+Release:        1%{?dist}
 Summary:        An atomistic toolbox
 License:        AGPL-3.0-or-later
 Source0:        https://github.com/Slookeur/%{upname}/archive/refs/tags/v%{version}.tar.gz
@@ -86,6 +86,10 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_metainfodir}/fr.ipcms.%{name}.appdata.xml
 
 %changelog
+* Mon Jul 17 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.12-1
+- Several bug correction
+- Separate Makefile.am for non architecture dependent data
+
 * Thu Apr 06 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-8
 - Updated spec file and removing old files
 
