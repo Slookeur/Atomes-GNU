@@ -150,6 +150,7 @@ AM_CONDITIONAL([FLATPAK], [test "x$flatpak" != "xno"])
 AC_CONFIG_FILES([
  Makefile
  src/Makefile
+ libs/Makefile
 ])
 
 AC_CONFIG_HEADERS([config.h])

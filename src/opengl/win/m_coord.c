@@ -19,6 +19,7 @@ If not, see <https://www.gnu.org/licenses/> */
 extern G_MODULE_EXPORT void coord_properties (GtkWidget * widg, gpointer data);
 #ifdef GTK4
 extern G_MODULE_EXPORT void window_color_coord (GSimpleAction * action, GVariant * parameter, gpointer data);
+extern GtkWidget * color_palette (glwin * view, int ideo, int spec, int geo);
 #endif
 
 gboolean is_coord_in_menu (int id, struct project * this_proj)
@@ -47,16 +48,6 @@ G_MODULE_EXPORT void show_hide_coord (GtkWidget * widg, gpointer data)
   s = cid -> b;
   c = cid -> c;
   g = cid -> d;
-#ifdef GTK3
-  show = check_menu_item_get_active ((gpointer)widg);
-#else
-  GVariant * state = g_action_get_state (G_ACTION (action));
-  show = ! g_variant_get_boolean (state);
-#endif
-#ifdef DEBUG
-  g_debug ("SHOW_HIDE_COORD:: p= %d, s= %d, c= %d, g= %d, show= %d", this_proj -> id, s, c, g, show);
-#endif
-
   j = 0;
   if (g < 2)
   {
@@ -66,6 +57,24 @@ G_MODULE_EXPORT void show_hide_coord (GtkWidget * widg, gpointer data)
     }
   }
   j += c;
+#ifdef GTK3
+  show = check_menu_item_get_active ((gpointer)widg);
+#else
+  GVariant * state;
+  if (action)
+  {
+    state = g_action_get_state (G_ACTION (action));
+    show = ! g_variant_get_boolean (state);
+  }
+  else
+  {
+    show = this_proj -> modelgl -> anim -> last -> img -> show_coord[g][j];
+  }
+#endif
+#ifdef DEBUG
+  g_debug ("SHOW_HIDE_COORD:: p= %d, s= %d, c= %d, g= %d, show= %d", this_proj -> id, s, c, g, show);
+#endif
+
 #ifdef GTK3
   // GTK3 Menu Action To Check
   if (is_coord_in_menu(g, this_proj))
@@ -130,8 +139,11 @@ G_MODULE_EXPORT void show_hide_coord (GtkWidget * widg, gpointer data)
   }
   init_default_shaders (this_proj -> modelgl);
 #ifdef GTK4
-  g_action_change_state (G_ACTION (action), g_variant_new_boolean (show));
-  g_variant_unref (state);
+  if (action)
+  {
+    g_action_change_state (G_ACTION (action), g_variant_new_boolean (show));
+    g_variant_unref (state);
+  }
 #endif
 }
 
@@ -338,10 +350,11 @@ GtkWidget * menu_rings (glwin * view, int id, int jd)
   return menuco;
 }
 #else
-GMenu * color_item (glwin * view, gchar * name, gchar * act, int id, GCallback handler, gpointer data)
+GMenu * color_item (glwin * view, gchar * act, int id, GCallback handler, gpointer data)
 {
   GMenu *  menu = g_menu_new ();
-  append_opengl_item (view, menu, name, act, id, NULL, IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, TRUE);
+  append_opengl_item (view, menu, act, act, id, NULL, IMG_NONE, NULL, TRUE, NULL, NULL, FALSE, FALSE, FALSE, FALSE);
+  append_opengl_item (view, menu, "More colors ...", act, id, NULL, IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, TRUE);
   return menu;
 }
 
@@ -349,18 +362,17 @@ GMenu * menu_show_coord (glwin * view, int id, int mid)
 {
   GMenu * menu = g_menu_new ();
   GMenu * menus;
-  gchar * mty[2]={"s", "c"};
   struct project * this_proj = get_project_by_id (view -> proj);
   gchar * stra,  * strb;
   int i, j, k;
   for (i=0; i<this_proj -> nspec; i++)
   {
-    j = 0;
     menus = g_menu_new ();
     if (this_proj -> coord)
     {
       if (this_proj -> coord -> ntg[id])
       {
+        j = 0;
         for (k=0; k<i; k++)
         {
           j += this_proj -> coord -> ntg[id][k];
@@ -377,14 +389,14 @@ GMenu * menu_show_coord (glwin * view, int id, int mid)
           }
           if (! mid)
           {
-            strb = g_strdup_printf ("%s-%s", stra, mty[mid]);
+            strb = g_strdup_printf ("%s-s", stra);
             append_opengl_item (view, menus, stra, strb, k+j, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(show_hide_coord), & view -> gcid[id][k+j][id],
                                 TRUE, view -> anim -> last -> img -> show_coord[id][k+j], FALSE, TRUE);
           }
           else
           {
-            strb = g_strdup_printf ("col-%s-%s", stra, mty[mid]);
-            g_menu_append_submenu (menus, stra, (GMenuModel*)color_item(view, "Pick Color", strb, k+j, G_CALLBACK(window_color_coord), & view -> gcid[id][k+j][id]));
+            strb = g_strdup_printf ("%s-c", stra);
+            g_menu_append_submenu (menus, stra, (GMenuModel*)color_item(view, strb, k+j, G_CALLBACK(window_color_coord), & view -> gcid[id][k+j][id]));
           }
           g_free (stra);
           g_free (strb);
@@ -421,7 +433,7 @@ GMenu * menu_show_frag_mol (glwin * view, int id, int mid)
       }
       else
       {
-        g_menu_append_submenu (menu, stra, (GMenuModel*)color_item(view, "Pick Color", "fmcol", i, G_CALLBACK(window_color_coord), & view -> gcid[id][i][id]));
+        g_menu_append_submenu (menu, stra, (GMenuModel*)color_item(view, (id == 2) ? "fcol": "mcol", i, G_CALLBACK(window_color_coord), & view -> gcid[id][i][id]));
       }
       g_free (stra);
       g_free (strb);
@@ -454,7 +466,7 @@ GMenu * menu_show_rings (glwin * view, int id, int mid)
     }
     else
     {
-      g_menu_append_submenu (menu, str, (GMenuModel*)color_item(view, "Pick Color", rin, i, G_CALLBACK(window_color_coord), & view -> gcid[id][i][id]));
+      g_menu_append_submenu (menu, str, (GMenuModel*)color_item(view, rin, i, G_CALLBACK(window_color_coord), & view -> gcid[id][i][id]));
     }
     g_free (str);
   }

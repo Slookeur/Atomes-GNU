@@ -1831,7 +1831,7 @@ G_MODULE_EXPORT void changed_energy_unit (GtkComboBox * box, gpointer data)
                                                          GTK_DIALOG_MODAL, "Yes", GTK_RESPONSE_YES, "No", GTK_RESPONSE_NO, NULL);
       gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
       GtkWidget * vbox = dialog_get_content_area (dialog);
-      add_box_child_start (GTK_ORIENTATION_VERTICAL, vbox, markup_label("Change the energy unit ?\nThe value of all field parameters that are energy related (listed bellow) will be scaled accordingly.", -1, -1, 0.5, 0.5), FALSE, FALSE, 0);
+      add_box_child_start (GTK_ORIENTATION_VERTICAL, vbox, markup_label("Change the energy unit ?\nThe value of all field parameters that are energy related (listed below) will be scaled accordingly.", -1, -1, 0.5, 0.5), FALSE, FALSE, 0);
       add_box_child_start (GTK_ORIENTATION_VERTICAL, vbox, markup_label("List of energy related parameters in your FIELD file:\n", -1, -1, 0.5, 0.5), FALSE, FALSE, 0);
       GtkWidget * hbox;
       GtkWidget * vbax, * vbbx;
@@ -2656,7 +2656,13 @@ void field_button_event (GdkEvent * event, double event_x, double event_y, guint
     GtkTreeViewColumn * column;
     int i, j, k;
     i = GPOINTER_TO_INT(data);
+#ifdef GTK4
+    int e_x, e_y;
+    gtk_tree_view_convert_widget_to_bin_window_coords (GTK_TREE_VIEW(field_tree[i]), event_x, event_y, & e_x, & e_y);
+    gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW(field_tree[i]), e_x, e_y, & path, & column, & j, & k);
+#else
     gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW(field_tree[i]), event_x, event_y, & path, & column, & j, & k);
+#endif
     if (path != NULL)
     {
       row_id = get_field_tree_data (field_tree[i], i, path);

@@ -95,11 +95,9 @@ void view_buffer (GtkTextBuffer * buffer)
   }
   if (add) gtk_container_add (GTK_CONTAINER(MainScrol[1]), MainView);
 #else
-  g_debug ("view buffer 6");
   if (add)
   {
      add_container_child (CONTAINER_SCR, MainScrol[1], MainView);
-     g_debug ("view buffer 7");
   }
 #endif
   show_the_widgets (MainScrol[1]);
@@ -377,18 +375,20 @@ GMenuItem * create_gmenu_item (const gchar * label, const gchar * action, const 
                                gboolean check, gboolean status, gboolean radio, const gchar * rstatus)
 {
   GMenuItem * item;
+  item = g_menu_item_new (label, action);
+  /* GKT4 bug, normally mark-up should be provided using boolean:
+  g_menu_item_set_attribute (item, "use-markup", "b", TRUE, NULL);
+  But it does not work, however it does using a string: */
+  g_menu_item_set_attribute (item, "use-markup", "s", "TRUE", NULL);
   if (custom)
   {
-    item = g_menu_item_new (NULL, NULL);
     g_menu_item_set_attribute (item, "custom", "s", custom, NULL);
     // g_menu_item_set_attribute_value (item, "custom", g_variant_new_string (custom));
-    // GVariant * cust = g_menu_item_get_attribute_value (item, "custom",  g_variant_type_new("s"));
-    // if (cust) g_print ("item custom is:: %s\n", g_variant_get_string  (cust, NULL));
+    GVariant * cust = g_menu_item_get_attribute_value (item, "custom",  g_variant_type_new("s"));
+    if (cust) g_print ("item :: %s, custom :: %s\n", label, g_variant_get_string  (cust, NULL));
   }
   else
   {
-    item = g_menu_item_new (label, action);
-    g_menu_item_set_attribute (item, "use-markup", "b", TRUE, NULL);
     if (accel) g_menu_item_set_attribute (item, "accel", "s", accel, NULL);
     // if (check) g_menu_item_set_attribute (item, "target", "b", status, NULL);
     if (radio) g_menu_item_set_attribute (item, "target", "s", rstatus, NULL);
@@ -467,8 +467,8 @@ GMenu * project_section (gchar * act, int pop_up, int proj, int calc)
     if (calc > -1)
     {
       str = g_strdup_printf ("%s.project.compute", act);
-      str_n = g_strdup_printf ("Analyze: %s", work_menu_items[calc]);
-      append_menu_item (menu, str_n, (get_project_by_id(proj) -> runok[calc]) ? (const gchar *)str : NULL, NULL, NULL, IMG_FILE, graph_img[calc], FALSE, FALSE, FALSE, NULL);
+      str_n = g_strdup_printf ("Analyze: %s", work_menu_items[calc+4]);
+      append_menu_item (menu, str_n, (get_project_by_id(proj) -> runok[calc]) ? (const gchar *)str : "None", NULL, NULL, IMG_FILE, graph_img[calc], FALSE, FALSE, FALSE, NULL);
       g_free (str);
       g_free (str_n);
     }
