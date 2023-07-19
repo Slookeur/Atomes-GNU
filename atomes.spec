@@ -83,98 +83,15 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_datadir}/pixmaps/%{name}.svg
 %{_datadir}/pixmaps/%{name}-workspace.svg
 %{_datadir}/pixmaps/%{name}-project.svg
+%{_datadir}/pixmaps/%{name}-coordinates.svg
 %{_metainfodir}/fr.ipcms.%{name}.appdata.xml
 
 %changelog
 * Mon Jul 17 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.12-1
-- Several bug correction
+- Several bug corrections
 - File associations added for standards atomic coordinates file formats
 - BASH completion adapted accordingly
 - Separate Makefile.am for non architecture dependent data
 
-* Thu Apr 06 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-8
-- Updated spec file and removing old files
-
-* Thu Apr 06 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-7
-- Updated metadata information
-
-* Wed Apr 05 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-6
-- Corrected 'Makefile.am', spec file, and updated metadata information
-
-* Tue Apr 04 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-5
-- Added custom MIME types, metadata folder and SVG icons
-
-* Thu Mar 30 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-4
-- Updated 'configure.ac' anbd 'Makefile.am' 
-
-* Thu Mar 30 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-3
-- Updated 'configure.ac' anbd 'Makefile.am' 
-
-* Wed Mar 29 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-2
-- Updated 'configure.ac' anbd 'Makefile.am' 
-
-* Wed Mar 29 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-1
-- Updated 'configure.ac' anbd 'Makefile.am' 
-
-* Mon Mar 27 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-0
-- New version: bug correction
-
-* Fri Nov 04 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.10-1
-- New version: bug correction
-
-* Mon Oct 31 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.9-3
-- Updated spec file
-
-* Fri Oct 28 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.9-2
-- Revised package
-
-* Fri Oct 28 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.9-1
-- New version: bug corrections
-
-* Fri Oct 28 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.8-3
-- Updated spec file
-
-* Fri Oct 28 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.8-2
-- Updated spec file
-
-* Thu Oct 27 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.8-1
-- New version: bug corrections
-
-* Fri Oct 21 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-6
-- Updated spec file
-
-* Wed Oct 19 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-5
-- Updated spec file
-
-* Wed Oct 19 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-4
-- Updated spec file
-
-* Wed Oct 19 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-3
-- Updated spec file
-
-* Tue Oct 18 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-2
-- Updated spec file
-
-* Thu Oct 13 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.7-1
-- New version: bug corrections
-
-* Tue Oct 11 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.6-1
-- New version: bug corrections & improvements
-
-* Fri Sep 23 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.5-1
-- New version: bug correction
-
-* Thu Sep 22 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.4-1
-- New version: bug corrections
-
-* Thu Sep 15 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.3-1
-- New version: bug corrections
-
-* Wed Sep 14 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.2-1
-- New version: bug corrections
-
-* Tue Sep 13 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.1-1
-- New version: bug correction
-
-* Mon Aug 29 2022 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.0-1
-- Initial release of the Atomes program v1.1.0
+* Fri Apr 14 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-8
+- Initial Fedora commit
