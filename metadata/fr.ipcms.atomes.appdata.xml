@@ -58,20 +58,12 @@
         <p>Release of version 1.1.12:</p>
         <p>- Bug corrections:</p>
         <ul>
-          <li>GTK3 version:
-            <ul>
-              <li>OpenGL / GTK interaction: on fail new test to change the GDK visual 'gtk_window_change_gdk_visual'</li>
-            </ul>
-	  </li>
-          <li>GTK4 version:
-            <ul>
-              <li>Rows can now be moved in tables (curves and measures)</li>
-	      <li>Menus with pango markups (if no submenus attached: https://gitlab.gnome.org/GNOME/gtk/-/issues/5946)</li>
-	      <li>"Color palettes" ready (if bug fixed: https://gitlab.gnome.org/GNOME/gtk/-/issues/5955)</li>
-	      <li>Periodic table focus on mouse motion fixed</li>
-	      <li>OpenGL window popup menu bug correction</li>
-            </ul>
-          </li>
+          <li>Corrections on reading I.S.A.A.C.S. files</li>
+          <li>GTK3: OpenGL / GTK interaction: on fail new test to change the GDK visual 'gtk_window_change_gdk_visual'</li>
+	  <li>GTK4: Menus with pango markups (if no submenus attached: https://gitlab.gnome.org/GNOME/gtk/-/issues/5946)</li>
+	  <li>GTK4: "Color palettes" ready (if bug fixed: https://gitlab.gnome.org/GNOME/gtk/-/issues/5955)</li>
+	  <li>GTK4: Periodic table focus on mouse motion fixed</li>
+	  <li>GTK4: OpenGL window popup menu bug correction</li>
         </ul>
 	<p>- Improvements:</p>
 	<ul>
