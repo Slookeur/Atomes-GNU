@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src libs
+SUBDIRS = src data
 
 atomes_datadir = $(DESTDIR)$(datadir)
 atomes_pkgdatadir = $(DESTDIR)$(pkgdatadir)
@@ -33,6 +33,7 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/metadata/icons/atomes.svg $(atomes_iconsdir)
 	$(INSTALL_DATA) $(srcdir)/metadata/icons/atomes-workspace.svg $(atomes_iconsdir)
 	$(INSTALL_DATA) $(srcdir)/metadata/icons/atomes-project.svg $(atomes_iconsdir)
+	$(INSTALL_DATA) $(srcdir)/metadata/icons/atomes-coordinates.svg $(atomes_iconsdir)
 # Custom MIME types
 	if [ ! -d $(atomes_mimedir) ]; then \
 		$(mkinstalldirs) $(atomes_mimedir); \
@@ -67,6 +68,7 @@ uninstall-local:
 	-rm -rf $(atomes_iconsdir)/atomes.svg
 	-rm -rf $(atomes_iconsdir)/atomes-workspace.svg
 	-rm -rf $(atomes_iconsdir)/atomes-project.svg
+	-rm -rf $(atomes_iconsdir)/atomes-coordinates.svg
 	-rm -f $(atomes_desktopdir)/atomes.desktop
 	-rm -f $(atomes_metadir)/fr.ipcms.atomes.appdata.xml
 	-rm -f $(atomes_mimedir)/atomes-mime.xml

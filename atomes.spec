@@ -88,6 +88,8 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %changelog
 * Mon Jul 17 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.12-1
 - Several bug correction
+- File associations added for standards atomic coordinates file formats
+- BASH completion adapted accordingly
 - Separate Makefile.am for non architecture dependent data
 
 * Thu Apr 06 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-8

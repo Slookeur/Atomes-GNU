@@ -1,28 +1,27 @@
-# _filedir : to handle file and directories with spaces in their names.
-
-_filedir()
-{
-	local IFS=$'\t\n' xspec #glob
-
-	#glob=$(set +o|grep noglob) # save glob setting.
-	#set -f		 # disable pathname expansion (globbing)
-
-	xspec=${1:+"!*.$1"}	# set only if glob passed in as $1
-	COMPREPLY=( ${COMPREPLY[@]:-} $( compgen -f -X "$xspec" -- "$cur" ) \
-		    $( compgen -d -- "$cur" ) )
-	#eval "$glob"    # restore glob setting.
-}
+# atomes(1) completion                                   -*- shell-script -*-
 
 _atomes()
 {
-  	local cur prev opts files
-	COMPREPLY=()
-	cur="${COMP_WORDS[COMP_CWORD]}"
-	first="${COMP_WORDS[1]}"
-	if [ $COMP_CWORD -eq 1 -o "${COMPREPLY+set}" != "set" ]; then
-        _filedir '[aA][pP][fF]'
-       # what about awf files ?	
+  local cur prev words cword split
+  _init_completion -s || return
 
-	fi
-}
-complete -o filenames -o nospace -F _atomes atomes
+  COMPREPLY=()
+  cur=${COMP_WORDS[COMP_CWORD]}
+
+  case $prev in
+    -h | --help | -v | --version)
+    return
+    ;;
+  esac
+
+  $split && return
+
+  if [[ $cur == -* ]]; then
+    COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- "$cur"))
+    [[ ${COMPREPLY-} == *= ]] && compopt -o nospace
+    return
+  fi
+  
+  _filedir '@([aA][wW][fF]|[aA][pP][fF]|[xX][yY][zZ]|[pP][dD][bB]|[eE][nN][tT]|[cC][iI][fF]|[iI][pP][fF]|[tT][rR][jJ]|[xX][dD][aA][tT][cC][aA][rR]|[cC]3[dD]|[hH][iI][sS][tT])'
+} &&
+complete -F _atomes atomes
