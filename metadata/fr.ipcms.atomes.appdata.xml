@@ -56,94 +56,51 @@
     <release version="1.1.12" date="2023-07-17">
       <description>
         <p>Release of version 1.1.12:</p>
-        <p>- Bug corrections:</p>
-        <ul>
-          <li>Corrections on reading I.S.A.A.C.S. files</li>
-          <li>GTK3: OpenGL / GTK interaction: on fail new test to change the GDK visual 'gtk_window_change_gdk_visual'</li>
-	  <li>GTK4: Menus with pango markups (if no submenus attached: https://gitlab.gnome.org/GNOME/gtk/-/issues/5946)</li>
-	  <li>GTK4: "Color palettes" ready (if bug fixed: https://gitlab.gnome.org/GNOME/gtk/-/issues/5955)</li>
-	  <li>GTK4: Periodic table focus on mouse motion fixed</li>
-	  <li>GTK4: OpenGL window popup menu bug correction</li>
-        </ul>
+        <p>- Bug corrections, see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.12</p>
 	<p>- Improvements:</p>
 	<ul>
+          <li>Code cleaining to remove older file compatibilities on open project</li>
 	  <li>File association(s) added for standard atomic coordinates</li>
 	  <li>BASH completion adapted accordingly</li>
 	  <li>Separate 'Makefile.am' for architecture independent data</li>
+	  <li>Cleaning of 'fr.ipcms.atomes.appdata.xml'</li> 
         </ul>
       </description>
     </release>
     <release version="1.1.11" date="2023-03-27">
       <description>
         <p>Release of version 1.1.11:</p>
-        <p>- Bug corrections:</p>
-        <ul>
-	  <li>dmtx.F90: ADAPT_CUT</li>
-	  <li>callbacks.c: removed 'if (oap sup  2)'</li>
-        </ul>
+        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.11</p>
       </description>
     </release>	  
     <release version="1.1.10" date="2022-11-04">
       <description>
         <p>Release of version 1.1.10:</p>
-        <p>- Bug corrections:</p>
-        <ul>
-          <li>molecules.F90: m = VOISJ'l,j,i)</li>
-        </ul>
+        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.10</p>
       </description>
     </release>
     <release version="1.1.9" date="2022-10-28">
       <description>
         <p>Release of version 1.1.9:</p>
-        <p>- Bug corrections:</p>
-	<ul>
-          <li>glwin.h: float shift[4], label_format[3]</li>
-          <li>m_poly.c: olg_clones[6] -> olg_clones[5]</li>
-          <li>read_bond.c: update_mol</li>
-          <li>edit_menu.c: cshift[i+3] -> cshift[i]</li>
-          <li>gui.c: cut_sel and cut_lab pointers for 3D window actions</li>
-          <li>dlp_atom.c: compare_non_bonded</li>
-        </ul>
+        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.9</p>
       </description>
     </release>
     <release version="1.1.8" date="2022-10-27">
       <description>
         <p>Release of version 1.1.8:</p>
-        <p>- Bug corrections:</p>
-	<ul>
-          <li>edit_menu.c: correction for lattice parameter updates</li>
-          <li>gui.c: cut_sel and cut_lab pointers for 3D window actions</li>
-          <li>popup.c: corrections to use cut_sel and cut_lab</li>
-          <li>glwindow.c: corrections to use cut_sel and cut_lab</li>
-          <li>closep.c: corrections to close volume_win and model_win[2]</li>
-          <li>atom_action.c: corrections to properly trigger bond udpates or not</li>
-          <li>atom_remove.c: corrections to adjust bonds id</li>
-          <li>atom_remove.c: corrections if fragments are removed</li>
-          <li>ogl_text.c: correction buffer size strings for measures</li>
-          <li>callbacks.c: correction when reading workspace remember name</li>
-        </ul>
+        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.8</p>
       </description>
     </release>
     <release version="1.1.7" date="2022-10-13">
       <description>
         <p>Release of version 1.1.7:</p>
-        <p>- Bug corrections:</p>
-        <ul>
-          <li>callback.c: save workspace</li>
-          <li>atom_action.c: on remove, trigger re-calculate bonding</li>
-        </ul>
+        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.7</p>
       </description>
     </release>
     <release version="1.1.6" date="2022-10-10">
       <description>
         <p>Release of version 1.1.6:</p>
-        <p>- Bug correction:</p>
-        <ul><li>w_library.c: lib_preview_plot = NULL;</li></ul>
-        <p>- Improvements:</p>
-        <ul>
-          <li>main.c: -h</li>
-          <li>glview.c: selection delay on mouse pressed/released</li>
-        </ul>
+        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.6</p>
       </description>
     </release>
     <release version="1.1.5" date="2022-09-23">

@@ -88,7 +88,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 
 %changelog
 * Mon Jul 17 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.12-1
-- Several bug corrections
+- Several bug corrections (see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.12)
 - File associations added for standards atomic coordinates file formats
 - BASH completion adapted accordingly
 - Separate Makefile.am for non architecture dependent data
