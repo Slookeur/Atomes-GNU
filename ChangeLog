@@ -11,7 +11,7 @@
 			Menus with pango markups (if no submenu attached: https://gitlab.gnome.org/GNOME/gtk/-/issues/5946)
 			"Color palettes" ready (if bug fixed: https://gitlab.gnome.org/GNOME/gtk/-/issues/5955)
 			Periodic table focus on mouse motion fixed: w_periodic.c
-			OpenGL window popup menu calculation option correction
+			OpenGL window popup menu correction
          * Improvements:
 	 	Code cleaning to remove older file compatibilities on open project
 		File associations added for standards atomic coordinates file formats
