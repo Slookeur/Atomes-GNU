@@ -2,7 +2,7 @@
          Release of version 1.1.12
          * Bug corrections:
 		Corrections on reading I.S.A.A.C.S. files: callbacks.c and read_isaacs.c
-		Movie encoding axis colors and volumes: movie.c
+		Movie encoding correction for axis colors and volumes: movie.c
 		Workspace contextual menu correction: workspace.c
 		GTK3 version:
 			OpenGL / GTK interaction: on fail new test to change the visual 'gtk_window_change_gdk_visual()': glview.c
