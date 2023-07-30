@@ -11,12 +11,31 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'read_coord.c'
+*
+*  Contains:
+*
+
+ - The initialization subroutines to import atomic coordinates
+
+*
+*  List of subroutines:
+
+  int open_coord_file (gchar * filename, int fti);
+
+  void add_reader_info (gchar * info);
+  void reader_info (gchar * type, gchar * sinf, int val);
+  void format_error (int stp, int ato, gchar * mot, int line);
+  void check_for_species (double v, int ato);
+
+*/
+
 #include "global.h"
 #include "glview.h"
 #include "callbacks.h"
 #include "interface.h"
 #include "project.h"
-#include "gui.h"
 #include "bind.h"
 #include <omp.h>
 #include "cbuild_edit.h"
@@ -41,16 +60,42 @@ char * this_word;
 struct line_node * head = NULL;
 struct line_node * tail = NULL;
 
+/*
+*  void add_reader_info (gchar * info)
+*
+*  Usage: append information message to the reader information
+*
+*  gchar * info : the reader information message
+*/
 void add_reader_info (gchar * info)
 {
   this_reader -> info = (this_reader -> info) ? g_strdup_printf ("%s\n%s", this_reader -> info, info) : g_strdup_printf ("%s", info);
 }
 
+/*
+*  void reader_info (gchar * type, gchar * sinf, int val)
+*
+*  Usage: display reader information
+*
+*  gchar * type : File type
+*  gchar * sinf : Information message
+*  int val      : Value to present
+*/
 void reader_info (gchar * type, gchar * sinf, int val)
 {
   g_print ("Reading coordinates [%s]: %s = %d\n", type, sinf, val);
 }
 
+/*
+*  void format_error (int stp, int ato, gchar * mot, int line)
+*
+*  Usage: Message to display an error message
+*
+*  int stp     : the MD step id
+*  int ato     : Atom id
+*  gchar * mot : Message
+*  int line    : Line with the error
+*/
 void format_error (int stp, int ato, gchar * mot, int line)
 {
   gchar * str;
@@ -70,6 +115,14 @@ void format_error (int stp, int ato, gchar * mot, int line)
   g_free (str);
 }
 
+/*
+*  void check_for_species (double v, int ato)
+*
+*  Usage: Fill the species for each atom and the associated data
+*
+*  double v : Z
+*  int ato  : Total number of atoms
+*/
 void check_for_species (double v, int ato)
 {
   int i;
@@ -116,6 +169,14 @@ void check_for_species (double v, int ato)
   }
 }
 
+/*
+*  int open_coord_file (gchar * filename, int fti)
+*
+*  Usage: open atomic coordinates file
+*
+*  gchar * filename : the file name
+*  int fti          : the type of coordinates
+*/
 int open_coord_file (gchar * filename, int fti)
 {
   int res;

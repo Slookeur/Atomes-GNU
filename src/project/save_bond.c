@@ -11,11 +11,34 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'save_bond.c'
+*
+*  Contains:
+*
+
+ - The subroutines to write bonding information in the atomes project file format
+
+*
+*  List of subroutines:
+
+  int save_bonding (FILE * fp, struct project * this_proj);
+
+*/
+
 #include "global.h"
 #include "project.h"
 #include "glview.h"
 #include "initcoord.h"
 
+/*
+*  int save_bonding (FILE * fp, struct project * this_proj)
+*
+*  Usage: save bonding information to file
+*
+*  FILE * fp                  : the file pointer
+*  struct project * this_proj : the target project
+*/
 int save_bonding (FILE * fp, struct project * this_proj)
 {
   int i, j, k;

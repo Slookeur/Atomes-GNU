@@ -11,9 +11,34 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'read_curve.c'
+*
+*  Contains:
+*
+
+ - The subroutines to read curve information from atomes project file
+
+*
+*  List of subroutines:
+
+  int read_project_curve (FILE * fp, int wid, int pid);
+
+  gboolean read_data_layout (FILE * fp, DataLayout * layout);
+
+*/
+
 #include "global.h"
 #include "project.h"
 
+/*
+*  gboolean read_data_layout (FILE * fp, DataLayout * layout)
+*
+*  Usage: read data layout from file
+*
+*  FILE * fp           : the file pointer
+*  DataLayout * layout : the data layout to store the data
+*/
 gboolean read_data_layout (FILE * fp, DataLayout * layout)
 {
   if (fread (& layout -> datacolor, sizeof(ColRGBA), 1, fp) != 1) return FALSE;
@@ -29,6 +54,15 @@ gboolean read_data_layout (FILE * fp, DataLayout * layout)
   return TRUE;
 }
 
+/*
+*  int read_project_curve (FILE * fp, int wid, int pid)
+*
+*  Usage: read a project curve from file
+*
+*  FILE * fp : the file pointer
+*  int wid   : the total number of projects in the workspace
+*  int pid   : the active project id
+*/
 int read_project_curve (FILE * fp, int wid, int pid)
 {
   int i, j;

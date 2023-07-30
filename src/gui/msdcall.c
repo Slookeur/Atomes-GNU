@@ -11,6 +11,24 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'msdcall.c'
+*
+*  Contains:
+*
+
+ - The callbacks for the MSD calculation dialog
+
+*
+*  List of subroutines:
+
+  void initmsd ();
+  void update_msd_view (struct project * this_proj);
+
+  G_MODULE_EXPORT void on_calc_msd_released (GtkWidget * widg, gpointer data);
+
+*/
+
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdlib.h>
@@ -22,7 +40,12 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "curve.h"
 #include "project.h"
 
-void initmsd (int s)
+/*
+*  void initmsd ()
+*
+*  Usage: initialize the curve widgets for the MSD
+*/
+void initmsd ()
 {
   int i, j;
 
@@ -76,10 +99,17 @@ void initmsd (int s)
   j=j+1;
   active_project -> curves[MS][j] -> name = g_strdup_printf ("Drift[z]");
 
-  addcurwidgets (activep, MS, s);
+  addcurwidgets (activep, MS, 0);
   active_project -> initok[MS]=TRUE;
 }
 
+/*
+*  void update_msd_view (struct project * this_proj)
+*
+*  Usage: update the project text view for the MSD calculation
+*
+*  struct project * this_proj : the target project
+*/
 void update_msd_view (struct project * this_proj)
 {
   gchar * str;
@@ -104,11 +134,19 @@ void update_msd_view (struct project * this_proj)
   print_info (calculation_time(TRUE, this_proj -> calc_time[MS]), NULL, this_proj -> text_buffer[MS+OT]);
 }
 
+/*
+*  G_MODULE_EXPORT void on_calc_msd_released (GtkWidget * widg, gpointer data)
+*
+*  Usage: compute MSD
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void on_calc_msd_released (GtkWidget * widg, gpointer data)
 {
   int i;
 
-  if (! active_project -> initok[MS])  initmsd (0);
+  if (! active_project -> initok[MS])  initmsd ();
   clean_curves_data (MS, 0, active_project -> numc[MS]);
   prepostcalc (widg, FALSE, MS, 0, opac);
   active_project -> min[MS] = active_project -> delta[MS]*active_project -> num_delta[MS];

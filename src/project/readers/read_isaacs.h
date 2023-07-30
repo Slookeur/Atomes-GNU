@@ -11,8 +11,15 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
-#ifndef XMLRW_H_
-#define XMLRW_H_
+/*
+* This header file: 'read_isaacs.h'
+*
+*  Contains:
+
+*/
+
+#ifndef ISAACSRW_H_
+#define ISAACSRW_H_
 
 #include <libxml/encoding.h>
 #include <libxml/xmlwriter.h>
@@ -22,7 +29,7 @@ If not, see <https://www.gnu.org/licenses/> */
 size_t strfind (int * ida);
 int XmlwriterFilename (const char *uri);
 int write_xml (const char * filetosave);
-gboolean file_exists(const char * filename);
+gboolean file_exists (const char * filename);
 xmlNodePtr findnode (xmlNodePtr startnode, char * nname);
 int setprop (xmlNodePtr pnode);
 int testopening (char * tdata, char * tfichier);

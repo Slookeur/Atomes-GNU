@@ -11,6 +11,23 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'frame.c'
+*
+*  Contains:
+*
+
+ - The frame draw subroutines
+
+*
+*  List of subroutines:
+
+  void prep_frame (cairo_t * fr, int da, double ti, ColRGBA dcol);
+  void prep_axis_data (struct project * this_proj, int rid, int cid, int ax);
+  void draw_frame (cairo_t * cr, struct project * this_proj, int rid, int cid);
+
+*/
+
 #include <stdlib.h>
 #include <gdk/gdk.h>
 #include <cairo.h>
@@ -18,6 +35,16 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "global.h"
 #include "curve.h"
 
+/*
+*  void prep_frame (cairo_t * fr, int da, double ti, ColRGBA dcol)
+*
+*  Usage:
+*
+*  cairo_t * fr :
+*  int da       :
+*  double ti    :
+*  ColRGBA dcol :
+*/
 void prep_frame (cairo_t * fr, int da, double ti, ColRGBA dcol)
 {
   thedash * tdash;
@@ -29,10 +56,21 @@ void prep_frame (cairo_t * fr, int da, double ti, ColRGBA dcol)
   g_free (tdash);
 }
 
-void show_frame (cairo_t * cd,
-                 int tf, int da, int res[2],
-                 double ti, double x[2], double y[2],
-                 ColRGBA dcol)
+/*
+*  void show_frame (cairo_t * cd, int tf, int da, int res[2], double ti, double x[2], double y[2], ColRGBA dcol)
+*
+*  Usage:
+*
+*  cairo_t * cd :
+*  int tf       :
+*  int da       :
+*  int res[2]   :
+*  double ti    :
+*  double x[2]  :
+*  double y[2]  :
+*  ColRGBA dcol :
+*/
+void show_frame (cairo_t * cd, int tf, int da, int res[2], double ti, double x[2], double y[2], ColRGBA dcol)
 {
   double x1, x2;
   double y1, y2;
@@ -75,6 +113,16 @@ void show_frame (cairo_t * cd,
   cairo_stroke (cd);
 }
 
+/*
+*  void prep_axis_data (struct project * this_proj, int rid, int cid, int ax)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  int rid                    :
+*  int cid                    :
+*  int ax                     :
+*/
 void prep_axis_data (struct project * this_proj, int rid, int cid, int ax)
 {
   dogrid = this_proj -> curves[rid][cid] -> show_grid[ax];
@@ -96,6 +144,16 @@ void prep_axis_data (struct project * this_proj, int rid, int cid, int ax)
   labpos = this_proj -> curves[rid][cid] -> labels_pos[ax];
 }
 
+/*
+*  void draw_frame (cairo_t * cr, struct project * this_proj, int rid, int cid)
+*
+*  Usage:
+*
+*  cairo_t * cr               :
+*  struct project * this_proj : the target project
+*  int rid                    :
+*  int cid                    :
+*/
 void draw_frame (cairo_t * cr, struct project * this_proj, int rid, int cid)
 {
   show_frame (cr,

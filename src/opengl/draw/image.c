@@ -11,6 +11,24 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'image.c'
+*
+*  Contains:
+*
+
+ - The subroutines to render an image from the OpenGL window
+
+*
+*  List of subroutines:
+
+  void render_image (glwin * view, video_options * iopts);
+
+  G_MODULE_EXPORT void run_render_image (GtkNativeDialog * info, gint response_id, gpointer data);
+  G_MODULE_EXPORT void run_render_image (GtkDialog * info, gint response_id, gpointer data);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "project.h"
@@ -43,10 +61,28 @@ extern void init_frame_buffer (int x, int y);
 extern void close_frame_buffer ();
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void run_render_image (GtkNativeDialog * info, gint response_id, gpointer data)
+*
+*  Usage: render an image from the OpenGL window - running the dialog
+*
+*  GtkNativeDialog * info : the GtkNativeDialog sending the signal
+*  gint response_id       : the response id
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void run_render_image (GtkNativeDialog * info, gint response_id, gpointer data)
 {
   GtkFileChooser * chooser = GTK_FILE_CHOOSER((GtkFileChooserNative *)info);
 #else
+/*
+*  G_MODULE_EXPORT void run_render_image (GtkDialog * info, gint response_id, gpointer data)
+*
+*  Usage: render an image from the OpenGL window - running the dialog
+*
+*  GtkDialog * info : the GtkDialog sending the signal
+*  gint response_id : the response id
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void run_render_image (GtkDialog * info, gint response_id, gpointer data)
 {
   GtkFileChooser * chooser = GTK_FILE_CHOOSER((GtkWidget *)info);
@@ -109,6 +145,14 @@ G_MODULE_EXPORT void run_render_image (GtkDialog * info, gint response_id, gpoin
   }
 }
 
+/*
+*  void render_image (glwin * view, video_options * iopts)
+*
+*  Usage: render an image from the OpenGL window - prepare the dialog
+*
+*  glwin * view          : the target glwin
+*  video_options * iopts : the rendering options
+*/
 void render_image (glwin * view, video_options * iopts)
 {
   GtkFileFilter * filter;

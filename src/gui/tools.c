@@ -11,6 +11,35 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'tools.c'
+*
+*  Contains:
+*
+
+ -
+
+*
+*  List of subroutines:
+
+  gchar * prepare_for_title (gchar * init);
+
+  void fill_tool_model ();
+  void tool_set_visible (GtkTreeViewColumn * col,
+                         GtkCellRenderer * renderer,
+                         GtkTreeModel * mod,
+                         GtkTreeIter * iter,
+                         gpointer data);
+  void adjust_tool_model (int calc, int curve, gchar * string_path);
+
+  G_MODULE_EXPORT void toggle_show_hide_curve (GtkCellRendererToggle * cell_renderer,
+                                                gchar * string_path, gpointer data);
+
+  GtkWidget * tooltree ();
+  GtkWidget * curvetbox (void);
+
+*/
+
 #include "global.h"
 #include "callbacks.h"
 #include "interface.h"
@@ -24,6 +53,13 @@ GtkTreeStore * tool_model = NULL;
 GtkWidget * tool_tree = NULL;
 GtkWidget * toolscroll = NULL;
 
+/*
+*  gchar * prepare_for_title (gchar * init)
+*
+*  Usage: prepare a string for a window title, getting rid of all markup
+*
+*  gchar * init : the initial string
+*/
 gchar * prepare_for_title (gchar * init)
 {
   gchar * str = g_strdup_printf ("%s", substitute_string (init, "<sub>", NULL));
@@ -35,6 +71,11 @@ gchar * prepare_for_title (gchar * init)
   return str;
 }
 
+/*
+*  void fill_tool_model ()
+*
+*  Usage: fill the tool window tree model
+*/
 void fill_tool_model ()
 {
   GtkTreeIter calc_level, curve_level;
@@ -112,11 +153,25 @@ void fill_tool_model ()
   }
 }
 
+/* void tool_set_visible (GtkTreeViewColumn * col,
+                          GtkCellRenderer * renderer,
+                          GtkTreeModel * mod,
+                          GtkTreeIter * iter,
+                          gpointer data)
+*
+*  Usage: show/hide and sensitive/not a GtkCellRenderer
+*
+*  GtkTreeViewColumn * col    : the column
+*  GtkCellRenderer * renderer : the cell renderer
+*  GtkTreeModel * mod         : the model
+*  GtkTreeIter  * iter        : the iter
+*  gpointer data              : the associated data pointer
+*/
 void tool_set_visible (GtkTreeViewColumn * col,
-                       GtkCellRenderer   * renderer,
-                       GtkTreeModel      * mod,
-                       GtkTreeIter       * iter,
-                       gpointer          data)
+                       GtkCellRenderer * renderer,
+                       GtkTreeModel * mod,
+                       GtkTreeIter * iter,
+                       gpointer data)
 {
   int i, j, k;
   i = GPOINTER_TO_INT(data);
@@ -141,6 +196,15 @@ void tool_set_visible (GtkTreeViewColumn * col,
   }
 }
 
+/*
+*  void adjust_tool_model (int calc, int curve, gchar * string_path)
+*
+*  Usage: adjust the content of the tool box tree model
+*
+*  int calc            : the calculation
+*  int curve           : the curve
+*  gchar * string_path : the path in the tree view
+*/
 void adjust_tool_model (int calc, int curve, gchar * string_path)
 {
   GtkTreeIter iter;
@@ -159,6 +223,16 @@ void adjust_tool_model (int calc, int curve, gchar * string_path)
   }
 }
 
+/*
+*  G_MODULE_EXPORT void toggle_show_hide_curve (GtkCellRendererToggle * cell_renderer,
+                                                gchar * string_path, gpointer data)
+*
+*  Usage: To show/hide a curve by clicking in the tree view
+*
+*  GtkCellRendererToggle * cell_renderer : the renderer toggled
+*  gchar * string_path                   : the path in the tree view
+*  gpointer data                         : the associated data pointer
+*/
 G_MODULE_EXPORT void toggle_show_hide_curve (GtkCellRendererToggle * cell_renderer,
                                              gchar * string_path, gpointer data)
 {
@@ -191,6 +265,11 @@ G_MODULE_EXPORT void toggle_show_hide_curve (GtkCellRendererToggle * cell_render
   gtk_tree_store_set (tool_model, & iter, 4, ! k, -1);
 }
 
+/*
+*  GtkWidget * tooltree ()
+*
+*  Usage: create the toolbox tree view
+*/
 GtkWidget * tooltree ()
 {
   GtkTreeViewColumn * tool_col[3];
@@ -226,7 +305,12 @@ GtkWidget * tooltree ()
   return tool_tree;
 }
 
-GtkWidget * curvetbox (void)
+/*
+*  GtkWidget * curvetbox ()
+*
+*  Usage: create the curve tool box window
+*/
+GtkWidget * curvetbox ()
 {
   GtkWidget * ctbox;
   ctbox = create_win ("Toolboxes", MainWindow, FALSE, FALSE);

@@ -11,6 +11,24 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'spcall.c'
+*
+*  Contains:
+*
+
+ - The callbacks for the spherical harmonics calculation dialog
+
+*
+*  List of subroutines:
+
+  void initsh (int str);
+  void update_spherical_view (struct project * this_proj);
+
+  G_MODULE_EXPORT void on_calc_sph_released (GtkWidget * widg, gpointer data);
+
+*/
+
 #include "global.h"
 #include "bind.h"
 #include "interface.h"
@@ -21,6 +39,13 @@ If not, see <https://www.gnu.org/licenses/> */
 extern void alloc_curves (int c);
 extern gboolean run_distance_matrix (GtkWidget * widg, int calc, int up_ngb);
 
+/*
+*  void initsh (int str)
+*
+*  Usage: initialize the curve widgets for the spherical harmonics
+*
+*  int str : initialize or not (1/0)
+*/
 void initsh (int str)
 {
   int i, j, k;
@@ -58,6 +83,13 @@ void initsh (int str)
   }
 }
 
+/*
+*  void update_spherical_view (struct project * this_proj)
+*
+*  Usage: update the text view for spherical harmonics
+*
+*  struct project * this_proj : the target project
+*/
 void update_spherical_view (struct project * this_proj)
 {
   int i, j, k, l, m;
@@ -137,6 +169,14 @@ void update_spherical_view (struct project * this_proj)
   print_info (calculation_time(TRUE, this_proj -> calc_time[SP]), NULL, this_proj -> text_buffer[SP+OT]);
 }
 
+/*
+*  G_MODULE_EXPORT void on_calc_sph_released (GtkWidget * widg, gpointer data)
+*
+*  Usage: compute spherical harmonics
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void on_calc_sph_released (GtkWidget * widg, gpointer data)
 {
   int i, j, k, l, m;

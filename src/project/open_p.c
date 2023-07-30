@@ -11,6 +11,31 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'open_p.c'
+*
+*  Contains:
+*
+
+ - Subroutine to start reading atomes project file
+
+*
+*  List of subroutines:
+
+  int open_project (FILE * fp, int npi);
+
+  char * read_string (int i, FILE * fp);
+
+  gchar * read_this_string (FILE * fp);
+
+  void initcnames (int w, int s);
+  void allocatoms (struct project * this_proj);
+  void alloc_proj_data (struct project * this_proj, int cid);
+
+  chemical_data * alloc_chem_data (int spec);
+
+*/
+
 #include "global.h"
 #include "bind.h"
 #include "interface.h"
@@ -22,7 +47,23 @@ If not, see <https://www.gnu.org/licenses/> */
 extern void alloc_curves (int c);
 extern void init_box_calc ();
 extern void set_color_map_sensitive (glwin * view);
+extern void initgr (int r);
+extern void initsq (int r);
+extern void initbd ();
+extern void initang ();
+extern void initrng ();
+extern void initchn ();
+extern void initmsd ();
+extern void initsh (int s);
 
+/*
+*  char * read_string (int i, FILE * fp)
+*
+*  Usage: read a string from a file
+*
+*  int i     : the size of the string to read
+*  FILE * fp : the file pointer
+*/
 char * read_string (int i, FILE * fp)
 {
   char * tmp = NULL;
@@ -36,6 +77,13 @@ char * read_string (int i, FILE * fp)
   return tmp;
 }
 
+/*
+*  gchar * read_this_string (FILE * fp)
+*
+*  Usage: is there a string to read in this file ? yes do it
+*
+*  FILE * fp : the file pointer
+*/
 gchar * read_this_string (FILE * fp)
 {
   int i;
@@ -48,6 +96,59 @@ gchar * read_this_string (FILE * fp)
   return NULL;
 }
 
+
+/*
+*  void initcnames (int w, int s)
+*
+*  Usage: initialize curve namees
+*
+*  int w : calculation id
+*  int s : initialize spherical harmonics or not
+*/
+void initcnames (int w, int s)
+{
+  switch (w)
+  {
+    case GR:
+      initgr (w);
+      break;
+    case SQ:
+      initsq (w);
+      break;
+    case SK:
+      initsq (w);
+      break;
+    case GK:
+      initgr (w);
+      break;
+    case BD:
+      initbd ();
+      break;
+    case AN:
+      initang ();
+      break;
+    case RI:
+      initrng ();
+      break;
+    case CH:
+      initchn ();
+      break;
+    case SP:
+      initsh (0);
+      break;
+    default:
+      initmsd ();
+      break;
+  }
+}
+
+/*
+*  void allocatoms (struct project * this_proj)
+*
+*  Usage: allocate project data
+*
+*  struct project * this_proj : the target project
+*/
 void allocatoms (struct project * this_proj)
 {
   int i, j;
@@ -67,6 +168,13 @@ void allocatoms (struct project * this_proj)
   }
 }
 
+/*
+*  chemical_data * alloc_chem_data (int spec)
+*
+*  Usage: allocate chemistry data
+*
+*  int spec : the number of chemical species
+*/
 chemical_data * alloc_chem_data (int spec)
 {
   chemical_data * chem = g_malloc0 (sizeof*chem);
@@ -79,13 +187,29 @@ chemical_data * alloc_chem_data (int spec)
   return chem;
 }
 
+/*
+*  void alloc_proj_data (struct project * this_proj, int cid)
+*
+*  Usage: allocate data
+*
+*  struct project * this_proj : the target project
+*  int cid                    : Allocate chemistry data (1/0)
+*/
 void alloc_proj_data (struct project * this_proj, int cid)
 {
   if (cid) this_proj -> chemistry = alloc_chem_data (this_proj -> nspec);
   allocatoms (this_proj);
 }
 
-int open_project (FILE * fp, int pid)
+/*
+*  int open_project (FILE * fp, int npi)
+*
+*  Usage: open atomes project file
+*
+*  FILE * fp : the file pointer
+*  int npi   : the total number of projects in the workspace
+*/
+int open_project (FILE * fp, int npi)
 {
   int i, j, k;
   gchar * ver;
@@ -239,7 +363,7 @@ int open_project (FILE * fp, int pid)
           }
           for (j=0; j<i; j++)
           {
-            if (read_project_curve (fp, pid, activep) != OK)
+            if (read_project_curve (fp, npi, activep) != OK)
             {
               // error
               return ERROR_CURVE;

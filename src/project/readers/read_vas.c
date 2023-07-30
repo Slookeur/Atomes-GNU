@@ -11,16 +11,38 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'read_vas.c'
+*
+*  Contains:
+*
+
+ - The subroutines to read VASP atomic coordinates
+
+*
+*  List of subroutines:
+
+  int vas_get_atom_coordinates (int sli);
+  int open_vas_file (int linec);
+
+*/
+
 #include "global.h"
 #include "glview.h"
 #include "callbacks.h"
 #include "interface.h"
 #include "project.h"
-#include "gui.h"
 #include "bind.h"
 #include <omp.h>
 #include "readers.h"
 
+/*
+*  int vas_get_atom_coordinates (int sli)
+*
+*  Usage: get the atomic coordinates from the VASP file
+*
+*  int sli : Correction parameters depending on the VASP file version
+*/
 int vas_get_atom_coordinates (int sli)
 {
   int i, j, k, l;
@@ -202,6 +224,13 @@ int vas_get_atom_coordinates (int sli)
   return 0;
 }
 
+/*
+*  int open_vas_file (int linec)
+*
+*  Usage: open VASP file
+*
+*  int linec : Number of lines in the file
+*/
 int open_vas_file (int linec)
 {
   int i, j;

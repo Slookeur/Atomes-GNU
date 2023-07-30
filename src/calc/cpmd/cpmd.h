@@ -11,6 +11,13 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This header file: 'cpmd.h'
+*
+*  Contains: 
+
+*/
+
 #define NCPMDCALC 7
 #define NCACOMBO 5
 #define NDFT 19

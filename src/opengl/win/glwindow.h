@@ -11,9 +11,16 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This header file: 'glwindow.h'
+*
+*  Contains: 
+
+*/
+
 extern void prep_model (int p);
 
-extern void append_opengl_item (glwin * view, GMenu * menu, const gchar * name, gchar * key, int item_id,
+extern void append_opengl_item (glwin * view, GMenu * menu, const gchar * name, gchar * key, int mpop, int item_id,
                                 gchar * accel, int image_format, gpointer icon,
                                 gboolean custom, GCallback handler, gpointer data,
                                 gboolean check, gboolean status, gboolean radio, gboolean sensitive);

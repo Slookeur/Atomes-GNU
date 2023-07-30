@@ -11,6 +11,13 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This header file: 'project.h'
+*
+*  Contains:
+
+*/
+
 #ifndef PROJECT_H_
 #define PROJECT_H_
 
@@ -65,7 +72,7 @@ extern void clean_view ();
 extern void view_buffer (GtkTextBuffer * buffer);
 extern void update_insert_combos ();
 extern void close_project (struct project * to_close);
-extern G_MODULE_EXPORT void to_close_this_project (int to_activate, struct project * this_proj);
+extern void to_close_this_project (int to_activate, struct project * this_proj);
 extern void hide_current_project (struct project * to_hide);
 extern void active_project_changed (int id);
 extern void opengl_project_changed (int id);

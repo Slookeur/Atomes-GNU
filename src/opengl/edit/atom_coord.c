@@ -11,10 +11,39 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'atom_coord.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  int test_this_coord (struct project * this_proj, int spec, int gid, int cid, int minc, int maxc);
+
+  void print_coord_info (struct project * this_proj, coord_info * coord);
+  void recover_opengl_data (struct project * this_proj, int nmols, int add, int rem, int * num, int * rec, int *** tmpgeo, gboolean * showfrag, gboolean update_frag);
+
+  coord_info * duplicate_coord_info (coord_info * old_coord);
+
+*/
+
 #include "atom_edit.h"
 
-gboolean * showfrag;
-
+/*
+*  int test_this_coord (struct project * this_proj, int spec, int gid, int cid, int minc, int maxc)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  int spec                   :
+*  int gid                    :
+*  int cid                    :
+*  int minc                   :
+*  int maxc                   :
+*/
 int test_this_coord (struct project * this_proj, int spec, int gid, int cid, int minc, int maxc)
 {
   int i, j, k, l;
@@ -32,6 +61,14 @@ int test_this_coord (struct project * this_proj, int spec, int gid, int cid, int
   return l;
 }
 
+/*
+*  void print_coord_info (struct project * this_proj, coord_info * coord)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  coord_info * coord         :
+*/
 void print_coord_info (struct project * this_proj, coord_info * coord)
 {
   int * min_bs, * max_bs;
@@ -121,6 +158,13 @@ void print_coord_info (struct project * this_proj, coord_info * coord)
   }
 }
 
+/*
+*  coord_info * duplicate_coord_info (coord_info * old_coord)
+*
+*  Usage:
+*
+*  coord_info * old_coord :
+*/
 coord_info * duplicate_coord_info (coord_info * old_coord)
 {
   coord_info * new_coord = g_malloc0 (sizeof*new_coord);
@@ -315,7 +359,8 @@ void clean_coords_and_geoms (struct project * this_proj, atom_edition * edit,
 }
 
 void new_coord_menus (struct project * this_proj, coord_info * coord, int new_spec, int nmols,
-                      gboolean * showcoord[2], gboolean * showpoly[2], gboolean update_it, gboolean update_frag, gboolean update_mol)
+                      gboolean * showcoord[2], gboolean * showpoly[2], gboolean * showfrag,
+                      gboolean update_it, gboolean update_frag, gboolean update_mol)
 {
   int i, j, k;
   for (i=0; i<4; i++)
@@ -372,8 +417,9 @@ void new_coord_menus (struct project * this_proj, coord_info * coord, int new_sp
       this_proj -> coord -> totcoord[i+2] = 0;
     }
   }
+#ifdef GTK3
   prep_all_coord_menus (this_proj -> modelgl);
-
+#endif
   if (update_it)
   {
     gboolean * viz[2];
@@ -392,9 +438,9 @@ void new_coord_menus (struct project * this_proj, coord_info * coord, int new_sp
         {
           if (GTK_IS_WIDGET(this_proj -> modelgl -> ogl_geom[0][i][j]))
           {
-            if (check_menu_item_get_active ((gpointer)this_proj -> modelgl -> ogl_geom[0][i][j]) != showcoord[i][j])
+            if (gtk_check_menu_item_get_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_geom[0][i][j]) != showcoord[i][j])
             {
-              check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_geom[0][i][j], showcoord[i][j]);
+              gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_geom[0][i][j], showcoord[i][j]);
             }
           }
         }
@@ -402,9 +448,9 @@ void new_coord_menus (struct project * this_proj, coord_info * coord, int new_sp
         {
           if (GTK_IS_WIDGET(this_proj -> modelgl -> ogl_poly[0][i][j]))
           {
-            if (check_menu_item_get_active ((gpointer)this_proj -> modelgl -> ogl_poly[0][i][j]) != showpoly[i][j])
+            if (gtk_check_menu_item_get_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_poly[0][i][j]) != showpoly[i][j])
             {
-              check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_poly[0][i][j], showpoly[i][j]);
+              gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_poly[0][i][j], showpoly[i][j]);
             }
           }
         }
@@ -420,9 +466,9 @@ void new_coord_menus (struct project * this_proj, coord_info * coord, int new_sp
         {
           if (GTK_IS_WIDGET(this_proj -> modelgl -> ogl_geom[0][2][i]))
           {
-            if (check_menu_item_get_active ((gpointer)this_proj -> modelgl -> ogl_geom[0][2][i]) != showfrag[i])
+            if (gtk_check_menu_item_get_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_geom[0][2][i]) != showfrag[i])
             {
-              check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_geom[0][2][i], showfrag[i]);
+              gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_geom[0][2][i], showfrag[i]);
             }
           }
         }
@@ -437,7 +483,22 @@ void new_coord_menus (struct project * this_proj, coord_info * coord, int new_sp
   }
 }
 
-void recover_opengl_data (struct project * this_proj, int nmols, int add, int rem, int * num, int * rec, int *** tmpgeo, gboolean update_frag)
+/*
+*  void recover_opengl_data (struct project * this_proj, int nmols, int add, int rem, int * num, int * rec, int *** tmpgeo, gboolean * showfrag, gboolean update_frag)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  int nmols                  :
+*  int add                    :
+*  int rem                    :
+*  int * num                  :
+*  int * rec                  :
+*  int *** tmpgeo             :
+*  int *** tmpgeo             :
+*  int *** tmpgeo             :
+*/
+void recover_opengl_data (struct project * this_proj, int nmols, int add, int rem, int * num, int * rec, int *** tmpgeo, gboolean * showfrag, gboolean update_frag)
 {
   // Now OpenGL data
   int old_spec = this_proj -> nspec;
@@ -579,5 +640,5 @@ void recover_opengl_data (struct project * this_proj, int nmols, int add, int re
     set_advanced_bonding_menus (this_proj -> modelgl);
 #endif
   }
-  new_coord_menus (this_proj, this_proj -> modelgl -> atom_win -> coord, new_spec, nmols, showcoord, showpoly, update_it, update_frag, (add || rem) ? FALSE : (! nmols) ? TRUE : FALSE);
+  new_coord_menus (this_proj, this_proj -> modelgl -> atom_win -> coord, new_spec, nmols, showcoord, showpoly, showfrag, update_it, update_frag, (add || rem) ? FALSE : (! nmols) ? TRUE : FALSE);
 }

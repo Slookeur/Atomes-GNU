@@ -11,6 +11,69 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'datab.c'
+*
+*  Contains:
+*
+
+ - The curve data edition widget and associated callbacks
+
+*
+*  List of subroutines:
+
+  G_MODULE_EXPORT gboolean on_data_button_event (GtkWidget * widget, GdkEvent * event, gpointer data);
+  G_MODULE_EXPORT gboolean cancel_win (GtkWindow * win, gpointer data);
+  G_MODULE_EXPORT gboolean cancel_win (GtkWidget * win, GdkEvent * event, gpointer data);
+
+  void get_tree_data (GtkWidget * tree);
+  void save_row (gpointer data, gpointer user_data);
+  void update_first_row (gpointer data, gpointer user_data);
+  void update_first_col ();
+  void add_to_last_row (gpointer data, gpointer user_data);
+  void add_to_last_col (double cte, gpointer data);
+  void multiply_last_row (gpointer data, gpointer user_data);
+  void multiply_last_col (double cte, gpointer data);
+  void select_row (gpointer data, gpointer user_data);
+  void copy_row (gpointer data, gpointer user_data);
+  void copy_content (gpointer data);
+  void add_row (gpointer data, gpointer user_data);
+  void delete_row (gpointer data, gpointer user_data);
+  void insert_cell (gpointer data);
+  void delete_cell (gpointer data);
+  void add_to_column (gpointer data);
+  void multiply_column (gpointer data);
+  void data_popup_menu (GtkWidget * top_level, double x, double y, gpointer data);
+  void data_popup_menu (GtkWidget * top_level, GdkEvent * event, gpointer data);
+  void data_button_event (GtkWidget * data_tree, double event_x, double event_y, guint event_button, guint event_type, gpointer data);
+  void data_button_event (GtkWidget * data_tree, GdkEvent * event, guint event_button, guint event_type, gpointer data);
+  void cancel_changes (GtkWidget * widg, gpointer data);
+
+  static void fill_data_model (GtkListStore * store, struct project * this_proj, int b, int c);
+
+  G_MODULE_EXPORT void adjust_value (GtkEntry * res, gpointer data);
+  G_MODULE_EXPORT void run_add_to_column (GtkDialog * wind, gint response_id, gpointer data);
+  G_MODULE_EXPORT void run_multiply_column (GtkDialog * wind, gint response_id, gpointer data);
+  G_MODULE_EXPORT void data_pop_action (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void on_data_button_pressed (GtkGesture * gesture, int n_press, double x, double y, gpointer data);
+  G_MODULE_EXPORT void on_data_button_released (GtkGesture * gesture, int n_press, double x, double y, gpointer data);
+  G_MODULE_EXPORT void cancel_but (GtkButton * but, gpointer data);
+  G_MODULE_EXPORT void validate_changes (GtkButton * but, gpointer data);
+  G_MODULE_EXPORT void edit_data (GtkWidget * but, gpointer data);
+
+  GtkWidget * setview (struct project * this_proj, int b, int c);
+
+  GMenu * insert_place ();
+  GMenu * insert_data ();
+  GMenu * delete_data ();
+  GMenu * cell_title ();
+  GMenu* cell_actions ();
+  GMenu * column_actions ();
+  GMenu * column_title ();
+  GMenu * data_menu ();
+
+*/
+
 #include <gtk/gtk.h>
 #include <cairo.h>
 #include <string.h>
@@ -32,6 +95,13 @@ GtkTreePath * path;
 GtkTreeIter row;
 gchar * text;
 
+/*
+*  void get_tree_data (GtkWidget * tree)
+*
+*  Usage: get information on location in a GtkTreeView
+*
+*  GtkWidget * tree : the GtkTreeView
+*/
 void get_tree_data (GtkWidget * tree)
 {
   sel = gtk_tree_view_get_selection (GTK_TREE_VIEW(tree));
@@ -40,6 +110,14 @@ void get_tree_data (GtkWidget * tree)
   nrows = gtk_tree_selection_count_selected_rows (sel);
 }
 
+/*
+*  void save_row (gpointer data, gpointer user_data)
+*
+*  Usage:
+*
+*  gpointer data      :
+*  gpointer user_data :
+*/
 void save_row (gpointer data, gpointer user_data)
 {
   path = data;
@@ -53,6 +131,14 @@ void save_row (gpointer data, gpointer user_data)
   nrows = nrows + 1;
 }
 
+/*
+*  void update_first_row (gpointer data, gpointer user_data)
+*
+*  Usage:
+*
+*  gpointer data      :
+*  gpointer user_data :
+*/
 void update_first_row (gpointer data, gpointer user_data)
 {
   path = data;
@@ -63,6 +149,12 @@ void update_first_row (gpointer data, gpointer user_data)
   }
 }
 
+/*
+*  void update_first_col ()
+*
+*  Usage:
+*
+*/
 void update_first_col ()
 {
   gtk_tree_selection_select_all (sel);
@@ -72,6 +164,14 @@ void update_first_col ()
   gtk_tree_selection_unselect_all (sel);
 }
 
+/*
+*  void add_to_last_row (gpointer data, gpointer user_data)
+*
+*  Usage:
+*
+*  gpointer data      :
+*  gpointer user_data :
+*/
 void add_to_last_row (gpointer data, gpointer user_data)
 {
   path = data;
@@ -84,6 +184,14 @@ void add_to_last_row (gpointer data, gpointer user_data)
   }
 }
 
+/*
+*  void add_to_last_col (double cte, gpointer data)
+*
+*  Usage:
+*
+*  double cte    :
+*  gpointer data : the associated data pointer
+*/
 void add_to_last_col (double cte, gpointer data)
 {
   qint * dat = (qint *)data;
@@ -96,6 +204,14 @@ void add_to_last_col (double cte, gpointer data)
   gtk_tree_selection_unselect_all (sel);
 }
 
+/*
+*  void multiply_last_row (gpointer data, gpointer user_data)
+*
+*  Usage:
+*
+*  gpointer data      :
+*  gpointer user_data :
+*/
 void multiply_last_row (gpointer data, gpointer user_data)
 {
   path = data;
@@ -108,6 +224,14 @@ void multiply_last_row (gpointer data, gpointer user_data)
   }
 }
 
+/*
+*  void multiply_last_col (double cte, gpointer data)
+*
+*  Usage:
+*
+*  double cte    :
+*  gpointer data :the associated data pointer
+*/
 void multiply_last_col (double cte, gpointer data)
 {
   qint * dat = (qint *)data;
@@ -120,6 +244,14 @@ void multiply_last_col (double cte, gpointer data)
   gtk_tree_selection_unselect_all (sel);
 }
 
+/*
+*  void select_row (gpointer data, gpointer user_data)
+*
+*  Usage:
+*
+*  gpointer data      :
+*  gpointer user_data :
+*/
 void select_row (gpointer data, gpointer user_data)
 {
   path = data;
@@ -129,6 +261,14 @@ void select_row (gpointer data, gpointer user_data)
   }
 }
 
+/*
+*  void copy_row (gpointer data, gpointer user_data)
+*
+*  Usage:
+*
+*  gpointer data      :
+*  gpointer user_data :
+*/
 void copy_row (gpointer data, gpointer user_data)
 {
   path = data;
@@ -153,6 +293,13 @@ void copy_row (gpointer data, gpointer user_data)
   }
 }
 
+/*
+*  void copy_content (gpointer data)
+*
+*  Usage:
+*
+*  gpointer data : the associated data pointer
+*/
 void copy_content (gpointer data)
 {
   text = NULL;
@@ -164,6 +311,14 @@ void copy_content (gpointer data)
   g_free (text);
 }
 
+/*
+*  void add_row (gpointer data, gpointer user_data)
+*
+*  Usage:
+*
+*  gpointer data      :
+*  gpointer user_data :
+*/
 void add_row (gpointer data, gpointer user_data)
 {
   GtkTreeIter newrow;
@@ -181,6 +336,14 @@ void add_row (gpointer data, gpointer user_data)
   }
 }
 
+/*
+*  void delete_row (gpointer data, gpointer user_data)
+*
+*  Usage:
+*
+*  gpointer data      :
+*  gpointer user_data :
+*/
 void delete_row (gpointer data, gpointer user_data)
 {
   path = data;
@@ -190,6 +353,13 @@ void delete_row (gpointer data, gpointer user_data)
   }
 }
 
+/*
+*  void insert_cell (gpointer data)
+*
+*  Usage:
+*
+*  gpointer data : the associated data pointer
+*/
 void insert_cell (gpointer data)
 {
   if (GPOINTER_TO_INT(data) == 0)
@@ -204,16 +374,29 @@ void insert_cell (gpointer data)
   update_first_col ();
 }
 
+/*
+*  void delete_cell (gpointer data)
+*
+*  Usage:
+*
+*  gpointer data : the associated data pointer
+*/
 void delete_cell (gpointer data)
 {
   g_list_foreach (g_list_reverse (lrows), (GFunc)delete_row, NULL);
   update_first_col ();
 }
 
-G_MODULE_EXPORT void edit_cell (GtkCellRendererText * cell,
-                                gchar * path_string,
-                                gchar * new_text,
-                                gpointer user_data)
+/*
+*  G_MODULE_EXPORT void edit_cell (GtkCellRendererText * cell, gchar * path_string,
+                                   gchar * new_text, gpointer user_data)
+*  GtkCellRendererText * cell :
+*  gchar * path_string        :
+   gchar * new_text           :
+   gpointer data              : the associated data pointer
+*/
+G_MODULE_EXPORT void edit_cell (GtkCellRendererText * cell, gchar * path_string,
+                                gchar * new_text, gpointer user_data)
 {
   qint * id = (qint *)user_data;
   struct project * this_proj = get_project_by_id (id -> a);
@@ -225,6 +408,14 @@ G_MODULE_EXPORT void edit_cell (GtkCellRendererText * cell,
 
 GtkWidget * col_entry;
 
+/*
+*  G_MODULE_EXPORT void adjust_value (GtkEntry * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * res : the GtkEntry sending the signal
+*  gpointer data  : the associated data pointer
+*/
 G_MODULE_EXPORT void adjust_value (GtkEntry * res, gpointer data)
 {
   const gchar * m = entry_get_text (res);
@@ -232,6 +423,15 @@ G_MODULE_EXPORT void adjust_value (GtkEntry * res, gpointer data)
   update_entry_double (res, v);
 }
 
+/*
+*  G_MODULE_EXPORT void run_add_to_column (GtkDialog * wind, gint response_id, gpointer data)
+*
+*  Usage:
+*
+*  GtkDialog * wind : the GtkDialog sending the signal
+*  gint response_id :
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void run_add_to_column (GtkDialog * wind, gint response_id, gpointer data)
 {
   if (response_id == GTK_RESPONSE_APPLY)
@@ -244,6 +444,13 @@ G_MODULE_EXPORT void run_add_to_column (GtkDialog * wind, gint response_id, gpoi
   destroy_this_dialog (wind);
 }
 
+/*
+*  void add_to_column (gpointer data)
+*
+*  Usage:
+*
+*  gpointer data : the associated data pointer
+*/
 void add_to_column (gpointer data)
 {
   GtkWidget * wind;
@@ -269,6 +476,15 @@ void add_to_column (gpointer data)
   run_this_gtk_dialog (wind, G_CALLBACK(run_add_to_column), data);
 }
 
+/*
+*  G_MODULE_EXPORT void run_multiply_column (GtkDialog * wind, gint response_id, gpointer data)
+*
+*  Usage:
+*
+*  GtkDialog * wind : the GtkDialog sending the signal
+*  gint response_id :
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void run_multiply_column (GtkDialog * wind, gint response_id, gpointer data)
 {
   if (response_id == GTK_RESPONSE_APPLY)
@@ -281,6 +497,13 @@ G_MODULE_EXPORT void run_multiply_column (GtkDialog * wind, gint response_id, gp
   destroy_this_dialog (wind);
 }
 
+/*
+*  void multiply_column (gpointer data)
+*
+*  Usage:
+*
+*  gpointer data : the associated data pointer
+*/
 void multiply_column (gpointer data)
 {
   GtkWidget * wind;
@@ -306,6 +529,11 @@ void multiply_column (gpointer data)
   run_this_gtk_dialog (wind, G_CALLBACK(run_multiply_column), data);
 }
 
+/*
+*  GMenu * insert_place ()
+*
+*  Usage:
+*/
 GMenu * insert_place ()
 {
   GMenu * menu = g_menu_new ();
@@ -314,13 +542,23 @@ GMenu * insert_place ()
   return menu;
 }
 
+/*
+*  GMenu * insert_data ()
+*
+*  Usage:
+*/
 GMenu * insert_data ()
 {
   GMenu * menu = g_menu_new ();
-  g_menu_append_submenu (menu, "Insert Row(s)", (GMenuModel*)insert_place());
+  append_submenu (menu, "Insert Row(s)", insert_place());
   return menu;
 }
 
+/*
+*  GMenu * delete_data ()
+*
+*  Usage:
+*/
 GMenu * delete_data ()
 {
   GMenu * menu = g_menu_new ();
@@ -328,6 +566,11 @@ GMenu * delete_data ()
   return menu;
 }
 
+/*
+*  GMenu * cell_title ()
+*
+*  Usage:
+*/
 GMenu * cell_title ()
 {
   GMenu * menu = g_menu_new ();
@@ -335,22 +578,25 @@ GMenu * cell_title ()
   return menu;
 }
 
+/*
+*  GMenu* cell_actions ()
+*
+*  Usage:
+*/
 GMenu* cell_actions ()
 {
   GMenu * menu = g_menu_new ();
-  if (! registered_atomes || testing_atomes)
-  {
-    append_menu_item (menu, "Copy Selected Row(s)", "None", NULL, NULL, IMG_STOCK, (gpointer)EDITC, FALSE, FALSE, FALSE, NULL);
-  }
-  else
-  {
-    append_menu_item (menu, "Copy Selected Row(s)", "data-pop.copy", NULL, NULL, IMG_STOCK, (gpointer)EDITC, FALSE, FALSE, FALSE, NULL);
-  }
+  append_menu_item (menu, "Copy Selected Row(s)", "data-pop.copy", NULL, NULL, IMG_STOCK, (gpointer)EDITC, FALSE, FALSE, FALSE, NULL);
   g_menu_append_section (menu, NULL, (GMenuModel*)insert_data());
   g_menu_append_section (menu, NULL, (GMenuModel*)delete_data());
   return menu;
 }
 
+/*
+*  GMenu * column_actions ()
+*
+*  Usage:
+*/
 GMenu * column_actions ()
 {
   GMenu * menu = g_menu_new ();
@@ -359,6 +605,11 @@ GMenu * column_actions ()
   return menu;
 }
 
+/*
+*  GMenu * column_title ()
+*
+*  Usage:
+*/
 GMenu * column_title ()
 {
   GMenu * menu = g_menu_new ();
@@ -366,6 +617,11 @@ GMenu * column_title ()
   return menu;
 }
 
+/*
+*  GMenu * data_menu ()
+*
+*  Usage:
+*/
 GMenu * data_menu ()
 {
   GMenu * menu = g_menu_new ();
@@ -376,6 +632,15 @@ GMenu * data_menu ()
   return menu;
 }
 
+/*
+*  G_MODULE_EXPORT void data_pop_action (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void data_pop_action (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   gchar * name = g_strdup_printf ("%s", g_action_get_name(G_ACTION(action)));
@@ -406,8 +671,27 @@ G_MODULE_EXPORT void data_pop_action (GSimpleAction * action, GVariant * paramet
 }
 
 #ifdef GTK4
+/*
+*  void data_popup_menu (GtkWidget * top_level, double x, double y, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * top_level :
+*  double x              :
+*  double y              :
+*  gpointer data         : the associated data pointer
+*/
 void data_popup_menu (GtkWidget * top_level, double x, double y, gpointer data)
 #else
+/*
+*  void data_popup_menu (GtkWidget * top_level, GdkEvent * event, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * top_level :
+*  GdkEvent * event      : the GdkEvent triggering the signal
+*  gpointer data         : the associated data pointer
+*/
 void data_popup_menu (GtkWidget * top_level, GdkEvent * event, gpointer data)
 #endif
 {
@@ -448,8 +732,31 @@ void data_popup_menu (GtkWidget * top_level, GdkEvent * event, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  void data_button_event (GtkWidget * data_tree, double event_x, double event_y, guint event_button, guint event_type, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * data_tree :
+*  double event_x        :
+*  double event_y        :
+*  guint event_button    :
+*  guint event_type      :
+*  gpointer data         :
+*/
 void data_button_event (GtkWidget * data_tree, double event_x, double event_y, guint event_button, guint event_type, gpointer data)
 #else
+/*
+*  void data_button_event (GtkWidget * data_tree, GdkEvent * event, guint event_button, guint event_type, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * data_tree :
+*  GdkEvent * event      : the GdkEvent triggering the signal
+*  guint event_button    :
+*  guint event_type      :
+*  gpointer data         : the associated data pointer
+*/
 void data_button_event (GtkWidget * data_tree, GdkEvent * event, guint event_button, guint event_type, gpointer data)
 #endif
 {
@@ -493,6 +800,16 @@ G_MODULE_EXPORT gboolean on_data_button_event (GtkWidget * widget, GdkEvent * ev
 }
 #endif
 
+/*
+*  static void fill_data_model (GtkListStore * store, struct project * this_proj, int b, int c)
+*
+*  Usage:
+*
+*  GtkListStore * store       :
+*  struct project * this_proj : the target project
+*  int b                      :
+*  int c                      :
+*/
 static void fill_data_model (GtkListStore * store, struct project * this_proj, int b, int c)
 {
   GtkTreeIter datalevel;
@@ -507,6 +824,15 @@ static void fill_data_model (GtkListStore * store, struct project * this_proj, i
   }
 }
 
+/*
+*  GtkWidget * setview (struct project * this_proj, int b, int c)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  int b                      :
+*  int c                      :
+*/
 GtkWidget * setview (struct project * this_proj, int b, int c)
 {
   GtkWidget * dataview;
@@ -574,6 +900,14 @@ GtkWidget * setview (struct project * this_proj, int b, int c)
   return dataview;
 }
 
+/*
+*  void cancel_changes (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 void cancel_changes (GtkWidget * widg, gpointer data)
 {
   tint * id = (tint *)data;
@@ -581,14 +915,39 @@ void cancel_changes (GtkWidget * widg, gpointer data)
   get_project_by_id(id -> a) -> curves[id -> b][id -> c] -> datatree = NULL;
 }
 
+/*
+*  G_MODULE_EXPORT void cancel_but (GtkButton * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkButton * but : the GtkButton sending the signal
+*  gpointer data   : the associated data pointer
+*/
 G_MODULE_EXPORT void cancel_but (GtkButton * but, gpointer data)
 {
   cancel_changes (get_top_level(GTK_WIDGET(but)), data);
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT gboolean cancel_win (GtkWindow * win, gpointer data)
+*
+*  Usage:
+*
+*  GtkWindow * win : the GtkWindow sending the signal
+*  gpointer data   : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean cancel_win (GtkWindow * win, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT gboolean cancel_win (GtkWidget * win, GdkEvent * event, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * win  : the GtkWidget sending the signal
+*  GdkEvent * event : the GdkEvent triggering the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean cancel_win (GtkWidget * win, GdkEvent * event, gpointer data)
 #endif
 {
@@ -596,6 +955,14 @@ G_MODULE_EXPORT gboolean cancel_win (GtkWidget * win, GdkEvent * event, gpointer
   return TRUE;
 }
 
+/*
+*  G_MODULE_EXPORT void validate_changes (GtkButton * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkButton * but :
+*  gpointer data   : the associated data pointer
+*/
 G_MODULE_EXPORT void validate_changes (GtkButton * but, gpointer data)
 {
   tint * id = (tint *)data;
@@ -618,6 +985,14 @@ G_MODULE_EXPORT void validate_changes (GtkButton * but, gpointer data)
   update_curves ();
 }
 
+/*
+*  G_MODULE_EXPORT void edit_data (GtkWidget * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * but : the GtkWidget sending the signal
+*  gpointer data   : the associated data pointer
+*/
 G_MODULE_EXPORT void edit_data (GtkWidget * but, gpointer data)
 {
   GtkWidget * win;

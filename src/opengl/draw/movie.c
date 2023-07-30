@@ -11,6 +11,43 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'movie.c'
+*
+*  Contains:
+*
+
+ - The subroutines to encode a movie / image from the OpenGL rendering
+
+*
+*  List of subroutines:
+
+  gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, int ogl_q);
+  gboolean create_movie (glwin * view, video_options * vopts, gchar * videofile);
+
+  void convert_rgb_pixbuf_to_yuv (GdkPixbuf * pixbuf, AVFrame * picture, int w, int h);
+  void fill_image (VideoStream * vs, int width, int height, glwin * view);
+  void set_old_cmap (image * img, int stp, int id);
+  void init_frame_buffer (int x, int y);
+  void close_frame_buffer ();
+  void save_movie (glwin * view, video_options * vopts);
+
+  static void ffmpeg_encoder_set_frame_yuv_from_rgb (uint8_t * rgb, VideoStream * vs);
+  static void write_video_frame (AVFormatContext * f_context, VideoStream * vs, int frame_id, glwin * view);
+  static void close_stream (AVFormatContext * fc, VideoStream * vs);
+
+  G_MODULE_EXPORT void run_save_movie (GtkNativeDialog * info, gint response_id, gpointer data);
+  G_MODULE_EXPORT void run_save_movie (GtkDialog * info, gint response_id, gpointer data);
+
+  static GLubyte * capture_opengl_image (unsigned int width, unsigned int height);
+
+  AVCodecContext * add_codec_context (AVFormatContext * fc, const AVCodec * vc, video_options * vopts);
+  static AVFrame * alloc_video_frame (AVCodecContext * cc);
+
+  VideoStream * add_video_stream (AVFormatContext * fc, const AVCodec * vc, video_options * vopts);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "project.h"
@@ -80,6 +117,16 @@ int video_outbuf_size;
 int num_frames;
 int frame_start;
 
+/*
+*  void convert_rgb_pixbuf_to_yuv (GdkPixbuf * pixbuf, AVFrame * picture, int w, int h)
+*
+*  Usage: convert an RGB pixbuf to an YUV picture frame
+*
+*  GdkPixbuf * pixbuf : the Gdk RGB pixbuf to convert
+*  AVFrame * picture  : the AVFrame to store the data
+*  int w              : image width
+*  int h              : image height
+*/
 void convert_rgb_pixbuf_to_yuv (GdkPixbuf * pixbuf, AVFrame * picture, int w, int h)
 {
   gint x, y, location, location2;
@@ -163,6 +210,14 @@ void convert_rgb_pixbuf_to_yuv (GdkPixbuf * pixbuf, AVFrame * picture, int w, in
   }
 }
 
+/*
+*  static void ffmpeg_encoder_set_frame_yuv_from_rgb (uint8_t * rgb, VideoStream * vs)
+*
+*  Usage: set an encoder YUV frame from an RGB image
+*
+*  uint8_t * rgb    : the RGB data to convert
+*  VideoStream * vs : the video stream to encode the data
+*/
 static void ffmpeg_encoder_set_frame_yuv_from_rgb (uint8_t * rgb, VideoStream * vs)
 {
   const int in_linesize = 4 * vs -> cc -> width;
@@ -175,6 +230,11 @@ static void ffmpeg_encoder_set_frame_yuv_from_rgb (uint8_t * rgb, VideoStream * 
              vs -> frame -> data, vs -> frame -> linesize);
 }
 
+/*
+*  static GLubyte * capture_opengl_image (unsigned int width, unsigned int height)
+*
+*  Usage : capture an OpenGL image from an OpenGL rendering
+*/
 static GLubyte * capture_opengl_image (unsigned int width, unsigned int height)
 {
   size_t i, nvals;
@@ -192,6 +252,16 @@ static GLubyte * capture_opengl_image (unsigned int width, unsigned int height)
 }
 //#endif
 
+/*
+*  void fill_image (VideoStream * vs, int width, int height, glwin * view)
+*
+*  Usage: render an image from an OpenGL rendering
+*
+*  VideoStream * vs : the video stream
+*  int width        : image width
+*  int height       : image height
+*  glwin * view     : the target glwin
+*/
 void fill_image (VideoStream * vs, int width, int height, glwin * view)
 {
   // opengl call is here !!!
@@ -214,6 +284,16 @@ void fill_image (VideoStream * vs, int width, int height, glwin * view)
   g_free (image);
 }
 
+/*
+*  static void write_video_frame (AVFormatContext * f_context, VideoStream * vs, int frame_id, glwin * view)
+*
+*  Usage: write a video frame from an OpenGL render
+*
+*  AVFormatContext * f_context : the format context to use
+*  VideoStream * vs            : the video stream
+*  int frame_id                : the frame id number
+*  glwin * view                : the target glwin
+*/
 static void write_video_frame (AVFormatContext * f_context, VideoStream * vs, int frame_id, glwin * view)
 {
   int out_size = 0;
@@ -271,6 +351,13 @@ static void write_video_frame (AVFormatContext * f_context, VideoStream * vs, in
   }
 }
 
+/*
+*  static AVFrame * alloc_video_frame (AVCodecContext * cc)
+*
+*  Usage : allocate a video frame using a codec context
+*
+*  AVCodecContext * cc : the codec context
+*/
 static AVFrame * alloc_video_frame (AVCodecContext * cc)
 {
   AVFrame * frame;
@@ -289,6 +376,15 @@ static AVFrame * alloc_video_frame (AVCodecContext * cc)
   return frame;
 }
 
+/*
+*  AVCodecContext * add_codec_context (AVFormatContext * fc, const AVCodec * vc, video_options * vopts)
+*
+*  Usage : create a video codec context
+*
+*  AVFormatContext * fc  : the format context
+*  const AVCodec * vc    : the codec
+*  video_options * vopts : the video encoding options
+*/
 AVCodecContext * add_codec_context (AVFormatContext * fc, const AVCodec * vc, video_options * vopts)
 {
   AVCodecContext * cc;
@@ -335,6 +431,15 @@ AVCodecContext * add_codec_context (AVFormatContext * fc, const AVCodec * vc, vi
   return cc;
 }
 
+/*
+*  VideoStream * add_video_stream (AVFormatContext * fc, const AVCodec * vc, video_options * vopts)
+*
+*  Usage: create video stream and the associated data buffers
+*
+*  AVFormatContext * fc  : the format context
+*  const AVCodec * vc    : the codec
+*  video_options * vopts : the video encoding options
+*/
 VideoStream * add_video_stream (AVFormatContext * fc, const AVCodec * vc, video_options * vopts)
 {
   VideoStream * stream = g_malloc0 (sizeof*stream);
@@ -361,44 +466,73 @@ VideoStream * add_video_stream (AVFormatContext * fc, const AVCodec * vc, video_
   return stream;
 }
 
+/*
+*  static void close_stream (AVFormatContext * fc, VideoStream * vs)
+*
+*  Usage: close the video stream and free associated data buffers
+*
+*  AVFormatContext * fc : the format context to free
+*  VideoStream * vs     : the video stream to close
+*/
 static void close_stream (AVFormatContext * fc, VideoStream * vs)
 {
-  avcodec_free_context(& vs -> cc);
+  avcodec_free_context (& vs -> cc);
   av_frame_free (& vs -> frame);
-  sws_freeContext(vs -> sws_ctx);
+  sws_freeContext (vs -> sws_ctx);
   avformat_free_context (fc);
 }
 
 int * old_cmap[2];
 
+/*
+*  void set_old_cmap (image * img, int stp, int id)
+*
+*  Usage: preserve color map information
+*
+*  image * img : the target image
+*  int stp     : MD step
+*  int id      : color map id (0 = atom(s), 1 = polyhedra)
+*/
 void set_old_cmap (image * img, int stp, int id)
 {
   old_cmap[id][stp] = img -> color_map[id];
 }
 
+/*
+*  gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, int ogl_q)
+*
+*  Usage: test if it is required to update the OpenGL shaders, and which one(s)
+*
+*  glwin * view  : the target glwin
+*  image * img_a : the previous image
+*  image * img_b : the next image
+*  int ogl_q     : OpenGL quality
+*/
 gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, int ogl_q)
 {
   gboolean shaders = FALSE;
   int i, j, k;
-  k = img_b -> step;
+  int stp = img_b -> step;
 
   if (ogl_q == 0 && img_a -> quality != img_b -> quality)
   {
     view -> create_shaders[MDBOX] = TRUE;
     view -> create_shaders[MAXIS] = TRUE;
-    view -> n_shaders[ATOMS][k] = -1;
+    view -> n_shaders[ATOMS][stp] = -1;
     view -> create_shaders[ATOMS] = TRUE;
-    view -> n_shaders[BONDS][k] = -1;
+    view -> n_shaders[BONDS][stp] = -1;
     view -> create_shaders[BONDS] = TRUE;
-    view -> n_shaders[POLYS][k] = -1;
+    view -> n_shaders[POLYS][stp] = -1;
     view -> create_shaders[POLYS] = TRUE;
-    view -> n_shaders[RINGS][k] = -1;
+    view -> n_shaders[RINGS][stp] = -1;
     view -> create_shaders[RINGS] = TRUE;
-    view -> n_shaders[SELEC][k] = -1;
+    view -> n_shaders[VOLMS][stp] = -1;
+    view -> create_shaders[VOLMS] = TRUE;
+    view -> n_shaders[SELEC][stp] = -1;
     view -> create_shaders[SELEC] = TRUE;
     view -> create_shaders[LABEL] = TRUE;
     view -> create_shaders[MEASU] = TRUE;
-    for (i=0; i<2; i++) set_old_cmap (img_b, k, i);
+    for (i=0; i<2; i++) set_old_cmap (img_b, stp, i);
     return TRUE;
   }
 
@@ -408,19 +542,21 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
     {
       view -> create_shaders[MDBOX] = TRUE;
       view -> create_shaders[MAXIS] = TRUE;
-      view -> n_shaders[ATOMS][k] = -1;
+      view -> n_shaders[ATOMS][stp] = -1;
       view -> create_shaders[ATOMS] = TRUE;
-      view -> n_shaders[BONDS][k] = -1;
+      view -> n_shaders[BONDS][stp] = -1;
       view -> create_shaders[BONDS] = TRUE;
-      view -> n_shaders[POLYS][k] = -1;
+      view -> n_shaders[POLYS][stp] = -1;
       view -> create_shaders[POLYS] = TRUE;
-      view -> n_shaders[RINGS][k] = -1;
+      view -> n_shaders[RINGS][stp] = -1;
       view -> create_shaders[RINGS] = TRUE;
-      view -> n_shaders[SELEC][k] = -1;
+      view -> n_shaders[VOLMS][stp] = -1;
+      view -> create_shaders[VOLMS] = TRUE;
+      view -> n_shaders[SELEC][stp] = -1;
       view -> create_shaders[SELEC] = TRUE;
       view -> create_shaders[LABEL] = TRUE;
       view -> create_shaders[MEASU] = TRUE;
-      for (i=0; i<2; i++) set_old_cmap (img_b, k, i);
+      for (i=0; i<2; i++) set_old_cmap (img_b, stp, i);
       return TRUE;
     }
   }
@@ -433,11 +569,11 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
     {
       if (img_a -> show_coord[i][j] != img_b -> show_coord[i][j])
       {
-        view -> n_shaders[ATOMS][k] = -1;
+        view -> n_shaders[ATOMS][stp] = -1;
         view -> create_shaders[ATOMS] = TRUE;
-        view -> n_shaders[BONDS][k] = -1;
+        view -> n_shaders[BONDS][stp] = -1;
         view -> create_shaders[BONDS] = TRUE;
-        view -> n_shaders[SELEC][k] = -1;
+        view -> n_shaders[SELEC][stp] = -1;
         view -> create_shaders[SELEC] = TRUE;
         view -> create_shaders[LABEL] = TRUE;
         view -> create_shaders[MEASU] = TRUE;
@@ -449,7 +585,7 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
       {
         if (img_a -> show_poly[i][j] != img_b -> show_poly[i][j])
         {
-          view -> n_shaders[POLYS][k] = -1;
+          view -> n_shaders[POLYS][stp] = -1;
           view -> create_shaders[POLYS] = TRUE;
         }
       }
@@ -460,7 +596,7 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
       {
         if (img_a -> show_poly[i][j] != img_b -> show_poly[i][j])
         {
-          view -> n_shaders[RINGS][k] = -1;
+          view -> n_shaders[RINGS][stp] = -1;
           view -> create_shaders[RINGS] = TRUE;
         }
       }
@@ -470,9 +606,9 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
   {
     if (img_a -> show_coord[9][j] != img_b -> show_coord[9][j])
     {
-      view -> n_shaders[ATOMS][k] = -1;
+      view -> n_shaders[ATOMS][stp] = -1;
       view -> create_shaders[ATOMS] = TRUE;
-      view -> n_shaders[BONDS][k] = -1;
+      view -> n_shaders[BONDS][stp] = -1;
       view -> create_shaders[BONDS] = TRUE;
       view -> create_shaders[LABEL] = TRUE;
       view -> create_shaders[MEASU] = TRUE;
@@ -481,60 +617,116 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
 
   if (img_a -> draw_clones != img_b -> draw_clones)
   {
-    view -> n_shaders[ATOMS][k] = -1;
+    view -> n_shaders[ATOMS][stp] = -1;
     view -> create_shaders[ATOMS] = TRUE;
-    view -> n_shaders[BONDS][k] = -1;
+    view -> n_shaders[BONDS][stp] = -1;
     view -> create_shaders[BONDS] = TRUE;
-    view -> n_shaders[POLYS][k] = -1;
+    view -> n_shaders[POLYS][stp] = -1;
     view -> create_shaders[POLYS] = TRUE;
-    view -> n_shaders[RINGS][k] = -1;
+    view -> n_shaders[RINGS][stp] = -1;
     view -> create_shaders[RINGS] = TRUE;
-    view -> n_shaders[SELEC][k] = -1;
+    view -> n_shaders[SELEC][stp] = -1;
     view -> create_shaders[SELEC] = TRUE;
     view -> create_shaders[LABEL] = TRUE;
     shaders = TRUE;
   }
 
-  if (img_a -> color_map[0] != img_b -> color_map[0] || img_b -> color_map[0] != old_cmap[0][k])
+  if (img_a -> color_map[0] != img_b -> color_map[0] || img_b -> color_map[0] != old_cmap[0][stp])
   {
-    view -> n_shaders[ATOMS][k] = -1;
+    view -> n_shaders[ATOMS][stp] = -1;
     view -> create_shaders[ATOMS] = TRUE;
-    view -> n_shaders[BONDS][k] = -1;
+    view -> n_shaders[BONDS][stp] = -1;
     view -> create_shaders[BONDS] = TRUE;
     view -> create_shaders[LABEL] = TRUE;
-    set_old_cmap (img_b, k, 0);
+    set_old_cmap (img_b, stp, 0);
     shaders = TRUE;
   }
 
-  if (img_a -> color_map[1] != img_b -> color_map[1] || img_b -> color_map[1] != old_cmap[1][k])
+  if (img_a -> color_map[1] != img_b -> color_map[1] || img_b -> color_map[1] != old_cmap[1][stp])
   {
-    view -> n_shaders[POLYS][k] = -1;
+    view -> n_shaders[POLYS][stp] = -1;
     view -> create_shaders[POLYS] = TRUE;
-    set_old_cmap (img_b, k, 1);
+    set_old_cmap (img_b, stp, 1);
     shaders = TRUE;
   }
 
   if (img_a -> step != img_b -> step)
   {
-    if (view -> n_shaders[ATOMS][k] < 0) view -> create_shaders[ATOMS] = TRUE;
-    if (view -> n_shaders[BONDS][k] < 0) view -> create_shaders[BONDS] = TRUE;
-    if (view -> n_shaders[POLYS][k] < 0) view -> create_shaders[POLYS] = TRUE;
-    if (view -> n_shaders[RINGS][k] < 0) view -> create_shaders[RINGS] = TRUE;
-    if (view -> n_shaders[SELEC][k] < 0) view -> create_shaders[SELEC] = TRUE;
+    if (view -> n_shaders[ATOMS][stp] < 0) view -> create_shaders[ATOMS] = TRUE;
+    if (view -> n_shaders[BONDS][stp] < 0) view -> create_shaders[BONDS] = TRUE;
+    if (view -> n_shaders[POLYS][stp] < 0) view -> create_shaders[POLYS] = TRUE;
+    if (view -> n_shaders[RINGS][stp] < 0) view -> create_shaders[RINGS] = TRUE;
+    if (view -> n_shaders[VOLMS][stp] < 0) view -> create_shaders[VOLMS] = TRUE;
+    if (view -> n_shaders[SELEC][stp] < 0) view -> create_shaders[SELEC] = TRUE;
     view -> create_shaders[LABEL] = TRUE;
     view -> create_shaders[MEASU] = TRUE;
     shaders = TRUE;
   }
 
+  gboolean do_volms = FALSE;
+  for (i=0; i<FILLED_STYLES; i++)
+  {
+    if (img_a -> show_vol[i] != img_b -> show_vol[i]) do_volms = TRUE;
+    if (img_a -> vol_col[i].red != img_b -> vol_col[i].red) do_volms = TRUE;
+    if (img_a -> vol_col[i].green != img_b -> vol_col[i].green) do_volms = TRUE;
+    if (img_a -> vol_col[i].blue != img_b -> vol_col[i].blue) do_volms = TRUE;
+    for (j=0; j<2; j++)
+    {
+      if (img_a -> fm_show_vol[j][i] == NULL && img_b -> fm_show_vol[j][i] != NULL)
+      {
+        do_volms = TRUE;
+      }
+      else if (img_a -> fm_show_vol[j][i] == NULL && img_b -> fm_show_vol[j][i] != NULL)
+      {
+        do_volms = TRUE;
+      }
+      else if (img_a -> fm_show_vol[j][i] != NULL && img_b -> fm_show_vol[j][i] != NULL)
+      {
+        for (k=0; k<this_coord -> totcoord[j+2]; k++)
+        {
+          if (img_a -> fm_show_vol[j][i][k] != img_b -> fm_show_vol[j][i][k]) do_volms = TRUE;
+          if (img_a -> fm_vol_col[j][i][k].red != img_b -> fm_vol_col[j][i][k].red) do_volms = TRUE;
+          if (img_a -> fm_vol_col[j][i][k].green != img_b -> fm_vol_col[j][i][k].green) do_volms = TRUE;
+          if (img_a -> fm_vol_col[j][i][k].blue != img_b -> fm_vol_col[j][i][k].blue) do_volms = TRUE;
+        }
+      }
+    }
+  }
+  if (do_volms)
+  {
+    view -> create_shaders[VOLMS] = shaders = TRUE;
+    view -> n_shaders[VOLMS][stp] = -1;
+  }
+
   if (img_a -> box_axis[0] != img_b -> box_axis[0]) view -> create_shaders[MDBOX] = shaders = TRUE;
   if (img_a -> box_axis_rad[0] != img_b -> box_axis_rad[0]) view -> create_shaders[MDBOX] = shaders = TRUE;
   if (img_a -> box_axis_line[0] != img_b -> box_axis_line[0]) view -> create_shaders[MDBOX] = shaders = TRUE;
+  if (img_a -> box_color.red != img_b -> box_color.red) view -> create_shaders[MDBOX] = shaders = TRUE;
+  if (img_a -> box_color.green != img_b -> box_color.green) view -> create_shaders[MDBOX] = shaders = TRUE;
+  if (img_a -> box_color.blue != img_b -> box_color.blue) view -> create_shaders[MDBOX] = shaders = TRUE;
 
   if (img_a -> box_axis[1] != img_b -> box_axis[1]) view -> create_shaders[MAXIS] = shaders = TRUE;
   if (img_a -> box_axis_rad[1] != img_b -> box_axis_rad[1]) view -> create_shaders[MAXIS] = shaders = TRUE;
   if (img_a -> box_axis_line[1] != img_b -> box_axis_line[1]) view -> create_shaders[MAXIS] = shaders = TRUE;
   if (img_a -> axis_length != img_b -> axis_length) view -> create_shaders[MAXIS] = shaders = TRUE;
   if (img_a -> axispos != img_b -> axispos) view -> create_shaders[MAXIS] = shaders = TRUE;
+  if (img_a -> axis_color == NULL && img_b -> axis_color != NULL)
+  {
+    view -> create_shaders[MAXIS] = shaders = TRUE;
+  }
+  else if (img_a -> axis_color == NULL && img_b -> axis_color != NULL)
+  {
+    view -> create_shaders[MAXIS] = shaders = TRUE;
+  }
+  else if (img_a -> axis_color != NULL && img_b -> axis_color != NULL)
+  {
+    for (i=0; i<3; i++)
+    {
+      if (img_a -> axis_color[i].red != img_b -> axis_color[i].red) view -> create_shaders[MAXIS] = shaders = TRUE;
+      if (img_a -> axis_color[i].green != img_b -> axis_color[i].green) view -> create_shaders[MAXIS] = shaders = TRUE;
+      if (img_a -> axis_color[i].blue != img_b -> axis_color[i].blue) view -> create_shaders[MAXIS] = shaders = TRUE;
+    }
+  }
   if (img_a -> axis_labels != img_b -> axis_labels) view -> create_shaders[MAXIS] = shaders = TRUE;
   for (i=0; i<3; i++)
   {
@@ -556,18 +748,19 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
   }
   else if (img_a -> labels_color[2] != NULL && img_b -> labels_color[2] != NULL)
   {
-    for (j=0; j<3; j++)
+    for (i=0; i<3; i++)
     {
       if (img_a -> labels_color[2][i].red != img_b -> labels_color[2][i].red) view -> create_shaders[MAXIS] = shaders = TRUE;
       if (img_a -> labels_color[2][i].green != img_b -> labels_color[2][i].green) view -> create_shaders[MAXIS] = shaders = TRUE;
       if (img_a -> labels_color[2][i].blue != img_b -> labels_color[2][i].blue) view -> create_shaders[MAXIS] = shaders = TRUE;
     }
   }
+
   if (img_a -> cloned_poly != img_b -> cloned_poly)
   {
-    view -> n_shaders[POLYS][k] = -1;
+    view -> n_shaders[POLYS][stp] = -1;
     view -> create_shaders[POLYS] = TRUE;
-    view -> n_shaders[RINGS][k] = -1;
+    view -> n_shaders[RINGS][stp] = -1;
     view -> create_shaders[RINGS] = TRUE;
     shaders = TRUE;
   }
@@ -581,7 +774,7 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
       {
         if (img_a -> i_rings[i][0][0] != img_b -> i_rings[i][0][0])
         {
-          view -> n_shaders[RINGS][k] = -1;
+          view -> n_shaders[RINGS][stp] = -1;
           view -> create_shaders[RINGS] = TRUE;
           dorings = shaders = TRUE;
           break;
@@ -592,7 +785,7 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
           {
             if ((img_a -> i_rings[i][j+1][0] != img_b -> i_rings[i][j+1][0]) || (img_a -> i_rings[i][j+1][1] != img_b -> i_rings[i][j+1][1]))
             {
-              view -> n_shaders[RINGS][k] = -1;
+              view -> n_shaders[RINGS][stp] = -1;
               view -> create_shaders[RINGS] = TRUE;
               dorings = shaders = TRUE;
               break;
@@ -618,11 +811,11 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
       }
       if (img_a -> show_atom[i][j] != img_b -> show_atom[i][j])
       {
-        view -> n_shaders[ATOMS][k] = -1;
+        view -> n_shaders[ATOMS][stp] = -1;
         view -> create_shaders[ATOMS] = TRUE;
-        view -> n_shaders[BONDS][k] = -1;
+        view -> n_shaders[BONDS][stp] = -1;
         view -> create_shaders[BONDS] = TRUE;
-        view -> n_shaders[SELEC][k] = -1;
+        view -> n_shaders[SELEC][stp] = -1;
         view -> create_shaders[SELEC] = TRUE;
         view -> create_shaders[LABEL] = TRUE;
         view -> create_shaders[MEASU] = TRUE;
@@ -634,11 +827,11 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
     {
       if (img_a -> at_data[j].show[i] != img_b -> at_data[j].show[i] || img_a -> at_data[j].style != img_b -> at_data[j].style)
       {
-        view -> n_shaders[ATOMS][k] = -1;
+        view -> n_shaders[ATOMS][stp] = -1;
         view -> create_shaders[ATOMS] = TRUE;
-        view -> n_shaders[BONDS][k] = -1;
+        view -> n_shaders[BONDS][stp] = -1;
         view -> create_shaders[BONDS] = TRUE;
-        view -> n_shaders[SELEC][k] = -1;
+        view -> n_shaders[SELEC][stp] = -1;
         view -> create_shaders[SELEC] = TRUE;
         view -> create_shaders[LABEL] = TRUE;
         view -> create_shaders[MEASU] = TRUE;
@@ -651,12 +844,12 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
       }
       if (img_a -> at_data[j].pick[0] != img_b -> at_data[j].pick[0])
       {
-        view -> n_shaders[SELEC][k] = -1;
+        view -> n_shaders[SELEC][stp] = -1;
         view -> create_shaders[SELEC] = shaders = TRUE;
       }
       if (img_a -> at_data[j].pick[1] != img_b -> at_data[j].pick[1])
       {
-        view -> n_shaders[SELEC][k] = -1;
+        view -> n_shaders[SELEC][stp] = -1;
         view -> create_shaders[SELEC] = shaders = TRUE;
       }
     }
@@ -668,9 +861,9 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
      || (img_a -> pointrad[i] != img_b -> pointrad[i])
      || (img_a -> atomicrad[i] != img_b -> atomicrad[i]))
     {
-      view -> n_shaders[ATOMS][k] = -1;
+      view -> n_shaders[ATOMS][stp] = -1;
       view -> create_shaders[ATOMS] = TRUE;
-      view -> n_shaders[SELEC][k] = -1;
+      view -> n_shaders[SELEC][stp] = -1;
       view -> create_shaders[SELEC] = TRUE;
       view -> create_shaders[LABEL] = TRUE;
       shaders = TRUE;
@@ -680,9 +873,9 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
       if ((img_a -> bondrad[i][j] != img_b -> bondrad[i][j])
       || (img_a -> linerad[i][j] != img_b -> linerad[i][j]))
       {
-        view -> n_shaders[BONDS][k] = -1;
+        view -> n_shaders[BONDS][stp] = -1;
         view -> create_shaders[BONDS] = TRUE;
-        view -> n_shaders[SELEC][k] = -1;
+        view -> n_shaders[SELEC][stp] = -1;
         view -> create_shaders[SELEC] = TRUE;
         view -> create_shaders[LABEL] = TRUE;
         shaders = TRUE;
@@ -721,11 +914,11 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
 
     if (img_a -> radall[i] != img_b -> radall[i])
     {
-      view -> n_shaders[ATOMS][k] = -1;
+      view -> n_shaders[ATOMS][stp] = -1;
       view -> create_shaders[ATOMS] = TRUE;
-      view -> n_shaders[BONDS][k] = -1;
+      view -> n_shaders[BONDS][stp] = -1;
       view -> create_shaders[BONDS] = TRUE;
-      view -> n_shaders[SELEC][k] = -1;
+      view -> n_shaders[SELEC][stp] = -1;
       view -> create_shaders[SELEC] = TRUE;
       view -> create_shaders[LABEL] = TRUE;
       shaders = TRUE;
@@ -734,21 +927,21 @@ gboolean check_to_update_shaders (glwin * view, image * img_a, image * img_b, in
 
   if (img_a -> render != img_b -> render)
   {
-    view -> n_shaders[ATOMS][k] = -1;
+    view -> n_shaders[ATOMS][stp] = -1;
     view -> create_shaders[ATOMS] = TRUE;
-    view -> n_shaders[BONDS][k] = -1;
+    view -> n_shaders[BONDS][stp] = -1;
     view -> create_shaders[BONDS] = TRUE;
-    view -> n_shaders[SELEC][k] = -1;
+    view -> n_shaders[SELEC][stp] = -1;
     view -> create_shaders[SELEC] = TRUE;
     shaders = TRUE;
   }
   if (img_a -> style != img_b -> style)
   {
-    view -> n_shaders[ATOMS][k] = -1;
+    view -> n_shaders[ATOMS][stp] = -1;
     view -> create_shaders[ATOMS] = TRUE;
-    view -> n_shaders[BONDS][k] = -1;
+    view -> n_shaders[BONDS][stp] = -1;
     view -> create_shaders[BONDS] = TRUE;
-    view -> n_shaders[SELEC][k] = -1;
+    view -> n_shaders[SELEC][stp] = -1;
     view -> create_shaders[SELEC] = TRUE;
     view -> create_shaders[LABEL] = TRUE;
     shaders = TRUE;
@@ -781,13 +974,23 @@ extern GtkWidget * encoding_pb;
 
 /*
 typedef struct{
-  int framesec;
-  int extraframes;
-  int codec;
-  int oglquality;
-  int bitrate;
-  int video_res[2];
+  int framesec;      // frame(s) per second
+  int extraframes;   // extra frame(s) per second
+  int codec;         // video codec
+  int oglquality;    // OpenGL quality
+  int bitrate;       // bitrate
+  int video_res[2];  // video resolution (x, y)
 } video_options;
+*/
+
+/*
+*  gboolean create_movie (glwin * view, video_options * vopts, gchar * videofile)
+*
+*  Usage: render a movie from the saved animation parameters
+*
+*  glwin * view          : the target glwin
+*  video_options * vopts : the video encoding options
+*  gchar * videofile     : video file name
 */
 gboolean create_movie (glwin * view, video_options * vopts, gchar * videofile)
 {
@@ -900,6 +1103,7 @@ gboolean create_movie (glwin * view, video_options * vopts, gchar * videofile)
     old_cmap[frame_id] = allocint(get_project_by_id(view -> proj) -> steps);
     set_old_cmap (view -> anim -> last -> img, 0, frame_id);
   }
+  double fraction;
   for (frame_id = frame_start; frame_id < num_frames+frame_start; frame_id ++)
   {
     //g_debug ("Rendering frame: %d, id= %d", frame_id-frame_start, view -> anim -> last -> img -> id);
@@ -910,11 +1114,12 @@ gboolean create_movie (glwin * view, video_options * vopts, gchar * videofile)
     write_video_frame (format_context, video_stream, frame_id, view);
     if (frame_id-frame_start > 0 && frame_id-frame_start - 10*((frame_id-frame_start)/10) == 0)
     {
-      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(encoding_pb), (double)(frame_id-frame_start+1)/num_frames);
+      fraction = (double)(frame_id-frame_start+1)/num_frames;
+      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(encoding_pb), fraction);
 #ifdef GTK3
       while (gtk_events_pending()) gtk_main_iteration();
 #else
-      while (g_main_context_pending (g_main_context_default())) g_main_context_iteration (NULL, TRUE);
+      // while (g_main_context_pending (g_main_context_default())) g_main_context_iteration (NULL, TRUE);
 #endif
     }
     if (frame_id-frame_start < num_frames-1)
@@ -951,6 +1156,14 @@ gboolean create_movie (glwin * view, video_options * vopts, gchar * videofile)
 static GLuint fbo;
 static GLuint rbo_color;
 static GLuint rbo_depth;
+/*
+*  void init_frame_buffer (int x, int y)
+*
+*  Usage: init a frame buffer
+*
+*  int x : x size - image width
+*  int y : y size - image height
+*/
 void init_frame_buffer (int x, int y)
 {
   glGenFramebuffers (1, & fbo);
@@ -974,6 +1187,11 @@ void init_frame_buffer (int x, int y)
   glReadBuffer (GL_COLOR_ATTACHMENT0);
 }
 
+/*
+*  void close_frame_buffer ()
+*
+*  Usage: close the frame buffer
+*/
 void close_frame_buffer ()
 {
   glDeleteFramebuffers (1, &fbo);
@@ -982,10 +1200,28 @@ void close_frame_buffer ()
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void run_save_movie (GtkNativeDialog * info, gint response_id, gpointer data)
+*
+*  Usage: saving a movie - running the dialog
+*
+*  GtkNativeDialog * info : the GtkNativeDialog sending the signal
+*  gint response_id       : the response id
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void run_save_movie (GtkNativeDialog * info, gint response_id, gpointer data)
 {
   GtkFileChooser * chooser = GTK_FILE_CHOOSER((GtkFileChooserNative *)info);
 #else
+/*
+*  G_MODULE_EXPORT void run_save_movie (GtkDialog * info, gint response_id, gpointer data)
+*
+*  Usage: saving a movie - running the dialog
+*
+*  GtkDialog * info : the GtkDialog sending the signal
+*  gint response_id : the response id
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void run_save_movie (GtkDialog * info, gint response_id, gpointer data)
 {
   GtkFileChooser * chooser = GTK_FILE_CHOOSER((GtkWidget *)info);
@@ -1033,6 +1269,14 @@ G_MODULE_EXPORT void run_save_movie (GtkDialog * info, gint response_id, gpointe
   }
 }
 
+/*
+*  void save_movie (glwin * view, video_options * vopts)
+*
+*  Usage: saving a movie - prepare the dialog
+*
+*  glwin * view          : the target glwin
+*  video_options * vopts : the video encoding options
+*/
 void save_movie (glwin * view, video_options * vopts)
 {
   GtkFileFilter * filter;

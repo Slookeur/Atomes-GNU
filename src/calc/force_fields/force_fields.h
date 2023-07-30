@@ -11,6 +11,14 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This header file: 'force_fields.h'
+*
+*  Contains:
+
+
+*/
+
 #ifndef FORCE_FIELDS_H_
 #define FORCE_FIELDS_H_
 /*

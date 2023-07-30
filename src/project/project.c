@@ -11,11 +11,28 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'project.c'
+*
+*  Contains:
+*
+
+ - Project management miscellaneous subroutines
+
+*
+*  List of subroutines:
+
+  void save_pos_ (int * nat, int lot[* nat], int * num, double xpos[* num], double ypos[* num], double zpos[* num]);
+  void send_steps_ (int * steps);
+
+  struct project * get_project_by_id (int p);
+
+*/
+
 #include "global.h"
 #include "glview.h"
 #include "callbacks.h"
 #include "interface.h"
-#include "gui.h"
 #include "bind.h"
 
 workspace workzone;
@@ -28,12 +45,19 @@ image * active_image = NULL;
 glwin * active_glwin = NULL;
 struct project * opengl_project = NULL;
 
-void save_pos_ (int * nat,
-                int lot[* nat],
-                int * num,
-                double xpos[* num],
-                double ypos[* num],
-                double zpos[* num])
+/*
+*  void save_pos_ (int * nat, int lot[* nat], int * num, double xpos[* num], double ypos[* num], double zpos[* num])
+*
+*  Usage: retrieve atomic coordinates from Fortran90
+*
+*  int * nat          : Number of atoms
+*  int lot[* nat]     : List of chemical species by atoms
+*  int * num          : Number of coordinates (NA x NS)
+*  double xpos[* num] : x coordinates
+*  double ypos[* num] : y coordinates
+*  double zpos[* num] : z coordinates
+*/
+void save_pos_ (int * nat, int lot[* nat], int * num, double xpos[* num], double ypos[* num], double zpos[* num])
 {
   int i, j, k;
 
@@ -66,11 +90,25 @@ void save_pos_ (int * nat,
   }
 }
 
+/*
+*  void send_steps_ (int * steps)
+*
+*  Usage: retrieve the number of MD steps from Fortran90
+*
+*  int * steps : the number of MD steps
+*/
 void send_steps_ (int * steps)
 {
   active_project -> steps = * steps;
 }
 
+/*
+*  struct project * get_project_by_id (int p)
+*
+*  Usage: get project pointer using id number
+*
+*  int p : the id number
+*/
 struct project * get_project_by_id (int p)
 {
   struct project * tmp = workzone.first;

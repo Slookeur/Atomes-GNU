@@ -11,6 +11,26 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'sqcall.c'
+*
+*  Contains:
+*
+
+ - The callbacks for the s(q) / s(k) calculation dialog
+
+*
+*  List of subroutines:
+
+  void initsq (int r);
+  void update_sq_view (struct project * this_proj, int sqk);
+  void save_xsk_ (int * interv, double datacurve[* interv]);
+
+  G_MODULE_EXPORT void on_calc_sq_released (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void on_calc_sk_released (GtkWidget * widg, gpointer data);
+
+*/
+
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdlib.h>
@@ -22,7 +42,14 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "project.h"
 #include "curve.h"
 
-void initsq (int r, int s)
+/*
+*  void initsq (int r)
+*
+*  Usage: initialize the curve widgets for the s(q) / s(k) calculation
+*
+*  int r : s(q) (SQ) or s(k) (SK)
+*/
+void initsq (int r)
 {
   int i, j, k;
 
@@ -73,10 +100,18 @@ void initsq (int r, int s)
     k=k+1;
     active_project -> curves[r][k] -> name = g_strdup_printf ("BT(q)[ZZ] - smoothed");
   }
-  addcurwidgets (activep, r, s);
+  addcurwidgets (activep, r, 0);
   active_project -> initok[r] = TRUE;
 }
 
+/*
+*  void update_sq_view (struct project * this_proj, int sqk)
+*
+*  Usage: update the text view for s(q) / s(k) calculation
+*
+*  struct project * this_proj : the target project
+*  int sqk                    : s(q) (SQ) or s(k) (SK)
+*/
 void update_sq_view (struct project * this_proj, int sqk)
 {
   gchar * str;
@@ -138,11 +173,19 @@ void update_sq_view (struct project * this_proj, int sqk)
   print_info (calculation_time(TRUE, this_proj -> calc_time[sqk]), NULL, this_proj -> text_buffer[sqk+OT]);
 }
 
+/*
+*  G_MODULE_EXPORT void on_calc_sq_released (GtkWidget * widg, gpointer data)
+*
+*  Usage: compute s(q) / s(k)
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void on_calc_sq_released (GtkWidget * widg, gpointer data)
 {
   int i;
 
-  if (! active_project -> initok[SQ]) initsq (SQ, 0);
+  if (! active_project -> initok[SQ]) initsq (SQ);
   clean_curves_data (SQ, 0, active_project -> numc[SQ]);
   active_project -> delta[SQ] = (active_project -> max[SQ] - active_project -> min[SQ]) / active_project -> num_delta[SQ];
   prepostcalc (widg, FALSE, SQ, 0, opac);
@@ -166,6 +209,14 @@ G_MODULE_EXPORT void on_calc_sq_released (GtkWidget * widg, gpointer data)
   for (i=1; i<3; i++) update_after_calc (i);
 }
 
+/*
+*  void save_xsk_ (int * interv, double datacurve[* interv])
+*
+*  Usage: get s(k) calculation results form Fortran90
+*
+*  int * interv               : number of data point (delta r/q)
+*  double datacurve[* interv] : calculation result
+*/
 void save_xsk_ (int * interv, double datacurve[* interv])
 {
   if (* interv != 0)
@@ -174,11 +225,19 @@ void save_xsk_ (int * interv, double datacurve[* interv])
   }
 }
 
+/*
+*  G_MODULE_EXPORT void on_calc_sk_released (GtkWidget * widg, gpointer data)
+*
+*  Usage: compute s(q) / s(k)
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void on_calc_sk_released (GtkWidget * widg, gpointer data)
 {
   int i, j;
 
-  if (! active_project -> initok[SK]) initsq (SK, 0);
+  if (! active_project -> initok[SK]) initsq (SK);
   clean_curves_data (SK, 0, active_project -> numc[SK]);
   active_project -> delta[SK] = (active_project -> max[SK] - active_project -> min[SK]) / active_project -> num_delta[SK];
   prepostcalc (widg, FALSE, SK, 0, opac);

@@ -11,9 +11,34 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'save_curve.c'
+*
+*  Contains:
+*
+
+ - The subroutines to write curves information in the atomes project file format
+
+*
+*  List of subroutines:
+
+  int save_project_curve (FILE * fp, int wid, struct project * this_proj, int rid, int cid);
+
+  gboolean write_data_layout (FILE * fp, DataLayout * layout);
+
+*/
+
 #include "global.h"
 #include "project.h"
 
+/*
+*  gboolean write_data_layout (FILE * fp, DataLayout * layout)
+*
+*  Usage: save curve data layout to file
+*
+*  FILE * fp           : the file pointer
+*  DataLayout * layout : the data layout to save
+*/
 gboolean write_data_layout (FILE * fp, DataLayout * layout)
 {
   if (fwrite (& layout -> datacolor, sizeof(ColRGBA), 1, fp) != 1) return FALSE;
@@ -29,6 +54,17 @@ gboolean write_data_layout (FILE * fp, DataLayout * layout)
   return TRUE;
 }
 
+/*
+*  int save_project_curve (FILE * fp, int wid, struct project * this_proj, int rid, int cid)
+*
+*  Usage: save project curve to file
+*
+*  FILE * fp                  : the file pointer
+*  int wid                    : the total number of project file in the workspace
+*  struct project * this_proj : the target project
+*  int rid                    : the calculation to save
+*  int cid                    : the curve id to save
+*/
 int save_project_curve (FILE * fp, int wid, struct project * this_proj, int rid, int cid)
 {
   int i, j;

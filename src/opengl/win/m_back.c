@@ -11,25 +11,57 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'm_back.c'
+*
+*  Contains:
+*
+
+ - The subroutines to create the background color menu item
+
+*
+*  List of subroutines:
+
+  GtkWidget * menu_back (glwin * view);
+
+  GMenu * menu_back (glwin * view, int popm);
+
+*/
+
 #include "global.h"
 #include "color_box.h"
 #include "glwindow.h"
 
 #ifdef GTK3
+/*
+*  GtkWidget * menu_back (glwin * view)
+*
+*  Usage: create the background color menu item GTK3
+*
+*  glwin * view : the target glwin
+*/
 GtkWidget * menu_back (glwin * view)
 {
   GtkWidget * menub = gtk_menu_new ();
   GtkWidget * bc = create_menu_item (FALSE, "Color");
-  add_menu_child (menub, bc);
-  menu_item_set_submenu (bc, color_box(view, -2, 0, 0));
+  gtk_menu_shell_append ((GtkMenuShell *)menub, bc);
+  gtk_menu_item_set_submenu ((GtkMenuItem *)bc, color_box(view, -2, 0, 0));
   return menub;
 }
 #else
-GMenu * menu_back (glwin * view)
+/*
+*  GMenu * menu_back (glwin * view, int popm)
+*
+*  Usage: create the background color menu item GTK4
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*/
+GMenu * menu_back (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
-  append_opengl_item (view, menu, "back-color", "back-color", 0, NULL, IMG_NONE, NULL, TRUE, NULL, NULL, FALSE, FALSE, FALSE, FALSE);
-  append_opengl_item (view, menu, "More colors ...", "back-color", 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_run_back_color_window), view, FALSE, FALSE, FALSE, TRUE);
+  append_opengl_item (view, menu, "back-color", "back-color", popm, popm, NULL, IMG_NONE, NULL, TRUE, NULL, NULL, FALSE, FALSE, FALSE, FALSE);
+  append_opengl_item (view, menu, "More colors ...", "back-color", popm, popm, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_run_back_color_window), view, FALSE, FALSE, FALSE, TRUE);
   return menu;
 }
 #endif

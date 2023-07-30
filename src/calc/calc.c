@@ -11,6 +11,31 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'calc.c'
+*
+*  Contains:
+*
+
+ - Callbacks used in by the assistants
+ - Atom selection manipulation tools
+ - The initialization of the assistant
+
+*
+*  List of subroutines:
+
+  void field_question (gchar * question, GCallback handler, gpointer data);
+  void unselect_all_atoms (glwin * view);
+  void restore_ogl_selection (glwin * view);
+  void preserve_ogl_selection (glwin * view);
+
+  G_MODULE_EXPORT void confirm_selection (GtkDialog * dialog, gint response_id, gpointer data);
+  G_MODULE_EXPORT void create_field (GtkWidget * widg, gpointer data);
+
+  struct atom_selection * duplicate_ogl_selection (struct atom_selection * old_sel);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "project.h"
@@ -21,17 +46,6 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern void create_classical_force_field (int p, int f);
 extern void create_qm_input_file (int c, int p, int s);
-#ifdef GTK4
-extern G_MODULE_EXPORT void select_unselect_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data);
-extern G_MODULE_EXPORT void select_unselect_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
-extern G_MODULE_EXPORT void label_unlabel_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data);
-extern G_MODULE_EXPORT void label_unlabel_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
-#else
-extern G_MODULE_EXPORT void select_unselect_this_atom (GtkWidget * widg, gpointer data);
-extern G_MODULE_EXPORT void select_unselect_atoms (GtkWidget * widg, gpointer data);
-extern G_MODULE_EXPORT void label_unlabel_this_atom (GtkWidget * widg, gpointer data);
-extern G_MODULE_EXPORT void label_unlabel_atoms (GtkWidget * widg, gpointer data);
-#endif
 extern void create_new_project_using_data (struct atom_selection * selection);
 extern int selected_aspec;
 extern int num_bonds (int i);
@@ -52,12 +66,30 @@ int icomb;
 
 gboolean selection_confirmed;
 
+/*
+*  G_MODULE_EXPORT void confirm_selection (GtkDialog * dialog, gint response_id, gpointer data)
+*
+*  Usage: confirm that the selection is good
+*
+*  GtkDialog * dialog : the GtkDialog sending the signal
+*  gint response_id   : the response id of the GtkDialog
+*  gpointer data      : the pointer if needed, not in this case
+*/
 G_MODULE_EXPORT void confirm_selection (GtkDialog * dialog, gint response_id, gpointer data)
 {
   selection_confirmed = (response_id == GTK_RESPONSE_YES) ? TRUE : FALSE;
   destroy_this_dialog (dialog);
 }
 
+/*
+*  void field_question (gchar * question, GCallback handler, gpointer data)
+*
+*  Usage: ask the use to confirm something
+*
+*  gchar * question  : the text to display
+*  GCallback handler : the callback to use
+*  gpointer data     : the data to transmit to the callback
+*/
 void field_question (gchar * question, GCallback handler, gpointer data)
 {
   GtkWidget * dialog;
@@ -67,6 +99,13 @@ void field_question (gchar * question, GCallback handler, gpointer data)
   run_this_gtk_dialog (dialog, handler, data);
 }
 
+/*
+*  struct atom_selection * duplicate_ogl_selection (struct atom_selection * old_sel)
+*
+*  Usage: copy an atom selection
+*
+*  struct atom_selection * old_sel : the atom selection to copy
+*/
 struct atom_selection * duplicate_ogl_selection (struct atom_selection * old_sel)
 {
   int i, j;
@@ -123,6 +162,13 @@ struct atom_selection * duplicate_ogl_selection (struct atom_selection * old_sel
   return new_sel;
 }
 
+/*
+*  void unselect_all_atoms (glwin * view)
+*
+*  Usage: remove all atom(s) from selection
+*
+*  glwin * view : the glwin the selection comes from
+*/
 void unselect_all_atoms (glwin * view)
 {
   int i, j, k;
@@ -152,6 +198,13 @@ void unselect_all_atoms (glwin * view)
   init_default_shaders (view);
 }
 
+/*
+*  void restore_ogl_selection (glwin * view)
+*
+*  Usage: restore a saved atom selection
+*
+*  glwin * view : the glwin to restore the selection to
+*/
 void restore_ogl_selection (glwin * view)
 {
   int i, j, k, l;
@@ -191,6 +244,13 @@ void restore_ogl_selection (glwin * view)
   }
 }
 
+/*
+*  void preserve_ogl_selection (glwin * view)
+*
+*  Usage: copy the atom selection, so that it can be re-used once the input assistant is closed.
+*
+*  glwin * view : the glwin the selection comes from
+*/
 void preserve_ogl_selection (glwin * view)
 {
   int h, i, j, k, l;
@@ -227,6 +287,14 @@ void preserve_ogl_selection (glwin * view)
 
 extern char * input_types[NINPUTS];
 
+/*
+*  G_MODULE_EXPORT void create_field (GtkWidget * widg, gpointer data)
+*
+*  Usage: start an input creation assistant
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void create_field (GtkWidget * widg, gpointer data)
 {
   tint * the_data = (tint *)data;

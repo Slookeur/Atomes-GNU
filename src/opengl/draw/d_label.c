@@ -11,6 +11,26 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'd_label.c'
+*
+*  Contains:
+*
+
+ - The subroutines to prepare the atomic label(s) OpenGL rendering
+
+*
+*  List of subroutines:
+
+  int create_label_lists ();
+
+  void prepare_label (struct atom at, int id, double al);
+  void clean_labels (int id);
+
+  mat4_t create_label_matrices ();
+
+*/
+
 #include "global.h"
 #include "glview.h"
 #include "interface.h"
@@ -20,11 +40,25 @@ extern ColRGBA init_color (int id, int numid);
 extern ColRGBA get_atom_color (int i, int j, double al, int picked, gboolean to_pick);
 extern float get_sphere_radius (int style, int sp, int ac, int sel);
 
+/*
+*  mat4_t create_label_matrices ()
+*
+*  Usage: create label projection matrices
+*/
 mat4_t create_label_matrices ()
 {
   return m4_ortho (0.0, wingl -> view_port.y, 0.0, wingl -> view_port.z, 1.0, 0.0);
 }
 
+/*
+*  void prepare_label (struct atom at, int id, double al)
+*
+*  Usage: prepare an atomic label OpenGL rendering
+*
+*  struct atom at : the atom to label
+*  int id         : the label id
+*  double al      : opacity
+*/
 void prepare_label (struct atom at, int id, double al)
 {
   int k, l;
@@ -91,6 +125,13 @@ void prepare_label (struct atom at, int id, double al)
   g_free (str);
 }
 
+/*
+*  void clean_labels (int id)
+*
+*  Usage: clean atomic label shaders
+*
+*  int id : label id
+*/
 void clean_labels (int id)
 {
   if (plot -> labels_list[id] != NULL)
@@ -100,6 +141,11 @@ void clean_labels (int id)
   }
 }
 
+/*
+*  int create_label_lists ()
+*
+*  Usage: prepare atomic label(s) OpenGL rendering
+*/
 int create_label_lists ()
 {
   int nshaders = 0;

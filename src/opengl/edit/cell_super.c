@@ -11,12 +11,42 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'cell_super.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  gboolean ** duplicate_geom_info (struct project * this_proj);
+  gboolean ** duplicate_poly_info (struct project * this_proj);
+
+  void restore_coord_and_poly_info (struct project * proj, gboolean ** cshow, gboolean ** pshow);
+  void sens_superbut (struct project * this_proj);
+  void super_celling (glwin * view);
+
+  G_MODULE_EXPORT void super_cell (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void super_cell (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void super_cell_but (GtkButton * but, gpointer data);
+
+*/
+
 #include "cell_edit.h"
 #include "atom_edit.h"
 
 extern void clean_coord_window (struct project * this_proj);
 extern GtkWidget * cell_tab (int i, struct project * this_proj);
 
+/*
+*  gboolean ** duplicate_geom_info (struct project * this_proj)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*/
 gboolean ** duplicate_geom_info (struct project * this_proj)
 {
   int i, j;
@@ -32,6 +62,13 @@ gboolean ** duplicate_geom_info (struct project * this_proj)
   return show;
 }
 
+/*
+*  gboolean ** duplicate_poly_info (struct project * this_proj)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*/
 gboolean ** duplicate_poly_info (struct project * this_proj)
 {
   int i, j;
@@ -47,6 +84,15 @@ gboolean ** duplicate_poly_info (struct project * this_proj)
   return show;
 }
 
+/*
+*  void restore_coord_and_poly_info (struct project * proj, gboolean ** cshow, gboolean ** pshow)
+*
+*  Usage:
+*
+*  struct project * proj :
+*  gboolean ** cshow     :
+*  gboolean ** pshow     :
+*/
 void restore_coord_and_poly_info (struct project * proj, gboolean ** cshow, gboolean ** pshow)
 {
   int i, j;
@@ -59,7 +105,7 @@ void restore_coord_and_poly_info (struct project * proj, gboolean ** cshow, gboo
       {
         if (GTK_IS_WIDGET(active_glwin -> ogl_geom[0][i][j]))
         {
-          check_menu_item_set_active ((gpointer)active_glwin -> ogl_geom[0][i][j], cshow[i][j]);
+          gtk_check_menu_item_set_active ((GtkCheckMenuItem *)active_glwin -> ogl_geom[0][i][j], cshow[i][j]);
           if (cshow[i][j]) show_hide_coord (active_glwin -> ogl_geom[0][i][j], & active_glwin -> gcid[i][j][i]);
         }
       }
@@ -67,7 +113,7 @@ void restore_coord_and_poly_info (struct project * proj, gboolean ** cshow, gboo
       {
         if (GTK_IS_WIDGET(active_glwin -> ogl_poly[0][i][j]))
         {
-          check_menu_item_set_active ((gpointer)active_glwin -> ogl_poly[0][i][j], pshow[i][j]);
+          gtk_check_menu_item_set_active ((GtkCheckMenuItem *)active_glwin -> ogl_poly[0][i][j], pshow[i][j]);
           if (pshow[i][j]) show_hide_poly (active_glwin -> ogl_poly[0][i][j], & active_glwin -> gcid[i][j][i]);
         }
       }
@@ -76,6 +122,13 @@ void restore_coord_and_poly_info (struct project * proj, gboolean ** cshow, gboo
   }
 }
 
+/*
+*  void sens_superbut (struct project * this_proj)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*/
 void sens_superbut (struct project * this_proj)
 {
   int i, j;
@@ -98,6 +151,13 @@ void sens_superbut (struct project * this_proj)
 #endif
 }
 
+/*
+*  void super_celling (glwin * view)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*/
 void super_celling (glwin * view)
 {
   gchar * txta = "You are about to change the periodicity of the 3D model,";
@@ -192,13 +252,17 @@ void super_celling (glwin * view)
         for (i=0; i<5; i++)
         {
           clean_rings_data (i, view);
+#ifdef GTK3
           update_rings_menus (view);
+#endif
         }
       }
       if (view -> chains)
       {
         clean_chains_data (view);
+#ifdef GTK3
         update_chains_menus (view);
+#endif
       }
       on_calc_bonds_released (NULL, NULL);
       restore_coord_and_poly_info (active_project, cshow, pshow);
@@ -227,8 +291,25 @@ void super_celling (glwin * view)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void super_cell (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void super_cell (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void super_cell (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void super_cell (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -237,6 +318,14 @@ G_MODULE_EXPORT void super_cell (GtkWidget * widg, gpointer data)
   sens_superbut (get_project_by_id(view -> proj));
 }
 
+/*
+*  G_MODULE_EXPORT void super_cell_but (GtkButton * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkButton * but : the GtkButton sending the signal
+*  gpointer data   : the associated data pointer
+*/
 G_MODULE_EXPORT void super_cell_but (GtkButton * but, gpointer data)
 {
   glwin * view = (glwin *)data;

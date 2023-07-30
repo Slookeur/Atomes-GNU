@@ -11,24 +11,55 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'read_pdb.c'
+*
+*  Contains:
+*
+
+ - The subroutines to read PDB files
+
+*
+*  List of subroutines:
+
+  int pdb_get_atoms_data (int linec);
+  int open_pdb_file (int linec);
+
+  double get_z_from_pdb_name (char * name);
+
+*/
+
 #include "global.h"
 #include "glview.h"
 #include "callbacks.h"
 #include "interface.h"
 #include "project.h"
-#include "gui.h"
 #include "bind.h"
 #include "readers.h"
 
 #include <omp.h>
 #include <ctype.h>
 
+/*
+*  double get_z_from_pdb_name (char * name)
+*
+*  Usage: get Z from the PDB atom string
+*
+*  char * name : the string from the PDB file
+*/
 double get_z_from_pdb_name (char * name)
 {
   if (strlen(name) == 2) name[1] = tolower ((unsigned char)name[1]);
   return get_z_from_periodic_table (name);
 }
 
+/*
+*  int pdb_get_atoms_data (int linec)
+*
+*  Usage: get the atomic data from the PDB file
+*
+*  int linec : Total number of lines
+*/
 int pdb_get_atoms_data (int linec)
 {
   int h, i, j, k, l;
@@ -165,6 +196,13 @@ int pdb_get_atoms_data (int linec)
   return active_project -> natomes;
 }
 
+/*
+*  int open_pdb_file (int linec)
+*
+*  Usage: open PDB file
+*
+*  int linec : Number of lines in the file
+*/
 int open_pdb_file (int linec)
 {
   if (! pdb_get_atoms_data (linec)) return 2;

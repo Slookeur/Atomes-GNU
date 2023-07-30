@@ -11,6 +11,13 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This header file: 'atom_edit.h'
+*
+*  Contains: 
+
+*/
+
 #include "global.h"
 #include "bind.h"
 #include "callbacks.h"
@@ -28,24 +35,12 @@ If not, see <https://www.gnu.org/licenses/> */
 #define TOLAB 3
 #define TOPIC 4
 
-extern gboolean * showfrag;
 extern GtkWidget * selection_tab (atom_search * asearch, int nats);
 extern G_MODULE_EXPORT void set_show_axis_toggle (GtkToggleButton * but, gpointer data);
 extern void save_rotation_quaternion (glwin * view);
 extern void center_molecule (struct project * this_proj);
 extern vec3_t get_arc_ball_vector (glwin * view, int x, int y);
 extern void update_search_tree (atom_search * asearch);
-#ifdef GTK4
-extern G_MODULE_EXPORT void select_unselect_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data);
-extern G_MODULE_EXPORT void select_unselect_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
-extern G_MODULE_EXPORT void label_unlabel_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data);
-extern G_MODULE_EXPORT void label_unlabel_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
-#else
-extern G_MODULE_EXPORT void select_unselect_this_atom (GtkWidget * widg, gpointer data);
-extern G_MODULE_EXPORT void select_unselect_atoms (GtkWidget * widg, gpointer data);
-extern G_MODULE_EXPORT void label_unlabel_this_atom (GtkWidget * widg, gpointer data);
-extern G_MODULE_EXPORT void label_unlabel_atoms (GtkWidget * widg, gpointer data);
-#endif
 extern int selected_aspec;
 extern int is_selected;
 extern chemical_data * alloc_chem_data (int spec);
@@ -92,7 +87,7 @@ extern G_MODULE_EXPORT void set_spec_changed (GtkComboBox * box, gpointer data);
 
 extern void add_bonds_to_list (int ** new_bond_list, int nat, int nbd, struct insert_object * object);
 extern void add_bonds_to_project (struct project * this_proj, int removed, int nbd, int ** new_bond_list);
-extern void remove_bonds_from_project (struct project * this_proj, int * old_id, int new_atoms, struct atom * new_list, gboolean remove);
+extern gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, int new_atoms, struct atom * new_list, gboolean remove);
 #ifdef GTK4
 extern G_MODULE_EXPORT void set_reset_transformation (GtkCheckButton * but, gpointer data);
 #else
@@ -105,8 +100,8 @@ extern tint ulam_coord (glwin * view);
 extern void correct_pos_and_get_dim (struct insert_object * object, gboolean adjust);
 extern struct insert_object * duplicate_insert_object (struct insert_object * old_obj);
 extern struct insert_object * create_object_from_species (struct project * this_proj, int sid, atom_search * remove);
-extern void reconstruct_coordinates_for_object (struct project * this_proj, struct insert_object * this_object);
-extern void reconstruct_this_object (struct project * this_proj, int ifcl, int * bcid);
+extern void reconstruct_bonds (struct project * this_proj, int ifcl, int * bcid);
+extern void reconstruct_coordinates_for_object (struct insert_object * this_object, struct project * this_proj, gboolean upcoord);
 extern struct insert_object * create_object_from_selection (struct project * this_proj);
 extern struct insert_object * create_object_from_atom_coordination (struct project * this_proj, int coord, int aid, atom_search * remove);
 extern struct insert_object * create_object_from_overall_coordination (struct project * this_proj, int coord, int aid, atom_search * remove);
@@ -156,7 +151,7 @@ extern void check_coord_modification (struct project * this_proj, int old_id[], 
                                       struct insert_object * this_object, gboolean movtion, gboolean passivating);
 extern void print_coord_info (struct project * this_proj, coord_info * coord);
 extern coord_info * duplicate_coord_info (coord_info * old_coord);
-extern void recover_opengl_data (struct project * this_proj, int nmols, int add, int rem, int * num, int * rec, int *** tmpgeo, gboolean update_frag);
+extern void recover_opengl_data (struct project * this_proj, int nmols, int add, int rem, int * num, int * rec, int *** tmpgeo, gboolean * showfrag, gboolean update_frag);
 
 extern chemical_data * duplicate_chemical_data (int spec, chemical_data * chem);
 extern int find_spec_id (int s, int z, double * list_z);

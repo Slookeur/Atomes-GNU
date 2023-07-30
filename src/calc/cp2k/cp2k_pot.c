@@ -12,6 +12,11 @@ You should have received a copy of the GNU Affero General Public License along w
 If not, see <https://www.gnu.org/licenses/> */
 
 /*
+* This file: 'cp2k_pot.c'
+*
+*  Contains:
+*
+
   CP2K potentials, as distributed with CP2K v9.1
 
   This file contains 3 tables:
@@ -19,6 +24,7 @@ If not, see <https://www.gnu.org/licenses/> */
   pot_elem -> the list of chemical elements
   pot_keys -> the list of keywords
   cp2k_pot -> finally the complete potential
+
 */
 
 #include "global.h"

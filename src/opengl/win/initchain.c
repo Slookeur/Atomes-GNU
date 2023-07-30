@@ -11,13 +11,40 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'initchain.c'
+*
+*  Contains:
+*
+
+ - subroutines collecting chain(s) data from Fortran90
+ - subroutines allocating chain(s) data from Fortran90
+
+*
+*  List of subroutines:
+
+  void send_chains_opengl_ (int * st, int * ta, int * ri, int nchain[* ta]);
+  void send_atom_chains_id_opengl_ (int * st, int * at, int * ta, int * num, int nchain[* num]);
+  void allocate_all_chains_ (int * st, int * ta, int * nring);
+
+*/
+
 #include "global.h"
 #include "interface.h"
-#include "gui.h"
 #include "bind.h"
 #include "color_box.h"
 #include "glwindow.h"
 
+/*
+*  void send_chains_opengl_ (int * st, int * ta, int * ri, int nchain[* ta])
+*
+*  Usage: getting the chain data elemnts from Fortran90
+*
+*  int * st         : the MD step
+*  int * ta         : the chain size
+*  int * ri         : the chain id
+*  int nchain[* ta] : the chain element(s)
+*/
 void send_chains_opengl_ (int * st, int * ta, int * ri, int nchain[* ta])
 {
   int i;
@@ -27,6 +54,17 @@ void send_chains_opengl_ (int * st, int * ta, int * ri, int nchain[* ta])
   }
 }
 
+/*
+*  void send_atom_chains_id_opengl_ (int * st, int * at, int * ta, int * num, int nchain[* num])
+*
+*  Usage: allocate atom chains data from Fortran90 information
+*
+*  int * st          : the MD step
+*  int * at          : the atom id
+*  int * ta          : the chain size
+*  int * num         : the number of chain(s)
+*  int nchain[* num] : the chain id(s)
+*/
 void send_atom_chains_id_opengl_ (int * st, int * at, int * ta, int * num, int nchain[* num])
 {
   if (nchain != NULL)
@@ -41,6 +79,15 @@ void send_atom_chains_id_opengl_ (int * st, int * at, int * ta, int * num, int n
   }
 }
 
+/*
+*  void allocate_all_chains_ (int * st, int * ta, int * nring)
+*
+*  Usage: allocate chains data from Fortran90 information
+*
+*  int * st    : the MD step
+*  int * ta    : the number of chain size(s)
+*  int * nring : the number of chain(s) of that size
+*/
 void allocate_all_chains_ (int * st, int * ta, int * nring)
 {
   active_glwin -> all_chains[* st][* ta - 1] = allocdint (* nring, * ta);

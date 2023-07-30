@@ -11,6 +11,29 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'm_style.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  void clean_atom_style (struct project * this_proj);
+  void update_menus (glwin * view);
+
+  G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void change_style_radio (GSimpleAction * action, GVariant * parameter, gpointer data);
+
+  GtkWidget * create_style_menu (char * name, int val, int style, int vbl, int filled, GtkWidget * menu, tint * data);
+  GtkWidget * menu_style (glwin * view, int id);
+
+  GMenu * menu_style (glwin * view, int popm);
+
+*/
+
 #include "global.h"
 #include "bind.h"
 #include "project.h"
@@ -19,6 +42,13 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern gchar * label_atpts (struct project * this_proj, glwin * view, int id);
 
+/*
+*  void clean_atom_style (struct project * this_proj)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*/
 void clean_atom_style (struct project * this_proj)
 {
   int i, j;
@@ -33,6 +63,13 @@ void clean_atom_style (struct project * this_proj)
 
 #ifdef GTK3
 // GTK3 Menu Action To Check
+/*
+*  void update_menus (glwin * view)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*/
 void update_menus (glwin * view)
 {
   int i, j;
@@ -102,6 +139,14 @@ void update_menus (glwin * view)
 }
 #endif
 
+/*
+*  G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data)
 {
   tint * the_data = (tint *)data;
@@ -113,7 +158,7 @@ G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data)
   int old_filled = this_proj -> modelgl -> anim -> last -> img -> filled_type;
   int i, j, k;
 #ifdef GTK3
-  if ((old_style != st || old_filled != ft) && check_menu_item_get_active ((gpointer)widg))
+  if ((old_style != st || old_filled != ft) && gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg))
 #else
   if (old_style != st || old_filled != ft)
 #endif
@@ -125,11 +170,11 @@ G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data)
 #ifdef GTK3
     if (old_style == SPACEFILL)
     {
-      check_menu_item_set_active ((gpointer)this_proj -> modelgl -> filled_styles[j], FALSE);
+      gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> filled_styles[j], FALSE);
     }
     else
     {
-      check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_styles[i], FALSE);
+      gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_styles[i], FALSE);
     }
 #endif
     if (s >= OGL_STYLES)
@@ -143,7 +188,7 @@ G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data)
 #ifdef GTK3
       if (widg != this_proj -> modelgl -> filled_styles[ft])
       {
-        check_menu_item_set_active ((gpointer)this_proj -> modelgl -> filled_styles[ft], TRUE);
+        gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> filled_styles[ft], TRUE);
       }
 #endif
       this_proj -> modelgl -> anim -> last -> img -> filled_type = ft;
@@ -154,7 +199,7 @@ G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data)
 #ifdef GTK3
       if (widg != this_proj -> modelgl -> ogl_styles[st])
       {
-        check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_styles[st], TRUE);
+        gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_styles[st], TRUE);
       }
 #endif
       this_proj -> modelgl -> anim -> last -> img -> style = st;
@@ -179,23 +224,44 @@ G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data)
 #endif
     init_default_shaders (this_proj -> modelgl);
   }
-  /*else if (st != SPACEFILL && old_style != NONE && ! check_menu_item_get_active ((gpointer)widg))
+  /*else if (st != SPACEFILL && old_style != NONE && ! gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg))
   {
-    check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_styles[st], TRUE);
+    gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_styles[st], TRUE);
   }
-  else if (old_style != NONE && old_filled != NONE && ! check_menu_item_get_active ((gpointer)widg))
+  else if (old_style != NONE && old_filled != NONE && ! gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg))
   {
-    check_menu_item_set_active ((gpointer)this_proj -> modelgl -> filled_styles[ft], TRUE);
+    gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> filled_styles[ft], TRUE);
   }*/
 }
 
 #ifdef GTK3
+/*
+*  GtkWidget * create_style_menu (char * name, int val, int style, int vbl, int filled, GtkWidget * menu, tint * data)
+*
+*  Usage:
+*
+*  char * name      :
+*  int val          :
+*  int style        :
+*  int vbl          :
+*  int filled       :
+*  GtkWidget * menu : the GtkWidget sending the signal
+*  tint * data      :
+*/
 GtkWidget * create_style_menu (char * name, int val, int style, int vbl, int filled, GtkWidget * menu, tint * data)
 {
   GtkWidget * style_widget = gtk3_menu_item (menu, name, IMG_NONE, NULL, G_CALLBACK(set_style), data, FALSE, 0, 0, TRUE, TRUE, (style == val && filled == vbl) ? TRUE : FALSE);
   return style_widget;
 }
 
+/*
+*  GtkWidget * menu_style (glwin * view, int id)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int id       : main app (0) or popup (1)
+*/
 GtkWidget * menu_style (glwin * view, int id)
 {
   int i, j;
@@ -218,9 +284,9 @@ GtkWidget * menu_style (glwin * view, int id)
       else
       {
         widg = create_menu_item (FALSE, "Spacefilled");
-        add_menu_child (menus, widg);
+        gtk_menu_shell_append ((GtkMenuShell *)menus, widg);
         GtkWidget * menuf = gtk_menu_new ();
-        menu_item_set_submenu (widg, menuf);
+        gtk_menu_item_set_submenu ((GtkMenuItem *)widg, menuf);
         for (j=0; j < FILLED_STYLES; j++)
         {
            view -> filled_styles[j] = create_style_menu (text_filled[j],
@@ -251,9 +317,9 @@ GtkWidget * menu_style (glwin * view, int id)
       else
       {
         widg = create_menu_item (FALSE, "Spacefilled");
-        add_menu_child (menus, widg);
+        gtk_menu_shell_append ((GtkMenuShell *)menus, widg);
         GtkWidget * menuf = gtk_menu_new ();
-        menu_item_set_submenu (widg, menuf);
+        gtk_menu_item_set_submenu ((GtkMenuItem *)widg, menuf);
         for (j=0; j < FILLED_STYLES; j++)
         {
            widg = create_style_menu (text_filled[j],
@@ -271,72 +337,95 @@ GtkWidget * menu_style (glwin * view, int id)
   return menus;
 }
 #else
+/*
+*  G_MODULE_EXPORT void change_style_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void change_style_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   glwin * view = (glwin *)data;
   const gchar * style = g_variant_get_string (parameter, NULL);
-  gchar * style_name = NULL;
-  int i, j;
-  for (i=0; i<OGL_STYLES; i++)
+  int lgt = strlen (style);
+  gchar * name = g_strdup_printf ("%c%c", style[lgt-2], style[lgt-1]);
+  if (g_strcmp0(name, ".1") == 0)
   {
-    if (i != SPACEFILL)
+    g_free (name);
+    name = g_strdup_printf ("%.*s.0", lgt-2, style);
+    g_action_group_activate_action ((GActionGroup *)view -> action_group, "set-style", g_variant_new_string((const gchar *)name));
+    g_free (name);
+  }
+  else
+  {
+    gchar * style_name = NULL;
+    int i;
+    for (i=0; i<OGL_STYLES+FILLED_STYLES; i++)
     {
-      style_name = g_strdup_printf ("set-style.%d", i);
+      style_name = g_strdup_printf ("set-style.%d.0", i);
       if (g_strcmp0(style, (const gchar *)style_name) == 0)
       {
-        set_style (NULL, & view -> colorp[i][0]);
+        if (i < SPACEFILL)
+        {
+          set_style (NULL, & view -> colorp[i][0]);
+        }
+        else if (i < SPACEFILL + FILLED_STYLES)
+        {
+          i -= SPACEFILL;
+          set_style (NULL, & view -> colorp[OGL_STYLES+i][0]);
+        }
+        else
+        {
+          i -= FILLED_STYLES;
+          set_style (NULL, & view -> colorp[i][0]);
+        }
+        g_free (style_name);
+        style_name = NULL;
         break;
       }
       g_free (style_name);
       style_name = NULL;
     }
-    else
-    {
-      for (j=0; j < FILLED_STYLES; j++)
-      {
-        style_name = g_strdup_printf ("set-style.%d", OGL_STYLES+j);
-        if (g_strcmp0(style, (const gchar *)style_name) == 0)
-        {
-          set_style (NULL, & view -> colorp[OGL_STYLES+j][0]);
-          break;
-        }
-        g_free (style_name);
-        style_name = NULL;
-      }
-    }
-    if (style_name)
-    {
-      g_free (style_name);
-      break;
-    }
+    g_action_change_state (G_ACTION (action), parameter);
   }
-  g_action_change_state (G_ACTION (action), parameter);
 }
 
-GMenu * menu_style (glwin * view)
+/*
+*  GMenu * menu_style (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*/
+GMenu * menu_style (glwin * view, int popm)
 {
-  int i, j;
+  int i, j, k;
   GMenu * menu = g_menu_new ();
-  for (i=0; i<OGL_STYLES; i++)
+  k = 0;
+  for (i=0; i<OGL_STYLES; i++, k++)
   {
     if (i != SPACEFILL)
     {
-      append_opengl_item (view, menu, text_styles[i], "style", i,
-                          NULL, IMG_NONE, NULL,
-                          FALSE, G_CALLBACK(change_style_radio), (gpointer)view,
+      append_opengl_item (view, menu, text_styles[i], "style", popm, k,
+                          NULL, IMG_NONE, NULL, FALSE,
+                          G_CALLBACK(change_style_radio), (gpointer)view,
                           FALSE, (view -> anim -> last -> img -> style == i) ? TRUE : FALSE, TRUE, TRUE);
     }
     else
     {
       GMenu * menus = g_menu_new ();
-      for (j=0; j < FILLED_STYLES; j++)
+      for (j=0; j < FILLED_STYLES; j++, k++)
       {
-        append_opengl_item (view, menus, text_filled[j], "style", OGL_STYLES+j,
-                            NULL, IMG_NONE, NULL,
-                            FALSE, G_CALLBACK(change_style_radio), (gpointer)view,
+        append_opengl_item (view, menus, text_filled[j], "style", popm, k,
+                            NULL, IMG_NONE, NULL, FALSE,
+                            G_CALLBACK(change_style_radio), (gpointer)view,
                             FALSE, (view -> anim -> last -> img -> style == SPACEFILL && view -> anim -> last -> img -> filled_type == j) ? TRUE : FALSE, TRUE, TRUE);
       }
-      g_menu_append_submenu (menu, "Spacefilled", (GMenuModel*)menus);
+      append_submenu (menu, "Spacefilled", menus);
     }
   }
   return menu;

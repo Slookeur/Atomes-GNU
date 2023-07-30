@@ -11,18 +11,38 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'read_c3d.c'
+*
+*  Contains:
+*
+
+ - The subroutines to read Chem3d atomic coordinates
+
+*
+*  List of subroutines:
+
+  int c3d_get_atom_coordinates ();
+  int open_c3d_file (int linec);
+
+*/
+
 #include "global.h"
 #include "glview.h"
 #include "callbacks.h"
 #include "interface.h"
 #include "project.h"
-#include "gui.h"
 #include "bind.h"
 #include <omp.h>
 #include "readers.h"
 
 extern void check_for_species (double v, int ato);
 
+/*
+*  int c3d_get_atom_coordinates ()
+*
+*  Usage: get the atomic coordinates from the C3D file
+*/
 int c3d_get_atom_coordinates ()
 {
   int i, j, k;
@@ -264,6 +284,13 @@ int c3d_get_atom_coordinates ()
   return 0;
 }
 
+/*
+*  int open_c3d_file (int linec)
+*
+*  Usage: open C3D file
+*
+*  int linec : Number of lines in the file
+*/
 int open_c3d_file (int linec)
 {
   int res;

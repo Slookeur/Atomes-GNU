@@ -11,6 +11,55 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'm_map.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  gboolean setup_custom_color_map (float * data, struct project * this_proj, gboolean init);
+  gboolean open_save_map (FILE * fp, int act, struct project * this_proj);
+  gboolean use_custom_color_map (int p);
+
+  void init_map_range (colormap * map, int pts);
+  void update_color_map ();
+  void fill_map_model (GtkTreeStore * store, struct project * this_proj);
+
+  G_MODULE_EXPORT void set_point_position (GtkSpinButton * res, gpointer data);
+  G_MODULE_EXPORT void set_point_color (GtkColorChooser * colob, gpointer data);
+  G_MODULE_EXPORT void add_map_points (GtkSpinButton * res, gpointer data);
+  G_MODULE_EXPORT void update_cmin_max (GtkEntry * res, gpointer data);
+  G_MODULE_EXPORT void run_custom_mize_map (GtkDialog * win, gint response_id, gpointer data);
+  G_MODULE_EXPORT void custom_mize_map (GtkWidget * but, gpointer data);
+  G_MODULE_EXPORT void run_edit_data_map (GtkDialog * win, gint response_id, gpointer data);
+  G_MODULE_EXPORT void edit_data_map (GtkWidget * but, gpointer data);
+  G_MODULE_EXPORT void run_open_save_data_map (GtkNativeDialog * info, gint response_id, gpointer data);
+  G_MODULE_EXPORT void run_open_save_data_map (GtkDialog * info, gint response_id, gpointer data);
+  G_MODULE_EXPORT void open_save_data_map (GtkWidget * but, gpointer data);
+  G_MODULE_EXPORT void run_use_color_map (GtkDialog * win, gint response_id, gpointer data);
+  G_MODULE_EXPORT void set_color_map (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void change_color_radio (GSimpleAction * action, GVariant * parameter, gpointer data);
+
+  GtkWidget * create_css_color_bar (colormap * map);
+  GtkWidget * create_map_buttons ();
+  GtkWidget * create_map_tree (struct project * this_proj);
+  GtkWidget * mapw (glwin * view, int m, int mi, int mid, int mp, gchar * str);
+  GtkWidget * menump (glwin * view, gchar * ncm, int mid, int id, int cid);
+  GtkWidget * menu_map (glwin * view,  int id);
+
+  GMenu * menump (glwin * view, int popm, int mid, int cid);
+  GMenu * menu_map (glwin * view, int popm);
+
+  colormap * allocate_color_map (int pts, struct project * this_proj);
+
+  colormap * allocate_color_map (int pts, struct project * this_proj);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "project.h"
@@ -29,6 +78,13 @@ GtkWidget * color_fix;
 GtkWidget * color_bar;
 float * tmp_data;
 
+/*
+*  GtkWidget * create_css_color_bar (colormap * map)
+*
+*  Usage:
+*
+*  colormap * map :
+*/
 GtkWidget * create_css_color_bar (colormap * map)
 {
   GtkWidget * colob;
@@ -76,6 +132,14 @@ GtkWidget * create_css_color_bar (colormap * map)
   return colob;
 }
 
+/*
+*  void init_map_range (colormap * map, int pts)
+*
+*  Usage:
+*
+*  colormap * map :
+*  int pts        :
+*/
 void init_map_range (colormap * map, int pts)
 {
   map -> points = pts;
@@ -102,6 +166,16 @@ void init_map_range (colormap * map, int pts)
   }
 }
 
+/*
+*
+*
+*  Usage:
+*/
+/*
+*
+*
+*  Usage:
+*/
 colormap * allocate_color_map (int pts, struct project * this_proj)
 {
   colormap * map = g_malloc0 (sizeof*map);
@@ -116,6 +190,15 @@ colormap * allocate_color_map (int pts, struct project * this_proj)
   return map;
 }
 
+/*
+*  gboolean setup_custom_color_map (float * data, struct project * this_proj, gboolean init)
+*
+*  Usage:
+*
+*  float * data               :
+*  struct project * this_proj : the target project
+*  gboolean init              :
+*/
 gboolean setup_custom_color_map (float * data, struct project * this_proj, gboolean init)
 {
   int i, j, k;
@@ -211,6 +294,14 @@ gboolean setup_custom_color_map (float * data, struct project * this_proj, gbool
   return action;
 }
 
+/*
+*  G_MODULE_EXPORT void set_point_position (GtkSpinButton * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkSpinButton * res :
+*  gpointer data       : the associated data pointer
+*/
 G_MODULE_EXPORT void set_point_position (GtkSpinButton * res, gpointer data)
 {
   int pts = GPOINTER_TO_INT (data);
@@ -241,6 +332,14 @@ G_MODULE_EXPORT void set_point_position (GtkSpinButton * res, gpointer data)
   gtk_fixed_put (GTK_FIXED(color_fix), color_bar, 50, 0);
 }
 
+/*
+*  G_MODULE_EXPORT void set_point_color (GtkColorChooser * colob, gpointer data)
+*
+*  Usage:
+*
+*  GtkColorChooser * colob :
+*  gpointer data           : the associated data pointer
+*/
 G_MODULE_EXPORT void set_point_color (GtkColorChooser * colob, gpointer data)
 {
   int pts = GPOINTER_TO_INT (data);
@@ -251,6 +350,11 @@ G_MODULE_EXPORT void set_point_color (GtkColorChooser * colob, gpointer data)
 }
 
 
+/*
+*  GtkWidget * create_map_buttons ()
+*
+*  Usage:
+*/
 GtkWidget * create_map_buttons ()
 {
   GtkWidget * vbox = create_vbox(5);
@@ -271,6 +375,11 @@ GtkWidget * create_map_buttons ()
   return vbox;
 }
 
+/*
+*  void update_color_map ()
+*
+*  Usage:
+*/
 void update_color_map ()
 {
   destroy_this_widget (vbbox);
@@ -282,6 +391,14 @@ void update_color_map ()
   gtk_fixed_put (GTK_FIXED(color_fix), color_bar, 50, 0);
 }
 
+/*
+*  G_MODULE_EXPORT void add_map_points (GtkSpinButton * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkSpinButton * res :
+*  gpointer data       : the associated data pointer
+*/
 G_MODULE_EXPORT void add_map_points (GtkSpinButton * res, gpointer data)
 {
   //struct project * this_proj = get_project_by_id(GPOINTER_TO_INT(data));
@@ -294,6 +411,14 @@ G_MODULE_EXPORT void add_map_points (GtkSpinButton * res, gpointer data)
   gtk_spin_button_set_value (GTK_SPIN_BUTTON(res), tmp_map -> points);
 }
 
+/*
+*  G_MODULE_EXPORT void update_cmin_max (GtkEntry * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * res : the GtkEntry sending the signal
+*  gpointer data  : the associated data pointer
+*/
 G_MODULE_EXPORT void update_cmin_max (GtkEntry * res, gpointer data)
 {
   int i;
@@ -328,6 +453,15 @@ G_MODULE_EXPORT void update_cmin_max (GtkEntry * res, gpointer data)
   }
 }
 
+/*
+*  G_MODULE_EXPORT void run_custom_mize_map (GtkDialog * win, gint response_id, gpointer data)
+*
+*  Usage:
+*
+*  GtkDialog * win  : the GtkDialog sending the signal
+*  gint response_id :
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void run_custom_mize_map (GtkDialog * win, gint response_id, gpointer data)
 {
   if (response_id == GTK_RESPONSE_APPLY)
@@ -348,6 +482,14 @@ G_MODULE_EXPORT void run_custom_mize_map (GtkDialog * win, gint response_id, gpo
   destroy_this_dialog (win);
 }
 
+/*
+*  G_MODULE_EXPORT void custom_mize_map (GtkWidget * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * but : the GtkWidget sending the signal
+*  gpointer data   : the associated data pointer
+*/
 G_MODULE_EXPORT void custom_mize_map (GtkWidget * but, gpointer data)
 {
   struct project * this_proj = get_project_by_id(GPOINTER_TO_INT(data));
@@ -434,6 +576,14 @@ G_MODULE_EXPORT void custom_mize_map (GtkWidget * but, gpointer data)
   }
 }*/
 
+/*
+*  void fill_map_model (GtkTreeStore * store, struct project * this_proj)
+*
+*  Usage:
+*
+*  GtkTreeStore * store       :
+*  struct project * this_proj : the target project
+*/
 void fill_map_model (GtkTreeStore * store, struct project * this_proj)
 {
   GtkTreeIter step_level, atom_level;
@@ -498,6 +648,13 @@ G_MODULE_EXPORT void edit_map_cell (GtkCellRendererText * cell,
 
 }
 
+/*
+*  GtkWidget * create_map_tree (struct project * this_proj)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*/
 GtkWidget * create_map_tree (struct project * this_proj)
 {
   int i, j, k;
@@ -528,6 +685,15 @@ GtkWidget * create_map_tree (struct project * this_proj)
   return map_tree;
 }
 
+/*
+*  G_MODULE_EXPORT void run_edit_data_map (GtkDialog * win, gint response_id, gpointer data)
+*
+*  Usage:
+*
+*  GtkDialog * win  : the GtkDialog sending the signal
+*  gint response_id :
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void run_edit_data_map (GtkDialog * win, gint response_id, gpointer data)
 {
   if (response_id == GTK_RESPONSE_APPLY)
@@ -542,6 +708,14 @@ G_MODULE_EXPORT void run_edit_data_map (GtkDialog * win, gint response_id, gpoin
   destroy_this_dialog (win);
 }
 
+/*
+*  G_MODULE_EXPORT void edit_data_map (GtkWidget * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * but : the GtkWidget sending the signal
+*  gpointer data   : the associated data pointer
+*/
 G_MODULE_EXPORT void edit_data_map (GtkWidget * but, gpointer data)
 {
   struct project * this_proj = get_project_by_id(GPOINTER_TO_INT(data));
@@ -567,6 +741,15 @@ G_MODULE_EXPORT void edit_data_map (GtkWidget * but, gpointer data)
   run_this_gtk_dialog (win, G_CALLBACK(run_edit_data_map), data);
 }
 
+/*
+*  gboolean open_save_map (FILE * fp, int act, struct project * this_proj)
+*
+*  Usage:
+*
+*  FILE * fp                  :
+*  int act                    :
+*  struct project * this_proj : the target project
+*/
 gboolean open_save_map (FILE * fp, int act, struct project * this_proj)
 {
   int i, j;
@@ -614,10 +797,28 @@ gboolean open_save_map (FILE * fp, int act, struct project * this_proj)
 dint osmap;
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void run_open_save_data_map (GtkNativeDialog * info, gint response_id, gpointer data)
+*
+*  Usage:
+*
+*  GtkNativeDialog * info : the GtkNativeDialog sending the signal
+*  gint response_id       :
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void run_open_save_data_map (GtkNativeDialog * info, gint response_id, gpointer data)
 {
   GtkFileChooser * chooser = GTK_FILE_CHOOSER((GtkFileChooserNative *)info);
 #else
+/*
+*  G_MODULE_EXPORT void run_open_save_data_map (GtkDialog * info, gint response_id, gpointer data)
+*
+*  Usage:
+*
+*  GtkDialog * info : the GtkDialog sending the signal
+*  gint response_id :
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void run_open_save_data_map (GtkDialog * info, gint response_id, gpointer data)
 {
   GtkFileChooser * chooser = GTK_FILE_CHOOSER((GtkWidget *)info);
@@ -654,6 +855,14 @@ G_MODULE_EXPORT void run_open_save_data_map (GtkDialog * info, gint response_id,
   }
 }
 
+/*
+*  G_MODULE_EXPORT void open_save_data_map (GtkWidget * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * but : the GtkWidget sending the signal
+*  gpointer data   : the associated data pointer
+*/
 G_MODULE_EXPORT void open_save_data_map (GtkWidget * but, gpointer data)
 {
   GtkFileFilter * filter1, * filter2;
@@ -722,6 +931,15 @@ G_MODULE_EXPORT void open_save_data_map (GtkWidget * but, gpointer data)
 
 gboolean res_use_map;
 
+/*
+*  G_MODULE_EXPORT void run_use_color_map (GtkDialog * win, gint response_id, gpointer data)
+*
+*  Usage:
+*
+*  GtkDialog * win  : the GtkDialog sending the signal
+*  gint response_id :
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void run_use_color_map (GtkDialog * win, gint response_id, gpointer data)
 {
   if (response_id == GTK_RESPONSE_APPLY)
@@ -735,6 +953,13 @@ G_MODULE_EXPORT void run_use_color_map (GtkDialog * win, gint response_id, gpoin
   destroy_this_dialog (win);
 }
 
+/*
+*  gboolean use_custom_color_map (int p)
+*
+*  Usage:
+*
+*  int p :
+*/
 gboolean use_custom_color_map (int p)
 {
   struct project * this_proj = get_project_by_id(p);
@@ -758,6 +983,14 @@ gboolean use_custom_color_map (int p)
   return res_use_map;
 }
 
+/*
+*  G_MODULE_EXPORT void set_color_map (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_color_map (GtkWidget * widg, gpointer data)
 {
   tint * the_data = (tint *) data;
@@ -769,7 +1002,7 @@ G_MODULE_EXPORT void set_color_map (GtkWidget * widg, gpointer data)
   i = this_proj -> modelgl -> anim -> last -> img -> color_map[k];
   l = j - k*ATOM_MAPS;
 #ifdef GTK3
-  if (i != l && check_menu_item_get_active ((gpointer)widg))
+  if (i != l && gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg))
 #else
   if (i != l)
 #endif
@@ -789,11 +1022,11 @@ G_MODULE_EXPORT void set_color_map (GtkWidget * widg, gpointer data)
     {
       this_proj -> modelgl -> anim -> last -> img -> color_map[k] = NONE;
 #ifdef GTK3
-      check_menu_item_set_active ((gpointer)this_proj -> modelgl -> color_styles[k*ATOM_MAPS+i], FALSE);
+      gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> color_styles[k*ATOM_MAPS+i], FALSE);
       if (j == 6) widget_set_sensitive (this_proj -> modelgl -> color_styles[ATOM_MAPS+POLY_MAPS-1], TRUE);
       if (widg != this_proj -> modelgl -> color_styles[j])
       {
-        check_menu_item_set_active ((gpointer)this_proj -> modelgl -> color_styles[j], TRUE);
+        gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> color_styles[j], TRUE);
       }
 #endif
       this_proj -> modelgl -> anim -> last -> img -> color_map[k] = l;
@@ -814,14 +1047,26 @@ G_MODULE_EXPORT void set_color_map (GtkWidget * widg, gpointer data)
     }
   }
 #ifdef GTK3
-  else if (k*ATOM_MAPS+i == j && ! check_menu_item_get_active ((gpointer)widg))
+  else if (k*ATOM_MAPS+i == j && ! gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg))
   {
-    check_menu_item_set_active ((gpointer)this_proj -> modelgl -> color_styles[j], TRUE);
+    gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> color_styles[j], TRUE);
   }
 #endif
 }
 
 #ifdef GTK3
+/*
+*  GtkWidget * mapw (glwin * view, int m, int mi, int mid, int mp, gchar * str)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int m        :
+*  int mi       :
+*  int mid      :
+*  int mp       :
+*  gchar * str  :
+*/
 GtkWidget * mapw (glwin * view, int m, int mi, int mid, int mp, gchar * str)
 {
   int v = mi*ATOM_MAPS + mid;
@@ -851,108 +1096,167 @@ GtkWidget * mapw (glwin * view, int m, int mi, int mid, int mp, gchar * str)
   }
 }
 
+/*
+*  GtkWidget * menump (glwin * view, gchar * ncm, int mid, int id, int cid)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  gchar * ncm  :
+*  int mid      :
+*  int id       :
+*  int cid      :
+*/
 GtkWidget * menump (glwin * view, gchar * ncm, int mid, int id, int cid)
 {
   GtkWidget * map = create_menu_item (TRUE, ncm);
   GtkWidget * mapm = gtk_menu_new ();
-  menu_item_set_submenu (map, mapm);
-  add_menu_child (mapm, mapw(view, mid, id, 0, cid, "Atomic Species"));
+  gtk_menu_item_set_submenu ((GtkMenuItem *)map, mapm);
+  gtk_menu_shell_append ((GtkMenuShell *)mapm, mapw(view, mid, id, 0, cid, "Atomic Species"));
   GtkWidget * cp = create_menu_item (FALSE, "Atomic Coordination");
-  add_menu_child (mapm, cp);
+  gtk_menu_shell_append ((GtkMenuShell *)mapm, cp);
   GtkWidget * mapn = gtk_menu_new ();
-  menu_item_set_submenu (cp, mapn);
-  add_menu_child (mapn, mapw(view, mid, id, 1, cid, "Total"));
-  add_menu_child (mapn, mapw(view, mid, id, 2, cid, "Partial"));
-  add_menu_child (mapm, mapw(view, mid, id, 3, cid, "Fragment(s)"));
-  add_menu_child (mapm, mapw(view, mid, id, 4, cid, "Molecule(s)"));
-  add_menu_child (mapm, mapw(view, mid, id, 5, cid, "Force Field (DL_POLY)"));
+  gtk_menu_item_set_submenu ((GtkMenuItem *)cp, mapn);
+  gtk_menu_shell_append ((GtkMenuShell *)mapn, mapw(view, mid, id, 1, cid, "Total"));
+  gtk_menu_shell_append ((GtkMenuShell *)mapn, mapw(view, mid, id, 2, cid, "Partial"));
+  gtk_menu_shell_append ((GtkMenuShell *)mapm, mapw(view, mid, id, 3, cid, "Fragment(s)"));
+  gtk_menu_shell_append ((GtkMenuShell *)mapm, mapw(view, mid, id, 4, cid, "Molecule(s)"));
+  gtk_menu_shell_append ((GtkMenuShell *)mapm, mapw(view, mid, id, 5, cid, "Force Field (DL_POLY)"));
   if (id == 0)
   {
-    add_menu_child (mapm, mapw(view, mid, id, 6, cid, "Custom"));
+    gtk_menu_shell_append ((GtkMenuShell *)mapm, mapw(view, mid, id, 6, cid, "Custom"));
   }
   else
   {
-    add_menu_child (mapm, mapw(view, mid, id, 6, cid, "Use Atom(s) Custom Map"));
+    gtk_menu_shell_append ((GtkMenuShell *)mapm, mapw(view, mid, id, 6, cid, "Use Atom(s) Custom Map"));
   }
   return map;
 }
 
+/*
+*  GtkWidget * menu_map (glwin * view,  int id)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*   int id      :
+*/
 GtkWidget * menu_map (glwin * view,  int id)
 {
   GtkWidget * menum = gtk_menu_new ();
-  add_menu_child (menum, menump(view, "Atoms & bonds", id, 0, view -> anim -> last -> img -> color_map[0]));
-  add_menu_child (menum, menump(view, "Polyhedra", id, 1, view -> anim -> last -> img -> color_map[1]));
+  gtk_menu_shell_append ((GtkMenuShell *)menum, menump(view, "Atoms & bonds", id, 0, view -> anim -> last -> img -> color_map[0]));
+  gtk_menu_shell_append ((GtkMenuShell *)menum, menump(view, "Polyhedra", id, 1, view -> anim -> last -> img -> color_map[1]));
   widget_set_sensitive (menum, get_project_by_id(view -> proj) -> nspec);
   return menum;
 }
 #else
+/*
+*  G_MODULE_EXPORT void change_color_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void change_color_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   glwin * view = (glwin *)data;
   const gchar * color = g_variant_get_string (parameter, NULL);
-  gchar * color_name = NULL;
-  int i;
-  for (i=0; i<ATOM_MAPS; i++)
+  int lgt = strlen (color);
+  gchar * name = g_strdup_printf ("%c%c", color[lgt-2], color[lgt-1]);
+  if (g_strcmp0(name, ".1") == 0)
   {
-    color_name = g_strdup_printf ("set-amap.%d", i);
-    if (g_strcmp0(color, (const gchar *)color_name) == 0)
+    g_free (name);
+    name = g_strdup_printf ("%.*s", 8, color);
+    if (g_strcmp0(name, "set-amap") == 0)
     {
-      set_color_map (NULL, & view -> colorp[i][0]);
-      g_free (color_name);
-      color_name = NULL;
-      break;
+      g_free (name);
+      name = g_strdup_printf ("%.*s.0", lgt-2, color);
+      g_action_group_activate_action ((GActionGroup *)view -> action_group, "set-amap", g_variant_new_string((const gchar *)name));
     }
-    g_free (color_name);
-    color_name = NULL;
-    color_name = g_strdup_printf ("set-pmap.%d", i);
-    if (g_strcmp0(color, (const gchar *)color_name) == 0)
+    else
     {
-      set_color_map (NULL, & view -> colorp[ATOM_MAPS+i][0]);
-      g_free (color_name);
-      color_name = NULL;
-      break;
+      g_free (name);
+      name = g_strdup_printf ("%.*s.0", lgt-2, color);
+      g_action_group_activate_action ((GActionGroup *)view -> action_group, "set-pmap", g_variant_new_string((const gchar *)name));
     }
-    g_free (color_name);
-    color_name = NULL;
+    g_free (name);
   }
-  g_action_change_state (G_ACTION (action), parameter);
+  else
+  {
+    int i;
+    gchar * dot = g_strdup_printf ("%c", color[lgt-4]);
+    gchar * col;
+    if (g_strcmp0(dot, ".") == 0)
+    {
+      col = g_strdup_printf ("%c", color[lgt-3]);
+    }
+    else
+    {
+      col = g_strdup_printf ("%c%c", color[lgt-4], color[lgt-3]);
+    }
+    i = (int)atof(col);
+    set_color_map (NULL, & view -> colorp[i][0]);
+    g_free (dot);
+    g_free (col);
+    g_action_change_state (G_ACTION (action), parameter);
+  }
 }
 
-GMenu * menump (glwin * view, int mid, int cid)
+/*
+*  GMenu * menump (glwin * view, int popm, int mid, int cid)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*  int mid      :
+*  int cid      :
+*/
+GMenu * menump (glwin * view, int popm, int mid, int cid)
 {
   gchar * mapname[2] = {"amap", "pmap"};
   gboolean sensitive;
   GMenu * menu = g_menu_new ();
-  append_opengl_item (view, menu, "Atomic Species", mapname[mid], mid*ATOM_MAPS, NULL, IMG_NONE, NULL,
+  append_opengl_item (view, menu, "Atomic Species", mapname[mid], popm, mid*ATOM_MAPS, NULL, IMG_NONE, NULL,
                       FALSE, G_CALLBACK(change_color_radio), (gpointer)view, FALSE, (cid == 0) ? TRUE : FALSE, TRUE, TRUE);
   GMenu * menuf = g_menu_new ();
-  append_opengl_item (view, menuf, "Total(s)", mapname[mid], mid*ATOM_MAPS+1, NULL, IMG_NONE, NULL,
+  append_opengl_item (view, menuf, "Total(s)", mapname[mid], popm, mid*ATOM_MAPS+1, NULL, IMG_NONE, NULL,
                       FALSE, G_CALLBACK(change_color_radio), (gpointer)view, FALSE, (cid == 1) ? TRUE : FALSE, TRUE, TRUE);
-  append_opengl_item (view, menuf, "Partial(s)", mapname[mid], mid*ATOM_MAPS+2, NULL, IMG_NONE, NULL,
+  append_opengl_item (view, menuf, "Partial(s)", mapname[mid], popm, mid*ATOM_MAPS+2, NULL, IMG_NONE, NULL,
                       FALSE, G_CALLBACK(change_color_radio), (gpointer)view, FALSE, (cid == 2) ? TRUE : FALSE, TRUE, TRUE);
-  g_menu_append_submenu (menu, "Atomic Coordinations", (GMenuModel*)menuf);
+  append_submenu (menu, "Atomic Coordinations", menuf);
   g_object_unref (menuf);
 
   sensitive = view -> adv_bonding[0];
-  append_opengl_item (view, menu, "Fragment(s)", mapname[mid], mid*ATOM_MAPS+3, NULL, IMG_NONE, NULL,
+  append_opengl_item (view, menu, "Fragment(s)", mapname[mid], popm, mid*ATOM_MAPS+3, NULL, IMG_NONE, NULL,
                       FALSE, G_CALLBACK(change_color_radio), (gpointer)view, FALSE, (cid == 3) ? TRUE : FALSE, TRUE, sensitive);
   sensitive = view -> adv_bonding[1];
-  append_opengl_item (view, menu, "Molecule(s)", mapname[mid], mid*ATOM_MAPS+4, NULL, IMG_NONE, NULL,
+  append_opengl_item (view, menu, "Molecule(s)", mapname[mid], popm, mid*ATOM_MAPS+4, NULL, IMG_NONE, NULL,
                       FALSE, G_CALLBACK(change_color_radio), (gpointer)view, FALSE, (cid == 4) ? TRUE : FALSE, TRUE, sensitive);
   sensitive = (get_project_by_id(view -> proj) -> force_field[0]) ? TRUE : FALSE;
-  append_opengl_item (view, menu, "Force Field (DL_POLY)", mapname[mid], mid*ATOM_MAPS+5, NULL, IMG_NONE, NULL,
+  append_opengl_item (view, menu, "Force Field (DL_POLY)", mapname[mid], popm, mid*ATOM_MAPS+5, NULL, IMG_NONE, NULL,
                       FALSE, G_CALLBACK(change_color_radio), (gpointer)view, FALSE, (cid == 5) ? TRUE : FALSE, TRUE, sensitive);
   sensitive = (! mid) ? TRUE : (view -> custom_map) ? TRUE : FALSE;
-  append_opengl_item (view, menu, (! mid) ? "Custom" : "Use Atom(s) Custom Map", mapname[mid], mid*ATOM_MAPS+6, NULL, IMG_NONE, NULL,
+  append_opengl_item (view, menu, (! mid) ? "Custom" : "Use Atom(s) Custom Map", mapname[mid], popm, mid*ATOM_MAPS+6, NULL, IMG_NONE, NULL,
                       FALSE, G_CALLBACK(change_color_radio), (gpointer)view, FALSE, (cid == 6) ? TRUE : FALSE, TRUE, sensitive);
   return menu;
 }
 
-GMenu * menu_map (glwin * view)
+/*
+*  GMenu * menu_map (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*/
+GMenu * menu_map (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
-  g_menu_append_submenu (menu, "Atoms & Bonds", (GMenuModel*)menump(view, 0, view -> anim -> last -> img -> color_map[0]));
-  g_menu_append_submenu (menu, "Polyhedra", (GMenuModel*)menump(view, 1, view -> anim -> last -> img -> color_map[1]));
+  append_submenu (menu, "Atoms & Bonds", menump(view, popm, 0, view -> anim -> last -> img -> color_map[0]));
+  append_submenu (menu, "Polyhedra", menump(view, popm, 1, view -> anim -> last -> img -> color_map[1]));
   return menu;
 }
 #endif

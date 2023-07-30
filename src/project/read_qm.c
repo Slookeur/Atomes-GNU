@@ -11,9 +11,36 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'read_qm.c'
+*
+*  Contains:
+*
+
+ - Subroutines to read ab-intio calculation (CPMD/CP2K) parameters from atomes project file
+
+*
+*  List of subroutines:
+
+  int read_thermo (FILE * fp, struct thermostat * thermo);
+  int read_fixed_atoms_cpmd (FILE * fp, cpmd * cpmd_input);
+  int read_fixed_atoms_cp2k (FILE * fp, cp2k * cp2k_input, int idf);
+  int read_cpmd_data (FILE * fp, int cid, struct project * this_proj);
+  int read_cp2k_data (FILE * fp, int cid, struct project * this_proj);
+
+*/
+
 #include "global.h"
 #include "project.h"
 
+/*
+*  int read_thermo (FILE * fp, struct thermostat * thermo)
+*
+*  Usage: read thermostat information from file
+*
+*  FILE * fp                  : the file pointer
+*  struct thermostat * thermo : the thermostat to store the data
+*/
 int read_thermo (FILE * fp, struct thermostat * thermo)
 {
   if (fread (& thermo -> id, sizeof(int), 1, fp) != 1) return ERROR_RW;
@@ -25,6 +52,14 @@ int read_thermo (FILE * fp, struct thermostat * thermo)
   return OK;
 }
 
+/*
+*  int read_fixed_atoms_cpmd (FILE * fp, cpmd * cpmd_input)
+*
+*  Usage: read fixed CPMD atom(s) from file
+*
+*  FILE * fp         : the file pointer
+*  cpmd * cpmd_input : the CPMD input structure to store the data
+*/
 int read_fixed_atoms_cpmd (FILE * fp, cpmd * cpmd_input)
 {
   int i;
@@ -47,6 +82,15 @@ int read_fixed_atoms_cpmd (FILE * fp, cpmd * cpmd_input)
   return OK;
 }
 
+/*
+*  int read_fixed_atoms_cp2k (FILE * fp, cp2k * cp2k_input, int idf)
+*
+*  Usage: read fixed CP2K from file
+*
+*  FILE * fp         : the file pointer
+*  cp2k * cp2k_input : the CP2K input structure to store the data
+*  int idf           : the fixed atom(s) format
+*/
 int read_fixed_atoms_cp2k (FILE * fp, cp2k * cp2k_input, int idf)
 {
   int i;
@@ -69,6 +113,15 @@ int read_fixed_atoms_cp2k (FILE * fp, cp2k * cp2k_input, int idf)
   return OK;
 }
 
+/*
+*  int read_cpmd_data (FILE * fp, int cid, struct project * this_proj)
+*
+*  Usage: read CPMD data from file
+*
+*  FILE * fp                  : the file pointer
+*  int cid                    : CPMD id (0 = ab-initio, 1 = QM-MM)
+*  struct project * this_proj : the target project
+*/
 int read_cpmd_data (FILE * fp, int cid, struct project * this_proj)
 {
   int i;
@@ -143,6 +196,15 @@ int read_cpmd_data (FILE * fp, int cid, struct project * this_proj)
   return OK;
 }
 
+/*
+*  int read_cp2k_data (FILE * fp, int cid, struct project * this_proj)
+*
+*  Usage: read CP2K data from file
+*
+*  FILE * fp                  : the file pointer
+*  int cid                    : CP2K id (0 = ab-initio, 1 = QM-MM)
+*  struct project * this_proj : the target project
+*/
 int read_cp2k_data (FILE * fp, int cid, struct project * this_proj)
 {
   int i, j;

@@ -11,12 +11,67 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'ogl_shading.c'
+*
+*  Contains:
+*
+
+ -
+
+*
+*
+*  List of subroutines:
+
+  GLuint create_shader (int type, const GLchar * src);
+  GLuint * alloc_shader_pointer (GLuint * pointer, int shaders);
+  GLuint * glsl_add_lights (glsl_program * glsl);
+
+  gboolean in_md_shaders (struct project * this_proj, int id);
+  gboolean glsl_disable_cull_face (glsl_program * glsl);
+
+  void set_light_uniform_location (GLuint * lightning, int id, int j, int k, char * string);
+  void glsl_bind_points (glsl_program * glsl, object_3d * obj);
+  void glsl_bind_spheres (glsl_program * glsl, object_3d * obj);
+  void glsl_bind_lines (glsl_program * glsl, object_3d * obj);
+  void glsl_bind_cylinders (glsl_program * glsl, object_3d * obj);
+  void glsl_bind_caps (glsl_program * glsl, object_3d * obj);
+  void glsl_bind_polyedra (glsl_program * glsl, object_3d * obj);
+  void update_string_instances (glsl_program * glsl, object_3d * obj);
+  void glsl_bind_string (glsl_program * glsl, object_3d * obj);
+  void re_create_all_md_shaders (glwin * view);
+  void re_create_md_shaders (int nshaders, int shaders[nshaders], struct project * this_proj);
+  void cleaning_shaders (glwin * view, int shader);
+  void recreate_all_shaders (glwin * view);
+  void init_default_shaders (glwin * view);
+  void init_shaders (glwin * view);
+  void set_lights_data (glsl_program * glsl);
+  void shading_glsl_text (glsl_program * glsl);
+  void render_this_shader (glsl_program * glsl, int ids);
+  void draw_vertices (int id);
+
+  glsl_program * init_shader_program (int object, int object_id,
+                                      const GLchar * vertex, const GLchar * geometry, const GLchar * fragment,
+                                      GLenum type_of_vertices, int narray, int nunif, gboolean lightning, object_3d * obj);
+
+  object_3d * duplicate_object_3d (object_3d * old_obj);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "glview.h"
 #include "ogl_shading.h"
 
 /* Create and compile a shader */
+/*
+*  GLuint create_shader (int type, const GLchar * src)
+*
+*  Usage: create an OpenGL GLSL shader
+*
+*  int type           : type of the shader
+*  const GLchar * src : name of the shader
+*/
 GLuint create_shader (int type, const GLchar * src)
 {
   GLuint shader;
@@ -45,6 +100,14 @@ GLuint create_shader (int type, const GLchar * src)
   return shader;
 }
 
+/*
+*  GLuint * alloc_shader_pointer (GLuint * pointer, int shaders)
+*
+*  Usage: allocate GLuint data pointer, ensure that it is clean
+*
+*  GLuint * pointer : the data pointer to allocate
+*  int shaders      : the data size to allocate
+*/
 GLuint * alloc_shader_pointer (GLuint * pointer, int shaders)
 {
   if (pointer != NULL)
@@ -61,11 +124,29 @@ GLuint * alloc_shader_pointer (GLuint * pointer, int shaders)
 #define LIGHT_DATA    10
 
 
+/*
+*  void set_light_uniform_location (GLuint * lightning, int id, int j, int k, char * string)
+*
+*  Usage: set lightning uniform location
+*
+*  GLuint * lightning :
+*  int id             : shader id
+*  int j              : light id
+*  int k              : uniform id
+*  char * string      : uniform string
+*/
 void set_light_uniform_location (GLuint * lightning, int id, int j, int k, char * string)
 {
   lightning[LIGHT_INFO+MATERIAL_DATA+FOG_DATA+LIGHT_DATA*j+k] = glGetUniformLocation (id, g_strdup_printf ("AllLights[%d].%s", j, string));
 }
 
+/*
+*  GLuint * glsl_add_lights (glsl_program * glsl)
+*
+*  Usage: add lightning to an OpenGL shader program
+*
+*  glsl_program * glsl : the target glsl
+*/
 GLuint * glsl_add_lights (glsl_program * glsl)
 {
   int tot = MATERIAL_DATA + plot -> lights * LIGHT_DATA + LIGHT_INFO + FOG_DATA;
@@ -101,6 +182,14 @@ GLuint * glsl_add_lights (glsl_program * glsl)
   return lightning;
 }
 
+/*
+*  void glsl_bind_points (glsl_program * glsl, object_3d * obj)
+*
+*  Usage: bind a 3D object point to an OpenGL shader program
+*
+*  glsl_program * glsl : the target glsl
+*  object_3d * obj     : the 3D object point to bind
+*/
 void glsl_bind_points (glsl_program * glsl, object_3d * obj)
 {
   glsl -> array_pointer[1] = glGetAttribLocation (glsl -> id, "offset");
@@ -126,6 +215,14 @@ void glsl_bind_points (glsl_program * glsl, object_3d * obj)
   glVertexAttribDivisor (glsl -> array_pointer[3], 1);
 }
 
+/*
+*  void glsl_bind_spheres (glsl_program * glsl, object_3d * obj)
+*
+*  Usage: bind a 3D object sphere to an OpenGL shader program
+*
+*  glsl_program * glsl : the target glsl
+*  object_3d * obj     : the 3D object sphere to bind
+*/
 void glsl_bind_spheres (glsl_program * glsl, object_3d * obj)
 {
   glsl -> array_pointer[1] = glGetAttribLocation (glsl -> id, "offset");
@@ -154,6 +251,14 @@ void glsl_bind_spheres (glsl_program * glsl, object_3d * obj)
   glVertexAttribDivisor (glsl -> array_pointer[3], 1);
 }
 
+/*
+*  void glsl_bind_lines (glsl_program * glsl, object_3d * obj)
+*
+*  Usage: bind a 3D object line to an OpenGL shader program
+*
+*  glsl_program * glsl : the target glsl
+*  object_3d * obj     : the 3D object line to bind
+*/
 void glsl_bind_lines (glsl_program * glsl, object_3d * obj)
 {
   glsl -> array_pointer[1] = glGetAttribLocation (glsl -> id, "vertColor");
@@ -176,6 +281,14 @@ void glsl_bind_lines (glsl_program * glsl, object_3d * obj)
   }
 }
 
+/*
+*  void glsl_bind_cylinders (glsl_program * glsl, object_3d * obj)
+*
+*  Usage: bind a 3D object cylinder to an OpenGL shader program
+*
+*  glsl_program * glsl : the target glsl
+*  object_3d * obj     : the 3D object, cylinder to bind
+*/
 void glsl_bind_cylinders (glsl_program * glsl, object_3d * obj)
 {
   glsl -> array_pointer[1] = glGetAttribLocation (glsl -> id, "offset");
@@ -214,6 +327,14 @@ void glsl_bind_cylinders (glsl_program * glsl, object_3d * obj)
   glVertexAttribDivisor (glsl -> array_pointer[5], 1);
 }
 
+/*
+*  void glsl_bind_caps (glsl_program * glsl, object_3d * obj)
+*
+*  Usage: bind a 3D object cylinder cap to an OpenGL shader program
+*
+*  glsl_program * glsl : the target glsl
+*  object_3d * obj     : the 3D object, cylinder cap to bind
+*/
 void glsl_bind_caps (glsl_program * glsl, object_3d * obj)
 {
   glsl -> array_pointer[1] = glGetAttribLocation (glsl -> id, "offset");
@@ -248,6 +369,14 @@ void glsl_bind_caps (glsl_program * glsl, object_3d * obj)
   glVertexAttribDivisor (glsl -> array_pointer[4], 1);
 }
 
+/*
+*  void glsl_bind_polyedra (glsl_program * glsl, object_3d * obj)
+*
+*  Usage: bind a 3D object polyhedra to an OpenGL shader program
+*
+*  glsl_program * glsl : the target glsl
+*  object_3d * obj     : the 3D object polyhedra to bind
+*/
 void glsl_bind_polyedra (glsl_program * glsl, object_3d * obj)
 {
   glsl -> array_pointer[1] = glGetAttribLocation (glsl -> id, "vertNormal");
@@ -264,6 +393,14 @@ void glsl_bind_polyedra (glsl_program * glsl, object_3d * obj)
   glVertexAttribPointer(glsl -> array_pointer[2], 4, GL_FLOAT, GL_FALSE, obj -> vert_buffer_size*sizeof(GLfloat), (GLvoid*) (6*sizeof(GLfloat)));
 }
 
+/*
+*  void update_string_instances (glsl_program * glsl, object_3d * obj)
+*
+*  Usage:
+*
+*  glsl_program * glsl : the target glsl
+*  object_3d * obj     :
+*/
 void update_string_instances (glsl_program * glsl, object_3d * obj)
 {
   // The instances (pos)
@@ -290,6 +427,14 @@ void update_string_instances (glsl_program * glsl, object_3d * obj)
   }
 }
 
+/*
+*  void glsl_bind_string (glsl_program * glsl, object_3d * obj)
+*
+*  Usage: bind a 3D object text string to an OpenGL shader program
+*
+*  glsl_program * glsl : the target glsl
+*  object_3d * obj     : the 3D object text string to bind
+*/
 void glsl_bind_string (glsl_program * glsl, object_3d * obj)
 {
   glActiveTexture(GL_TEXTURE0);
@@ -322,6 +467,13 @@ void glsl_bind_string (glsl_program * glsl, object_3d * obj)
   update_string_instances (glsl, obj);
 }
 
+/*
+*  object_3d * duplicate_object_3d (object_3d * old_obj)
+*
+*  Usage: create a copy of an object_3d data structure
+*
+*  object_3d * old_obj : the data structure to copy
+*/
 object_3d * duplicate_object_3d (object_3d * old_obj)
 {
   object_3d * new_obj = g_malloc0 (sizeof*new_obj);
@@ -350,6 +502,24 @@ object_3d * duplicate_object_3d (object_3d * old_obj)
   return new_obj;
 }
 
+/*
+*  glsl_program * init_shader_program (int object, int object_id,
+*                                      const GLchar * vertex, const GLchar * geometry, const GLchar * fragment,
+*                                      GLenum type_of_vertices, int narray, int nunif, gboolean lightning, object_3d * obj)
+*
+*  Usage: create an OpenGL shader program
+*
+*  int object              : shader id (in enum shaders)
+*  int object_id           : shader type in: GLSL_SPHERES, GLSL_POINTS, GLSL_LINES, GLSL_CYLINDERS, GLSL_CAPS, GLSL_POLYEDRA, GLSL_STRING
+*  const GLchar * vertex   : general shader: in the shaders defined in 'ogl_shaders.c'
+*  const GLchar * geometry : geometry shader, if any: in the shaders defined in 'ogl_shaders.c'
+*  const GLchar * fragment : color shader, if any: in the shaders defined in 'ogl_shaders.c'
+*  GLenum type_of_vertices : type of vertices in: GL_POINTS, GL_LINES, GL_TRIANGLE GL_TRIANGLE_FAN, GL_TRIANGLE_STRIP
+*  int narray              : number of vertices to allocate
+*  int nunif               : number of uniform location(s) to allocate
+*  gboolean lightning      : use lightning (1/0)
+*  object_3d * obj         : the object 3D to bind to the shader
+*/
 glsl_program * init_shader_program (int object, int object_id,
                                     const GLchar * vertex, const GLchar * geometry, const GLchar * fragment,
                                     GLenum type_of_vertices, int narray, int nunif, gboolean lightning, object_3d * obj)
@@ -441,7 +611,14 @@ glsl_program * init_shader_program (int object, int object_id,
   return glsl;
 }
 
-
+/*
+*  gboolean in_md_shaders (struct project * this_proj, int id)
+*
+*  Usage: is this shader MD dependent ?
+*
+*  struct project * this_proj : the target project
+*  int id                     : the shader id
+*/
 gboolean in_md_shaders (struct project * this_proj, int id)
 {
   if (id == ATOMS) return TRUE;
@@ -454,6 +631,13 @@ gboolean in_md_shaders (struct project * this_proj, int id)
   return FALSE;
 }
 
+/*
+*  void re_create_all_md_shaders (glwin * view)
+*
+*  Usage: re-initialize all MD dependent OpenGL shaders
+*
+*  glwin * view : the target glwin
+*/
 void re_create_all_md_shaders (glwin * view)
 {
   int i, j;
@@ -467,6 +651,15 @@ void re_create_all_md_shaders (glwin * view)
   }
 }
 
+/*
+*  void re_create_md_shaders (int nshaders, int shaders[nshaders], struct project * this_proj)
+*
+*  Usage: re-initialize some MD dependent OpenGL shaders
+*
+*  int nshaders               : the number of shader(s) to initialize
+*  int shaders[nshaders]      : the list of shaders
+*  struct project * this_proj : the target project
+*/
 void re_create_md_shaders (int nshaders, int shaders[nshaders], struct project * this_proj)
 {
   int i, j, k;
@@ -481,6 +674,14 @@ void re_create_md_shaders (int nshaders, int shaders[nshaders], struct project *
   }
 }
 
+/*
+*  void cleaning_shaders (glwin * view, int shader)
+*
+*  Usage: re-initialize an OpenGL shader
+*
+*  glwin * view : the target glwin
+*  int shader   : the shader to initialize
+*/
 void cleaning_shaders (glwin * view, int shader)
 {
   int i = (in_md_shaders(get_project_by_id(view -> proj), shader)) ? step : 0;
@@ -492,6 +693,13 @@ void cleaning_shaders (glwin * view, int shader)
   view -> n_shaders[shader][i] = (in_md_shaders(get_project_by_id(view -> proj), shader)) ? -1 : 0;
 }
 
+/*
+*  void recreate_all_shaders (glwin * view)
+*
+*  Usage: re-initialize all OpenGL shaders
+*
+*  glwin * view : the target glwin
+*/
 void recreate_all_shaders (glwin * view)
 {
   int i;
@@ -501,6 +709,13 @@ void recreate_all_shaders (glwin * view)
   }
 }
 
+/*
+*  void init_default_shaders (glwin * view)
+*
+*  Usage: re-initialize the default OpenGL shaders
+*
+*  glwin * view : the target glwin
+*/
 void init_default_shaders (glwin * view)
 {
   int shaders[6] = {ATOMS, BONDS, SELEC, POLYS, RINGS, VOLMS};
@@ -522,6 +737,13 @@ void init_default_shaders (glwin * view)
   }
 }
 
+/*
+*  void init_shaders (glwin * view)
+*
+*  Usage: initialize all the OpenGL shaders
+*
+*  glwin * view : the target glwin
+*/
 void init_shaders (glwin * view)
 {
   int i, j;
@@ -549,6 +771,13 @@ void init_shaders (glwin * view)
   }
 }
 
+/*
+*  gboolean glsl_disable_cull_face (glsl_program * glsl)
+*
+*  Usage:
+*
+*  glsl_program * glsl : the target glsl
+*/
 gboolean glsl_disable_cull_face (glsl_program * glsl)
 {
   if (glsl -> draw_type == GLSL_POINTS)
@@ -569,6 +798,13 @@ gboolean glsl_disable_cull_face (glsl_program * glsl)
   }
 }
 
+/*
+*  void set_lights_data (glsl_program * glsl)
+*
+*  Usage:
+*
+*  glsl_program * glsl : the target glsl
+*/
 void set_lights_data (glsl_program * glsl)
 {
   int j, k;
@@ -618,6 +854,13 @@ void set_lights_data (glsl_program * glsl)
 
 uint16_t stipple_pattern[NDOTS]={ 0xAAAA, 0x1111, 0x0000, 0x55FF, 0x24FF, 0x3F3F, 0x33FF, 0x27FF};
 
+/*
+*  void shading_glsl_text (glsl_program * glsl)
+*
+*  Usage:
+*
+*  glsl_program * glsl : the target glsl
+*/
 void shading_glsl_text (glsl_program * glsl)
 {
   wingl -> label_projection_matrix = create_label_matrices ();
@@ -631,12 +874,19 @@ void shading_glsl_text (glsl_program * glsl)
   if (glsl -> object == MEASU) glUniform1i (glsl -> uniform_loc[7], (plot -> mtilt) ? 1 : 0);
 }
 
+/*
+*  void render_this_shader (glsl_program * glsl, int ids)
+*
+*  Usage: render an OpenGL shader
+*
+*  glsl_program * glsl : the target glsl
+*  int ids             :
+*/
 void render_this_shader (glsl_program * glsl, int ids)
 {
   int j, k;
   if (glsl -> object == MAXIS)
   {
-    vec3_t pos = vec3(0.0,0.0,0.0);
     j = 0;
     if (is_atom_win_active(wingl))
     {
@@ -646,7 +896,7 @@ void render_this_shader (glsl_program * glsl, int ids)
         j = wingl -> atom_win -> axis[k];
       }
     }
-    wingl -> axis_proj_model_view_matrix = create_axis_matrices (j, pos);
+    wingl -> axis_proj_model_view_matrix = create_axis_matrices (j);
     glUniformMatrix4fv (glsl -> uniform_loc[0], 1, GL_FALSE, & wingl -> axis_proj_model_view_matrix.m00);
     j = (plot -> box_axis[AXIS] == WIREFRAME) ? 1 : 3;
     if (ids > j) shading_glsl_text (glsl);
@@ -758,6 +1008,13 @@ void render_this_shader (glsl_program * glsl, int ids)
   glBindVertexArray (0);
 }
 
+/*
+*  void draw_vertices (int id)
+*
+*  Usage:
+*
+*  int id :
+*/
 void draw_vertices (int id)
 {
   int i, j;

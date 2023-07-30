@@ -11,6 +11,117 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'popup.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  int get_to_be_selected (glwin * view);
+  int get_style (gchar * str);
+  int check_label_numbers (struct project * this_proj, int types);
+
+  gchar * get_object_from_action (GSimpleAction * action);
+
+  void to_remove_this_object (int type, gpointer data);
+  void to_replace_this_object (int type, GSimpleAction * action, gpointer data);
+  void to_replace_this_object (int type, GtkWidget * widg, gpointer data);
+  void copy_bond_selection ();
+  void remove_object ();
+  void insert_object (int action, gpointer data);
+  void check_hidden_visible (struct project * this_proj);
+  void create_new_project_using_data (struct atom_selection * selection);
+  void add_style_sub_menu (GtkWidget * item, GCallback handler, gpointer data);
+  void add_edition_sub_menu (GtkWidget * item, GCallback handler, gpointer data);
+  void create_selection_item (GMenu * menu, glwin * view, gchar * str, gchar * act, int aid, int id, int ig, int ic, int clone, GCallback handler, gpointer data);
+  void analyze_popup_attach_color_palettes (glwin * view, GtkWidget * menu, int ato, int spc, int totc, int parc, int frag, int mol);
+  void popup_selection (glwin * view, double ptx, double pty, int se, int pe, int ai, int bi, int ac);
+  void analyze_menu_attach_color_palettes (glwin * view, GtkWidget * menu);
+  void popup_main_menu (glwin * view, double ptx, double pty);
+
+  G_MODULE_EXPORT void set_full_screen (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void set_full_screen (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void remove_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void remove_this_atom (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void add_object (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void add_object (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void to_add_object (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void to_add_object (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void replace_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void replace_this_atom (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void copy_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void copy_this_atom (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void show_hide_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void show_hide_this_atom (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void label_unlabel_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void label_unlabel_this_atom (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void select_unselect_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void select_unselect_this_atom (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void style_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void style_this_atom (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void remove_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void remove_the_atoms (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void replace_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void replace_the_atoms (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void copy_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void copy_the_atoms (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void show_hide_others (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void show_hide_others (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void show_hide_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void show_hide_the_atoms (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void label_unlabel_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void label_unlabel_atoms (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void select_unselect_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void select_unselect_atoms (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void style_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void style_the_atoms (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void remove_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void remove_the_coord (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void replace_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void replace_the_coord (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void copy_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void copy_the_coord (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void show_hide_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void show_hide_the_coord (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void label_unlabel_coord (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void label_unlabel_coord (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void select_unselect_coord (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void select_unselect_coord (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void style_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void style_the_coord (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void edit_in_new_project (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void edit_in_new_project (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void edit_coord (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void edit_coord (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void edit_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void edit_atoms (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void select_action_for_all (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void select_action_for_all (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void select_action_for_this_bond (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void select_action_for_this_bond (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void select_action_for_all_bonds (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void select_action_for_all_bonds (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void reset_coords (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void reset_coords (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void turn_rebuild (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void turn_rebuild (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void to_center_this_molecule (GtkWidget * widg, gpointer data);
+
+  GtkWidget * create_selection_item (glwin * view, gchar * str, int id, int ig, int ic, int clone, GCallback handler, gpointer data);
+
+  GMenu * add_edition_sub_menu (glwin * view, gchar * act, int aid, GCallback handler, gpointer data);
+  GMenu * add_style_sub_menu (glwin * view, gchar * act, int aid, GCallback handler, gpointer data);
+  GMenu * tools_section (glwin * view);
+  GMenu * anim_section (glwin * view);
+
+  atom_search * free_this_search_data (atom_search * this_search);
+
+*/
+
 #include "global.h"
 #include "callbacks.h"
 #include "interface.h"
@@ -61,6 +172,13 @@ struct atom_selection * bond_selection = NULL;
 tint atoid[CONTEXTACT][4];
 dint btoid;
 
+/*
+*  int get_to_be_selected (glwin * view)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*/
 int get_to_be_selected (glwin * view)
 {
   if (view -> atom_win && ! column_label)
@@ -74,8 +192,25 @@ int get_to_be_selected (glwin * view)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void set_full_screen (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void set_full_screen (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void set_full_screen (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_full_screen (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -94,6 +229,13 @@ G_MODULE_EXPORT void set_full_screen (GtkWidget * widg, gpointer data)
   }
 }
 
+/*
+*  int get_style (gchar * str)
+*
+*  Usage:
+*
+*  gchar * str :
+*/
 int get_style (gchar * str)
 {
   int i;
@@ -118,6 +260,13 @@ int get_style (gchar * str)
   return SPACEFILL;*/
 }
 
+/*
+*  atom_search * free_this_search_data (atom_search * this_search)
+*
+*  Usage:
+*
+*  atom_search * this_search :
+*/
 atom_search * free_this_search_data (atom_search * this_search)
 {
   struct project * this_proj = get_project_by_id(this_search -> proj);
@@ -137,6 +286,14 @@ atom_search * free_this_search_data (atom_search * this_search)
   return NULL;
 }
 
+/*
+*  void to_remove_this_object (int type, gpointer data)
+*
+*  Usage:
+*
+*  int type      :
+*  gpointer data : the associated data pointer
+*/
 void to_remove_this_object (int type, gpointer data)
 {
   int i, j;
@@ -211,6 +368,13 @@ void to_remove_this_object (int type, gpointer data)
   }
 }
 
+/*
+*  gchar * get_object_from_action (GSimpleAction * action)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*/
 gchar * get_object_from_action (GSimpleAction * action)
 {
   int i, j, k;
@@ -247,12 +411,12 @@ gchar * get_object_from_action (GSimpleAction * action)
       {
         for (j=0; j<3; j++)
         {
-          str = (i < 10) ? g_strdup_printf (".%d.%d", i, j) : g_strdup_printf ("%d.%d", i, j);
+          str = g_strdup_printf ("-%d.%d", j, i);
           if (g_strcmp0(str, act_end) == 0)
           {
             g_free (str);
             g_free (act_end);
-            return g_strdup_printf ("%s in %s", action_atoms[j], g_strdup_printf ("%s (%d)", prepare_for_title(get_project_by_id(i) -> name), i+1));
+            return g_strdup_printf ("%s in %s", action_atoms[j], g_strdup_printf ("%s (%d)", get_project_by_id(i) -> name, i+1));
           }
           g_free (str);
         }
@@ -264,8 +428,26 @@ gchar * get_object_from_action (GSimpleAction * action)
 }
 
 #ifdef GTK4
+/*
+*  void to_replace_this_object (int type, GSimpleAction * action, gpointer data)
+*
+*  Usage:
+*
+*  int type               :
+*  GSimpleAction * action : the GAction sending the signal
+*  gpointer data          : the associated data pointer
+*/
 void to_replace_this_object (int type, GSimpleAction * action, gpointer data)
 #else
+/*
+*  void to_replace_this_object (int type, GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  int type         :
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 void to_replace_this_object (int type, GtkWidget * widg, gpointer data)
 #endif
 {
@@ -376,6 +558,11 @@ void to_replace_this_object (int type, GtkWidget * widg, gpointer data)
   }
 }
 
+/*
+*  void copy_bond_selection ()
+*
+*  Usage:
+*/
 void copy_bond_selection ()
 {
   if (copied_object)
@@ -393,6 +580,11 @@ void copy_bond_selection ()
   copied_object = create_object_from_selection (opengl_project);
 }
 
+/*
+*  void remove_object ()
+*
+*  Usage:
+*/
 void remove_object ()
 {
   gchar * str;
@@ -419,8 +611,25 @@ void remove_object ()
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void remove_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void remove_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void remove_this_atom (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void remove_this_atom (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -428,6 +637,14 @@ G_MODULE_EXPORT void remove_this_atom (GtkWidget * widg, gpointer data)
   remove_object ();
 }
 
+/*
+*  void insert_object (int action, gpointer data)
+*
+*  Usage:
+*
+*  int action    :
+*  gpointer data : the associated data pointer
+*/
 void insert_object (int action, gpointer data)
 {
   int i, j;
@@ -459,8 +676,25 @@ void insert_object (int action, gpointer data)
 gboolean insert_this_object;
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void add_object (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void add_object (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void add_object (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void add_object (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -509,8 +743,25 @@ G_MODULE_EXPORT void add_object (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void to_add_object (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void to_add_object (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void to_add_object (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void to_add_object (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -524,10 +775,27 @@ G_MODULE_EXPORT void to_add_object (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void replace_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void replace_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   to_replace_this_object (0, action, data);
 #else
+/*
+*  G_MODULE_EXPORT void replace_this_atom (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void replace_this_atom (GtkWidget * widg, gpointer data)
 {
   to_replace_this_object (0, widg, data);
@@ -537,8 +805,25 @@ G_MODULE_EXPORT void replace_this_atom (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void copy_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void copy_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void copy_this_atom (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void copy_this_atom (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -559,6 +844,13 @@ G_MODULE_EXPORT void copy_this_atom (GtkWidget * widg, gpointer data)
   copied_object = create_object_from_selection (opengl_project);
 }
 
+/*
+*  void check_hidden_visible (struct project * this_proj)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*/
 void check_hidden_visible (struct project * this_proj)
 {
   int i, j, k, l, m;
@@ -612,7 +904,7 @@ void check_hidden_visible (struct project * this_proj)
           if (! this_proj -> modelgl -> anim -> last -> img -> show_atom[i][j]) update_bar = TRUE;
 #else
           // GTK3 Menu Action To Check
-          check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_spec[i][j], TRUE);
+          gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_spec[i][j], TRUE);
 #endif
           this_proj -> modelgl -> anim -> last -> img -> show_atom[i][j] = TRUE;
         }
@@ -623,7 +915,7 @@ void check_hidden_visible (struct project * this_proj)
          update_bar = TRUE;
 #else
       // GTK3 Menu Action To Check
-        check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_spec[i][j], FALSE);
+        gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_spec[i][j], FALSE);
 #endif
         this_proj -> modelgl -> anim -> last -> img -> show_atom[i][j] = FALSE;
       }
@@ -644,7 +936,7 @@ void check_hidden_visible (struct project * this_proj)
             if (! this_proj -> modelgl -> anim -> last -> img -> show_coord[i][j]) update_bar = TRUE;
 #else
             // GTK3 Menu Action To Check
-            for (l=0; l<2; l++) check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_geom[l][i][j], TRUE);
+            for (l=0; l<2; l++) gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_geom[l][i][j], TRUE);
 #endif
           }
           this_proj -> modelgl -> anim -> last -> img -> show_coord[i][j] = TRUE;
@@ -655,7 +947,7 @@ void check_hidden_visible (struct project * this_proj)
           update_bar = TRUE;
 #else
           // GTK3 Menu Action To Check
-          for (l=0; l<2; l++) check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_geom[l][i][j], FALSE);
+          for (l=0; l<2; l++) gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_geom[l][i][j], FALSE);
 #endif
           this_proj -> modelgl -> anim -> last -> img -> show_coord[i][j] = FALSE;
         }
@@ -676,8 +968,25 @@ void check_hidden_visible (struct project * this_proj)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void show_hide_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void show_hide_this_atom (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_this_atom (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -691,6 +1000,14 @@ G_MODULE_EXPORT void show_hide_this_atom (GtkWidget * widg, gpointer data)
   init_default_shaders (opengl_project -> modelgl);
 }
 
+/*
+*  int check_label_numbers (struct project * this_proj, int types)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  int types                  :
+*/
 int check_label_numbers (struct project * this_proj, int types)
 {
   int h, i, j, k, l;
@@ -724,9 +1041,9 @@ int check_label_numbers (struct project * this_proj, int types)
 #ifdef GTK4
         if (! this_proj -> modelgl -> anim -> last -> img -> show_label[h][i]) update_bar = TRUE;
 #else
-        if (! check_menu_item_get_active ((gpointer)this_proj -> modelgl -> ogl_lab[h][i]))
+        if (! gtk_check_menu_item_get_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_lab[h][i]))
         {
-          check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_lab[h][i], 1);
+          gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_lab[h][i], 1);
         }
 #endif
         this_proj -> modelgl -> anim -> last -> img -> show_label[h][i] = TRUE;
@@ -739,9 +1056,9 @@ int check_label_numbers (struct project * this_proj, int types)
 #ifdef GTK4
           if (this_proj -> modelgl -> anim -> last -> img -> show_label[h][i]) update_bar = TRUE;
 #else
-          if (check_menu_item_get_active ((gpointer)this_proj -> modelgl -> ogl_lab[h][i]))
+          if (gtk_check_menu_item_get_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_lab[h][i]))
           {
-            check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_lab[h][i], 0);
+            gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_lab[h][i], 0);
           }
 #endif
         }
@@ -760,8 +1077,25 @@ int check_label_numbers (struct project * this_proj, int types)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void label_unlabel_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void label_unlabel_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void label_unlabel_this_atom (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void label_unlabel_this_atom (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -792,8 +1126,25 @@ G_MODULE_EXPORT void label_unlabel_this_atom (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void select_unselect_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void select_unselect_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void select_unselect_this_atom (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void select_unselect_this_atom (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -854,8 +1205,25 @@ G_MODULE_EXPORT void select_unselect_this_atom (GtkWidget * widg, gpointer data)
 gboolean wait_for_style = FALSE;
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void style_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void style_this_atom (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void style_this_atom (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void style_this_atom (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -878,8 +1246,25 @@ G_MODULE_EXPORT void style_this_atom (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void remove_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void remove_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void remove_the_atoms (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void remove_the_atoms (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -888,10 +1273,27 @@ G_MODULE_EXPORT void remove_the_atoms (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void replace_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void replace_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   to_replace_this_object (2, action, data);
 #else
+/*
+*  G_MODULE_EXPORT void replace_the_atoms (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void replace_the_atoms (GtkWidget * widg, gpointer data)
 {
   to_replace_this_object (2, widg, data);
@@ -902,8 +1304,25 @@ G_MODULE_EXPORT void replace_the_atoms (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void copy_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void copy_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void copy_the_atoms (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void copy_the_atoms (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -943,8 +1362,25 @@ G_MODULE_EXPORT void copy_the_atoms (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void show_hide_others (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_others (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void show_hide_others (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_others (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -969,8 +1405,25 @@ G_MODULE_EXPORT void show_hide_others (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void show_hide_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void show_hide_the_atoms (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_the_atoms (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -999,8 +1452,25 @@ G_MODULE_EXPORT void show_hide_the_atoms (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void label_unlabel_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void label_unlabel_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void label_unlabel_atoms (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void label_unlabel_atoms (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1030,8 +1500,25 @@ G_MODULE_EXPORT void label_unlabel_atoms (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void select_unselect_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void select_unselect_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void select_unselect_atoms (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void select_unselect_atoms (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1079,8 +1566,25 @@ G_MODULE_EXPORT void select_unselect_atoms (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void style_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void style_the_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void style_the_atoms (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void style_the_atoms (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1113,8 +1617,25 @@ G_MODULE_EXPORT void style_the_atoms (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void remove_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void remove_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void remove_the_coord (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void remove_the_coord (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1123,10 +1644,27 @@ G_MODULE_EXPORT void remove_the_coord (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void replace_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void replace_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   to_replace_this_object (1, action, data);
 #else
+/*
+*  G_MODULE_EXPORT void replace_the_coord (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void replace_the_coord (GtkWidget * widg, gpointer data)
 {
   to_replace_this_object (1, widg, data);
@@ -1136,8 +1674,25 @@ G_MODULE_EXPORT void replace_the_coord (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void copy_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void copy_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void copy_the_coord (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void copy_the_coord (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1182,8 +1737,25 @@ G_MODULE_EXPORT void copy_the_coord (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void show_hide_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void show_hide_the_coord (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_the_coord (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1218,8 +1790,25 @@ G_MODULE_EXPORT void show_hide_the_coord (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void label_unlabel_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void label_unlabel_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void label_unlabel_coord (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void label_unlabel_coord (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1277,8 +1866,25 @@ G_MODULE_EXPORT void label_unlabel_coord (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void select_unselect_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void select_unselect_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void select_unselect_coord (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void select_unselect_coord (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1352,8 +1958,25 @@ G_MODULE_EXPORT void select_unselect_coord (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void style_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void style_the_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void style_the_coord (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void style_the_coord (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1399,6 +2022,13 @@ G_MODULE_EXPORT void style_the_coord (GtkWidget * widg, gpointer data)
   update (opengl_project -> modelgl);
 }
 
+/*
+*  void create_new_project_using_data (struct atom_selection * selection)
+*
+*  Usage:
+*
+*  struct atom_selection * selection :
+*/
 void create_new_project_using_data (struct atom_selection * selection)
 {
   int i, j, k, l;
@@ -1512,8 +2142,25 @@ void create_new_project_using_data (struct atom_selection * selection)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void edit_in_new_project (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void edit_in_new_project (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void edit_in_new_project (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void edit_in_new_project (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1578,8 +2225,25 @@ G_MODULE_EXPORT void edit_in_new_project (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void edit_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void edit_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void edit_coord (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void edit_coord (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1628,8 +2292,25 @@ G_MODULE_EXPORT void edit_coord (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void edit_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void edit_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void edit_atoms (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void edit_atoms (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1661,8 +2342,25 @@ G_MODULE_EXPORT void edit_atoms (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void select_action_for_all (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void select_action_for_all (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void select_action_for_all (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void select_action_for_all (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1851,8 +2549,25 @@ G_MODULE_EXPORT void select_action_for_all (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void select_action_for_this_bond (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void select_action_for_this_bond (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void select_action_for_this_bond (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void select_action_for_this_bond (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1992,8 +2707,25 @@ G_MODULE_EXPORT void select_action_for_this_bond (GtkWidget * widg, gpointer dat
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void select_action_for_all_bonds (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void select_action_for_all_bonds (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void select_action_for_all_bonds (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void select_action_for_all_bonds (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -2177,6 +2909,17 @@ G_MODULE_EXPORT void select_action_for_all_bonds (GtkWidget * widg, gpointer dat
 }
 
 #ifdef GTK4
+/*
+*  GMenu * add_edition_sub_menu (glwin * view, gchar * act, int aid, GCallback handler, gpointer data)
+*
+*  Usage:
+*
+*  glwin * view      : the target glwin
+*  gchar * act       :
+*  int aid           :
+*  GCallback handler : the associated callback
+*  gpointer data     : the associated data pointer
+*/
 GMenu * add_edition_sub_menu (glwin * view, gchar * act, int aid, GCallback handler, gpointer data)
 {
   GMenu * menu = g_menu_new ();
@@ -2189,12 +2932,12 @@ GMenu * add_edition_sub_menu (glwin * view, gchar * act, int aid, GCallback hand
     if (mol[i].type)
     {
       menus = g_menu_new ();
-      g_menu_append_submenu (menu, mol[i].type, (GMenuModel*)menus);
+      append_submenu (menu, mol[i].type, menus);
 
     }
     if (mol[i].object)
     {
-      append_opengl_item (view, menus, mol[i].object, eact, i, NULL, IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, TRUE);
+      append_opengl_item (view, menus, mol[i].object, eact, 1, i, NULL, IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, TRUE);
     }
   }
   g_free (eact);
@@ -2218,31 +2961,42 @@ GMenu * add_edition_sub_menu (glwin * view, gchar * act, int aid, GCallback hand
     {
       if (get_project_by_id(i) -> steps == 1 && get_project_by_id(i) -> natomes)
       {
-        name = g_strdup_printf ("%s (%d)", prepare_for_title(get_project_by_id(i) -> name), i+1);
+        name = g_strdup_printf ("%s (%d)", get_project_by_id(i) -> name, i+1);
         menups = g_menu_new ();
         for (j=0; j<3; j++)
         {
           word = g_strdup_printf ("%s in %s", action_atoms[j], name);
           str = g_strdup_printf ("%s-%d", eact, j);
-          append_opengl_item (view, menups, word, str, i, NULL, IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, TRUE);
+          append_opengl_item (view, menups, word, str, 1, i, NULL, IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, TRUE);
           g_free (word);
           g_free (str);
         }
-        g_menu_append_submenu (menup, name, (GMenuModel*)menups);
+        append_submenu (menup, name, menups);
         g_object_unref (menups);
         g_free (name);
       }
     }
     g_free (eact);
-    g_menu_append_submenu (menu, "Import From Project", (GMenuModel*)menup);
+    append_submenu (menu, "Import From Project", menup);
     g_object_unref (menup);
   }
   eact = g_strdup_printf ("cp-%s-%d", act, aid);
-  append_opengl_item (view, menu, "Copied Data", eact, 0, "<CTRL>V", IMG_NONE, NULL, FALSE, G_CALLBACK(add_object), data, FALSE, FALSE, FALSE, (copied_object) ? TRUE : FALSE);
+  append_opengl_item (view, menu, "Copied Data", eact, 1, 0, "<CTRL>V", IMG_NONE, NULL, FALSE, G_CALLBACK(add_object), data, FALSE, FALSE, FALSE, (copied_object) ? TRUE : FALSE);
   g_free (eact);
   return menu;
 }
 
+/*
+*  GMenu * add_style_sub_menu (glwin * view, gchar * act, int aid, GCallback handler, gpointer data)
+*
+*  Usage:
+*
+*  glwin * view      : the target glwin
+*  gchar * act       :
+*  int aid           :
+*  GCallback handler : the associated callback
+*  gpointer data     : the associated data pointer
+*/
 GMenu * add_style_sub_menu (glwin * view, gchar * act, int aid, GCallback handler, gpointer data)
 {
   GMenu * menu = g_menu_new ();
@@ -2250,16 +3004,25 @@ GMenu * add_style_sub_menu (glwin * view, gchar * act, int aid, GCallback handle
   int i;
   for (i=0; i<OGL_STYLES; i++)
   {
-    append_opengl_item (view, menu, text_styles[i], actc, i, NULL, IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, TRUE);
+    append_opengl_item (view, menu, text_styles[i], actc, 1, i, NULL, IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, TRUE);
   }
   g_free (actc);
   return menu;
 }
 #else
+/*
+*  void add_style_sub_menu (GtkWidget * item, GCallback handler, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * item  : the GtkWidget sending the signal
+*  GCallback handler : the associated callback
+*  gpointer data     : the associated data pointer
+*/
 void add_style_sub_menu (GtkWidget * item, GCallback handler, gpointer data)
 {
   GtkWidget * menu = gtk_menu_new ();
-  menu_item_set_submenu (item, menu);
+  gtk_menu_item_set_submenu ((GtkMenuItem *)item, menu);
   int i;
   for (i=0; i<OGL_STYLES; i++)
   {
@@ -2272,7 +3035,7 @@ void add_style_sub_menu (GtkWidget * item, GCallback handler, gpointer data)
   GtkWidget * menu = gtk_menu_new ();
   GtkWidget * pmenu;
   GtkWidget * sitem, * pitem;
-  menu_item_set_submenu (item, menu);
+  gtk_menu_item_set_submenu ((GtkMenuItem *)item, menu);
   int i, j;
   for (i=0; i<OGL_STYLES; i++)
   {
@@ -2283,9 +3046,9 @@ void add_style_sub_menu (GtkWidget * item, GCallback handler, gpointer data)
     else
     {
       sitem = create_menu_item (FALSE, "Spacefilled");
-      add_menu_child (menu, sitem);
+      gtk_menu_shell_append ((GtkMenuShell *)menu, sitem);
       pmenu = gtk_menu_new ();
-      menu_item_set_submenu (sitem, pmenu);
+      gtk_menu_item_set_submenu ((GtkMenuItem *)sitem, pmenu);
       for (j=0; j < FILLED_STYLES; j++)
       {
         pitem = gtk3_menu_item (menu, text_filled[j], IMG_NONE, NULL, handler, data, FALSE, 0, 0, TRUE, TRUE, FALSE);
@@ -2294,13 +3057,22 @@ void add_style_sub_menu (GtkWidget * item, GCallback handler, gpointer data)
   }
 }*/
 
+/*
+*  void add_edition_sub_menu (GtkWidget * item, GCallback handler, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * item  : the GtkWidget sending the signal
+*  GCallback handler : the associated callback
+*  gpointer data     : the associated data pointer
+*/
 void add_edition_sub_menu (GtkWidget * item, GCallback handler, gpointer data)
 {
   GtkWidget * menu = gtk_menu_new ();
   GtkWidget * smenu, * pmenu;
   GtkWidget * titem, * sitem;
   gchar * word, * name;
-  menu_item_set_submenu (item, menu);
+  gtk_menu_item_set_submenu ((GtkMenuItem *)item, menu);
   int i, j;
 
   for (i=0; mol[i].type || mol[i].object; i++)
@@ -2308,9 +3080,9 @@ void add_edition_sub_menu (GtkWidget * item, GCallback handler, gpointer data)
     if (mol[i].type != NULL)
     {
       titem = create_menu_item (TRUE, mol[i].type);
-      add_menu_child (menu, titem);
+      gtk_menu_shell_append ((GtkMenuShell *)menu, titem);
       smenu = gtk_menu_new ();
-      menu_item_set_submenu (titem, smenu);
+      gtk_menu_item_set_submenu ((GtkMenuItem *)titem, smenu);
     }
     if (mol[i].object != NULL)
     {
@@ -2331,21 +3103,21 @@ void add_edition_sub_menu (GtkWidget * item, GCallback handler, gpointer data)
   if (doit)
   {
     titem = create_menu_item (TRUE, "Import From Project");
-    add_menu_child (menu, titem);
+    gtk_menu_shell_append ((GtkMenuShell *)menu, titem);
     smenu = gtk_menu_new ();
-    menu_item_set_submenu (titem, smenu);
+    gtk_menu_item_set_submenu ((GtkMenuItem *)titem, smenu);
     for (i=0; i<nprojects; i++)
     {
       if (get_project_by_id(i) -> steps == 1 && get_project_by_id(i) -> natomes)
       {
-        name = g_strdup_printf ("%s (%d)", prepare_for_title(get_project_by_id(i) -> name), i+1);
-        sitem = create_menu_item (TRUE, name);
+        name = g_strdup_printf ("%s (%d)", get_project_by_id(i) -> name, i+1);
+        sitem = create_menu_item_from_widget (markup_label(name, -1, -1, 0.0, 0.5), FALSE, FALSE, FALSE);
         //child = gtk_bin_get_child (GTK_BIN (sitem));
         //gtk_label_set_use_markup (GTK_LABEL(child), 1);
         //g_signal_connect (G_OBJECT (sitem), "activate", handler, data);
-        add_menu_child (smenu, sitem);
+        gtk_menu_shell_append ((GtkMenuShell *)smenu, sitem);
         pmenu = gtk_menu_new ();
-        menu_item_set_submenu (sitem, pmenu);
+        gtk_menu_item_set_submenu ((GtkMenuItem *)sitem, pmenu);
         for (j=0; j<3; j++)
         {
           word = g_strdup_printf ("%s in %s", action_atoms[j], name);
@@ -2362,10 +3134,41 @@ void add_edition_sub_menu (GtkWidget * item, GCallback handler, gpointer data)
 #endif
 
 #ifdef GTK4
+/*
+*  void create_selection_item (GMenu * menu, glwin * view, gchar * str, gchar * act, int aid, int id, int ig, int ic, int clone, GCallback handler, gpointer data)
+*
+*  Usage:
+*
+*  GMenu * menu      :
+*  glwin * view      : the target glwin
+*  gchar * str       :
+*  gchar * act       :
+*  int aid           :
+*  int id            :
+*  int ig            :
+*  int ic            :
+*  int clone         :
+*  GCallback handler : the associated callback
+*  gpointer data     : the associated data pointer
+*/
 void create_selection_item (GMenu * menu, glwin * view, gchar * str, gchar * act, int aid, int id, int ig, int ic, int clone, GCallback handler, gpointer data)
 {
    gchar * actc = g_strdup_printf ("%s-%d", act, aid);
 #else
+/*
+*  GtkWidget * create_selection_item (glwin * view, gchar * str, int id, int ig, int ic, int clone, GCallback handler, gpointer data)
+*
+*  Usage:
+*
+*  glwin * view      : the target glwin
+*  gchar * str       :
+*  int id            :
+*  int ig            :
+*  int ic            :
+*  int clone         :
+*  GCallback handler : the associated callback
+*  gpointer data     : the associated data pointer
+*/
 GtkWidget * create_selection_item (glwin * view, gchar * str, int id, int ig, int ic, int clone, GCallback handler, gpointer data)
 {
   GtkWidget * sel_item = create_menu_item_from_widget (markup_label (str, -1, -1, 0.0, 0.5), FALSE, FALSE, FALSE);
@@ -2374,7 +3177,7 @@ GtkWidget * create_selection_item (glwin * view, gchar * str, int id, int ig, in
   if (id == 6)
   {
 #ifdef GTK4
-    g_menu_append_submenu (menu, str, (GMenuModel *)add_style_sub_menu (view, act, aid, handler, data));
+    append_submenu (menu, str, add_style_sub_menu (view, act, aid, handler, data));
 #else
     add_style_sub_menu (sel_item, handler, data);
 #endif
@@ -2385,9 +3188,9 @@ GtkWidget * create_selection_item (glwin * view, gchar * str, int id, int ig, in
     {
       i = get_project_by_id (view -> proj) -> nspec;
 #ifdef GTK4
-      g_menu_append_submenu (menu, str, (GMenuModel*)color_item(view, actc, id, G_CALLBACK(to_run_atom_color_window), & view -> colorp[0][selected_aspec+clone*i]));
+      append_submenu (menu, str, color_item(view, actc, id, G_CALLBACK(to_run_atom_color_window), & view -> colorp[0][selected_aspec+clone*i]));
 #else
-      menu_item_set_submenu (sel_item, color_box(view, selected_aspec+clone*i, 0, 0));
+      gtk_menu_item_set_submenu ((GtkMenuItem *)sel_item, color_box(view, selected_aspec+clone*i, 0, 0));
 #endif
     }
     else
@@ -2398,7 +3201,7 @@ GtkWidget * create_selection_item (glwin * view, gchar * str, int id, int ig, in
       {
         for (j=0; j<selected_aspec; j++) i += opengl_project -> coord -> ntg[ig][j];
       }
-      g_menu_append_submenu (menu, str, (GMenuModel*)color_item(view, actc, id, G_CALLBACK(window_color_coord), & view -> gcid[ig][i][ig]));
+      append_submenu (menu, str, color_item(view, actc, id, G_CALLBACK(window_color_coord), & view -> gcid[ig][i][ig]));
 #else
       int k;
       j = 2*opengl_project -> nspec;
@@ -2418,14 +3221,14 @@ GtkWidget * create_selection_item (glwin * view, gchar * str, int id, int ig, in
       {
         k = ig;
       }
-      menu_item_set_submenu (sel_item, color_box(view, j+ic, k, ic));
+      gtk_menu_item_set_submenu ((GtkMenuItem *)sel_item, color_box(view, j+ic, k, ic));
 #endif
     }
   }
   else if (id == 10)
   {
 #ifdef GTK4
-    g_menu_append_submenu (menu, str, (GMenuModel *)add_edition_sub_menu (view, act, aid, handler, data));
+    append_submenu (menu, str, add_edition_sub_menu (view, act, aid, handler, data));
 #else
     add_edition_sub_menu (sel_item, handler, data);
 #endif
@@ -2433,7 +3236,7 @@ GtkWidget * create_selection_item (glwin * view, gchar * str, int id, int ig, in
   else
   {
 #ifdef GTK4
-    append_opengl_item (view, menu, str, actc, 0, NULL, IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, TRUE);
+    append_opengl_item (view, menu, str, actc, 1, 0, NULL, IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, TRUE);
 #else
     g_signal_connect (G_OBJECT (sel_item), "activate", handler, data);
 #endif
@@ -2480,21 +3283,21 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
 #ifdef GTK4
     if (id == 6)
     {
-      g_menu_append_submenu (menu, str, (GMenuModel *)add_style_sub_menu (view, "tas", aid, handler_a, GINT_TO_POINTER(ai)));
+      append_submenu (menu, str, add_style_sub_menu (view, "tas", aid, handler_a, GINT_TO_POINTER(ai)));
     }
     else if (id == 10)
     {
-      g_menu_append_submenu (menu, str, (GMenuModel *)add_edition_sub_menu (view, "tae", aid, handler_a, GINT_TO_POINTER(ai)));
+      append_submenu (menu, str, add_edition_sub_menu (view, "tae", aid, handler_a, GINT_TO_POINTER(ai)));
     }
     else
     {
       strb = g_strdup_printf ("act-%d-%d", aid, id);
-      append_opengl_item (view, menu, str, strb, 0, NULL, IMG_NONE, NULL, FALSE, handler_a, GINT_TO_POINTER(ai), FALSE, FALSE, FALSE, TRUE);
+      append_opengl_item (view, menu, str, strb, 1, 0, NULL, IMG_NONE, NULL, FALSE, handler_a, GINT_TO_POINTER(ai), FALSE, FALSE, FALSE, TRUE);
       g_free (strb);
     }
 #else
     sel = create_menu_item_from_widget (markup_label (str, -1, -1, 0.0, 0.5), FALSE, FALSE, FALSE);
-    add_menu_child (menu, sel);
+    gtk_menu_shell_append ((GtkMenuShell *)menu, sel);
     if (id == 6)
     {
       add_style_sub_menu (sel, handler_a, GINT_TO_POINTER(ai));
@@ -2517,16 +3320,16 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
 #ifdef GTK4
     if (id == 6)
     {
-      g_menu_append_submenu (menu, str, (GMenuModel *)add_style_sub_menu (view, "tb-s", aid, G_CALLBACK(select_action_for_this_bond), GINT_TO_POINTER(id)));
+      append_submenu (menu, str, add_style_sub_menu (view, "tb-s", aid, G_CALLBACK(select_action_for_this_bond), GINT_TO_POINTER(id)));
     }
     else if (id == 10)
     {
-      g_menu_append_submenu (menu, str, (GMenuModel *)add_edition_sub_menu (view, "tb-e", aid, G_CALLBACK(select_action_for_this_bond), GINT_TO_POINTER(id)));
+      append_submenu (menu, str, add_edition_sub_menu (view, "tb-e", aid, G_CALLBACK(select_action_for_this_bond), GINT_TO_POINTER(id)));
     }
     else
     {
       strb = g_strdup_printf ("act-%d-%d", aid, id);
-      append_opengl_item (view, menu, str, strb, 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(select_action_for_this_bond), GINT_TO_POINTER(id), FALSE, FALSE, FALSE, TRUE);
+      append_opengl_item (view, menu, str, strb, 1, 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(select_action_for_this_bond), GINT_TO_POINTER(id), FALSE, FALSE, FALSE, TRUE);
       g_free (strb);
     }
 #else
@@ -2543,7 +3346,7 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
     {
       g_signal_connect (G_OBJECT (sel), "activate", G_CALLBACK(select_action_for_this_bond), GINT_TO_POINTER(id));
     }
-    add_menu_child (menu, sel);
+    gtk_menu_shell_append ((GtkMenuShell *)menu, sel);
 #endif
     g_free (str);
   }
@@ -2568,16 +3371,16 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
 #ifdef GTK4
       if (id == 6)
       {
-        g_menu_append_submenu (menu, mot[j][i], (GMenuModel *)add_style_sub_menu (view, "all-s", aid, G_CALLBACK(select_action_for_all), GINT_TO_POINTER(id+k)));
+        append_submenu (menu, mot[j][i], add_style_sub_menu (view, "all-s", aid, G_CALLBACK(select_action_for_all), GINT_TO_POINTER(id+k)));
       }
       else  if (id == 10)
       {
-        g_menu_append_submenu (menu, mot[j][i], (GMenuModel *)add_edition_sub_menu (view, "all-e", aid, G_CALLBACK(select_action_for_all), GINT_TO_POINTER(id+k)));
+        append_submenu (menu, mot[j][i], add_edition_sub_menu (view, "all-e", aid, G_CALLBACK(select_action_for_all), GINT_TO_POINTER(id+k)));
       }
       else
       {
         strb = g_strdup_printf ("act-all-%d-%d", aid, id+k);
-        append_opengl_item (view, menu, mot[j][i], strb, 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(select_action_for_all), GINT_TO_POINTER(id+k), FALSE, FALSE, FALSE, TRUE);
+        append_opengl_item (view, menu, mot[j][i], strb, 1, 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(select_action_for_all), GINT_TO_POINTER(id+k), FALSE, FALSE, FALSE, TRUE);
         g_free (strb);
       }
 #else
@@ -2594,7 +3397,7 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
       {
         g_signal_connect (G_OBJECT (sel), "activate", G_CALLBACK(select_action_for_all), GINT_TO_POINTER(id+k));
       }
-      add_menu_child (menu, sel);
+      gtk_menu_shell_append ((GtkMenuShell *)menu, sel);
 #endif
       k = CONTEXTACT;
     }
@@ -2609,7 +3412,7 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
 #ifdef GTK4
       create_selection_item (menu, view, str, (! i) ? "afm" : "amo", aid, id, 2+i, j, ac, handler_b, & atoid[id][2+i]);
 #else
-      add_menu_child (menu,  create_selection_item (view, str, id, 2+i, j, ac, handler_b, & atoid[id][2+i]));
+      gtk_menu_shell_append ((GtkMenuShell *)menu,  create_selection_item (view, str, id, 2+i, j, ac, handler_b, & atoid[id][2+i]));
 #endif
       g_free (str);
     }
@@ -2623,7 +3426,7 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
 #ifdef GTK4
       create_selection_item (menu, view, str, "atc", aid, id, 0, i,  ac, handler_b, & atoid[id][0]);
 #else
-      add_menu_child (menu, create_selection_item(view, str, id, 0, i, ac, handler_b, & atoid[id][0]));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, create_selection_item(view, str, id, 0, i, ac, handler_b, & atoid[id][0]));
 #endif
       g_free (str);
     }
@@ -2634,7 +3437,7 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
 #ifdef GTK4
       create_selection_item (menu, view, str, "apc", aid, id, 1, i, ac, handler_b, & atoid[id][1]);
 #else
-      add_menu_child (menu, create_selection_item(view, str, id, 1, i, ac, handler_b, & atoid[id][1]));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, create_selection_item(view, str, id, 1, i, ac, handler_b, & atoid[id][1]));
 #endif
       g_free (str);
     }
@@ -2649,7 +3452,7 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
 #ifdef GTK4
     create_selection_item (menu, view, str, "asp", aid, id, 0, -1, ac, handler_c, & atoid[id][2]);
 #else
-    add_menu_child (menu, create_selection_item(view, str, id, 0, -1, ac, handler_c, & atoid[id][2]));
+    gtk_menu_shell_append ((GtkMenuShell *)menu, create_selection_item(view, str, id, 0, -1, ac, handler_c, & atoid[id][2]));
 #endif
     g_free (str);
   }
@@ -2665,7 +3468,7 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
 #ifdef GTK4
      create_selection_item (menu, view, str, "atcb", aid, id, -1, -1, ac, G_CALLBACK(select_action_for_all_bonds), GINT_TO_POINTER(id+CONTEXTACT));
 #else
-     add_menu_child (menu, create_selection_item(view, str, id, -1, -1, ac, G_CALLBACK(select_action_for_all_bonds), GINT_TO_POINTER(id+CONTEXTACT)));
+     gtk_menu_shell_append ((GtkMenuShell *)menu, create_selection_item(view, str, id, -1, -1, ac, G_CALLBACK(select_action_for_all_bonds), GINT_TO_POINTER(id+CONTEXTACT)));
 #endif
       g_free (str);
     }
@@ -2677,7 +3480,7 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
 #ifdef GTK4
       create_selection_item (menu, view, str, "apcb", aid, id, -1, -1, ac, G_CALLBACK(select_action_for_all_bonds), GINT_TO_POINTER(id+2*CONTEXTACT));
 #else
-      add_menu_child (menu, create_selection_item(view, str, id, -1, -1, ac, G_CALLBACK(select_action_for_all_bonds), GINT_TO_POINTER(id+2*CONTEXTACT)));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, create_selection_item(view, str, id, -1, -1, ac, G_CALLBACK(select_action_for_all_bonds), GINT_TO_POINTER(id+2*CONTEXTACT)));
 #endif
       g_free (str);
     }
@@ -2685,7 +3488,7 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
 #ifdef GTK4
     create_selection_item (menu, view, str, "acb", aid, id, -1, -1, ac, G_CALLBACK(select_action_for_all_bonds), GINT_TO_POINTER(id));
 #else
-    add_menu_child (menu, create_selection_item(view, str, id, -1, -1, ac, G_CALLBACK(select_action_for_all_bonds), GINT_TO_POINTER(id)));
+    gtk_menu_shell_append ((GtkMenuShell *)menu, create_selection_item(view, str, id, -1, -1, ac, G_CALLBACK(select_action_for_all_bonds), GINT_TO_POINTER(id)));
 #endif
     g_free (str);
   }
@@ -2694,7 +3497,7 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
     gchar * mat[2]={"All Hidden Atom(s)/Bond(s)", "All Visible Atom(s)/Bond(s)"};
 #ifdef GTK4
     strb = g_strdup_printf ("all-hv-%d-%d", aid, id);
-    append_opengl_item (view, menu, mat[id%2], strb, 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(select_action_for_all), GINT_TO_POINTER(id+2*CONTEXTACT), FALSE, FALSE, FALSE, TRUE);
+    append_opengl_item (view, menu, mat[id%2], strb, 1, 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(select_action_for_all), GINT_TO_POINTER(id+2*CONTEXTACT), FALSE, FALSE, FALSE, TRUE);
     g_free (strb);
 #else
     gtk3_menu_item (menu, mat[id%2], IMG_NONE, NULL, G_CALLBACK(select_action_for_all), GINT_TO_POINTER(id+2*CONTEXTACT), FALSE, 0, 0, FALSE, FALSE, FALSE);
@@ -2704,6 +3507,20 @@ GtkWidget * selection_menu (glwin * view, int ai, int bi, int ac, int id,
 }
 
 #ifdef GTK4
+/*
+*  void analyze_popup_attach_color_palettes (glwin * view, GtkWidget * menu, int ato, int spc, int totc, int parc, int frag, int mol)
+*
+*  Usage:
+*
+*  glwin * view     : the target glwin
+*  GtkWidget * menu : the GtkWidget sending the signal
+*  int ato          :
+*  int spc          :
+*  int totc         :
+*  int parc         :
+*  int frag         :
+*  int mol          :
+*/
 void analyze_popup_attach_color_palettes (glwin * view, GtkWidget * menu, int ato, int spc, int totc, int parc, int frag, int mol)
 {
   /* Here we need to attached color palettes for:
@@ -2763,6 +3580,20 @@ void analyze_popup_attach_color_palettes (glwin * view, GtkWidget * menu, int at
 }
 #endif
 
+/*
+*  void popup_selection (glwin * view, double ptx, double pty, int se, int pe, int ai, int bi, int ac)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  double ptx   :
+*  double pty   :
+*  int se       :
+*  int pe       :
+*  int ai       :
+*  int bi       :
+*  int ac       :
+*/
 void popup_selection (glwin * view, double ptx, double pty, int se, int pe, int ai, int bi, int ac)
 {
   int p = view -> proj;
@@ -2844,10 +3675,10 @@ void popup_selection (glwin * view, double ptx, double pty, int se, int pe, int 
       strp = g_strdup_printf ("<b>%s \t d= %.3f Å</b>", str, dist.length);
     }
 #ifdef GTK4
-    append_opengl_item (view, gmenu, strp, "w-dist", 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
+    append_opengl_item (view, gmenu, strp, "w-dist", 1, 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
 #else
     sel = create_menu_item_from_widget (markup_label (strp, -1, -1, 0.0, 0.5), FALSE, FALSE, FALSE);
-    add_menu_child (menu, sel);
+    gtk_menu_shell_append ((GtkMenuShell *)menu, sel);
 #endif
     g_free (strp);
     for (i=0; i<2; i++)
@@ -2857,10 +3688,10 @@ void popup_selection (glwin * view, double ptx, double pty, int se, int pe, int 
         j = opengl_project -> atoms[s][ai].coord[2+i] + 1;
         str = (! i) ? g_strdup_printf ("Fragment N°:\t<b>%d</b>", j) : g_strdup_printf ("Molecule N°:\t<b>%d</b>", j);
 #ifdef GTK4
-        append_opengl_item (view, gmenu, str, "w-dist-fm", 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
+        append_opengl_item (view, gmenu, str, "w-dist-fm", 1, 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
 #else
         sel = create_menu_item_from_widget (markup_label (str, -1, -1, 0.0, 0.5), FALSE, FALSE, FALSE);
-        add_menu_child (menu, sel);
+        gtk_menu_shell_append ((GtkMenuShell *)menu, sel);
 #endif
         g_free (str);
       }
@@ -2877,19 +3708,19 @@ void popup_selection (glwin * view, double ptx, double pty, int se, int pe, int 
       str = g_strdup_printf ("<b>%s<sub>%d</sub><sup>*</sup></b>", exact_name(opengl_project -> chemistry -> label[selected_aspec]), ai+1);
     }
 #ifdef GTK4
-    append_opengl_item (view, gmenu, str, "w-ac", 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
+    append_opengl_item (view, gmenu, str, "w-ac", 1, 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
 #else
     sel = create_menu_item_from_widget (markup_label (str, -1, -1, 0.0, 0.5), FALSE, FALSE, FALSE);
-    add_menu_child (menu, sel);
+    gtk_menu_shell_append ((GtkMenuShell *)menu, sel);
 #endif
     g_free (str);
     str = g_strdup_printf ("\tx : <b>%f</b>\n\ty : <b>%f</b>\n\tz : <b>%f</b>",
                            opengl_project -> atoms[s][ai].x, opengl_project -> atoms[s][ai].y, opengl_project -> atoms[s][ai].z);
 #ifdef GTK4
-    append_opengl_item (view, gmenu, str, "xyz", 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
+    append_opengl_item (view, gmenu, str, "xyz", 1, 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
 #else
     sel = create_menu_item_from_widget (markup_label (str, -1, -1, 0.0, 0.5), FALSE, FALSE, FALSE);
-    add_menu_child (menu, sel);
+    gtk_menu_shell_append ((GtkMenuShell *)menu, sel);
 #endif
     g_free (str);
     if (opengl_project -> atoms[s][ai].coord[0] > -1)
@@ -2897,20 +3728,20 @@ void popup_selection (glwin * view, double ptx, double pty, int se, int pe, int 
       i = opengl_project -> atoms[s][ai].coord[0];
       str = g_strdup_printf ("Total Coordination:  <b>%d</b>", opengl_project -> coord -> geolist[0][selected_aspec][i]);
 #ifdef GTK4
-      append_opengl_item (view, gmenu, str, "w-tc", 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
+      append_opengl_item (view, gmenu, str, "w-tc", 1, 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
 #else
       sel = create_menu_item_from_widget (markup_label (str, -1, -1, 0.0, 0.5), FALSE, FALSE, FALSE);
-      add_menu_child (menu, sel);
+      gtk_menu_shell_append ((GtkMenuShell *)menu, sel);
 #endif
       g_free (str);
       i = opengl_project -> atoms[s][ai].coord[1];
       str = g_strdup_printf ("Partial Coordination: <b>%s</b>",
                              env_name (opengl_project, i, selected_aspec, 1, NULL));
 #ifdef GTK4
-      append_opengl_item (view, gmenu, str, "w-pc", 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
+      append_opengl_item (view, gmenu, str, "w-pc", 1, 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
 #else
       sel = create_menu_item_from_widget (markup_label (str, -1, -1, 0.0, 0.5), FALSE, FALSE, FALSE);
-      add_menu_child (menu, sel);
+      gtk_menu_shell_append ((GtkMenuShell *)menu, sel);
 #endif
       g_free (str);
     }
@@ -2921,10 +3752,10 @@ void popup_selection (glwin * view, double ptx, double pty, int se, int pe, int 
         j = opengl_project -> atoms[s][ai].coord[2+i] + 1;
         str = (! i) ? g_strdup_printf ("Fragment N°:\t<b>%d</b>", j) : g_strdup_printf ("Molecule N°:\t<b>%d</b>", j);
 #ifdef GTK4
-        append_opengl_item (view, gmenu, str, "w-fm", 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
+        append_opengl_item (view, gmenu, str, "w-fm", 1, 0, NULL, IMG_NONE, NULL, FALSE, NULL, NULL, FALSE, FALSE, FALSE, TRUE);
 #else
         sel = create_menu_item_from_widget (markup_label (str, -1, -1, 0.0, 0.5), FALSE, FALSE, FALSE);
-        add_menu_child (menu, sel);
+        gtk_menu_shell_append ((GtkMenuShell *)menu, sel);
 #endif
         g_free (str);
       }
@@ -2933,14 +3764,14 @@ void popup_selection (glwin * view, double ptx, double pty, int se, int pe, int 
 
   //if (fc)
   //{
-  //  add_menu_child (menu, sel);
+  //  gtk_menu_shell_append ((GtkMenuShell *)menu, sel);
   //  add_menu_separator (menu);
     // atoms menu
-    //add_menu_child (menu, field_atom_menu(p, s, ai, fc-2));
+    //gtk_menu_shell_append ((GtkMenuShell *)menu, field_atom_menu(p, s, ai, fc-2));
     // bonds menu, if ai involved in bonding, or bi > -1
-    //add_menu_child (menu, field_bond_menu(p, s, ai, bi));
+    //gtk_menu_shell_append ((GtkMenuShell *)menu, field_bond_menu(p, s, ai, bi));
     // angles menu, if ai involved in bonding with more than 2 neighbors
-    //add_menu_child (menu, field_angle_menu(p, s, ai, bi));
+    //gtk_menu_shell_append ((GtkMenuShell *)menu, field_angle_menu(p, s, ai, bi));
   //}
 
 #ifdef GTK4
@@ -2965,9 +3796,9 @@ void popup_selection (glwin * view, double ptx, double pty, int se, int pe, int 
     if (go)
     {
 #ifdef GTK4
-      g_menu_append_submenu (menua, menu_names[j], (GMenuModel *)selection_menu (i, view, ai, bi, ac, j, handlers[j][0], handlers[j][1], handlers[j][2]));
+      append_submenu (menua, menu_names[j], selection_menu (i, view, ai, bi, ac, j, handlers[j][0], handlers[j][1], handlers[j][2]));
 #else
-      add_menu_child (menu, menu_item_new_with_submenu(menu_names[j], TRUE, selection_menu (view, ai, bi, ac, j, handlers[j][0], handlers[j][1], handlers[j][2])));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu(menu_names[j], TRUE, selection_menu (view, ai, bi, ac, j, handlers[j][0], handlers[j][1], handlers[j][2])));
 #endif
     }
   }
@@ -2992,8 +3823,25 @@ void popup_selection (glwin * view, double ptx, double pty, int se, int pe, int 
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void reset_coords (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void reset_coords (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void reset_coords (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void reset_coords (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -3008,8 +3856,25 @@ G_MODULE_EXPORT void reset_coords (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void turn_rebuild (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void turn_rebuild (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void turn_rebuild (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void turn_rebuild (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -3020,15 +3885,23 @@ G_MODULE_EXPORT void turn_rebuild (GtkWidget * widg, gpointer data)
   view -> rebuild[dat -> b][1] = view -> rebuild[dat -> b][0];
   update_menu_bar (view);
 #else
-  view -> rebuild[dat -> b][0] = check_menu_item_get_active ((gpointer)widg);
+  view -> rebuild[dat -> b][0] = gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg);
   view -> rebuild[dat -> b][1] = view -> rebuild[dat -> b][0];
   if (widg != view -> rbuild[dat -> b])
   {
-    check_menu_item_set_active ((gpointer)view -> rbuild[dat -> b], view -> rebuild[dat -> b][0]);
+    gtk_check_menu_item_set_active ((GtkCheckMenuItem *)view -> rbuild[dat -> b], view -> rebuild[dat -> b][0]);
   }
 #endif
 }
 
+/*
+*  G_MODULE_EXPORT void to_center_this_molecule (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void to_center_this_molecule (GtkWidget * widg, gpointer data)
 {
   glwin * view = (glwin *)data;
@@ -3038,20 +3911,42 @@ G_MODULE_EXPORT void to_center_this_molecule (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
-GMenu * tools_section (glwin * view, int popm)
+/*
+*  GMenu * tools_section (glwin * view)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*/
+GMenu * tools_section (glwin * view)
 {
   GMenu * menu = g_menu_new ();
-  g_menu_append_submenu (menu, "Tools", (GMenuModel *)menu_tools(view, popm));
+  append_submenu (menu, "Tools", menu_tools(view, 1));
   return menu;
 }
 
+/*
+*  GMenu * anim_section (glwin * view)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*/
 GMenu * anim_section (glwin * view)
 {
   GMenu * menu = g_menu_new ();
-  g_menu_append_submenu (menu, "Animate", (GMenuModel *)menu_anim(view));
+  append_submenu (menu, "Animate", menu_anim(view, 1));
   return menu;
 }
 
+/*
+*  void analyze_menu_attach_color_palettes (glwin * view, GtkWidget * menu)
+*
+*  Usage:
+*
+*  glwin * view     : the target glwin
+*  GtkWidget * menu : the GtkWidget sending the signal
+*/
 void analyze_menu_attach_color_palettes (glwin * view, GtkWidget * menu)
 {
   /* Here we need to attached color palettes for:
@@ -3155,6 +4050,15 @@ void analyze_menu_attach_color_palettes (glwin * view, GtkWidget * menu)
 }
 #endif
 
+/*
+*  void popup_main_menu (glwin * view, double ptx, double pty)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  double ptx   :
+*  double pty   :
+*/
 void popup_main_menu (glwin * view, double ptx, double pty)
 {
   GtkWidget * menu;
@@ -3165,25 +4069,25 @@ void popup_main_menu (glwin * view, double ptx, double pty)
   GMenu * gmenu = g_menu_new ();
   if (view -> mode == ANALYZE)
   {
-    g_menu_append_section (gmenu, NULL, (GMenuModel *)prepare_opengl_menu(view));
+    g_menu_append_section (gmenu, NULL, (GMenuModel *)prepare_opengl_menu(view, 1));
     if (get_project_by_id(view -> proj) -> natomes)
     {
-      g_menu_append_section (gmenu, NULL, (GMenuModel *)prepare_model_menu(view));
-      g_menu_append_section (gmenu, NULL, (GMenuModel *)prepare_coord_menu(view));
+      g_menu_append_section (gmenu, NULL, (GMenuModel *)prepare_model_menu(view, 1));
+      g_menu_append_section (gmenu, NULL, (GMenuModel *)prepare_coord_menu(view, 1));
     }
-    g_menu_append_section (gmenu, NULL, (GMenuModel *)tools_section(view, 0));
+    g_menu_append_section (gmenu, NULL, (GMenuModel *)tools_section(view));
     g_menu_append_section (gmenu, NULL, (GMenuModel *)menu_view(view, 1));
     g_menu_append_section (gmenu, NULL, (GMenuModel *)anim_section(view));
   }
   else
   {
-    g_menu_append_section (gmenu, NULL, (GMenuModel *)tools_section(view, 1));
-    g_menu_append_submenu (gmenu, "Insert", (GMenuModel *)add_edition_sub_menu (view, "ins", 0, G_CALLBACK(to_add_object), & view -> colorp[0][0]));
-    if (opengl_project -> steps == 1) g_menu_append_section (gmenu, NULL, (GMenuModel *)extract_section(view));
-    append_opengl_item (view, gmenu, "Reset Motion", "res-mot", 0, NULL, IMG_STOCK, MEDIA_LOOP, FALSE, G_CALLBACK(reset_coords), view, FALSE, FALSE, FALSE, TRUE);
+    g_menu_append_section (gmenu, NULL, (GMenuModel *)tools_section(view));
+    append_submenu (gmenu, "Insert", add_edition_sub_menu (view, "ins", 0, G_CALLBACK(to_add_object), & view -> colorp[0][0]));
+    if (opengl_project -> steps == 1) g_menu_append_section (gmenu, NULL, (GMenuModel *)extract_section(view, 1));
+    append_opengl_item (view, gmenu, "Reset Motion", "res-mot", 1, 0, NULL, IMG_STOCK, MEDIA_LOOP, FALSE, G_CALLBACK(reset_coords), view, FALSE, FALSE, FALSE, TRUE);
   }
-  g_menu_append_section (gmenu, NULL, (GMenuModel*)menu_reset(view));
-  g_menu_append_section (gmenu, NULL, (GMenuModel*)menu_fullscreen(view));
+  g_menu_append_section (gmenu, NULL, (GMenuModel*)menu_reset(view, 1));
+  g_menu_append_section (gmenu, NULL, (GMenuModel*)menu_fullscreen(view, 1));
 
   menu = gtk_popover_menu_new_from_model_full ((GMenuModel *)gmenu, GTK_POPOVER_MENU_NESTED);
   if (view -> mode == ANALYZE) analyze_menu_attach_color_palettes (view, menu);
@@ -3204,40 +4108,36 @@ void popup_main_menu (glwin * view, double ptx, double pty)
     add_menu_separator (menu);
     if (get_project_by_id(view -> proj) -> nspec)
     {
-      add_menu_child (menu, menu_item_new_with_submenu ("Atom(s)", TRUE, menu_atoms (view, 1, 0)));
-      add_menu_child (menu, menu_item_new_with_submenu ("Bond(s)", TRUE, menu_bonds (view, 1, 0)));
-      add_menu_child (menu, menu_item_new_with_submenu ("Clone(s)", TRUE, menu_clones (view, 1)));
-      add_menu_child (menu, menu_box_axis (view, 1, 0));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Atom(s)", TRUE, menu_atoms (view, 1, 0)));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Bond(s)", TRUE, menu_bonds (view, 1, 0)));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Clone(s)", TRUE, menu_clones (view, 1)));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, menu_box_axis (view, 1, 0));
       add_menu_separator (menu);
-      add_menu_child (menu, menu_coord (view, 1));
-      add_menu_child (menu, menu_item_new_with_submenu ("Polyhedra", TRUE, menu_poly (view, 1)));
-      add_menu_child (menu, menu_item_new_with_submenu ("Rings", view -> rings, menu_rings (view, 1, 0)));
-      add_menu_child (menu, menu_item_new_with_submenu ("Chain(s)", view -> chains, add_menu_coord (view, 1, 9)));
-      add_menu_child (menu, menu_item_new_with_submenu ("Fragment(s)", opengl_project -> coord -> totcoord[2], add_menu_coord (view, 1, 2)));
-      add_menu_child (menu, menu_item_new_with_submenu ("Molecule(s)", opengl_project -> coord -> totcoord[3], add_menu_coord (view, 1, 3)));
-#ifdef MENU_ICONS
-      add_menu_child (menu, gtk3_image_menu_item ("Advanced", IMG_STOCK, (gpointer)DPROPERTIES, G_CALLBACK(coord_properties), (gpointer)& view -> colorp[30][0], "Ctrl+E", FALSE, FALSE, FALSE));
-#else
+      gtk_menu_shell_append ((GtkMenuShell *)menu, menu_coord (view, 1));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Polyhedra", TRUE, menu_poly (view, 1)));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Rings", view -> rings, menu_rings (view, 1, 0)));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Chain(s)", view -> chains, add_menu_coord (view, 1, 9)));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Fragment(s)", opengl_project -> coord -> totcoord[2], add_menu_coord (view, 1, 2)));
+      gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Molecule(s)", opengl_project -> coord -> totcoord[3], add_menu_coord (view, 1, 3)));
       add_advanced_item (menu, G_CALLBACK(coord_properties), (gpointer)& view -> colorp[30][0], TRUE, GDK_KEY_e, GDK_CONTROL_MASK);
-#endif
       add_menu_separator (menu);
     }
-    add_menu_child (menu, menu_item_new_with_submenu ("Tools", TRUE, menu_tools(view, 1)));
+    gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Tools", TRUE, menu_tools(view, 1)));
     add_menu_separator (menu);
     menu_items_view (menu, view, 1);
     add_menu_separator (menu);
-    add_menu_child (menu, menu_anim (view, 1));
+    gtk_menu_shell_append ((GtkMenuShell *)menu, menu_anim (view, 1));
   }
   else
   {
     item = create_menu_item (TRUE, "Tools");
-    menu_item_set_submenu (item, menu_tools(view, 1));
-    add_menu_child (menu, item);
+    gtk_menu_item_set_submenu ((GtkMenuItem *)item, menu_tools(view, 1));
+    gtk_menu_shell_append ((GtkMenuShell *)menu, item);
     add_menu_separator (menu);
 
     item = create_menu_item (TRUE, "Insert");
     add_edition_sub_menu (item, G_CALLBACK(to_add_object), & view -> colorp[0][0]);
-    add_menu_child (menu, item);
+    gtk_menu_shell_append ((GtkMenuShell *)menu, item);
     add_menu_separator (menu);
 
     if (opengl_project -> steps == 1)
@@ -3253,19 +4153,11 @@ void popup_main_menu (glwin * view, double ptx, double pty)
   add_menu_separator (menu);
   if (! view -> fullscreen)
   {
-#ifdef MENU_ICONS
-    add_menu_child (menu, gtk3_image_menu_item ("Fullscreen", IMG_STOCK, (gpointer)FULLSCREEN, G_CALLBACK(set_full_screen), (gpointer)view, "Ctrl+F", FALSE, FALSE, FALSE));
-#else
-    item = gtk3_menu_item (menu, "Fullscreen", IMG_STOCK, (gpointer)FULLSCREEN, G_CALLBACK(set_full_screen), (gpointer)view, TRUE, GDK_KEY_f, GDK_CONTROL_MASK, FALSE, FALSE, FALSE);
-#endif
+    gtk3_menu_item (menu, "Fullscreen", IMG_STOCK, (gpointer)FULLSCREEN, G_CALLBACK(set_full_screen), (gpointer)view, TRUE, GDK_KEY_f, GDK_CONTROL_MASK, FALSE, FALSE, FALSE);
   }
   else
   {
-#ifdef MENU_ICONS
-    add_menu_child (menu, gtk3_image_menu_item ("Exit Fullscreen", IMG_STOCK, (gpointer)FULLSCREEN, G_CALLBACK(set_full_screen), (gpointer)view, "Escape", FALSE, FALSE, FALSE));
-#else
-    item = gtk3_menu_item (menu, "Exit Fullscreen", IMG_STOCK, (gpointer)FULLSCREEN, G_CALLBACK(set_full_screen), (gpointer)view, TRUE, GDK_KEY_Escape, 0, FALSE, FALSE, FALSE);
-#endif
+    gtk3_menu_item (menu, "Exit Fullscreen", IMG_STOCK, (gpointer)FULLSCREEN, G_CALLBACK(set_full_screen), (gpointer)view, TRUE, GDK_KEY_Escape, 0, FALSE, FALSE, FALSE);
   }
   pop_menu_at_pointer (menu, NULL);
 #endif

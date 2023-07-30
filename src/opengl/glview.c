@@ -11,6 +11,76 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'glview.c'
+*
+*  Contains:
+*
+
+ - The OpenGL window callbacks subroutines
+
+*
+*  List of subroutines:
+
+  GLuint * allocgluint (int  val);
+  GLuint ** allocdgluint (int xal, int yal);
+
+  GLfloat ** allocdGLfloat (int xal, int yal);
+
+  gboolean is_GLExtension_Supported (const char * extension);
+
+  G_MODULE_EXPORT gboolean on_motion (GtkWidget * widg, GdkEvent * event, gpointer data);
+  G_MODULE_EXPORT gboolean on_lib_pressed (GtkWidget * widg, GdkEvent * event, gpointer data);
+  G_MODULE_EXPORT gboolean on_glwin_button_event (GtkWidget * widg, GdkEvent * event, gpointer data);
+  G_MODULE_EXPORT gboolean on_scrolled (GtkWidget * widg, GdkEvent * event, gpointer data);
+  G_MODULE_EXPORT gboolean on_glwin_pointer_scoll (GtkEventControllerScroll * event, gdouble dx, gdouble dy, gpointer data);
+  G_MODULE_EXPORT gboolean on_expose (GtkGLArea * area, GdkGLContext * context, gpointer data);
+  G_MODULE_EXPORT gboolean on_expose (GtkWidget * widg, cairo_t * cr, gpointer data);
+
+  void update_bonds_ (int * bd, int * stp,
+                      int * bdim, int bda[* bdim], int bdb[* bdim],
+                      double * x, double * y, double * z);
+  void sort (int dim, int * tab);
+  void update_atom_neighbors_ (int * stp, int * at, int * nv);
+  void update_this_neighbor_ (int * stp, int * at, int * iv, int * nv);
+  void update (glwin * view);
+  void transform (glwin * view, double aspect);
+  void reshape (glwin * view, int width, int height);
+  void save_rotation_quaternion (glwin * view);
+  void edit_for_motion (glwin * view);
+  void motion (glwin * view, gint x, gint y, GdkModifierType state);
+  void render_this_gl_window (glwin * view, GtkGLArea * area, gint button, double ptx, double pty);
+  void render_this_gl_window (glwin * view, GtkWidget * widg, gint button);
+  void glwin_lib_pressed (double x, double y, guint event_type, int event_button, gpointer data);
+  void glwin_button_event (double event_x, double event_y, guint event_button, guint event_type, guint32 event_time, gpointer data);
+  void zoom (glwin * view, int delta);
+  void rotate_x_y (glwin * view, double angle_x, double angle_y);
+  void init_camera (struct project * this_proj, int get_depth);
+  void image_init_spec_data (image * img, struct project * this_proj, int nsp);
+  void set_img_lights (struct project * this_proj, image * img);
+  void init_img (struct project * this_proj);
+  void init_opengl (glwin * view);
+  void center_molecule (struct project * this_proj);
+  void center_this_molecule (glwin * view);
+  void free_glwin_spec_data (struct project * this_proj, int spec);
+  void glwin_init_spec_data (struct project * this_proj, int nspec);
+  void init_glwin (glwin * view);
+  void gtk_window_change_gdk_visual (GtkWidget * win);
+
+  G_MODULE_EXPORT void on_glwin_pointer_motion (GtkEventControllerMotion * motc, gdouble x, gdouble y, gpointer data);
+  G_MODULE_EXPORT void on_lib_button_pressed (GtkGesture * gesture, int n_press, double x, double y, gpointer data);
+  G_MODULE_EXPORT void on_lib_button_released (GtkGesture * gesture, int n_press, double x, double y, gpointer data);
+  G_MODULE_EXPORT void on_glwin_button_pressed (GtkGesture * gesture, int n_press, double x, double y, gpointer data);
+  G_MODULE_EXPORT void on_glwin_button_released (GtkGesture * gesture, int n_press, double x, double y, gpointer data);
+  G_MODULE_EXPORT void on_realize (GtkGLArea * area, gpointer data);
+  G_MODULE_EXPORT void on_realize (GtkWidget * widg, gpointer data);
+
+  GError * init_gtk_gl_area (GtkGLArea * area);
+
+  ColRGBA set_default_color (int z);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "initcoord.h"
@@ -35,6 +105,13 @@ extern struct insert_object * create_object_from_frag_mol (struct project * this
 
 GLenum ogl_texture;
 
+/*
+*  GLuint * allocgluint (int  val)
+*
+*  Usage: allocate a GLuint * pointer
+*
+*  int  val : size of the pointer to allocate
+*/
 GLuint * allocgluint (int  val)
 {
   GLuint * var = NULL;
@@ -43,6 +120,14 @@ GLuint * allocgluint (int  val)
   return var;
 }
 
+/*
+*  GLuint ** allocdgluint (int xal, int yal)
+*
+*  Usage: allocate a GLuint ** pointer
+*
+*  int xal : 1st dimension size of the pointer to allocate
+*  int yal : 2nd dimension size of the pointer to allocate
+*/
 GLuint ** allocdgluint (int xal, int yal)
 {
   GLuint ** var = NULL;
@@ -57,6 +142,14 @@ GLuint ** allocdgluint (int xal, int yal)
   return var;
 }
 
+/*
+*  GLfloat ** allocdGLfloat (int xal, int yal)
+*
+*  Usage: allocate a GLfloat ** pointer
+*
+*  int xal : 1st dimension size of the pointer to allocate
+*  int yal : 2nd dimension size of the pointer to allocate
+*/
 GLfloat ** allocdGLfloat (int xal, int yal)
 {
   GLfloat ** var = NULL;
@@ -76,6 +169,13 @@ const float light_pos[MAX_LIGHTS][4] = {{-0.1f,  0.1f,  1.0f, 0.0f},
                                         {-1.0f,  2.0f, -1.0f, 0.0f},
                                         {-1.0f, -1.0f,  0.0f, 0.0f}};
 
+/*
+*  ColRGBA set_default_color (int z)
+*
+*  Usage: pick the default color for an atom
+*
+*  int z : atomic number
+*/
 ColRGBA set_default_color (int z)
 {
   ColRGBA col;
@@ -201,6 +301,22 @@ ColRGBA set_default_color (int z)
   return col;
 }
 
+/*
+*  void update_bonds_ (int * bd, int * stp,
+*                      int * bdim, int bda[* bdim], int bdb[* bdim],
+*                      double * x, double * y, double * z)
+*
+*  Usage: update bonding information from Fortran90
+*
+*  int * bd        : bonds (0) or clones (1)
+*  int * stp       : the MD step
+*  int * bdim      : number of bonds (or clone bonds)
+*  int bda[* bdim] : bond "ab" list atom a
+*  int bdb[* bdim] : bond "ab" list atom b
+*  double * x      : clone(s) x coordinates
+*  double * y      : clone(s) y coordinates
+*  double * z      : clone(s) z coordinates
+*/
 void update_bonds_ (int * bd, int * stp,
                     int * bdim, int bda[* bdim], int bdb[* bdim],
                     double * x, double * y, double * z)
@@ -243,6 +359,14 @@ void update_bonds_ (int * bd, int * stp,
   }
 }
 
+/*
+*  void sort (int dim, int * tab)
+*
+*  Usage: sort, nim to max, a table by integer value
+*
+*  int dim   : the number of value
+*  int * tab : the table to sort
+*/
 void sort (int dim, int * tab)
 {
   int i, j, val;
@@ -258,6 +382,15 @@ void sort (int dim, int * tab)
   }
 }
 
+/*
+*  void update_atom_neighbors_ (int * stp, int * at, int * nv)
+*
+*  Usage: update an atom number of neighbors from Fortran90
+*
+*  int * stp : the MD step
+*  int * at  : atom id
+*  int * nv  : number of neighbor atom(s)
+*/
 void update_atom_neighbors_ (int * stp, int * at, int * nv)
 {
   active_project -> atoms[* stp][* at].numv = * nv;
@@ -267,6 +400,16 @@ void update_atom_neighbors_ (int * stp, int * at, int * nv)
   }
 }
 
+/*
+*  void update_this_neighbor_ (int * stp, int * at, int * iv, int * nv)
+*
+*  Usage: update atom neighbor list from Fortran90
+*
+*  int * stp : the MD step
+*  int * at  : atom id
+*  int * iv  : neighbor index
+*  int * nv  : neighbor id
+*/
 void update_this_neighbor_ (int * stp, int * at, int * iv, int * nv)
 {
   active_project -> atoms[* stp][* at].vois[* iv] = * nv - 1;
@@ -276,6 +419,13 @@ void update_this_neighbor_ (int * stp, int * at, int * iv, int * nv)
   }
 }
 
+/*
+*  void update (glwin * view)
+*
+*  Usage: update the rendering of the OpenGL window
+*
+*  glwin * view : the target glwin
+*/
 void update (glwin * view)
 {
   gtk_gl_area_queue_render ((GtkGLArea *)view -> plot);
@@ -285,6 +435,14 @@ void update (glwin * view)
 #endif
 }
 
+/*
+*  void transform (glwin * view, double aspect)
+*
+*  Usage: transform the OpenGL window
+*
+*  glwin * view  : the target glwin
+*  double aspect : new aspect ratio
+*/
 void transform (glwin * view, double aspect)
 {
   GLdouble w, h;
@@ -333,6 +491,15 @@ void transform (glwin * view, double aspect)
   }
 }
 
+/*
+*  void reshape (glwin * view, int width, int height)
+*
+*  Usage: reshape (resize) the OpenGL window
+*
+*  glwin * view : the target glwin
+*  int width    : new with
+*  int height   : new height
+*/
 void reshape (glwin * view, int width, int height)
 {
   double aspect;
@@ -350,49 +517,13 @@ void reshape (glwin * view, int width, int height)
   transform (view, aspect);
 }
 
-void rotate_x_y (glwin * view, double angle_x, double angle_y)
-{
-  vec3_t axis;
-  vec4_t q_a, q_b, q_c;
-  axis.x = 0.0;
-  axis.y = 1.0;
-  axis.z = 0.0;
-  q_a = axis_to_quat (axis, -pi*angle_y/180.0);
-  axis.x = 1.0;
-  axis.y = 0.0;
-  axis.z = 0.0;
-  q_b = axis_to_quat (axis, -pi*angle_x/180.0);
-  q_c = q4_mul (q_a, q_b);
-  view -> anim -> last -> img -> c_angle[0] -= angle_x;
-  view -> anim -> last -> img -> c_angle[1] -= angle_y;
-  int i;
-  for (i=0; i<2; i++)
-  {
-    if (abs(view -> anim -> last -> img -> c_angle[i]) > 180.0) view -> anim -> last -> img -> c_angle[i] = 0.0;
-    if (view -> camera_widg[i+3])
-    {
-      if (GTK_IS_WIDGET(view -> camera_widg[i+3]))
-      {
-        gtk_spin_button_set_value ((GtkSpinButton *)view -> camera_widg[i+3], view -> anim -> last -> img -> c_angle[i]);
-      }
-    }
-  }
-
-  if (view -> mode != EDITION)
-  {
-    view -> anim -> last -> img -> rotation_quaternion = q4_mul (old_rotation_quaternion, q_c);
-  }
-  else
-  {
-    rotate_quat (get_project_by_id(view -> proj), q_c, 1, 1);
-    init_default_shaders (view);
-#ifdef GTK3
-    // GTK3 Menu Action To Check
-    set_advanced_bonding_menus (view);
-#endif
-  }
-}
-
+/*
+*  void save_rotation_quaternion (glwin * view)
+*
+*  Usage: save the rotation quaternion of the last image
+*
+*  glwin * view : the target glwin
+*/
 void save_rotation_quaternion (glwin * view)
 {
   //int i;
@@ -403,6 +534,13 @@ void save_rotation_quaternion (glwin * view)
   old_rotation_quaternion.z = view -> anim -> last -> img -> rotation_quaternion.z;
 }
 
+/*
+*  void edit_for_motion (glwin * view)
+*
+*  Usage: if edition mode is one some steps are required
+*
+*  glwin * view : the target glwin
+*/
 void edit_for_motion (glwin * view)
 {
   gboolean check_edit = FALSE;
@@ -460,6 +598,16 @@ void edit_for_motion (glwin * view)
   view -> rebuild[0][1] = TRUE;
 }
 
+/*
+*  void motion (glwin * view, gint x, gint y, GdkModifierType state)
+*
+*  Usage: mouse motion in the OpenGL window
+*
+*  glwin * view          : the target glwin
+*  gint x                : x position
+*  gint y                : y position
+*  GdkModifierType state : The keyboard modifier (Ctrl, Alt ...)
+*/
 void motion (glwin * view, gint x, gint y, GdkModifierType state)
 {
   view -> mouseAction = MOTION;
@@ -522,6 +670,15 @@ void motion (glwin * view, gint x, gint y, GdkModifierType state)
 }
 
 #ifdef GTK3
+/*
+*  G_MODULE_EXPORT gboolean on_motion (GtkWidget * widg, GdkEvent * event, gpointer data)
+*
+*  Usage: handle mouse motion event in the OpenGL window
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  GdkEvent * event : the GdkEvent triggering the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean on_motion (GtkWidget * widg, GdkEvent * event, gpointer data)
 {
   glwin * view = (glwin *) data;
@@ -545,6 +702,16 @@ G_MODULE_EXPORT gboolean on_motion (GtkWidget * widg, GdkEvent * event, gpointer
   return FALSE;
 }
 #else
+/*
+*  G_MODULE_EXPORT void on_glwin_pointer_motion (GtkEventControllerMotion * motc, gdouble x, gdouble y, gpointer data)
+*
+*  Usage: handle mouse motion event in the OpenGL window
+*
+*  GtkEventControllerMotion * motc : The GtkEvenController sending the signal
+*  gdouble x                       : x position
+*  gdouble y                       : y position
+*  gpointer data                   : the associated data pointer
+*/
 G_MODULE_EXPORT void on_glwin_pointer_motion (GtkEventControllerMotion * motc, gdouble x, gdouble y, gpointer data)
 {
   glwin * view = (glwin *) data;
@@ -556,8 +723,28 @@ G_MODULE_EXPORT void on_glwin_pointer_motion (GtkEventControllerMotion * motc, g
 #endif
 
 #ifdef GTKGLAREA
+/*
+*  void render_this_gl_window (glwin * view, GtkGLArea * area, gint button, double ptx, double pty)
+*
+*  Usage: render the OpenGL window
+*
+*  glwin * view     : the target glwin
+*  GtkGLArea * area : the target GtkGLArea
+*  gint button      : the button id
+*  double ptx       : x position
+*  double pty       : y position
+*/
 void render_this_gl_window (glwin * view, GtkGLArea * area, gint button, double ptx, double pty)
 #else
+/*
+*  void render_this_gl_window (glwin * view, GtkWidget * widg, gint button)
+*
+*  Usage: render the OpenGL window
+*
+*  glwin * view     : the target glwin
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gint button      : the button id
+*/
 void render_this_gl_window (glwin * view, GtkWidget * widg, gint button)
 #endif
 {
@@ -590,6 +777,17 @@ void render_this_gl_window (glwin * view, GtkWidget * widg, gint button)
   }
 }
 
+/*
+*  void glwin_lib_pressed (double x, double y, guint event_type, int event_button, gpointer data)
+*
+*  Usage: handle mouse button event on the molecular library OpenGL window
+*
+*  double x         : x position
+*  double y         : y position
+*  guint event_type : event type
+*  int event_button : event button
+*  gpointer data    : the associated data pointer
+*/
 void glwin_lib_pressed (double x, double y, guint event_type, int event_button, gpointer data)
 {
   glwin * view = (glwin *) data;
@@ -614,6 +812,15 @@ void glwin_lib_pressed (double x, double y, guint event_type, int event_button, 
 }
 
 #ifdef GTK3
+/*
+*  G_MODULE_EXPORT gboolean on_lib_pressed (GtkWidget * widg, GdkEvent * event, gpointer data)
+*
+*  Usage: handle mouse button event on the molecular library OpenGL window (limited interaction)
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  GdkEvent * event : the GdkEvent triggering the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean on_lib_pressed (GtkWidget * widg, GdkEvent * event, gpointer data)
 {
   GdkEventButton * bevent = (GdkEventButton*)event;
@@ -621,11 +828,33 @@ G_MODULE_EXPORT gboolean on_lib_pressed (GtkWidget * widg, GdkEvent * event, gpo
   return FALSE;
 }
 #else
+/*
+*  G_MODULE_EXPORT void on_lib_button_pressed (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
+*
+*  Usage: handle mouse button press event on the molecular library OpenGL window (limited interaction)
+*
+*  GtkGesture * gesture : the GtkGesture sending the signal
+*  int n_press          : number of times it was pressed
+*  double x             : x position
+*  double y             : y position
+*  gpointer data        : the associated data pointer
+*/
 G_MODULE_EXPORT void on_lib_button_pressed (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
 {
   glwin_lib_pressed (x, y, GDK_BUTTON_PRESS, gtk_gesture_single_get_current_button ((GtkGestureSingle * )gesture), data);
 }
 
+/*
+*  G_MODULE_EXPORT void on_lib_button_released (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
+*
+*  Usage: handle mouse button release event on the molecular library OpenGL window (limited interaction)
+*
+*  GtkGesture * gesture : the GtkGesture sending the signal
+*  int n_press          : number of times it was pressed
+*  double x             : x position
+*  double y             : y position
+*  gpointer data        : the associated data pointer
+*/
 G_MODULE_EXPORT void on_lib_button_released (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
 {
   glwin_lib_pressed (x, y, GDK_BUTTON_RELEASE, gtk_gesture_single_get_current_button ((GtkGestureSingle * )gesture), data);
@@ -634,6 +863,18 @@ G_MODULE_EXPORT void on_lib_button_released (GtkGesture * gesture, int n_press, 
 
 gl_pop_info to_pop;
 
+/*
+*  void glwin_button_event (double event_x, double event_y, guint event_button, guint event_type, guint32 event_time, gpointer data)
+*
+*  Usage: handle mouse button event on the OpenGL window
+*
+*  double event_x     : x position
+*  double event_y     : y position
+*  guint event_button : event button
+*  guint event_type   : event type
+*  guint32 event_time : event time
+*  gpointer data      : the associated data pointer
+*/
 void glwin_button_event (double event_x, double event_y, guint event_button, guint event_type, guint32 event_time, gpointer data)
 {
   glwin * view = (glwin *) data;
@@ -692,6 +933,15 @@ void glwin_button_event (double event_x, double event_y, guint event_button, gui
 }
 
 #ifdef GTK3
+/*
+*  G_MODULE_EXPORT gboolean on_glwin_button_event (GtkWidget * widg, GdkEvent * event, gpointer data)
+*
+*  Usage: mouse button event on the OpenGL window
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  GdkEvent * event : the GdkEvent triggering the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean on_glwin_button_event (GtkWidget * widg, GdkEvent * event, gpointer data)
 {
   GdkEventButton * bevent = (GdkEventButton*)event;
@@ -699,11 +949,33 @@ G_MODULE_EXPORT gboolean on_glwin_button_event (GtkWidget * widg, GdkEvent * eve
   return FALSE;
 }
 #else
+/*
+*  G_MODULE_EXPORT void on_glwin_button_pressed (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
+*
+*  Usage: mouse button pressed signal on the OpenGL window
+*
+*  GtkGesture * gesture : the GtkGesture sending the signal
+*  int n_press          : number of times it was pressed
+*  double x             : x position
+*  double y             : y position
+*  gpointer data        : the associated data pointer
+*/
 G_MODULE_EXPORT void on_glwin_button_pressed (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
 {
   glwin_button_event (x, y, gtk_gesture_single_get_current_button ((GtkGestureSingle * )gesture), GDK_BUTTON_PRESS, gtk_event_controller_get_current_event_time((GtkEventController *)gesture), data);
 }
 
+/*
+*  G_MODULE_EXPORT void on_glwin_button_released (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
+*
+*  Usage: mouse button release signal on the OpenGL window
+*
+*  GtkGesture * gesture : the GtkGesture sending the signal
+*  int n_press          : number of times it was pressed
+*  double x             : x position
+*  double y             : y position
+*  gpointer data        : the associated data pointer
+*/
 G_MODULE_EXPORT void on_glwin_button_released (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
 {
   glwin_button_event (x, y, gtk_gesture_single_get_current_button ((GtkGestureSingle * )gesture), GDK_BUTTON_RELEASE, gtk_event_controller_get_current_event_time((GtkEventController *)gesture), data);
@@ -711,6 +983,14 @@ G_MODULE_EXPORT void on_glwin_button_released (GtkGesture * gesture, int n_press
 #endif // GTK3
 
 // Zoom in or out
+/*
+*  void zoom (glwin * view, int delta)
+*
+*  Usage: zoom in or zoom out in the OpenGL window
+*
+*  glwin * view : the target glwin
+*  int delta    : the zoom modification
+*/
 void zoom (glwin * view, int delta)
 {
   view -> anim -> last -> img -> zoom += delta * view -> zoom_factor;
@@ -724,6 +1004,15 @@ void zoom (glwin * view, int delta)
 }
 
 #ifdef GTK3
+/*
+*  G_MODULE_EXPORT gboolean on_scrolled (GtkWidget * widg, GdkEvent * event, gpointer data)
+*
+*  Usage: handle mouse scroll event on the OpenGL window
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  GdkEvent * event : the GdkEvent triggering the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean on_scrolled (GtkWidget * widg, GdkEvent * event, gpointer data)
 {
   glwin * view = (glwin *) data;
@@ -741,6 +1030,16 @@ G_MODULE_EXPORT gboolean on_scrolled (GtkWidget * widg, GdkEvent * event, gpoint
   return FALSE;
 }
 #else
+/*
+*  G_MODULE_EXPORT gboolean on_glwin_pointer_scoll (GtkEventControllerScroll * event, gdouble dx, gdouble dy, gpointer data)
+*
+*  Usage: handle mouse scroll event on the OpenGL window
+*
+*  GtkEventControllerScroll * event : the GtkEventControllerScroll sending the signal
+*  gdouble dx                       : x position
+*  gdouble dy                       : y position
+*  gpointer data                    : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean on_glwin_pointer_scoll (GtkEventControllerScroll * event, gdouble dx, gdouble dy, gpointer data)
 {
   glwin * view = (glwin *) data;
@@ -758,6 +1057,66 @@ G_MODULE_EXPORT gboolean on_glwin_pointer_scoll (GtkEventControllerScroll * even
 }
 #endif
 
+/*
+*  void rotate_x_y (glwin * view, double angle_x, double angle_y)
+*
+*  Usage: rotate the OpenGL camera
+*
+*  glwin * view   : the target glwin
+*  double angle_x : camera angle on x axis
+*  double angle_y : camera angle on y axis
+*/
+void rotate_x_y (glwin * view, double angle_x, double angle_y)
+{
+  vec3_t axis;
+  vec4_t q_a, q_b, q_c;
+  axis.x = 0.0;
+  axis.y = 1.0;
+  axis.z = 0.0;
+  q_a = axis_to_quat (axis, -pi*angle_y/180.0);
+  axis.x = 1.0;
+  axis.y = 0.0;
+  axis.z = 0.0;
+  q_b = axis_to_quat (axis, -pi*angle_x/180.0);
+  q_c = q4_mul (q_a, q_b);
+  view -> anim -> last -> img -> c_angle[0] -= angle_x;
+  view -> anim -> last -> img -> c_angle[1] -= angle_y;
+  int i;
+  for (i=0; i<2; i++)
+  {
+    if (abs(view -> anim -> last -> img -> c_angle[i]) > 180.0) view -> anim -> last -> img -> c_angle[i] = 0.0;
+    if (view -> camera_widg[i+3])
+    {
+      if (GTK_IS_WIDGET(view -> camera_widg[i+3]))
+      {
+        gtk_spin_button_set_value ((GtkSpinButton *)view -> camera_widg[i+3], view -> anim -> last -> img -> c_angle[i]);
+      }
+    }
+  }
+
+  if (view -> mode != EDITION)
+  {
+    view -> anim -> last -> img -> rotation_quaternion = q4_mul (old_rotation_quaternion, q_c);
+  }
+  else
+  {
+    rotate_quat (get_project_by_id(view -> proj), q_c, 1, 1);
+    init_default_shaders (view);
+#ifdef GTK3
+    // GTK3 Menu Action To Check
+    set_advanced_bonding_menus (view);
+#endif
+  }
+}
+
+/*
+*  void init_camera (struct project * this_proj, int get_depth)
+*
+*  Usage: intialize the OpenGL camera settings
+*
+*  struct project * this_proj : the target project
+*  int get_depth              : estimate the OpenGL depth ? (1/0)
+*/
 void init_camera (struct project * this_proj, int get_depth)
 {
   glwin * view = this_proj -> modelgl;
@@ -807,6 +1166,15 @@ void init_camera (struct project * this_proj, int get_depth)
   }
 }
 
+/*
+*  void image_init_spec_data (image * img, struct project * this_proj, int nsp)
+*
+*  Usage: initialize the chemical species related pointers in an image data structure
+*
+*  image * img                : the target image
+*  struct project * this_proj : the target project
+*  int nsp                    : the number of chemical species
+*/
 void image_init_spec_data (image * img, struct project * this_proj, int nsp)
 {
   int i, j;
@@ -861,6 +1229,14 @@ void image_init_spec_data (image * img, struct project * this_proj, int nsp)
   }
 }
 
+/*
+*  void set_img_lights (struct project * this_proj, image * img)
+*
+*  Usage: initialize lightning for an image data structure
+*
+*  struct project * this_proj : the target project
+*  image * img                : the target image
+*/
 void set_img_lights (struct project * this_proj, image * img)
 {
   img -> lights = 3;
@@ -881,6 +1257,13 @@ void set_img_lights (struct project * this_proj, image * img)
   img -> l_ght[2] = init_light_source (1, val, vbl);
 }
 
+/*
+*  void init_img (struct project * this_proj)
+*
+*  Usage: initialize an image data structure
+*
+*  struct project * this_proj : the target project
+*/
 void init_img (struct project * this_proj)
 {
   int i;
@@ -968,6 +1351,13 @@ void init_img (struct project * this_proj)
   img -> f_g.color = vec3 (0.01f, 0.01f, 0.01f);
 }
 
+/*
+*  gboolean is_GLExtension_Supported (const char * extension)
+*
+*  Usage: test if this GLExtension is support
+*
+*  const char * extension : the target GLExtension
+*/
 gboolean is_GLExtension_Supported (const char * extension)
 {
   int i, j;
@@ -980,6 +1370,13 @@ gboolean is_GLExtension_Supported (const char * extension)
   return FALSE;
 }
 
+/*
+*  void init_opengl (glwin * view)
+*
+*  Usage: initialize OpenGL rendering parameters for a glwin pointer
+*
+*  glwin * view : the target glwin
+*/
 void init_opengl (glwin * view)
 {
   glEnable (GL_DEPTH_TEST);
@@ -1021,6 +1418,13 @@ void init_opengl (glwin * view)
   ogl_texture = (is_GLExtension_Supported("GL_ARB_texture_rectangle")) ? GL_TEXTURE_RECTANGLE_ARB : GL_TEXTURE_2D;
 }
 
+/*
+*  void center_molecule (struct project * this_proj)
+*
+*  Usage: center atomic coordinates around (0,0,0)
+*
+*  struct project * this_proj : the target project
+*/
 void center_molecule (struct project * this_proj)
 {
   int l, i, j;
@@ -1095,6 +1499,13 @@ void center_molecule (struct project * this_proj)
   this_proj -> cell.crystal = FALSE;
 }
 
+/*
+*  void center_this_molecule (glwin * view)
+*
+*  Usage: center atomic coordinates around (0,0,0) and refresh shaders
+*
+*  glwin * view : the target glwin
+*/
 void center_this_molecule (glwin * view)
 {
   center_molecule (get_project_by_id(view -> proj));
@@ -1108,6 +1519,14 @@ void center_this_molecule (glwin * view)
   update (view);
 }
 
+/*
+*  void free_glwin_spec_data (struct project * this_proj, int spec)
+*
+*  Usage: free the memory used by the chemical species related data in a glwin data structure
+*
+*  struct project * this_proj : the target project
+*  int spec                   : the number of chemical species
+*/
 void free_glwin_spec_data (struct project * this_proj, int spec)
 {
   int i, j, k;
@@ -1145,6 +1564,14 @@ void free_glwin_spec_data (struct project * this_proj, int spec)
   this_proj -> coord -> partial_geo = NULL;
 }
 
+/*
+*  void glwin_init_spec_data (struct project * this_proj, int nspec)
+*
+*  Usage: initialize the glwin chemical species related pointers
+*
+*  struct project * this_proj : the target project
+*  int nspec                  : the number of chemical species
+*/
 void glwin_init_spec_data (struct project * this_proj, int nspec)
 {
   int i, j, k;
@@ -1203,6 +1630,13 @@ void glwin_init_spec_data (struct project * this_proj, int nspec)
   for (i=0; i<nspec; i++) this_proj -> coord -> partial_geo[i] = NULL;
 }
 
+/*
+*  void init_glwin (glwin * view)
+*
+*  Usage: initialize a glwin pointer
+*
+*  glwin * view : the target glwin
+*/
 void init_glwin (glwin * view)
 {
   struct project * this_proj = get_project_by_id(view -> proj);    // Have to be the active project
@@ -1245,6 +1679,13 @@ void init_glwin (glwin * view)
 #endif
 }
 
+/*
+*  GError * init_gtk_gl_area (GtkGLArea * area)
+*
+*  Usage: initialize a GtkGLArea, return error if any
+*
+*  GtkGLArea * area : the GtkGLArea point to initialize
+*/
 GError * init_gtk_gl_area (GtkGLArea * area)
 {
   if (area == NULL)
@@ -1261,6 +1702,13 @@ GError * init_gtk_gl_area (GtkGLArea * area)
 }
 
 #ifdef GTK3
+/*
+*  void gtk_window_change_gdk_visual (GtkWidget * win)
+*
+*  Usage: change the Gdk visual
+*
+*  GtkWidget * win : the GtkWidget sending the signal
+*/
 void gtk_window_change_gdk_visual (GtkWidget * win)
 {
   // GTK+ > 3.15.1 uses an X11 visual optimized for GTK+'s OpenGL stuff
@@ -1291,8 +1739,24 @@ void gtk_window_change_gdk_visual (GtkWidget * win)
 #endif
 
 #ifdef GTKGLAREA
+/*
+*  G_MODULE_EXPORT void on_realize (GtkGLArea * area, gpointer data)
+*
+*  Usage: realize event for a GtkGLArea
+*
+*  GtkGLArea * area : the GtkGLArea sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void on_realize (GtkGLArea * area, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void on_realize (GtkWidget * widg, gpointer data)
+*
+*  Usage: realize event for the OpenGL widget
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void on_realize (GtkWidget * widg, gpointer data)
 #endif
 {
@@ -1349,8 +1813,26 @@ G_MODULE_EXPORT void on_realize (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTKGLAREA
+/*
+*  G_MODULE_EXPORT gboolean on_expose (GtkGLArea * area, GdkGLContext * context, gpointer data)
+*
+*  Usage:
+*
+*  GtkGLArea * area       : the GtkGLArea sending the signal
+*  GdkGLContext * context : the associated GdkGLContext
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean on_expose (GtkGLArea * area, GdkGLContext * context, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT gboolean on_expose (GtkWidget * widg, cairo_t * cr, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  cairo_t * cr     :
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean on_expose (GtkWidget * widg, cairo_t * cr, gpointer data)
 #endif
 {

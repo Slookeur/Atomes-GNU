@@ -11,6 +11,23 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'w_data.c'
+*
+*  Contains:
+*
+
+ - Write / output curve data
+
+*
+*  List of subroutines:
+
+  G_MODULE_EXPORT void run_write_curve (GtkNativeDialog * info, gint response_id, gpointer data);
+  G_MODULE_EXPORT void run_write_curve (GtkDialog * info, gint response_id, gpointer data);
+  G_MODULE_EXPORT void write_curve (GtkWidget * butcurve, gpointer idata);
+
+*/
+
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdlib.h>
@@ -18,7 +35,6 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "global.h"
 #include "interface.h"
 #include "curve.h"
-#include "valid.h"
 
 void save_to_file_ (int *, char *, int *, double *, double *, int *, int *, int *, double *, int *, int *, int *, int *, char *);
 void prep_file_ (int *, char *, int *, int *, int *, double *, int *, int *);
@@ -27,10 +43,28 @@ void append_to_file_ (int *, double *, double *, double *, int *, int *, int *, 
 GtkFileFilter * filter1, * filter2;
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void run_write_curve (GtkNativeDialog * info, gint response_id, gpointer data)
+*
+*  Usage:
+*
+*  GtkNativeDialog * info : the GtkNativeDialog sending the signal
+*  gint response_id       : the response id
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void run_write_curve (GtkNativeDialog * info, gint response_id, gpointer data)
 {
   GtkFileChooser * chooser = GTK_FILE_CHOOSER((GtkFileChooserNative *)info);
 #else
+/*
+*  G_MODULE_EXPORT void run_write_curve (GtkDialog * info, gint response_id, gpointer data)
+*
+*  Usage:
+*
+*  GtkDialog * info : the GtkDialog sending the signal
+*  gint response_id : the response id
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void run_write_curve (GtkDialog * info, gint response_id, gpointer data)
 {
   GtkFileChooser * chooser = GTK_FILE_CHOOSER((GtkWidget *)info);
@@ -111,10 +145,16 @@ G_MODULE_EXPORT void run_write_curve (GtkDialog * info, gint response_id, gpoint
 #endif
 }
 
+/*
+*  G_MODULE_EXPORT void write_curve (GtkWidget * butcurve, gpointer idata)
+*
+*  Usage:
+*
+*  GtkWidget * butcurve : the GtkWidget sending the signal
+*  gpointer idata       : the associated data pointer
+*/
 G_MODULE_EXPORT void write_curve (GtkWidget * butcurve, gpointer idata)
 {
-  if (! saving_option ()) goto end;
-
 #ifdef GTK4
   GtkFileChooserNative * info;
 #else

@@ -11,16 +11,36 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'read_xyz.c'
+*
+*  Contains:
+*
+
+ -  - The subroutines to read XYZ atomic coordinates
+
+*
+*  List of subroutines:
+
+  int xyz_get_atom_coordinates ();
+  int open_xyz_file (int linec);
+
+*/
+
 #include "global.h"
 #include "glview.h"
 #include "callbacks.h"
 #include "interface.h"
 #include "project.h"
-#include "gui.h"
 #include "bind.h"
 #include <omp.h>
 #include "readers.h"
 
+/*
+*  int xyz_get_atom_coordinates ()
+*
+*  Usage: get the atomic coordinates from the XYZ file
+*/
 int xyz_get_atom_coordinates ()
 {
   int i, j, k;
@@ -245,6 +265,13 @@ int xyz_get_atom_coordinates ()
   return 0;
 }
 
+/*
+*  int open_xyz_file (int linec)
+*
+*  Usage: open XYZ file
+*
+*  int linec : Number of lines in the file
+*/
 int open_xyz_file (int linec)
 {
   int res;

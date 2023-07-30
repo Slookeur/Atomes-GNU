@@ -11,6 +11,47 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'read_cif.c'
+*
+*  Contains:
+*
+
+ - The subroutines to read CIF files
+
+*
+*  List of subroutines:
+
+  int get_atom_wyckoff (gchar * line, int wid);
+  int cif_get_value (gchar * kroot, gchar * keyw, int linec, int lstart, gchar ** cif_word, gboolean rec_val, gboolean all_ligne, gboolean in_loop);
+  int cif_file_get_data_in_loop (int linec, int lid);
+  int cif_file_get_number_of_atoms (int linec, int lid, int nelem);
+  int get_loop_line_id (int linec, int lid);
+  int get_loop_line_for_key (gchar * key_a, gchar * key_b, int linec);
+  int get_space_group_from_hm (gchar * hmk);
+  int get_setting_from_hm (gchar * hmk, int end);
+  int group_info_from_hm_key (int spg, gchar * key_hm);
+  int open_cif_file (int linec);
+
+  float get_atom_coord (gchar * line, int mid);
+
+  gboolean get_missing_z_from_user ();
+  gboolean cif_file_get_atoms_data (int lin, int cid[8]);
+  gboolean cif_get_atomic_coordinates (int linec);
+  gboolean cif_get_cell_data (int linec);
+  gboolean cif_get_space_group (int linec);
+
+  gchar * get_cif_word (gchar * mot);
+  gchar * get_atom_label (gchar * line, int lid);
+  gchar * get_string_from_origin (space_group * spg);
+
+  void file_get_to_line (int line_id);
+  void check_for_to_lab (int ato, gchar * stlab);
+
+  G_MODULE_EXPORT void select_cif_species (GtkButton * but, gpointer data);
+
+*/
+
 #include "global.h"
 #include "bind.h"
 #include "interface.h"
@@ -129,6 +170,13 @@ gchar * cif_coord_opts[40][2] = {{"b1", "Monoclinic unique axis b, cell choice 1
   }
 #endif // G_OS_WIN_32
 
+/*
+*  gchar * get_cif_word (gchar * mot)
+*
+*  Usage: get string from CIF file, EOL can be ugly
+*
+*  gchar * mot : the string that was read in the file
+*/
 gchar * get_cif_word (gchar * mot)
 {
   gchar * word = substitute_string (mot, "\n", NULL);
@@ -136,6 +184,14 @@ gchar * get_cif_word (gchar * mot)
   return word;
 }
 
+/*
+*  float get_atom_coord (gchar * line, int mid)
+*
+*  Usage: read atom coordinates from CIF file
+*
+*  gchar * line : the string that contains the data
+*  int mid      : the position to reach on the line
+*/
 float get_atom_coord (gchar * line, int mid)
 {
   gchar * co_line = g_strdup_printf ("%s", line);
@@ -151,6 +207,14 @@ float get_atom_coord (gchar * line, int mid)
   return v;
 }
 
+/*
+*  gchar * get_atom_label (gchar * line, int lid)
+*
+*  Usage: read atom label from CIF file
+*
+*  gchar * line : the string that contains the data
+*  int lid      : the position to reach on the line
+*/
 gchar * get_atom_label (gchar * line, int lid)
 {
   gchar * at_line = g_strdup_printf ("%s", line);
@@ -171,6 +235,14 @@ gchar * get_atom_label (gchar * line, int lid)
   return g_strdup_printf ("%c%c", at_word[0], tolower(at_word[1]));
 }
 
+/*
+*  int get_atom_wyckoff (gchar * line, int wid)
+*
+*  Usage: read Wyckoff position from CIF file
+*
+*  gchar * line : the string that contains the data
+*  int wid      : the position to reach on the line
+*/
 int get_atom_wyckoff (gchar * line, int wid)
 {
   gchar * wy_line = g_strdup_printf ("%s", line);
@@ -194,6 +266,14 @@ int get_atom_wyckoff (gchar * line, int wid)
 GtkWidget ** img_cif;
 atom_search * cif_search;
 
+/*
+*  G_MODULE_EXPORT void select_cif_species (GtkButton * but, gpointer data)
+*
+*  Usage: Select a chemical species to correct error in CIF file
+*
+*  GtkButton * but : the GtkButton sending the signal
+*  gpointer data   : the associated data pointer
+*/
 G_MODULE_EXPORT void select_cif_species (GtkButton * but, gpointer data)
 {
   int i, j;
@@ -221,6 +301,11 @@ G_MODULE_EXPORT void select_cif_species (GtkButton * but, gpointer data)
   g_free (strb);
 }
 
+/*
+*  gboolean get_missing_z_from_user ()
+*
+*  Usage: get missing atomic number in CIF file from the user
+*/
 gboolean get_missing_z_from_user ()
 {
   this_reader -> lmislab = allocint (this_reader -> stolab);
@@ -259,6 +344,13 @@ gboolean get_missing_z_from_user ()
 }
 
 #ifndef OPENMP
+/*
+*  void file_get_to_line (int line_id)
+*
+*  Usage: reach line in CIF file
+*
+*  int line_id : Line to reach
+*/
 void file_get_to_line (int line_id)
 {
   int i;
@@ -267,8 +359,21 @@ void file_get_to_line (int line_id)
 }
 #endif
 
-int cif_get_value (gchar * kroot, gchar * keyw, int linec, int lstart, gchar ** cif_word,
-                   gboolean rec_val, gboolean all_ligne, gboolean in_loop)
+/*
+*  int cif_get_value (gchar * kroot, gchar * keyw, int linec, int lstart, gchar ** cif_word, gboolean rec_val, gboolean all_ligne, gboolean in_loop)
+*
+*  Usage: read pattern in CIF file
+*
+*  gchar * kroot      : String root (first part)
+*  gchar * keyw       : String root (first part)
+*  int linec          : Total number of lines
+*  int lstart         : Line to reach
+*  gchar ** cif_word  : pointer to store the data read
+*  gboolean rec_val   : Record position on the line
+*  gboolean all_ligne : Browse all line (1/0)
+*  gboolean in_loop   : More than one identical key string (1/0)
+*/
+int cif_get_value (gchar * kroot, gchar * keyw, int linec, int lstart, gchar ** cif_word, gboolean rec_val, gboolean all_ligne, gboolean in_loop)
 {
   int res = 0;
   int i;
@@ -415,6 +520,14 @@ int cif_get_value (gchar * kroot, gchar * keyw, int linec, int lstart, gchar ** 
   return res;
 }
 
+/*
+*  int cif_file_get_data_in_loop (int linec, int lid)
+*
+*  Usage:
+*
+*  int linec : Total number of lines
+*  int lid   : Line to reach
+*/
 int cif_file_get_data_in_loop (int linec, int lid)
 {
   gboolean res = FALSE;
@@ -467,6 +580,15 @@ int cif_file_get_data_in_loop (int linec, int lid)
   return i;
 }
 
+/*
+*  int cif_file_get_number_of_atoms (int linec, int lid, int nelem)
+*
+*  Usage: get the number of atom(s) in a CIF file
+*
+*  int linec : Total number of lines
+*  int lid   : Line to reach
+*  int nelem : Number of element(s) the line
+*/
 int cif_file_get_number_of_atoms (int linec, int lid, int nelem)
 {
   gboolean res = FALSE;
@@ -521,73 +643,14 @@ int cif_file_get_number_of_atoms (int linec, int lid, int nelem)
   return i;
 }
 
-int num_key (gchar * keyw, int linec)
-{
-  int res = 0;
-  int i;
-  keylines = NULL;
-#ifdef OPENMP
-  int numth = omp_get_max_threads ();
-  gchar * saved_line;
-  #pragma omp parallel for num_threads(numth) private(i,this_line,saved_line,this_word) shared(this_reader,res,coord_line,keylines)
-  for (i=0; i<linec; i++)
-  {
-    this_line = g_strdup_printf ("%s", coord_line[i]);
-    saved_line = g_strdup_printf ("%s", this_line);
-    this_word = strtok_r (this_line, " ", & saved_line);
-    while (this_word)
-    {
-      if (g_strcmp0(get_cif_word(this_word), keyw) == 0)
-      {
-        #pragma omp critical
-        {
-          if (keylines)
-          {
-            keylines = g_realloc(keylines, (res+1)*sizeof*keylines);
-          }
-          else
-          {
-            keylines = allocint (1);
-          }
-          g_debug ("Key= %s, line= %d\n", keyw, i);
-          keylines[res] = i+1;
-          res ++;
-        }
-      }
-      this_word = strtok_r (NULL, " ", & saved_line);
-    }
-  }
-  sort (res, keylines);
-#else
-  tail = head;
-  i = 0;
-  while (tail)
-  {
-    i ++;
-    this_line = g_strdup_printf ("%s", tail -> line);
-    this_word = strtok (this_line, " ");
-    while (this_word)
-    {
-      if (g_strcmp0(get_cif_word(this_word), keyw) == 0)
-      {
-        if (keylines)
-        {
-          keylines = g_realloc(keylines, (res+1)*sizeof*keylines);
-        }
-        else
-        {
-          keylines = allocint (1);
-        }
-        keylines[res] = i+1;
-        res ++;
-      }
-    }
-    tail = tail -> next;
-  }
-#endif
-  return res;
-}
-
+/*
+*  void check_for_to_lab (int ato, gchar * stlab)
+*
+*  Usage: check atom label
+*
+*  int ato       : Atom id
+*  gchar * stlab : Label read in the CIF file
+*/
 void check_for_to_lab (int ato, gchar * stlab)
 {
   int i, j;
@@ -628,6 +691,14 @@ void check_for_to_lab (int ato, gchar * stlab)
   }
 }
 
+/*
+*  gboolean cif_file_get_atoms_data (int lin, int cid[8])
+*
+*  Usage: get atoms data from the CIF file
+*
+*  int lin    : Line to reach
+*  int cid[8] : Positions on the line for the data to read
+*/
 gboolean cif_file_get_atoms_data (int lin, int cid[8])
 {
   int i, j, k, l;
@@ -734,6 +805,14 @@ gboolean cif_file_get_atoms_data (int lin, int cid[8])
   return done;
 }
 
+/*
+*  int get_loop_line_id (int linec, int lid)
+*
+*  Usage: reach a line in the CIF file
+*
+*  int linec : Total number of lines
+*  int lid   : Line to reach
+*/
 int get_loop_line_id (int linec, int lid)
 {
   int i;
@@ -780,6 +859,15 @@ int get_loop_line_id (int linec, int lid)
   return 0;
 }
 
+/*
+*  int get_loop_line_for_key (gchar * key_a, gchar * key_b, int linec)
+*
+*  Usage: search a string
+*
+*  gchar * key_a : String root (first part)
+*  gchar * key_b : String end (second part)
+*  int linec     : Total number of lines
+*/
 int get_loop_line_for_key (gchar * key_a, gchar * key_b, int linec)
 {
   int i;
@@ -788,6 +876,13 @@ int get_loop_line_for_key (gchar * key_a, gchar * key_b, int linec)
   return (i) ? get_loop_line_id (linec, i) : 0;
 }
 
+/*
+*  gboolean cif_get_atomic_coordinates (int linec)
+*
+*  Usage: read the atomic coordinates from the CIF file
+*
+*  int linec : Total number of lines
+*/
 gboolean cif_get_atomic_coordinates (int linec)
 {
   gchar * labkeys[2] = {"type_symbol", "label"};
@@ -956,6 +1051,13 @@ gboolean cif_get_atomic_coordinates (int linec)
   return TRUE;
 }
 
+/*
+*  int get_space_group_from_hm (gchar * hmk)
+*
+*  Usage:
+*
+*  gchar * hmk :
+*/
 int get_space_group_from_hm (gchar * hmk)
 {
   int i;
@@ -1003,6 +1105,13 @@ int get_space_group_from_hm (gchar * hmk)
   return 0;
 }
 
+/*
+*  gchar * get_string_from_origin (space_group * spg)
+*
+*  Usage: get the space group origin from its name
+*
+*  space_group * spg : Space group
+*/
 gchar * get_string_from_origin (space_group * spg)
 {
   gchar * str = NULL;
@@ -1025,6 +1134,14 @@ gchar * get_string_from_origin (space_group * spg)
   return str;
 }
 
+/*
+*  int get_setting_from_hm (gchar * hmk, int end)
+*
+*  Usage: Getting the space group parameters using the HM Key
+*
+*  gchar * hmk : the HM key
+*  int end     : Use origin (number of possible SP origins), or not (-1)
+*/
 int get_setting_from_hm (gchar * hmk, int end)
 {
   int i, j;
@@ -1054,7 +1171,7 @@ int get_setting_from_hm (gchar * hmk, int end)
       }
       g_free (str);
     }
-    if (this_reader -> lattice.sp_group -> id > 2 && this_reader -> lattice.sp_group -> id< 16)
+    if (this_reader -> lattice.sp_group -> id > 2 && this_reader -> lattice.sp_group -> id < 16)
     {
       // This is a way around the way this familly of SG is often written,
       // using incomplete or inexact hmk keyword, ex: P21/a instead of P121/a1
@@ -1105,6 +1222,14 @@ int get_setting_from_hm (gchar * hmk, int end)
   }
 }
 
+/*
+*  int group_info_from_hm_key (int spg, gchar * key_hm)
+*
+*  Usage: get the space group information using the HM key from the CIF file
+*
+*  int spg        : Space group
+*  gchar * key_hm : HM key
+*/
 int group_info_from_hm_key (int spg, gchar * key_hm)
 {
   int i, j;
@@ -1180,6 +1305,13 @@ int group_info_from_hm_key (int spg, gchar * key_hm)
   return (spg) ? (j) ? j : spg : j;
 }
 
+/*
+*  gboolean cif_get_cell_data (int linec)
+*
+*  Usage: get the cell data from the CIF file
+*
+*  int linec : Total number of lines
+*/
 gboolean cif_get_cell_data (int linec)
 {
   gchar * cellkeys[3] = {"length_a", "length_b", "length_c"};
@@ -1218,6 +1350,13 @@ gboolean cif_get_cell_data (int linec)
   return TRUE;
 }
 
+/*
+*  gboolean cif_get_space_group (int linec)
+*
+*  Usage: get the space group from the CIF file
+*
+*  int linec : Total number of lines
+*/
 gboolean cif_get_space_group (int linec)
 {
   gchar * symkey[2] = {"int_tables_number", "group_it_number"};
@@ -1433,6 +1572,13 @@ gboolean cif_get_space_group (int linec)
   return res;
 }
 
+/*
+*  int open_cif_file (int linec)
+*
+*  Usage: open CIF file
+*
+*  int linec : Total number of lines
+*/
 int open_cif_file (int linec)
 {
   int res;

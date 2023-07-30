@@ -11,6 +11,17 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'draw.c'
+*
+*  Contains:
+*
+
+- The curve draw main instructions
+
+*
+*/
+
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <stdlib.h>
@@ -20,6 +31,49 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "global.h"
 #include "curve.h"
 
+/*
+*  void draw_curve (cairo_t * cr,
+                    int cid,
+                    int rid,
+                    struct project * this_proj,
+                    int points,
+                    ColRGBA withcolor,
+                    int xscale,
+                    int yscale,
+                    int asp,
+                    int vdash,
+                    double thick,
+                    int glyp,
+                    double gize,
+                    int freq,
+                    double hwidth,
+                    double hopac,
+                    int hpos,
+                   int extra,
+                    int pid)
+*
+*  Usage:
+*
+*  cairo_t * cr               :
+*  int cid                    :
+*  int rid                    :
+*  struct project * this_proj : the target project
+*  int points                 :
+*  ColRGBA withcolor          :
+*  int xscale                 :
+*  int yscale                 :
+*  int asp                    :
+*  int vdash                  :
+*  double thick               :
+*  int glyp                   :
+*  double gize                :
+*  int freq                   :
+*  double hwidth              :
+*  double hopac               :
+*  int hpos                   :
+*  int extra                  :
+*  int pid                    :
+*/
 void draw_curve (cairo_t * cr,
                  int cid,
                  int rid,

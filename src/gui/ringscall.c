@@ -11,6 +11,33 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'ringscall.c'
+*
+*  Contains:
+*
+
+ - The callbacks for the ring statistics calculation dialog
+
+*
+*  List of subroutines:
+
+  void initrng ();
+  void update_rings_menus (glwin * view);
+  void update_rings_view (struct project * this_proj, int c);
+  void clean_rings_data (int rid, glwin * view);
+  void save_rings_data_ (int * taille,
+                         double ectrc[* taille],
+                         double ectpna[* taille],
+                         double ectmax[* taille],
+                         double ectmin[* taille],
+                         double * rpstep, double * ectrpst,
+                         double * nampat, double * ectampat);
+
+  G_MODULE_EXPORT void on_calc_rings_released (GtkWidget * widg, gpointer data);
+
+*/
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -38,7 +65,12 @@ extern G_MODULE_EXPORT void show_hide_poly (GSimpleAction * action, GVariant * p
 #endif
 gboolean toggled_rings;
 
-void initrng (int s)
+/*
+*  void initrng ()
+*
+*  Usage: initialize the curve widgets for the ring statistics
+*/
+void initrng ()
 {
   int i, j, k, l;
   char * cp[4] = {"Rc(n)[", "Pn(n)[", "Pmax(n)[", "Pmin(n)["};
@@ -61,15 +93,20 @@ void initrng (int s)
       }
     }
   }
-  addcurwidgets (activep, RI, s);
+  addcurwidgets (activep, RI, 0);
   active_project -> initok[RI] = TRUE;
 }
 
+#ifdef GTK3
+/*
+*  void update_rings_menus (glwin * view)
+*
+*  Usage: update the ring(s) menu for the glview
+*
+*  glwin * view : the glview
+*/
 void update_rings_menus (glwin * view)
 {
-#ifdef GTK4
-  update_menu_bar (view);
-#else
   int i, j;
   GtkWidget * menu;
   for (i=0; i<2; i++)
@@ -86,13 +123,21 @@ void update_rings_menus (glwin * view)
         }
       }
     }
-    menu_item_set_submenu (view -> ogl_rings[i*6], prep_rings_menu (view, i*6, get_project_by_id(view->proj) -> rsearch[0]+1));
+    gtk_menu_item_set_submenu ((GtkMenuItem *)view -> ogl_rings[i*6], prep_rings_menu (view, i*6, get_project_by_id(view->proj) -> rsearch[0]+1));
     show_the_widgets (view -> ogl_rings[i*6]);
     widget_set_sensitive (view -> ogl_rings[i*6], view -> rings);
   }
-#endif
 }
+#endif
 
+/*
+*  void update_rings_view (struct project * this_proj, int c)
+*
+*  Usage: update the text view for ring statistics
+*
+*  struct project * this_proj : the target project
+*  int c                      : the ring type
+*/
 void update_rings_view (struct project * this_proj, int c)
 {
   int i, j, k;
@@ -310,6 +355,14 @@ void update_rings_view (struct project * this_proj, int c)
   }
 }
 
+/*
+*  void clean_rings_data (int rid, glwin * view)
+*
+*  Usage: clean a ring type data for a glview
+*
+*  int rid      : Rings type
+*  glwin * view : the glview
+*/
 void clean_rings_data (int rid, glwin * view)
 {
   struct project * this_proj = get_project_by_id(view -> proj);
@@ -325,7 +378,7 @@ void clean_rings_data (int rid, glwin * view)
       {
         if (view -> anim -> last -> img -> show_poly[4+rid][i])
         {
-          check_menu_item_set_active ((gpointer)view -> ogl_poly[0][4+rid][i], FALSE);
+          gtk_check_menu_item_set_active ((GtkCheckMenuItem *)view -> ogl_poly[0][4+rid][i], FALSE);
           show_hide_poly (view -> ogl_poly[0][4+rid][i], & view -> gcid[4+rid][i][4+rid]);
         }
       }
@@ -367,6 +420,14 @@ void clean_rings_data (int rid, glwin * view)
 #endif
 }
 
+/*
+*  G_MODULE_EXPORT void on_calc_rings_released (GtkWidget * widg, gpointer data)
+*
+*  Usage: compute ring statistics
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void on_calc_rings_released (GtkWidget * widg, gpointer data)
 {
   int search = active_project -> rsearch[0];
@@ -387,7 +448,7 @@ G_MODULE_EXPORT void on_calc_rings_released (GtkWidget * widg, gpointer data)
   //if (active_project -> steps > 1) statusb = 1;
   if (! active_project -> initok[RI])
   {
-    initrng (0);
+    initrng ();
   }
   active_project -> rsparam[search][5] = 0;
   if (! active_project -> dmtx || active_project -> rsparam[search][4] || (search > 2 && active_cell -> pbc))
@@ -474,11 +535,36 @@ G_MODULE_EXPORT void on_calc_rings_released (GtkWidget * widg, gpointer data)
   }
   gtk_widget_show (curvetoolbox);
   clean_coord_window (active_project);
+#ifdef GTK3
   update_rings_menus (active_glwin);
+#else
+  update_menu_bar (active_glwin);
+#endif
   fill_tool_model ();
   if (search > 2 && active_cell -> pbc) active_project -> dmtx = FALSE;
 }
 
+/*
+*  void save_rings_data_ (int * taille,
+                          double ectrc[* taille],
+                          double ectpna[* taille],
+                          double ectmax[* taille],
+                          double ectmin[* taille],
+                          double * rpstep, double * ectrpst,
+                          double * nampat, double * ectampat)
+*
+*  Usage : get rings statistics results form Fortran90
+*
+*  int * taille            : Number of data points
+*  double ectrc[* taille]  : RC
+*  double ectpna[* taille] : PN
+*  double ectmax[* taille] : PMAX
+*  double ectmin[* taille] : PMIN
+*  double * rpstep         : Ring(s) per MD step
+*  double * ectrpst        : Standard deviation
+*  double * nampat         : Rings not found
+*  double * ectampat       : Standard deviation
+*/
 void save_rings_data_ (int * taille,
                        double ectrc[* taille],
                        double ectpna[* taille],

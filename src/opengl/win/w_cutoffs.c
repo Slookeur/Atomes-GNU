@@ -11,6 +11,26 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'w_cutoffs.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  void update_cutoffs (struct project * this_proj);
+  void cut_box (struct project * this_proj, GtkWidget * vbox);
+
+  G_MODULE_EXPORT void set_cut (GtkEntry * res, gpointer data);
+  G_MODULE_EXPORT void run_window_cuts (GtkDialog * win, gint response_id, gpointer data);
+  G_MODULE_EXPORT void window_cuts (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void window_cuts (GtkWidget * widg, gpointer data);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "project.h"
@@ -20,6 +40,13 @@ If not, see <https://www.gnu.org/licenses/> */
 extern gchar * label_cutrab (struct project * this_proj, glwin * view, int id);
 double * tmpcut;
 
+/*
+*  void update_cutoffs (struct project * this_proj)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*/
 void update_cutoffs (struct project * this_proj)
 {
   int i, j, k;
@@ -56,13 +83,17 @@ void update_cutoffs (struct project * this_proj)
       for (j=0; j<5; j++)
       {
         clean_rings_data (j, this_proj -> modelgl);
+#ifdef GTK3
         update_rings_menus (this_proj -> modelgl);
+#endif
       }
     }
     if (this_proj -> modelgl -> chains)
     {
       clean_chains_data (this_proj -> modelgl);
+#ifdef GTK3
       update_chains_menus (this_proj -> modelgl);
+#endif
     }
     bonds_update = 1;
     frag_update = (this_proj -> natomes > ATOM_LIMIT) ? 0 : 1;
@@ -83,6 +114,14 @@ void update_cutoffs (struct project * this_proj)
   }
 }
 
+/*
+*  G_MODULE_EXPORT void set_cut (GtkEntry * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * res : the GtkEntry sending the signal
+*  gpointer data  : the associated data pointer
+*/
 G_MODULE_EXPORT void set_cut (GtkEntry * res, gpointer data)
 {
   const gchar * m;
@@ -96,6 +135,14 @@ G_MODULE_EXPORT void set_cut (GtkEntry * res, gpointer data)
   update_entry_double (res, tmpcut[id]);
 }
 
+/*
+*  void cut_box (struct project * this_proj, GtkWidget * vbox)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  GtkWidget * vbox           : the GtkWidget sending the signal
+*/
 void cut_box (struct project * this_proj, GtkWidget * vbox)
 {
   int i, j, k;
@@ -154,6 +201,15 @@ void cut_box (struct project * this_proj, GtkWidget * vbox)
   add_box_child_start (GTK_ORIENTATION_VERTICAL, vbox, markup_label("<b>Cutoff(s) must be &#8805; 0.5 &#xC5;</b>", -1, -1, 0.5, 0.5), FALSE, FALSE, 10);
 }
 
+/*
+*  G_MODULE_EXPORT void run_window_cuts (GtkDialog * win, gint response_id, gpointer data)
+*
+*  Usage:
+*
+*  GtkDialog * win  : the GtkDialog sending the signal
+*  gint response_id :
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void run_window_cuts (GtkDialog * win, gint response_id, gpointer data)
 {
   if (response_id == GTK_RESPONSE_APPLY)
@@ -185,8 +241,25 @@ G_MODULE_EXPORT void run_window_cuts (GtkDialog * win, gint response_id, gpointe
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void window_cuts (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void window_cuts (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void window_cuts (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void window_cuts (GtkWidget * widg, gpointer data)
 #endif
 {

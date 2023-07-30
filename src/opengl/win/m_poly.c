@@ -11,6 +11,33 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'm_poly.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  G_MODULE_EXPORT void show_hide_poly (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void show_hide_poly (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void cloned_poly (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void cloned_poly (GtkWidget * widg, gpointer data);
+
+  GtkWidget * mpoly (glwin * view, int jd, int id);
+  GtkWidget * menupoly (glwin * view, int jd, int id, int hd, gchar * poln);
+  GtkWidget * menu_poly (glwin * view, int id);
+
+  GMenu * menu_show_coord_poly (glwin * view, int popm, int id);
+  GMenu * menu_show_rings_poly (glwin * view, int popm, int id);
+  GMenu * add_menu_poly (glwin * view, int popm, int aid);
+  GMenu * menu_poly_rings (glwin * view, int popm);
+  GMenu * menu_poly (glwin * view, int popm);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "glview.h"
@@ -21,13 +48,31 @@ extern G_MODULE_EXPORT void coord_properties (GtkWidget * widg, gpointer data);
 #ifdef GTK4
 extern G_MODULE_EXPORT void to_coord_properties (GSimpleAction * action, GVariant * parameter, gpointer data);
 
+/*
+*  G_MODULE_EXPORT void show_hide_poly (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_poly (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void show_hide_poly (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_poly (GtkWidget * widg, gpointer data)
 #endif
 {
   qint * obj = (qint *)data;
   int i, j;
+  gboolean doit = TRUE;
   gboolean show;
   struct project * this_proj = get_project_by_id(obj -> a);
   int s = obj -> b;
@@ -50,13 +95,24 @@ G_MODULE_EXPORT void show_hide_poly (GtkWidget * widg, gpointer data)
   {
     state = g_action_get_state (G_ACTION (action));
     show = ! g_variant_get_boolean (state);
+    const gchar * poly = g_action_get_name ((GAction *)action);
+    int lgt = strlen (poly);
+    gchar * name = g_strdup_printf ("%c%c", poly[lgt-2], poly[lgt-1]);
+    if (g_strcmp0(name, ".1") == 0)
+    {
+      g_free (name);
+      name = g_strdup_printf ("%.*s.0", lgt-2, poly);
+      g_action_group_activate_action ((GActionGroup *)this_proj -> modelgl -> action_group, (const gchar *)name, NULL);
+      g_free (name);
+      doit = FALSE;
+    }
   }
   else
   {
     show = this_proj -> modelgl -> anim -> last -> img -> show_poly[g][j];
   }
 #else
-  show = check_menu_item_get_active ((gpointer)widg);
+  show = gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg);
 #endif
 #ifdef GTK3
   // GTK3 Menu Action To Check
@@ -68,55 +124,97 @@ G_MODULE_EXPORT void show_hide_poly (GtkWidget * widg, gpointer data)
       {
         if (GTK_IS_WIDGET(this_proj -> modelgl -> ogl_poly[i][g][j]))
         {
-          if (check_menu_item_get_active ((gpointer)this_proj -> modelgl -> ogl_poly[i][g][j]) != show)
+          if (gtk_check_menu_item_get_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_poly[i][g][j]) != show)
           {
-            check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_poly[i][g][j], show);
+            gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_poly[i][g][j], show);
           }
         }
       }
     }
   }
 #endif
-  this_proj -> modelgl -> anim -> last -> img -> show_poly[g][j] = show;
-  int shaders[2] = {POLYS, RINGS};
-  re_create_md_shaders (2, shaders, this_proj);
-  update (this_proj -> modelgl);
-#ifdef GTK4
-  if (action)
+  if (doit)
   {
-    g_action_change_state (G_ACTION (action), g_variant_new_boolean (show));
-    g_variant_unref (state);
-  }
+    this_proj -> modelgl -> anim -> last -> img -> show_poly[g][j] = show;
+    int shaders[2] = {POLYS, RINGS};
+    re_create_md_shaders (2, shaders, this_proj);
+    update (this_proj -> modelgl);
+#ifdef GTK4
+    if (action)
+    {
+      g_action_change_state (G_ACTION (action), g_variant_new_boolean (show));
+      g_variant_unref (state);
+    }
 #endif
+  }
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void cloned_poly (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void cloned_poly (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void cloned_poly (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void cloned_poly (GtkWidget * widg, gpointer data)
 #endif
 {
   glwin * view = (glwin *)data;
+  gboolean doit = TRUE;
   gboolean show;
 #ifdef GTK4
-  GVariant * state = g_action_get_state (G_ACTION (action));
-  show = ! g_variant_get_boolean (state);
-#else
-  show = check_menu_item_get_active ((gpointer)widg);
-  if (widg != view -> ogl_clones[5]) check_menu_item_set_active ((gpointer)view -> ogl_clones[5], show);
+  const gchar * name = g_action_get_name ((GAction *)action);
+  if (g_strcmp0(name, "set-cloned-poly.1.1") == 0)
+  {
+    g_action_group_activate_action ((GActionGroup *)view -> action_group, "set-cloned-poly.0.0", NULL);
+    doit = FALSE;
+  }
 #endif
-  view -> anim -> last -> img -> cloned_poly = show;
-  int shaders[2] = {POLYS, RINGS};
-  re_create_md_shaders (2, shaders, get_project_by_id(view -> proj));
-  update (view);
+  if (doit)
+  {
 #ifdef GTK4
-  g_action_change_state (G_ACTION (action), g_variant_new_boolean (show));
-  g_variant_unref (state);
+    GVariant * state;
+    state = g_action_get_state (G_ACTION (action));
+    show = ! g_variant_get_boolean (state);
+#else
+    show = gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg);
+    if (widg != view -> ogl_clones[5]) gtk_check_menu_item_set_active ((GtkCheckMenuItem *)view -> ogl_clones[5], show);
 #endif
+    view -> anim -> last -> img -> cloned_poly = show;
+    int shaders[2] = {POLYS, RINGS};
+    re_create_md_shaders (2, shaders, get_project_by_id(view -> proj));
+    update (view);
+#ifdef GTK4
+    g_action_change_state (G_ACTION (action), g_variant_new_boolean (show));
+    g_variant_unref (state);
+#endif
+  }
 }
 
 
 #ifdef GTK3
+/*
+*  GtkWidget * mpoly (glwin * view, int jd, int id)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int jd       : main app (0) or popup (1)
+*  int id       :
+*/
 GtkWidget * mpoly (glwin * view, int jd, int id)
 {
   int i, j;
@@ -126,9 +224,9 @@ GtkWidget * mpoly (glwin * view, int jd, int id)
   {
     GtkWidget * pshow = create_menu_item (FALSE, "Show/Hide");
     GtkWidget * widg;
-    add_menu_child (menup, pshow);
+    gtk_menu_shell_append ((GtkMenuShell *)menup, pshow);
     GtkWidget * menus = gtk_menu_new ();
-    menu_item_set_submenu (pshow, menus);
+    gtk_menu_item_set_submenu ((GtkMenuItem *)pshow, menus);
     j = (id < 2) ? this_proj -> nspec : this_proj -> coord -> totcoord[id];
     for (i=0; i<j; i++)
     {
@@ -142,7 +240,7 @@ GtkWidget * mpoly (glwin * view, int jd, int id)
             g_object_ref (view -> oglmpv[jd][id][i]);
             gtk_container_remove (GTK_CONTAINER(widg), view -> oglmpv[jd][id][i]);
           }
-          add_menu_child (menus, view -> oglmpv[jd][id][i]);
+          gtk_menu_shell_append ((GtkMenuShell *)menus, view -> oglmpv[jd][id][i]);
         }
       }
       else
@@ -155,7 +253,7 @@ GtkWidget * mpoly (glwin * view, int jd, int id)
             g_object_ref (view -> ogl_poly[jd][id][i]);
             gtk_container_remove (GTK_CONTAINER(widg), view -> ogl_poly[jd][id][i]);
           }
-          add_menu_child (menus, view -> ogl_poly[jd][id][i]);
+          gtk_menu_shell_append ((GtkMenuShell *)menus, view -> ogl_poly[jd][id][i]);
         }
       }
     }
@@ -164,6 +262,17 @@ GtkWidget * mpoly (glwin * view, int jd, int id)
   return menup;
 }
 
+/*
+*  GtkWidget * menupoly (glwin * view, int jd, int id, int hd, gchar * poln)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int jd       : main app (0) or popup (1)
+*  int id       :
+*  int hd       :
+*  gchar * poln :
+*/
 GtkWidget * menupoly (glwin * view, int jd, int id, int hd, gchar * poln)
 {
   int i;
@@ -180,14 +289,14 @@ GtkWidget * menupoly (glwin * view, int jd, int id, int hd, gchar * poln)
           if (jd == 0)
           {
             view -> ogl_rings[7+i] = create_menu_item (TRUE, rings_type[i]);
-            menu_item_set_submenu (view -> ogl_rings[7+i], mpoly(view, jd, 4+i));
-            add_menu_child (menui, view -> ogl_rings[7+i]);
+            gtk_menu_item_set_submenu ((GtkMenuItem *)view -> ogl_rings[7+i], mpoly(view, jd, 4+i));
+            gtk_menu_shell_append ((GtkMenuShell *)menui, view -> ogl_rings[7+i]);
           }
           else
           {
             item = create_menu_item (TRUE, rings_type[i]);
-            add_menu_child (menui, item);
-            menu_item_set_submenu (item, mpoly(view, jd, 4+i));
+            gtk_menu_shell_append ((GtkMenuShell *)menui, item);
+            gtk_menu_item_set_submenu ((GtkMenuItem *)item, mpoly(view, jd, 4+i));
           }
         }
       }
@@ -197,27 +306,35 @@ GtkWidget * menupoly (glwin * view, int jd, int id, int hd, gchar * poln)
   else
   {
     GtkWidget * poly = create_menu_item (TRUE, poln);
-    menu_item_set_submenu (poly, mpoly (view, jd, id));
+    gtk_menu_item_set_submenu ((GtkMenuItem *)poly, mpoly (view, jd, id));
     return poly;
   }
 }
 
+/*
+*  GtkWidget * menu_poly (glwin * view, int id)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int id       : main app (0) or popup (1)
+*/
 GtkWidget * menu_poly (glwin * view, int id)
 {
   GtkWidget * menup = gtk_menu_new ();
-  add_menu_child (menup, menupoly(view, id, 0, 0, "Total Coordination(s)"));
-  add_menu_child (menup, menupoly(view, id, 1, 0, "Partial Coordination(s)"));
+  gtk_menu_shell_append ((GtkMenuShell *)menup, menupoly(view, id, 0, 0, "Total Coordination(s)"));
+  gtk_menu_shell_append ((GtkMenuShell *)menup, menupoly(view, id, 1, 0, "Partial Coordination(s)"));
   if (id == 0)
   {
-    add_menu_child (menup, view -> ogl_rings[6]);
+    gtk_menu_shell_append ((GtkMenuShell *)menup, view -> ogl_rings[6]);
     widget_set_sensitive (view -> ogl_rings[6], view -> rings);
     view -> ogl_clones[5] = gtk3_menu_item (menup, "Cloned Polyhedra", IMG_NONE, NULL, G_CALLBACK(cloned_poly), view, FALSE, 0, 0, TRUE, FALSE, view -> anim -> last -> img -> cloned_poly);
   }
   else
   {
     GtkWidget * item = create_menu_item (FALSE, "Ring(s)");
-    menu_item_set_submenu (item, menupoly(view, id, 2, 0, NULL));
-    add_menu_child (menup, item);
+    gtk_menu_item_set_submenu ((GtkMenuItem *)item, menupoly(view, id, 2, 0, NULL));
+    gtk_menu_shell_append ((GtkMenuShell *)menup, item);
     widget_set_sensitive (item, view -> rings);
     GtkWidget * cloned_p =  gtk3_menu_item (menup, "Cloned Polyhedra", IMG_NONE, NULL, G_CALLBACK(cloned_poly), view, FALSE, 0, 0, TRUE, FALSE, view -> anim -> last -> img -> cloned_poly);
     widget_set_sensitive ((cloned_p), get_project_by_id(view -> proj) -> cell.pbc);
@@ -225,7 +342,16 @@ GtkWidget * menu_poly (glwin * view, int id)
   return menup;
 }
 #else
-GMenu * menu_show_coord_poly (glwin * view, int id)
+/*
+*  GMenu * menu_show_coord_poly (glwin * view, int popm, int id)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*  int id       :
+*/
+GMenu * menu_show_coord_poly (glwin * view, int popm, int id)
 {
   GMenu * menu = g_menu_new ();
   GMenu * menus;
@@ -254,21 +380,30 @@ GMenu * menu_show_coord_poly (glwin * view, int id)
           {
             stra = g_strdup_printf ("%d", this_proj -> coord -> geolist[id][i][k]);
           }
-          strb = g_strdup_printf ("%s-%d-0", stra, id);
-          append_opengl_item (view, menus, stra, strb, k+j, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(show_hide_poly), & view -> gcid[id][k+j][id],
+          strb = g_strdup_printf ("%s-%d-p", stra, id);
+          append_opengl_item (view, menus, stra, strb, popm, k+j, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(show_hide_poly), & view -> gcid[id][k+j][id],
                               TRUE, view -> anim -> last -> img -> show_poly[id][k+j], FALSE, TRUE);
           g_free (stra);
           g_free (strb);
         }
       }
     }
-    g_menu_append_submenu (menu, this_proj -> chemistry -> label[i], (GMenuModel*)menus);
+    append_submenu (menu, this_proj -> chemistry -> label[i], menus);
     g_object_unref (menus);
   }
   return menu;
 }
 
-GMenu * menu_show_rings_poly (glwin * view, int id)
+/*
+*  GMenu * menu_show_rings_poly (glwin * view, int popm, int id)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*  int id       :
+*/
+GMenu * menu_show_rings_poly (glwin * view, int popm, int id)
 {
   GMenu * menu = g_menu_new ();
   struct project * this_proj = get_project_by_id (view -> proj);
@@ -279,8 +414,8 @@ GMenu * menu_show_rings_poly (glwin * view, int id)
     for (i=0; i<this_proj -> coord -> totcoord[id]; i++)
     {
       stra = g_strdup_printf ("%d", this_proj -> coord -> geolist[id][0][i]);
-      strb = g_strdup_printf ("%s-0", stra);
-      append_opengl_item (view, menu, stra, strb, i, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(show_hide_poly), & view -> gcid[id][i][id],
+      strb = g_strdup_printf ("%s-p", stra);
+      append_opengl_item (view, menu, stra, strb, popm, i, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(show_hide_poly), & view -> gcid[id][i][id],
                           TRUE, view -> anim -> last -> img -> show_poly[id][i], FALSE, TRUE);
       g_free (stra);
       g_free (strb);
@@ -289,23 +424,40 @@ GMenu * menu_show_rings_poly (glwin * view, int id)
   return menu;
 }
 
-GMenu * add_menu_poly (glwin * view, int id)
+/*
+*  GMenu * add_menu_poly (glwin * view, int popm, int aid)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*  int aid      :
+*/
+GMenu * add_menu_poly (glwin * view, int popm, int aid)
 {
   GMenu * menu = g_menu_new ();
-  if (id < 2)
+  if (aid < 2)
   {
-    g_menu_append_submenu (menu, "Show/Hide", (GMenuModel*)menu_show_coord_poly (view, id));
+    append_submenu (menu, "Show/Hide", menu_show_coord_poly (view, popm, aid));
   }
   else
   {
-    g_menu_append_submenu (menu, "Show/Hide", (GMenuModel*)menu_show_rings_poly (view, id));
+    append_submenu (menu, "Show/Hide", menu_show_rings_poly (view, popm, aid));
   }
-  append_opengl_item (view, menu, "Advanced", "adv-p", id, NULL, IMG_STOCK, (gpointer)DPROPERTIES, FALSE,
-                      G_CALLBACK(to_coord_properties), & view -> colorp[id][0], FALSE, FALSE, FALSE, TRUE);
+  append_opengl_item (view, menu, "Advanced", "adv-p", popm, aid, NULL, IMG_STOCK, (gpointer)DPROPERTIES, FALSE,
+                      G_CALLBACK(to_coord_properties), & view -> colorp[aid][0], FALSE, FALSE, FALSE, TRUE);
   return menu;
 }
 
-GMenu * menu_poly_rings (glwin * view)
+/*
+*  GMenu * menu_poly_rings (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*/
+GMenu * menu_poly_rings (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
   int i;
@@ -313,26 +465,34 @@ GMenu * menu_poly_rings (glwin * view)
   {
     if (view -> ring_max[i])
     {
-       g_menu_append_submenu (menu, rings_type[i], (GMenuModel*)add_menu_poly(view, 4+i));
+       append_submenu (menu, rings_type[i], add_menu_poly(view, popm, 4+i));
     }
   }
   return menu;
 }
 
-GMenu * menu_poly (glwin * view)
+/*
+*  GMenu * menu_poly (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*/
+GMenu * menu_poly (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
-  g_menu_append_submenu (menu, "Total Coordination(s)", (GMenuModel*)add_menu_poly (view, 0));
-  g_menu_append_submenu (menu, "Partial Coordination(s)", (GMenuModel*)add_menu_poly (view, 1));
+  append_submenu (menu, "Total Coordination(s)", add_menu_poly (view, popm, 0));
+  append_submenu (menu, "Partial Coordination(s)", add_menu_poly (view, popm, 1));
   if (view -> rings)
   {
-    g_menu_append_submenu (menu, "Rings(s)", (GMenuModel*)menu_poly_rings (view));
+    append_submenu (menu, "Rings(s)", menu_poly_rings (view, popm));
   }
   else
   {
     append_menu_item (menu, "Ring(s)", "None", NULL, NULL, IMG_NONE, NULL, FALSE, FALSE, FALSE, NULL);
   }
-  append_opengl_item (view, menu, "Cloned Polyhedra", "cloned-poly", 0, NULL, IMG_NONE, NULL, FALSE,
+  append_opengl_item (view, menu, "Cloned Polyhedra", "cloned-poly", popm, popm, NULL, IMG_NONE, NULL, FALSE,
                       G_CALLBACK(cloned_poly), view, TRUE, view -> anim -> last -> img -> cloned_poly, FALSE, view -> allbonds[1]);
   return menu;
 }

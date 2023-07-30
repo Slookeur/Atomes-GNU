@@ -11,6 +11,13 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This header file: 'glview.h'
+*
+*  Contains:
+
+*/
+
 #ifndef GL_VIEW_H_
 #define GL_VIEW_H_
 
@@ -219,7 +226,7 @@ extern void at_shift (struct atom * at, float * shift);
 extern void at_unshift (struct atom * at, float * shift);
 extern int check_label_numbers (struct project * this_proj, int types);
 
-extern mat4_t create_axis_matrices ();
+extern mat4_t create_axis_matrices (int type);
 extern mat4_t create_label_matrices ();
 
 extern int nbs, nbl, nba;

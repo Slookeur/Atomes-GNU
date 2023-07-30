@@ -11,11 +11,35 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'w_encode.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  void clean_animation (glwin * view);
+  void set_sensitive_widgets (gboolean video, int i);
+  void window_encode (glwin * view, gboolean video);
+
+  G_MODULE_EXPORT void set_video_frames (GtkEntry * res, gpointer data);
+  G_MODULE_EXPORT void set_video_extra_frames (GtkEntry * res, gpointer data);
+  G_MODULE_EXPORT void set_video_res (GtkEntry * res, gpointer data);
+  G_MODULE_EXPORT void set_video_codec (GtkComboBox *ComboBoxGtk);
+  G_MODULE_EXPORT void set_video_opengl_spin (GtkSpinButton * res, gpointer data);
+  G_MODULE_EXPORT void set_video_bitrate (GtkEntry * res, gpointer data);
+  G_MODULE_EXPORT void set_image_format (GtkComboBox * box, gpointer data);
+  G_MODULE_EXPORT void run_window_encode (GtkDialog * win ,gint response_id, gpointer data);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "glview.h"
 #include "movie.h"
-#include "valid.h"
 
 int video_res[2];
 int framesec;
@@ -28,6 +52,14 @@ extern char * codec_name[VIDEO_CODECS];
 extern char * image_name[IMAGE_FORMATS];
 extern gboolean spin (gpointer data);
 
+/*
+*  G_MODULE_EXPORT void set_video_frames (GtkEntry * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * res : the GtkEntry sending the signal
+*  gpointer data  : the associated data pointer
+*/
 G_MODULE_EXPORT void set_video_frames (GtkEntry * res, gpointer data)
 {
   const gchar * n;
@@ -41,6 +73,14 @@ G_MODULE_EXPORT void set_video_frames (GtkEntry * res, gpointer data)
   update_entry_int (res, framesec);
 }
 
+/*
+*  G_MODULE_EXPORT void set_video_extra_frames (GtkEntry * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * res : the GtkEntry sending the signal
+*  gpointer data  : the associated data pointer
+*/
 G_MODULE_EXPORT void set_video_extra_frames (GtkEntry * res, gpointer data)
 {
   const gchar * n;
@@ -54,6 +94,14 @@ G_MODULE_EXPORT void set_video_extra_frames (GtkEntry * res, gpointer data)
   update_entry_int (res, extraframes);
 }
 
+/*
+*  G_MODULE_EXPORT void set_video_res (GtkEntry * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * res : the GtkEntry sending the signal
+*  gpointer data  : the associated data pointer
+*/
 G_MODULE_EXPORT void set_video_res (GtkEntry * res, gpointer data)
 {
   const gchar * n;
@@ -68,11 +116,26 @@ G_MODULE_EXPORT void set_video_res (GtkEntry * res, gpointer data)
   update_entry_int (res, video_res[id]);
 }
 
+/*
+*  G_MODULE_EXPORT void set_video_codec (GtkComboBox *ComboBoxGtk)
+*
+*  Usage:
+*
+*  GtkComboBox *ComboBoxGtk : the GtkComboBox sending the signal
+*/
 G_MODULE_EXPORT void set_video_codec (GtkComboBox *ComboBoxGtk)
 {
   codec = gtk_combo_box_get_active (ComboBoxGtk);
 }
 
+/*
+*  G_MODULE_EXPORT void set_video_opengl_spin (GtkSpinButton * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkSpinButton * res :
+*  gpointer data       : the associated data pointer
+*/
 G_MODULE_EXPORT void set_video_opengl_spin (GtkSpinButton * res, gpointer data)
 {
   qual = gtk_spin_button_get_value_as_int(res);
@@ -83,6 +146,14 @@ G_MODULE_EXPORT void set_video_opengl_spin (GtkSpinButton * res, gpointer data)
   update_entry_int (GTK_ENTRY(res), oglquality);
 }
 
+/*
+*  G_MODULE_EXPORT void set_video_bitrate (GtkEntry * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * res : the GtkEntry sending the signal
+*  gpointer data  : the associated data pointer
+*/
 G_MODULE_EXPORT void set_video_bitrate (GtkEntry * res, gpointer data)
 {
   const gchar * n;
@@ -96,6 +167,13 @@ G_MODULE_EXPORT void set_video_bitrate (GtkEntry * res, gpointer data)
   update_entry_int (res, bitrate);
 }
 
+/*
+*  void clean_animation (glwin * view)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*/
 void clean_animation (glwin * view)
 {
   int i;
@@ -125,6 +203,14 @@ GtkWidget * resb;
 GtkWidget * res[2];
 GtkWidget * cod;
 
+/*
+*  void set_sensitive_widgets (gboolean video, int i)
+*
+*  Usage:
+*
+*  gboolean video :
+*  int i          :
+*/
 void set_sensitive_widgets (gboolean video, int i)
 {
   if (video)
@@ -140,6 +226,14 @@ void set_sensitive_widgets (gboolean video, int i)
 
 GtkWidget * form;
 
+/*
+*  G_MODULE_EXPORT void set_image_format (GtkComboBox * box, gpointer data)
+*
+*  Usage:
+*
+*  GtkComboBox * box : the GtkComboBox sending the signal
+*  gpointer data     : the associated data pointer
+*/
 G_MODULE_EXPORT void set_image_format (GtkComboBox * box, gpointer data)
 {
   codec = gtk_combo_box_get_active (box);
@@ -163,17 +257,20 @@ G_MODULE_EXPORT void set_image_format (GtkComboBox * box, gpointer data)
 GtkWidget * encoding_pb;
 gboolean encode_video;
 
+/*
+*  G_MODULE_EXPORT void run_window_encode (GtkDialog * win ,gint response_id, gpointer data)
+*
+*  Usage:
+*
+*  GtkDialog * win  : the GtkDialog sending the signal
+*  GtkDialog * win  : the GtkDialog sending the signal
+*  GtkDialog * win  : the GtkDialog sending the signal
+*/
 G_MODULE_EXPORT void run_window_encode (GtkDialog * win ,gint response_id, gpointer data)
 {
   glwin * view = (glwin *)data;
   if (response_id == GTK_RESPONSE_APPLY)
   {
-    if (! registered_atomes)
-    {
-      show_warning ("Saving features are only available in the registered version of Atomes", MainWindow);
-      registered_atomes = validate ();
-      if (! registered_atomes) goto end;
-    }
     set_sensitive_widgets (encode_video, 0);
     video_options * vopts = g_malloc0(sizeof*vopts);
     vopts -> proj = view -> proj;
@@ -195,7 +292,6 @@ G_MODULE_EXPORT void run_window_encode (GtkDialog * win ,gint response_id, gpoin
     g_free (vopts -> video_res);
     g_free (vopts);
     set_sensitive_widgets (encode_video, 1);
-    end:;
   }
   else
   {
@@ -203,6 +299,14 @@ G_MODULE_EXPORT void run_window_encode (GtkDialog * win ,gint response_id, gpoin
   }
 }
 
+/*
+*  void window_encode (glwin * view, gboolean video)
+*
+*  Usage:
+*
+*  glwin * view   : the target glwin
+*  gboolean video : video (1) or image (0)
+*/
 void window_encode (glwin * view, gboolean video)
 {
   gchar * str;

@@ -11,6 +11,25 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'update_p.c'
+*
+*  Contains:
+*
+
+ -
+
+*
+*  List of subroutines:
+
+  int update_project ();
+
+  void prep_calc_actions ();
+  void active_project_changed (int id);
+  void opengl_project_changed (int id);
+
+*/
+
 #include "global.h"
 #include "bind.h"
 #include "interface.h"
@@ -18,9 +37,14 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "project.h"
 #include "workspace.h"
 
-extern GtkWidget * work_menu (int id, int p, int c);
+extern GtkWidget * work_menu (int p, int c);
 extern GtkTreeStore * tool_model;
 
+/*
+*  void prep_calc_actions ()
+*
+*  Usage:
+*/
 void prep_calc_actions ()
 {
   int i;
@@ -52,6 +76,11 @@ void prep_calc_actions ()
   }
 }
 
+/*
+*  int update_project ()
+*
+*  Usage: update project: send data to Fortran90, and update calculation interactors
+*/
 int update_project ()
 {
 #ifdef DEBUG
@@ -125,6 +154,13 @@ int update_project ()
   return 1;
 }
 
+/*
+*  void active_project_changed (int id)
+*
+*  Usage: change the active project
+*
+*  int id : the id of the new active project
+*/
 void active_project_changed (int id)
 {
   char * errp = NULL;
@@ -181,14 +217,20 @@ void active_project_changed (int id)
       add_action (edition_actions[2]);
       fill_tool_model ();
       correct_this_window_title (curvetoolbox, g_strdup_printf ("Toolboxes - %s", prepare_for_title(active_project -> name)));
-      correct_this_window_title (MainWindow, (registered_atomes) ? g_strdup_printf ("%s - %s", PACKAGE, prepare_for_title (active_project -> name))
-                                                                 : g_strdup_printf ("%s - %s - demo version", PACKAGE, prepare_for_title (active_project -> name)));
+      correct_this_window_title (MainWindow, g_strdup_printf ("%s - %s", PACKAGE, prepare_for_title (active_project -> name)));
     }
     inactep = activep;
   }
   activew = activep;
 }
 
+/*
+*  void opengl_project_changed (int id)
+*
+*  Usage: change the OpenGL project
+*
+*  int id : the id of the new OpenGL project
+*/
 void opengl_project_changed (int id)
 {
   activev = id;

@@ -11,6 +11,34 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'tab-3.c'
+*
+*  Contains:
+*
+
+ - The 3rd tab of the curve edition dialog
+
+*
+*  List of subroutines:
+
+  void set_legend_box_style (gpointer data);
+
+  G_MODULE_EXPORT void show_data_legend (GtkCheckButton * leg, gpointer data);
+  G_MODULE_EXPORT void show_data_legend (GtkToggleButton * leg, gpointer data);
+  G_MODULE_EXPORT void show_data_legend_box (GtkCheckButton * bleg, gpointer data);
+  G_MODULE_EXPORT void show_data_legend_box (GtkToggleButton * bleg, gpointer data);
+  G_MODULE_EXPORT void set_legend_font (GtkFontButton * fontb, gpointer data);
+  G_MODULE_EXPORT void set_legend_color (GtkColorChooser * colob, gpointer data);
+  G_MODULE_EXPORT void set_legend_pos (GtkEntry * p, gpointer data);
+  G_MODULE_EXPORT void set_legend_box_line (GtkComboBox * fbox, gpointer data);
+  G_MODULE_EXPORT void set_legend_box_thickness (GtkEntry * entry, gpointer data);
+  G_MODULE_EXPORT void set_legend_box_color (GtkColorChooser * colob, gpointer data);
+
+  GtkWidget * create_tab_3 (gpointer data);
+
+*/
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -38,6 +66,16 @@ extern char * ctext[2];
 extern qint dataxe[2];
 extern int a, b, c, d;
 
+/*
+*  cairo_surface_t * draw_legend_surface (int da, double ti, ColRGBA dcol, ColRGBA bcol)
+*
+*  Usage:
+*
+*  int da       :
+*  double ti    :
+*  ColRGBA dcol :
+*  ColRGBA bcol :
+*/
 cairo_surface_t * draw_legend_surface (int da, double ti, ColRGBA dcol, ColRGBA bcol)
 {
   cairo_surface_t * cst;
@@ -63,8 +101,24 @@ cairo_surface_t * draw_legend_surface (int da, double ti, ColRGBA dcol, ColRGBA 
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void show_data_legend (GtkCheckButton * leg, gpointer data)
+*
+*  Usage:
+*
+*  GtkCheckButton * leg : the GtkCheckButton sending the signal
+*  gpointer data        : the associated data pointer
+*/
 G_MODULE_EXPORT void show_data_legend (GtkCheckButton * leg, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void show_data_legend (GtkToggleButton * leg, gpointer data)
+*
+*  Usage:
+*
+*  GtkToggleButton * leg : the GtkToggleButton sending the signal
+*  gpointer data         : the associated data pointer
+*/
 G_MODULE_EXPORT void show_data_legend (GtkToggleButton * leg, gpointer data)
 #endif
 {
@@ -90,6 +144,13 @@ G_MODULE_EXPORT void show_data_legend (GtkToggleButton * leg, gpointer data)
   update_curve (data);
 }
 
+/*
+*  void set_legend_box_style (gpointer data)
+*
+*  Usage:
+*
+*  gpointer data :
+*/
 void set_legend_box_style (gpointer data)
 {
   cairo_surface_t * pix;
@@ -115,8 +176,24 @@ void set_legend_box_style (gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void show_data_legend_box (GtkCheckButton * bleg, gpointer data)
+*
+*  Usage:
+*
+*  GtkCheckButton * bleg : the GtkCheckButton sending the signal
+*  gpointer data         : the associated data pointer
+*/
 G_MODULE_EXPORT void show_data_legend_box (GtkCheckButton * bleg, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void show_data_legend_box (GtkToggleButton * bleg, gpointer data)
+*
+*  Usage:
+*
+*  GtkToggleButton * bleg : the GtkToggleButton sending the signal
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void show_data_legend_box (GtkToggleButton * bleg, gpointer data)
 #endif
 {
@@ -134,6 +211,14 @@ G_MODULE_EXPORT void show_data_legend_box (GtkToggleButton * bleg, gpointer data
   update_curve (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_legend_font (GtkFontButton * fontb, gpointer data)
+*
+*  Usage:
+*
+*  GtkFontButton * fontb :
+*  gpointer data         :
+*/
 G_MODULE_EXPORT void set_legend_font (GtkFontButton * fontb, gpointer data)
 {
   tint * cd = (tint *)data;
@@ -146,6 +231,14 @@ G_MODULE_EXPORT void set_legend_font (GtkFontButton * fontb, gpointer data)
   update_curve (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_legend_color (GtkColorChooser * colob, gpointer data)
+*
+*  Usage:
+*
+*  GtkColorChooser * colob :
+*  gpointer data           :
+*/
 G_MODULE_EXPORT void set_legend_color (GtkColorChooser * colob, gpointer data)
 {
   tint * ad = (tint *)data;
@@ -157,7 +250,15 @@ G_MODULE_EXPORT void set_legend_color (GtkColorChooser * colob, gpointer data)
   set_legend_box_style (data);
 }
 
-G_MODULE_EXPORT void set_legend_pos (GtkEntry * p, gpointer data)
+/*
+*  G_MODULE_EXPORT void set_legend_pos (GtkEntry * entry, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * entry  : the GtkEntry sending the signal
+*  gpointer data     : the associated data pointer
+*/
+G_MODULE_EXPORT void set_legend_pos (GtkEntry * entry, gpointer data)
 {
   const gchar *f;
   double z;
@@ -168,7 +269,7 @@ G_MODULE_EXPORT void set_legend_pos (GtkEntry * p, gpointer data)
   b = ad -> b;
   c = ad -> c;
   d = ad -> d;
-  f = entry_get_text (p);
+  f = entry_get_text (entry);
   z = atof(f);
   struct project * this_proj = get_project_by_id(a);
   if (z >= 0.0 && z <= 1.0)
@@ -179,13 +280,21 @@ G_MODULE_EXPORT void set_legend_pos (GtkEntry * p, gpointer data)
   {
     show_warning (ctext[d], this_proj -> curves[b][c] -> window);
   }
-  update_entry_double (p, this_proj -> curves[b][c] -> legend_pos[d]);
+  update_entry_double (entry, this_proj -> curves[b][c] -> legend_pos[d]);
   cd.a = a;
   cd.b = b;
   cd.c = c;
   update_curve (& cd);
 }
 
+/*
+*  G_MODULE_EXPORT void set_legend_box_line (GtkComboBox * fbox, gpointer data)
+*
+*  Usage:
+*
+*  GtkComboBox * fbox : the GtkComboBox sending the signal
+*  gpointer data      : the associated data pointer
+*/
 G_MODULE_EXPORT void set_legend_box_line (GtkComboBox * fbox, gpointer data)
 {
   tint * cd = (tint *)data;
@@ -197,6 +306,14 @@ G_MODULE_EXPORT void set_legend_box_line (GtkComboBox * fbox, gpointer data)
   set_legend_box_style (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_legend_box_thickness (GtkEntry * entry, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * entry : the GtkEntry sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_legend_box_thickness (GtkEntry * entry, gpointer data)
 {
   tint * cd = (tint *)data;
@@ -212,6 +329,14 @@ G_MODULE_EXPORT void set_legend_box_thickness (GtkEntry * entry, gpointer data)
   set_legend_box_style (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_legend_box_color (GtkColorChooser * colob, gpointer data)
+*
+*  Usage:
+*
+*  GtkColorChooser * colob :
+*  gpointer data           :
+*/
 G_MODULE_EXPORT void set_legend_box_color (GtkColorChooser * colob, gpointer data)
 {
   tint * ad = (tint *)data;
@@ -222,6 +347,13 @@ G_MODULE_EXPORT void set_legend_box_color (GtkColorChooser * colob, gpointer dat
   set_legend_box_style (data);
 }
 
+/*
+*  GtkWidget * create_tab_3 (gpointer data)
+*
+*  Usage: handle the creation of the 3rd tab of the curve edition dialog
+*
+*  gpointer data :
+*/
 GtkWidget * create_tab_3 (gpointer data)
 {
   GtkWidget * dhbox;

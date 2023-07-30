@@ -11,6 +11,40 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'bdcall.c'
+*
+*  Contains:
+*
+
+ - The callbacks for the bond properties calculation dialog
+
+*
+*  List of subroutines:
+
+  int * save_color_map (glwin * view);
+
+  gboolean run_distance_matrix (GtkWidget * widg, int calc, int up_ngb);
+
+  void restore_color_map (glwin * view, int * colm);
+  void recup_dmin_dmax_ (double * min, double * max);
+  void initbd ();
+  void initang ();
+  void initcutoffs (chemical_data * chem, int species);
+  void cutoffsend (void);
+  void prep_ogl_bonds ();
+  void update_ang_view (struct project * this_proj);
+  void update_glwin_after_bonds (int bonding, int * colm);
+  void coordination_info (int sp, double sac, double ssac[active_project -> nspec]);
+  void coordout_ (int * sid, double * sac, double ssac[active_project -> nspec], int * totgsa);
+  void env_info (int sp, int totgsa, int numgsa[totgsa], int listgsa[totgsa]);
+  void update_angle_view (struct project * this_proj);
+  void envout_ (int * sid, int * totgsa, int numgsa[* totgsa], int listegsa[* totgsa]);
+
+  G_MODULE_EXPORT void on_calc_bonds_released (GtkWidget * widg, gpointer data);
+
+*/
+
 #include "global.h"
 #include "bind.h"
 #include "interface.h"
@@ -24,8 +58,14 @@ If not, see <https://www.gnu.org/licenses/> */
 extern G_MODULE_EXPORT void set_color_map (GtkWidget * widg, gpointer data);
 extern void clean_coord_window (struct project * this_proj);
 extern G_MODULE_EXPORT void set_filter_changed (GtkComboBox * box, gpointer data);
-extern gchar * calculation_time (gboolean modelv, double ctime);
 
+/*
+*  int * save_color_map (glwin * view)
+*
+*  Usage:
+*
+*  glwin * view :
+*/
 int * save_color_map (glwin * view)
 {
   int i;
@@ -34,6 +74,14 @@ int * save_color_map (glwin * view)
   return colm;
 }
 
+/*
+*  void restore_color_map (glwin * view, int * colm)
+*
+*  Usage:
+*
+*  glwin * view :
+*  int * colm   :
+*/
 void restore_color_map (glwin * view, int * colm)
 {
 #ifdef GTK3
@@ -51,20 +99,33 @@ void restore_color_map (glwin * view, int * colm)
     {
       j = i*ATOM_MAPS + colm[i];
     }
-    check_menu_item_set_active ((gpointer)view -> color_styles[j], TRUE);
+    gtk_check_menu_item_set_active ((GtkCheckMenuItem *)view -> color_styles[j], TRUE);
     set_color_map (view -> color_styles[j], & view -> colorp[j][0]);
   }
   reading_input = was_input;
 #endif
 }
 
+/*
+*  void recup_dmin_dmax_ (double * min, double * max)
+*
+*  Usage:
+*
+*  double * min :
+*  double * max :
+*/
 void recup_dmin_dmax_ (double * min, double * max)
 {
   active_project -> min[BD] = * min;
   active_project -> max[BD] = * max;
 }
 
-void initbd (int s)
+/*
+*  void initbd ()
+*
+*  Usage:
+*/
+void initbd ()
 {
   int i, j, k;
 
@@ -79,11 +140,16 @@ void initbd (int s)
       k=k+1;
     }
   }
-  addcurwidgets (activep, BD, s);
+  addcurwidgets (activep, BD, 0);
   active_project -> initok[BD] = TRUE;
 }
 
-void initang (int s)
+/*
+*  void initang ()
+*
+*  Usage:
+*/
+void initang ()
 {
   int h, i, j, k, l;
 
@@ -118,10 +184,18 @@ void initang (int s)
       }
     }
   }
-  addcurwidgets (activep, AN, s);
+  addcurwidgets (activep, AN, 0);
   active_project -> initok[AN] = TRUE;
 }
 
+/*
+*  void initcutoffs (chemical_data * chem, int species)
+*
+*  Usage:
+*
+*  chemical_data * chem :
+*  int species          :
+*/
 void initcutoffs (chemical_data * chem, int species)
 {
   int i, j;
@@ -153,6 +227,13 @@ void initcutoffs (chemical_data * chem, int species)
   }
 }
 
+/*
+*  void cutoffsend (void)
+*
+*  Usage:
+*
+*  void :
+*/
 void cutoffsend (void)
 {
   int i, j;
@@ -175,6 +256,13 @@ void cutoffsend (void)
   sendcuts_ (& i, & i, & active_chem -> grtotcutoff);
 }
 
+/*
+*  void prep_ogl_bonds ()
+*
+*  Usage:
+*
+*   :
+*/
 void prep_ogl_bonds ()
 {
   int i;
@@ -206,6 +294,15 @@ void prep_ogl_bonds ()
   for (i=0; i<2; i++) active_glwin -> adv_bonding[i] = FALSE;
 }
 
+/*
+*  gboolean run_distance_matrix (GtkWidget * widg, int calc, int up_ngb)
+*
+*  Usage:
+*
+*  GtkWidget * widg :
+*  int calc         :
+*  int up_ngb       :
+*/
 gboolean run_distance_matrix (GtkWidget * widg, int calc, int up_ngb)
 {
   int i, j, k;
@@ -252,6 +349,13 @@ gboolean run_distance_matrix (GtkWidget * widg, int calc, int up_ngb)
   return res;
 }
 
+/*
+*  void update_ang_view (struct project * this_proj)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*/
 void update_ang_view (struct project * this_proj)
 {
   gchar * str;
@@ -273,6 +377,14 @@ void update_ang_view (struct project * this_proj)
   print_info (calculation_time(TRUE, this_proj -> calc_time[AN]), NULL, this_proj -> text_buffer[AN+OT]);
 }
 
+/*
+*  void update_glwin_after_bonds (int bonding, int * colm)
+*
+*  Usage:
+*
+*  int bonding :
+*  int * colm  :
+*/
 void update_glwin_after_bonds (int bonding, int * colm)
 {
   active_glwin -> bonding = bonding;
@@ -344,6 +456,14 @@ void update_glwin_after_bonds (int bonding, int * colm)
   update (active_glwin);
 }
 
+/*
+*  G_MODULE_EXPORT void on_calc_bonds_released (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg :
+*  gpointer data    :
+*/
 G_MODULE_EXPORT void on_calc_bonds_released (GtkWidget * widg, gpointer data)
 {
   int j, k, l, m;
@@ -368,7 +488,7 @@ G_MODULE_EXPORT void on_calc_bonds_released (GtkWidget * widg, gpointer data)
     //if (bonding && active_project -> steps > 1) statusb = 1;
     if (bonds_update || active_project -> runc[0] || active_project -> runc[2])
     {
-      if (! active_project -> initok[BD] && bonding) initbd (0);
+      if (! active_project -> initok[BD] && bonding) initbd ();
       if (active_project -> runc[0]) clean_curves_data (BD, 0, active_project -> numc[BD]);
       prepostcalc (widg, FALSE, BD, statusb, opac);
       l = 0;
@@ -446,7 +566,7 @@ G_MODULE_EXPORT void on_calc_bonds_released (GtkWidget * widg, gpointer data)
     }
     if (active_project -> runc[1])
     {
-      if (! active_project -> initok[AN]) initang (0);
+      if (! active_project -> initok[AN]) initang ();
       clean_curves_data (AN, 0, active_project -> numc[AN]);
       prepostcalc (widg, FALSE, AN, statusb, opac);
       active_project -> delta[AN] = 180.0 / active_project -> num_delta[AN];
@@ -496,6 +616,15 @@ G_MODULE_EXPORT void on_calc_bonds_released (GtkWidget * widg, gpointer data)
 
 double bdtc;
 
+/*
+*  void coordination_info (int sp, double sac, double ssac[active_project -> nspec])
+*
+*  Usage:
+*
+*  int sp                               :
+*  double sac                           :
+*  double ssac[active_project -> nspec] :
+*/
 void coordination_info (int sp, double sac, double ssac[active_project -> nspec])
 {
   int j;
@@ -579,6 +708,16 @@ void coordination_info (int sp, double sac, double ssac[active_project -> nspec]
   }
 }
 
+/*
+*  void coordout_ (int * sid, double * sac, double ssac[active_project -> nspec], int * totgsa)
+*
+*  Usage:
+*
+*  int * sid                            :
+*  double * sac                         :
+*  double ssac[active_project -> nspec] :
+*  double ssac[active_project -> nspec] :
+*/
 void coordout_ (int * sid, double * sac, double ssac[active_project -> nspec], int * totgsa)
 {
   active_coord -> ntg[1][* sid] = * totgsa;
@@ -634,6 +773,16 @@ void coordout_ (int * sid, double * sac, double ssac[active_project -> nspec], i
   print_info (str, "bold", active_project -> text_buffer[BD+OT]);
 }*/
 
+/*
+*  void env_info (int sp, int totgsa, int numgsa[totgsa], int listgsa[totgsa])
+*
+*  Usage:
+*
+*  int sp             :
+*  int totgsa         :
+*  int numgsa[totgsa] :
+*  int numgsa[totgsa] :
+*/
 void env_info (int sp, int totgsa, int numgsa[totgsa], int listgsa[totgsa])
 {
   int i, j, k;
@@ -706,6 +855,13 @@ void env_info (int sp, int totgsa, int numgsa[totgsa], int listgsa[totgsa])
 }
 
 
+/*
+*  void update_angle_view (struct project * this_proj)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*/
 void update_angle_view (struct project * this_proj)
 {
   gchar * str;
@@ -722,6 +878,16 @@ void update_angle_view (struct project * this_proj)
   print_info ("\n\n\t between 0.0 and 180.0°\n", NULL, this_proj -> text_buffer[AN+OT]);
 }
 
+/*
+*  void envout_ (int * sid, int * totgsa, int numgsa[* totgsa], int listegsa[* totgsa])
+*
+*  Usage:
+*
+*  int * sid            :
+*  int * totgsa         :
+*  int numgsa[* totgsa] :
+*  int numgsa[* totgsa] :
+*/
 void envout_ (int * sid, int * totgsa, int numgsa[* totgsa], int listegsa[* totgsa])
 {
   /* Send info for OpenGL */

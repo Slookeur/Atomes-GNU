@@ -11,6 +11,31 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'menu_bar.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  void menu_bar_attach_color_palettes (glwin * view, GtkWidget * menu_bar);
+  void update_menu_bar (glwin * view);
+
+  G_MODULE_EXPORT void to_opengl_advanced (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void to_render_gl_image (GSimpleAction * action, GVariant * parameter, gpointer data);
+
+  GtkWidget * opengl_window_create_menu_bar (glwin * view);
+
+  GMenu * prepare_opengl_menu (glwin * view, int popm);
+  GMenu * prepare_model_menu (glwin * view, int popm);
+  GMenu * prepare_coord_menu (glwin * view, int popm);
+  GMenu * opengl_menu_bar (glwin * view, gchar * str);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "project.h"
@@ -27,24 +52,42 @@ extern G_MODULE_EXPORT void render_gl_image (GtkWidget * widg, gpointer data);
 extern G_MODULE_EXPORT void to_coord_properties (GSimpleAction * action, GVariant * parameter, gpointer data);
 GSimpleActionGroup * view_pop_actions;
 
+/*
+*  G_MODULE_EXPORT void to_opengl_advanced (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void to_opengl_advanced (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   opengl_advanced (NULL, data);
 }
 
+/*
+*  G_MODULE_EXPORT void to_render_gl_image (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void to_render_gl_image (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   render_gl_image (NULL, data);
 }
 
-void append_opengl_item (glwin * view, GMenu * menu, const gchar * name, const gchar * key, int item_id,
+void append_opengl_item (glwin * view, GMenu * menu, const gchar * name, const gchar * key, int mpop, int item_id,
                          gchar * accel, int image_format, gpointer icon,
                          gboolean custom, GCallback handler, gpointer data,
                          gboolean check, gboolean status, gboolean radio, gboolean sensitive)
 {
   gchar * str_a, * str_b, * str_c;
   str_a = g_strdup_printf ("set-%s", key);
-  str_b = g_strdup_printf ("%s.%d", str_a, item_id);
+  str_b = g_strdup_printf ("%s.%d.%d", str_a, item_id, mpop);
   str_c = (sensitive) ? g_strdup_printf ("gl-%d.%s", view -> action_id, (radio) ? str_a : str_b) : g_strdup_printf ("None");
   append_menu_item (menu, name, (const gchar *) str_c, accel, (custom) ? (const gchar *) str_b : NULL, image_format, icon, check, status, radio, (radio) ? (const gchar *)str_b : NULL);
   if (handler)
@@ -68,38 +111,62 @@ void append_opengl_item (glwin * view, GMenu * menu, const gchar * name, const g
   g_free (str_c);
 }
 
-GMenu * prepare_opengl_menu (glwin * view)
+/*
+*  GMenu * prepare_opengl_menu (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     :
+*/
+GMenu * prepare_opengl_menu (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
-  g_menu_append_submenu (menu, "Style", (GMenuModel*)menu_style(view));
+  append_submenu (menu, "Style", menu_style(view, popm));
   GMenuItem * item = g_menu_item_new ("Color Scheme(s)", (get_project_by_id(view -> proj) -> nspec) ? NULL : "None");
-  g_menu_item_set_submenu (item, (GMenuModel*)menu_map(view));
+  g_menu_item_set_submenu (item, (GMenuModel*)menu_map(view, popm));
   g_menu_append_item (menu, item);
-  g_menu_append_submenu (menu, "Render", (GMenuModel*)menu_render(view));
-  g_menu_append_submenu (menu, "Quality", (GMenuModel*)menu_quality(view));
-  append_opengl_item (view, menu, "Material And Lights", "material", 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_opengl_advanced), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
-  append_opengl_item (view, menu, "Render Image", "image", 0, "<CTRL>I", IMG_FILE, PACKAGE_IMG, FALSE, G_CALLBACK(to_render_gl_image), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
+  append_submenu (menu, "Render", menu_render(view, popm));
+  append_submenu (menu, "Quality", menu_quality(view, popm));
+  append_opengl_item (view, menu, "Material And Lights", "material", popm, popm, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_opengl_advanced), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
+  append_opengl_item (view, menu, "Render Image", "image", popm, popm, "<CTRL>I", IMG_FILE, PACKAGE_IMG, FALSE, G_CALLBACK(to_render_gl_image), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
   return menu;
 }
 
-GMenu * prepare_model_menu (glwin * view)
+/*
+*  GMenu * prepare_model_menu (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     :
+*/
+GMenu * prepare_model_menu (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
-  g_menu_append_submenu (menu, "Atom(s)", (GMenuModel*)menu_atoms(view, 0));
-  g_menu_append_submenu (menu, "Bond(s)", (GMenuModel*)menu_bonds(view, 0));
-  g_menu_append_submenu (menu, "Clone(s)", (GMenuModel*)menu_clones(view));
-  g_menu_append_item (menu, menu_box_axis (view, 0));
+  append_submenu (menu, "Atom(s)", menu_atoms(view, popm, 0));
+  append_submenu (menu, "Bond(s)", menu_bonds(view, popm, 0));
+  append_submenu (menu, "Clone(s)", menu_clones(view, popm));
+  g_menu_append_item (menu, menu_box_axis (view, popm, 0));
   return menu;
 }
 
-GMenu * prepare_coord_menu (glwin * view)
+/*
+*  GMenu * prepare_coord_menu (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     :
+*/
+GMenu * prepare_coord_menu (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
-  g_menu_append_submenu (menu, "Coordination", (GMenuModel*)menu_coord (view));
-  g_menu_append_submenu (menu, "Polyhedra", (GMenuModel*)menu_poly (view));
+  append_submenu (menu, "Coordination", menu_coord (view, popm));
+  append_submenu (menu, "Polyhedra", menu_poly (view, popm));
   if (view -> rings)
   {
-    g_menu_append_submenu (menu, "Rings(s)", (GMenuModel*)menu_rings (view));
+    append_submenu (menu, "Rings(s)", menu_rings (view, popm));
   }
   else
   {
@@ -107,7 +174,7 @@ GMenu * prepare_coord_menu (glwin * view)
   }
   if (view -> chains)
   {
-    g_menu_append_submenu (menu, "Chain(s)", (GMenuModel*)add_menu_coord (view, 9));
+    append_submenu (menu, "Chain(s)", add_menu_coord (view, popm, 9));
   }
   else
   {
@@ -115,7 +182,7 @@ GMenu * prepare_coord_menu (glwin * view)
   }
   if (view -> adv_bonding[0])
   {
-    g_menu_append_submenu (menu, "Fragment(s)", (GMenuModel*)add_menu_coord (view, 2));
+    append_submenu (menu, "Fragment(s)", add_menu_coord (view, popm, 2));
   }
   else
   {
@@ -123,36 +190,52 @@ GMenu * prepare_coord_menu (glwin * view)
   }
   if (view -> adv_bonding[1])
   {
-    g_menu_append_submenu (menu, "Molecule(s)", (GMenuModel*)add_menu_coord (view, 3));
+    append_submenu (menu, "Molecule(s)", add_menu_coord (view, popm, 3));
   }
   else
   {
     append_menu_item (menu, "Molecule(s)", "None", NULL, NULL, IMG_NONE, NULL, FALSE, FALSE, FALSE, NULL);
   }
-  append_opengl_item (view, menu, "Advanced", "adv-all", 0, "<CTRL>E", IMG_STOCK, (gpointer)DPROPERTIES, FALSE, G_CALLBACK(to_coord_properties), & view -> colorp[30][0], FALSE, FALSE, FALSE, TRUE);
+  append_opengl_item (view, menu, "Advanced", "adv-all", popm, popm, "<CTRL>E", IMG_STOCK, (gpointer)DPROPERTIES, FALSE, G_CALLBACK(to_coord_properties), & view -> colorp[30][0], FALSE, FALSE, FALSE, TRUE);
   return menu;
 }
 
+/*
+*  GMenu * opengl_menu_bar (glwin * view, gchar * str)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  gchar * str  :
+*/
 GMenu * opengl_menu_bar (glwin * view, gchar * str)
 {
   GMenu * menu = g_menu_new ();
-  g_menu_append_submenu (menu, "OpenGL", (GMenuModel*)prepare_opengl_menu(view));
+  append_submenu (menu, "OpenGL", prepare_opengl_menu(view, 0));
   if (get_project_by_id(view -> proj) -> natomes)
   {
-    g_menu_append_submenu (menu, "Model", (GMenuModel*)prepare_model_menu(view));
-    g_menu_append_submenu (menu, "Chemistry", (GMenuModel*)prepare_coord_menu(view));
+    append_submenu (menu, "Model", prepare_model_menu(view, 0));
+    append_submenu (menu, "Chemistry", prepare_coord_menu(view, 0));
   }
   else
   {
     append_menu_item (menu, "Model", "None", NULL, NULL, IMG_NONE, NULL, FALSE, FALSE, FALSE, NULL);
     append_menu_item (menu, "Chemistry", "None", NULL, NULL, IMG_NONE, NULL, FALSE, FALSE, FALSE, NULL);
   }
-  g_menu_append_submenu (menu, "Tools", (GMenuModel*)menu_tools(view, 0));
-  g_menu_append_submenu (menu, "View", (GMenuModel*)menu_view(view, 0));
-  g_menu_append_submenu (menu, "Animate", (GMenuModel*)menu_anim(view));
+  append_submenu (menu, "Tools", menu_tools(view, 0));
+  append_submenu (menu, "View", menu_view(view, 0));
+  append_submenu (menu, "Animate", menu_anim(view, 0));
   return menu;
 }
 
+/*
+*  void menu_bar_attach_color_palettes (glwin * view, GtkWidget * menu_bar)
+*
+*  Usage:
+*
+*  glwin * view         : the target glwin
+*  GtkWidget * menu_bar : the GtkWidget sending the signal
+*/
 void menu_bar_attach_color_palettes (glwin * view, GtkWidget * menu_bar)
 {
   /* Here we need to attached color palettes for:
@@ -255,6 +338,13 @@ void menu_bar_attach_color_palettes (glwin * view, GtkWidget * menu_bar)
   }
 }
 
+/*
+*  GtkWidget * opengl_window_create_menu_bar (glwin * view)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*/
 GtkWidget * opengl_window_create_menu_bar (glwin * view)
 {
   view -> menu_bar = destroy_this_widget (view -> menu_bar);
@@ -277,6 +367,13 @@ GtkWidget * opengl_window_create_menu_bar (glwin * view)
   return menu_bar;
 }
 
+/*
+*  void update_menu_bar (glwin * view)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*/
 void update_menu_bar (glwin * view)
 {
   view -> menu_bar = opengl_window_create_menu_bar (view);

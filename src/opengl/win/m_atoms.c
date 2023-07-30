@@ -11,6 +11,40 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'm_atoms.c'
+*
+*  Contains:
+*
+
+ -  The subroutine to create the 'Atom(s)' submenu
+
+*
+*  List of subroutines:
+
+  gchar * label_atpts (struct project * this_proj, glwin * view, int id);
+
+  G_MODULE_EXPORT void show_hide_atoms (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void show_hide_labels (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void show_hide_all_atom_labels (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void show_hide_atoms (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void show_hide_labels (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void show_hide_all_atom_labels (GSimpleAction * action, GVariant * parameter, gpointer data);
+
+  GtkWidget * create_spec_menu (char * name, gboolean va, gboolean vb, GtkWidget * menu, GCallback handler, tint * data);
+  GtkWidget * create_atom_layout_widget (gchar * str, GtkWidget * widg, tint * data);
+  GtkWidget * show_atoms_submenu (glwin * view, int id, int at);
+  GtkWidget * color_atoms_submenu (glwin * view, int id, int at);
+  GtkWidget * label_atoms_submenu (glwin * view, int id, int at);
+  GtkWidget * menu_atoms (glwin * view, int id, int at);
+
+  GMenu * label_atoms_submenu (glwin * view, int popm, int at, gboolean sensitive);
+  GMenu * color_atoms_submenu (glwin * view, int popm, int at, gboolean sensitive);
+  GMenu * show_atoms_submenu (glwin * view, int popm, int at, gboolean sensitive);
+  GMenu * menu_atoms (glwin * view, int popm, int at);
+
+*/
+
 #include "global.h"
 #include "glview.h"
 #include "glwindow.h"
@@ -18,6 +52,15 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern G_MODULE_EXPORT void set_atom_parameter (GtkWidget * widg, gpointer data);
 
+/*
+*  gchar * label_atpts (struct project * this_proj, glwin * view, int id)
+*
+*  Usage: prepare the text of a menu item in the 'Model -> Atom(s)' submenu
+*
+*  struct project * this_proj : the target project
+*  glwin * view               : the target glwin
+*  int id                     : the type of label to prepare
+*/
 gchar * label_atpts (struct project * this_proj, glwin * view, int id)
 {
   int i;
@@ -65,6 +108,14 @@ gchar * label_atpts (struct project * this_proj, glwin * view, int id)
 extern G_MODULE_EXPORT void set_show_hide_all_atom_labels (GtkWidget * widg, gpointer data);
 extern G_MODULE_EXPORT void atom_properties (GtkWidget * widg, gpointer data);
 
+/*
+*  G_MODULE_EXPORT void show_hide_atoms (GtkWidget * widg, gpointer data)
+*
+*  Usage: handle the show / hide atomic species signal
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_atoms (GtkWidget * widg, gpointer data)
 {
   tint * the_data = (tint *) data;
@@ -72,10 +123,10 @@ G_MODULE_EXPORT void show_hide_atoms (GtkWidget * widg, gpointer data)
   int k = the_data -> c;
   int l, m;
   struct project * this_proj = get_project_by_id(the_data -> a);
-  gboolean v = check_menu_item_get_active ((gpointer)widg);
+  gboolean v = gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg);
   if (widg != this_proj -> modelgl -> ogl_spec[j][k])
   {
-    check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_spec[j][k], v);
+    gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_spec[j][k], v);
   }
   for (l=0; l<this_proj -> steps; l++)
   {
@@ -88,6 +139,14 @@ G_MODULE_EXPORT void show_hide_atoms (GtkWidget * widg, gpointer data)
   init_default_shaders (this_proj -> modelgl);
 }
 
+/*
+*  G_MODULE_EXPORT void show_hide_labels (GtkWidget * widg, gpointer data)
+*
+*  Usage: handle the show / hide atomic species label signal
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_labels (GtkWidget * widg, gpointer data)
 {
   int l, m;
@@ -95,10 +154,10 @@ G_MODULE_EXPORT void show_hide_labels (GtkWidget * widg, gpointer data)
   int j = id -> b;
   int k = id -> c;
   struct project * this_proj = get_project_by_id(id -> a);
-  gboolean v = check_menu_item_get_active ((gpointer)widg);
+  gboolean v = gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg);
   if (widg != this_proj -> modelgl -> ogl_lab[j][k])
   {
-    check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_lab[j][k], v);
+    gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_lab[j][k], v);
   }
   for (l=0; l<this_proj -> steps; l++)
   {
@@ -118,6 +177,14 @@ G_MODULE_EXPORT void show_hide_labels (GtkWidget * widg, gpointer data)
   update (this_proj -> modelgl);
 }
 
+/*
+*  G_MODULE_EXPORT void show_hide_all_atom_labels (GtkWidget * widg, gpointer data)
+*
+*  Usage: handle the show / hide all atomic labels signal
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_all_atom_labels (GtkWidget * widg, gpointer data)
 {
   tint * id = (tint *) data;
@@ -131,10 +198,22 @@ G_MODULE_EXPORT void show_hide_all_atom_labels (GtkWidget * widg, gpointer data)
   }
   for (k=0; k<this_proj -> nspec; k++)
   {
-    check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_lab[j][k], show);
+    gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_lab[j][k], show);
   }
 }
 
+/*
+*  GtkWidget * create_spec_menu (char * name, gboolean va, gboolean vb, GtkWidget * menu, GCallback handler, tint * data)
+*
+*  Usage: create a chemical species related check menu item GTK3
+*
+*  char * name       : menu item name
+*  gboolean va       : check menu item status
+*  gboolean vb       : menu item sensitivity
+*  GtkWidget * menu  : the GtkWidget sending the signal
+*  GCallback handler : the associated callback
+*  tint * data       : the associated data pointer
+*/
 GtkWidget * create_spec_menu (char * name, gboolean va, gboolean vb, GtkWidget * menu, GCallback handler, tint * data)
 {
   GtkWidget * spec_widget = gtk3_menu_item (menu, name, IMG_NONE, NULL, handler, data, FALSE, 0, 0, TRUE, FALSE, va);
@@ -142,16 +221,34 @@ GtkWidget * create_spec_menu (char * name, gboolean va, gboolean vb, GtkWidget *
   return spec_widget;
 }
 
-GtkWidget * create_atom_layout_widget (gchar * str, GtkWidget * widg, int val, int vb, tint * data)
+/*
+*  GtkWidget * create_atom_layout_widget (gchar * str, GtkWidget * widg, tint * data)
+*
+*  Usage: create a 'Model -> Atom(s)' menu item GTK3
+*
+*  gchar * str      : the label for the menu item
+*  GtkWidget * widg : the menu GtkWidget to attach the menu item to
+*  tint * data      : the associated data pointer
+*/
+GtkWidget * create_atom_layout_widget (gchar * str, GtkWidget * widg, tint * data)
 {
   GtkWidget * menu = gtk_menu_new ();
-  menu_item_set_submenu (widg, menu);
+  gtk_menu_item_set_submenu ((GtkMenuItem *)widg, menu);
   GtkWidget * layout = create_menu_item (TRUE, str);
-  add_menu_child (menu, layout);
+  gtk_menu_shell_append ((GtkMenuShell *)menu, layout);
   g_signal_connect (G_OBJECT (layout), "activate", G_CALLBACK(set_atom_parameter), data);
   return layout;
 }
 
+/*
+*  GtkWidget * show_atoms_submenu (glwin * view, int id, int at)
+*
+*  Usage: create the 'Atom(s) -> show' submenu GTK3
+*
+*  glwin * view : the target glwin
+*  int id       : main app (0) or popup (1)
+*  int at       : atoms (0) or clones (1)
+*/
 GtkWidget * show_atoms_submenu (glwin * view, int id, int at)
 {
   GtkWidget * mshow = gtk_menu_new ();
@@ -196,6 +293,15 @@ GtkWidget * show_atoms_submenu (glwin * view, int id, int at)
   return mshow;
 }
 
+/*
+*  GtkWidget * color_atoms_submenu (glwin * view, int id, int at)
+*
+*  Usage: create the 'Atom(s) -> Color(s)' submenu GTK3
+*
+*  glwin * view : the target glwin
+*  int id       : main app (0) or popup (1)
+*  int at       : atoms (0) or clones (1)
+*/
 GtkWidget * color_atoms_submenu (glwin * view, int id, int at)
 {
   GtkWidget * menuc = gtk_menu_new ();
@@ -223,23 +329,32 @@ GtkWidget * color_atoms_submenu (glwin * view, int id, int at)
     }
     sp = create_menu_item (FALSE, str);
     g_free (str);
-    add_menu_child (menuc, sp);
-    menu_item_set_submenu (sp, color_box(view, i+j, 0, 0));
+    gtk_menu_shell_append ((GtkMenuShell *)menuc, sp);
+    gtk_menu_item_set_submenu ((GtkMenuItem *)sp, color_box(view, i+j, 0, 0));
   }
   if (at == 1) widget_set_sensitive (menuc, view -> anim -> last -> img -> draw_clones);
   return menuc;
 }
 
+/*
+*  GtkWidget * label_atoms_submenu (glwin * view, int id, int at)
+*
+*  Usage: create the 'Atom(s) -> Label(s)' submenu GTK3
+*
+*  glwin * view : the target glwin
+*  int id       : main app (0) or popup (1)
+*  int at       : atoms (0) or clones (1)
+*/
 GtkWidget * label_atoms_submenu (glwin * view, int id, int at)
 {
   GtkWidget * menul = gtk_menu_new ();
   GtkWidget * all = create_menu_item (FALSE, "Show/Hide all");
   g_signal_connect (G_OBJECT (all), "activate", G_CALLBACK(show_hide_all_atom_labels), & view -> colorp[at][0]);
-  add_menu_child (menul, all);
+  gtk_menu_shell_append ((GtkMenuShell *)menul, all);
   GtkWidget * l_show = create_menu_item (FALSE, "Show");
-  add_menu_child (menul, l_show);
+  gtk_menu_shell_append ((GtkMenuShell *)menul, l_show);
   GtkWidget * mshow = gtk_menu_new ();
-  menu_item_set_submenu (l_show, mshow);
+  gtk_menu_item_set_submenu ((GtkMenuItem *)l_show, mshow);
   struct project * this_proj = get_project_by_id (view -> proj);
   gchar * str;
   gboolean sensitive = (! at) ? TRUE : view -> anim -> last -> img -> draw_clones;
@@ -280,7 +395,7 @@ GtkWidget * label_atoms_submenu (glwin * view, int id, int at)
   if (at == 0 || id == 1)
   {
     GtkWidget * l_sel = create_menu_item (FALSE, "Select atom(s)");
-    add_menu_child (menul, l_sel);
+    gtk_menu_shell_append ((GtkMenuShell *)menul, l_sel);
     g_signal_connect (G_OBJECT (l_sel), "activate",G_CALLBACK(atom_properties), & view -> colorp[at][2]);
     if (id == 1) widget_set_sensitive (l_sel, sensitive);
     GtkWidget * l_adv = add_advanced_item (menul, G_CALLBACK(atom_properties), (gpointer)& view -> colorp[at][1], FALSE, 0, 0);
@@ -289,7 +404,7 @@ GtkWidget * label_atoms_submenu (glwin * view, int id, int at)
   else
   {
     view -> ogl_clones[2] = create_menu_item (FALSE, "Select atom(s)");
-    add_menu_child (menul, view -> ogl_clones[2]);
+    gtk_menu_shell_append ((GtkMenuShell *)menul, view -> ogl_clones[2]);
     g_signal_connect (G_OBJECT (view -> ogl_clones[2]), "activate",G_CALLBACK(atom_properties), & view -> colorp[at][2]);
     widget_set_sensitive (view -> ogl_clones[2], sensitive);
     view -> ogl_clones[3] = add_advanced_item (menul, G_CALLBACK(atom_properties), (gpointer)& view -> colorp[at][1], FALSE, 0, 0);
@@ -298,6 +413,15 @@ GtkWidget * label_atoms_submenu (glwin * view, int id, int at)
   return menul;
 }
 
+/*
+*  GtkWidget * menu_atoms (glwin * view, int id, int at)
+*
+*  Usage: create the 'Atom(s)' submenu elements GTK3
+*
+*  glwin * view : the target glwin
+*  int id       : main app (0) or popup (1)
+*  int at       : atoms (0) or clones (1)
+*/
 GtkWidget * menu_atoms (glwin * view, int id, int at)
 {
   int i;
@@ -305,25 +429,25 @@ GtkWidget * menu_atoms (glwin * view, int id, int at)
   gchar * str;
   struct project * this_proj = get_project_by_id(view -> proj);
   GtkWidget * menua = gtk_menu_new ();
-  add_menu_child (menua, menu_item_new_with_submenu ("Show", TRUE, show_atoms_submenu (view, id, at)));
+  gtk_menu_shell_append ((GtkMenuShell *)menua, menu_item_new_with_submenu ("Show", TRUE, show_atoms_submenu (view, id, at)));
   if (at == 1 && id == 0)
   {
     view -> ogl_clones[1] = color_atoms_submenu (view, id, at);
-    add_menu_child (menua, menu_item_new_with_submenu ("Color(s)", ! (view -> anim -> last -> img -> color_map[0] != 0), view -> ogl_clones[1]));
+    gtk_menu_shell_append ((GtkMenuShell *)menua, menu_item_new_with_submenu ("Color(s)", ! (view -> anim -> last -> img -> color_map[0] != 0), view -> ogl_clones[1]));
   }
   else
   {
-    add_menu_child (menua, menu_item_new_with_submenu ("Color(s)", ! (view -> anim -> last -> img -> color_map[0] != 0), color_atoms_submenu (view, id, at)));
+    gtk_menu_shell_append ((GtkMenuShell *)menua, menu_item_new_with_submenu ("Color(s)", ! (view -> anim -> last -> img -> color_map[0] != 0), color_atoms_submenu (view, id, at)));
   }
-  add_menu_child (menua, menu_item_new_with_submenu ("Label(s)", TRUE, label_atoms_submenu (view, id, at)));
+  gtk_menu_shell_append ((GtkMenuShell *)menua, menu_item_new_with_submenu ("Label(s)", TRUE, label_atoms_submenu (view, id, at)));
 
   i = view -> anim -> last -> img -> style;
   str = label_atpts (this_proj, view, 2*at);
   if (id == 0)
   {
     view -> ogl_atoms[4*at] = create_menu_item(FALSE, "Radius(ii)");
-    add_menu_child (menua, view -> ogl_atoms[4*at]);
-    view -> ogl_atoms[4*at+1] = create_atom_layout_widget (str, view -> ogl_atoms[4*at], 0, i, & view -> colorp[at][0]);
+    gtk_menu_shell_append ((GtkMenuShell *)menua, view -> ogl_atoms[4*at]);
+    view -> ogl_atoms[4*at+1] = create_atom_layout_widget (str, view -> ogl_atoms[4*at], & view -> colorp[at][0]);
     if (at == 1 && ! view -> anim -> last -> img -> draw_clones)
     {
       widget_set_sensitive (view -> ogl_atoms[4*at+1], 0);
@@ -332,8 +456,8 @@ GtkWidget * menu_atoms (glwin * view, int id, int at)
   else if (i == SPHERES || i == BALL_AND_STICK)
   {
     widg = create_menu_item (FALSE, "Radius(ii)");
-    add_menu_child (menua, widg);
-    widg = create_atom_layout_widget (str, widg, 0, i, & view -> colorp[at][0]);
+    gtk_menu_shell_append ((GtkMenuShell *)menua, widg);
+    widg = create_atom_layout_widget (str, widg, & view -> colorp[at][0]);
     if (at == 1 && ! view -> anim -> last -> img -> draw_clones)
     {
       widget_set_sensitive (widg, 0);
@@ -345,8 +469,8 @@ GtkWidget * menu_atoms (glwin * view, int id, int at)
   if (id == 0)
   {
     view -> ogl_atoms[4*at+2] = create_menu_item(FALSE, "Point size(s)");
-    add_menu_child (menua, view -> ogl_atoms[4*at+2]);
-    view -> ogl_atoms[4*at+3] = create_atom_layout_widget (str, view -> ogl_atoms[4*at+2], 1, i, & view -> colorp[at][1]);
+    gtk_menu_shell_append ((GtkMenuShell *)menua, view -> ogl_atoms[4*at+2]);
+    view -> ogl_atoms[4*at+3] = create_atom_layout_widget (str, view -> ogl_atoms[4*at+2], & view -> colorp[at][1]);
     if (at == 1 && ! view -> anim -> last -> img -> draw_clones)
     {
       widget_set_sensitive (view -> ogl_atoms[4*at+3], 0);
@@ -355,8 +479,8 @@ GtkWidget * menu_atoms (glwin * view, int id, int at)
   else if (i == WIREFRAME || i == PUNT)
   {
     widg = create_menu_item (FALSE, "Point size(s)");
-    add_menu_child (menua, widg);
-    widg = create_atom_layout_widget (str, widg, 1, i, & view -> colorp[at][1]);
+    gtk_menu_shell_append ((GtkMenuShell *)menua, widg);
+    widg = create_atom_layout_widget (str, widg, & view -> colorp[at][1]);
     if (at == 1 && ! view -> anim -> last -> img -> draw_clones)
     {
       widget_set_sensitive (widg, 0);
@@ -385,84 +509,141 @@ GtkWidget * menu_atoms (glwin * view, int id, int at)
 
 extern G_MODULE_EXPORT void atom_properties (GSimpleAction * action, GVariant * state, gpointer data);
 
+/*
+*  G_MODULE_EXPORT void show_hide_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage: handle the show/hide signal GTK4
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_atoms (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   tint * the_data = (tint *) data;
   int j = the_data -> b;
   int k = the_data -> c;
   int l, m;
-  struct project * this_proj = get_project_by_id(the_data -> a);
-  GVariant * state;
+  gboolean doit = TRUE;
   gboolean show;
+  struct project * this_proj = get_project_by_id (the_data -> a);
+  GVariant * state;
   if (action)
   {
     state = g_action_get_state (G_ACTION (action));
     show = ! g_variant_get_boolean (state);
+    const gchar * atom = g_action_get_name ((GAction *)action);
+    int lgt = strlen (atom);
+    gchar * name = g_strdup_printf ("%c%c", atom[lgt-2], atom[lgt-1]);
+    if (g_strcmp0(name, ".1") == 0)
+    {
+      g_free (name);
+      name = g_strdup_printf ("%.*s.0", lgt-2, atom);
+      g_action_group_activate_action ((GActionGroup *)this_proj -> modelgl -> action_group, (const gchar *)name, NULL);
+      g_free (name);
+      doit = FALSE;
+    }
   }
   else
   {
     show = this_proj -> modelgl -> anim -> last -> img -> show_atom[j][k];
   }
-
-  for (l=0; l<this_proj -> steps; l++)
+  if (doit)
   {
-    for (m=0; m<this_proj -> natomes; m++)
+    for (l=0; l<this_proj -> steps; l++)
     {
-      if (this_proj -> atoms[l][m].sp == k) this_proj -> atoms[l][m].show[j] = show;
+      for (m=0; m<this_proj -> natomes; m++)
+      {
+        if (this_proj -> atoms[l][m].sp == k) this_proj -> atoms[l][m].show[j] = show;
+      }
     }
-  }
-  this_proj -> modelgl -> anim -> last -> img -> show_atom[j][k] = show;
-  init_default_shaders (this_proj -> modelgl);
-  if (action)
-  {
-    g_action_change_state (G_ACTION (action), g_variant_new_boolean (show));
-    g_variant_unref (state);
+    this_proj -> modelgl -> anim -> last -> img -> show_atom[j][k] = show;
+    init_default_shaders (this_proj -> modelgl);
+    if (action)
+    {
+      g_action_change_state (G_ACTION (action), g_variant_new_boolean (show));
+      g_variant_unref (state);
+    }
   }
 }
 
+/*
+*  G_MODULE_EXPORT void show_hide_labels (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage: handle the show/hide label signal GTK4
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_labels (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
-  int j, k, l, m;
-  tint * id = (tint *) data;
-  j = id -> b;
-  k = id -> c;
+  tint * the_data = (tint *) data;
+  int j = the_data -> b;
+  int k = the_data -> c;
+  gboolean doit = TRUE;
   gboolean show;
+  struct project * this_proj = get_project_by_id (the_data -> a);
   GVariant * state;
-  struct project * this_proj = get_project_by_id(id -> a);
   if (action)
   {
     state = g_action_get_state (G_ACTION (action));
     show = ! g_variant_get_boolean (state);
+    const gchar * label = g_action_get_name ((GAction *)action);
+    int lgt = strlen (label);
+    gchar * name = g_strdup_printf ("%c%c", label[lgt-2], label[lgt-1]);
+    if (g_strcmp0(name, ".1") == 0)
+    {
+      g_free (name);
+      name = g_strdup_printf ("%.*s.0", lgt-2, label);
+      g_action_group_activate_action ((GActionGroup *)this_proj -> modelgl -> action_group, (const gchar *)name, NULL);
+      g_free (name);
+      doit = FALSE;
+    }
   }
   else
   {
     show = ! this_proj -> modelgl -> anim -> last -> img -> show_label[j][k];
   }
-  for (l=0; l<this_proj -> steps; l++)
+  if (doit)
   {
-    for (m=0; m<this_proj -> natomes; m++)
+    int l, m;
+    for (l=0; l<this_proj -> steps; l++)
     {
-      if (this_proj -> atoms[l][m].sp == k)
+      for (m=0; m<this_proj -> natomes; m++)
       {
-        if (this_proj -> atoms[l][m].label[j] != show)
+        if (this_proj -> atoms[l][m].sp == k)
         {
-          this_proj -> atoms[l][m].label[j] = show;
+          if (this_proj -> atoms[l][m].label[j] != show)
+          {
+            this_proj -> atoms[l][m].label[j] = show;
+          }
         }
       }
     }
-  }
-  this_proj -> modelgl -> labelled = check_label_numbers (this_proj, j);
-  this_proj -> modelgl -> create_shaders[LABEL] = TRUE;
-  update (this_proj -> modelgl);
-  if (action)
-  {
-    g_action_change_state (G_ACTION (action), g_variant_new_boolean (show));
-    g_variant_unref (state);
+    this_proj -> modelgl -> labelled = check_label_numbers (this_proj, j);
+    this_proj -> modelgl -> create_shaders[LABEL] = TRUE;
+    update (this_proj -> modelgl);
+    if (action)
+    {
+      g_action_change_state (G_ACTION (action), g_variant_new_boolean (show));
+      g_variant_unref (state);
+    }
   }
 }
 
+/*
+*  G_MODULE_EXPORT void show_hide_all_atom_labels (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage: handle the show/hide all labels GTK4
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void show_hide_all_atom_labels (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
+  // Neither check, nor radio
   tint * id = (tint *) data;
   int i, j, k;
   struct project * this_proj = get_project_by_id(id -> a);
@@ -481,10 +662,20 @@ G_MODULE_EXPORT void show_hide_all_atom_labels (GSimpleAction * action, GVariant
   update_menu_bar (this_proj -> modelgl);
 }
 
-GMenu * label_atoms_submenu (glwin * view, int at, gboolean sensitive)
+/*
+*  GMenu * label_atoms_submenu (glwin * view, int popm, int at, gboolean sensitive)
+*
+*  Usage: create the 'Atom(s) -> Label(s)' submenu elements
+*
+*  glwin * view       : the target glwin
+*  int popm           : main app (0) or popup (1)
+*  int at             : atoms (0) or clones (1)
+*  gboolean sensitive : menu item sensitivity
+*/
+GMenu * label_atoms_submenu (glwin * view, int popm, int at, gboolean sensitive)
 {
   GMenu * menu = g_menu_new ();
-  append_opengl_item (view, menu, "Show/Hide All", (at) ? "clones-labels-all" : "atoms-labels-all", 0, NULL, IMG_NONE, NULL,
+  append_opengl_item (view, menu, "Show/Hide All", (at) ? "clones-labels-all" : "atoms-labels-all", popm, popm, NULL, IMG_NONE, NULL,
                       FALSE, G_CALLBACK(show_hide_all_atom_labels), & view -> colorp[at][0], FALSE, FALSE, FALSE, sensitive);
   GMenu * smenu = g_menu_new ();
   struct project * this_proj = get_project_by_id (view -> proj);
@@ -500,19 +691,29 @@ GMenu * label_atoms_submenu (glwin * view, int at, gboolean sensitive)
     {
       str = g_strdup_printf ("%s*", this_proj -> chemistry -> label[i]);
     }
-    append_opengl_item (view, smenu, str, (! at) ? "atom-label" : "clone-label", i, NULL, IMG_NONE, NULL,
+    append_opengl_item (view, smenu, str, (! at) ? "atom-label" : "clone-label", popm, i, NULL, IMG_NONE, NULL,
                         FALSE, G_CALLBACK(show_hide_labels), & view -> colorp[at][i],
                         TRUE, view -> anim -> last -> img -> show_label[at][i], FALSE, sensitive);
   }
-  g_menu_append_submenu (menu, "Show", (GMenuModel*)smenu);
-  append_opengl_item (view, menu, "Select atom(s)", (! at) ? "atom-select" : "clone-select", 0, NULL, IMG_NONE, NULL,
+  append_submenu (menu, "Show", smenu);
+  append_opengl_item (view, menu, "Select atom(s)", (! at) ? "atom-select" : "clone-select", popm, i, NULL, IMG_NONE, NULL,
                       FALSE, G_CALLBACK(atom_properties), & view -> colorp[at][2], FALSE, FALSE, FALSE, sensitive);
-  append_opengl_item (view, menu, "Advanced", (! at) ? "atom-lab-adv" : "clone-lab-adv", 0, NULL, IMG_STOCK, DPROPERTIES,
+  append_opengl_item (view, menu, "Advanced", (! at) ? "atom-lab-adv" : "clone-lab-adv", popm, i, NULL, IMG_STOCK, DPROPERTIES,
                       FALSE, G_CALLBACK(atom_properties), & view -> colorp[at][1], FALSE, FALSE, FALSE, sensitive);
   return menu;
 }
 
-GMenu * color_atoms_submenu (glwin * view, int at, gboolean sensitive)
+/*
+*  GMenu * color_atoms_submenu (glwin * view, int popm, int at, gboolean sensitive)
+*
+*  Usage: create the 'Atom(s) -> Color(s)' submenu elements
+*
+*  glwin * view       : the target glwin
+*  int popm           : main app (0) or popup (1)
+*  int at             : atoms (0) or clones (1)
+*  gboolean sensitive : menu item sensitivity
+*/
+GMenu * color_atoms_submenu (glwin * view, int popm, int at, gboolean sensitive)
 {
   GMenu * menu = g_menu_new ();
   GMenu * menuc;
@@ -531,10 +732,10 @@ GMenu * color_atoms_submenu (glwin * view, int at, gboolean sensitive)
     }
     strb = g_strdup_printf ("%s", (! at) ? "atom-color" : "clone-color");
     menuc = g_menu_new ();
-    append_opengl_item (view, menuc, strb, strb, i, NULL, IMG_NONE, NULL, TRUE, NULL, NULL, FALSE, FALSE, FALSE, FALSE);
-    append_opengl_item (view, menuc, "More colors ...", strb, i, NULL, IMG_NONE, NULL,
+    append_opengl_item (view, menuc, strb, strb, popm, i, NULL, IMG_NONE, NULL, TRUE, NULL, NULL, FALSE, FALSE, FALSE, FALSE);
+    append_opengl_item (view, menuc, "More colors ...", strb, popm, i, NULL, IMG_NONE, NULL,
                         FALSE, G_CALLBACK(to_run_atom_color_window), & view -> colorp[0][i+at*this_proj -> nspec], FALSE, FALSE, FALSE, sensitive);
-    g_menu_append_submenu (menu, stra, (GMenuModel*)menuc);
+    append_submenu (menu, stra, menuc);
     g_free (stra);
     g_free (strb);
     g_object_unref (menuc);
@@ -542,13 +743,23 @@ GMenu * color_atoms_submenu (glwin * view, int at, gboolean sensitive)
   return menu;
 }
 
-GMenu * show_atoms_submenu (glwin * view, int at, gboolean sensitive)
+/*
+*  GMenu * show_atoms_submenu (glwin * view, int popm, int at, gboolean sensitive)
+*
+*  Usage: create the 'Atom(s) -> Show' submenu elements
+*
+*  glwin * view       : the target glwin
+*  int popm           : main app (0) or popup (1)
+*  int at             : atoms (0) or clones (1)
+*  gboolean sensitive : menu item sensitivity
+*/
+GMenu * show_atoms_submenu (glwin * view, int popm, int at, gboolean sensitive)
 {
   GMenu * menu = g_menu_new ();
   gchar * str;
   struct project * this_proj = get_project_by_id (view -> proj);
   int i;
-  for (i=0; i< this_proj -> nspec; i++)
+  for (i=0; i<this_proj -> nspec; i++)
   {
     if (at == 0)
     {
@@ -558,7 +769,7 @@ GMenu * show_atoms_submenu (glwin * view, int at, gboolean sensitive)
     {
       str = g_strdup_printf ("%s*", this_proj -> chemistry -> label[i]);
     }
-    append_opengl_item (view, menu, str, (! at) ? "show-atom" : "show-clone", i, NULL, IMG_NONE, NULL,
+    append_opengl_item (view, menu, str, (! at) ? "show-atom" : "show-clone", popm, i, NULL, IMG_NONE, NULL,
                         FALSE, G_CALLBACK(show_hide_atoms), & view -> colorp[at][i],
                         TRUE, view -> anim -> last -> img -> show_atom[at][i], FALSE, sensitive);
     g_free (str);
@@ -566,15 +777,24 @@ GMenu * show_atoms_submenu (glwin * view, int at, gboolean sensitive)
   return menu;
 }
 
-GMenu * menu_atoms (glwin * view, int at)
+/*
+*  GMenu * menu_atoms (glwin * view, int popm, int at)
+*
+*  Usage: create the 'Atom(s)' submenu elements
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*  int at       : atoms (0) or clones (1)
+*/
+GMenu * menu_atoms (glwin * view, int popm, int at)
 {
   int i = view -> anim -> last -> img -> style;
   gboolean sensitive = (at) ? view -> anim -> last -> img -> draw_clones : TRUE;
 
   GMenu * menu = g_menu_new ();
-  g_menu_append_submenu (menu, "Show", (GMenuModel*) show_atoms_submenu(view, at, sensitive));
-  g_menu_append_submenu (menu, "Color(s)", (GMenuModel*) color_atoms_submenu (view, at, sensitive));
-  g_menu_append_submenu (menu, "Label(s)", (GMenuModel*) label_atoms_submenu (view, at, sensitive));
+  append_submenu (menu, "Show", show_atoms_submenu(view, popm, at, sensitive));
+  append_submenu (menu, "Color(s)", color_atoms_submenu (view, popm, at, sensitive));
+  append_submenu (menu, "Label(s)", label_atoms_submenu (view, popm, at, sensitive));
   GMenuItem * item;
   if (i == SPHERES || i == BALL_AND_STICK)
   {
@@ -588,7 +808,7 @@ GMenu * menu_atoms (glwin * view, int at)
     g_menu_item_set_attribute (item, "custom", "s", (at) ? "clone-pts" : "atom-pts", NULL);
     g_menu_append_item (menu, item);
   }
-  append_opengl_item (view, menu, "Advanced", (! at) ? "atom-advanced" : "clone-advanced", 0, NULL, IMG_STOCK, DPROPERTIES,
+  append_opengl_item (view, menu, "Advanced", (! at) ? "atom-advanced" : "clone-advanced", popm, popm, NULL, IMG_STOCK, DPROPERTIES,
                       FALSE, G_CALLBACK(atom_properties), & view -> colorp[at][0],
                       FALSE, FALSE, FALSE, sensitive);
   return menu;

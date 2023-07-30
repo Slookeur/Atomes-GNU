@@ -11,12 +11,42 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'm_quality.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  void set_quality (int q, glwin * view);
+
+  G_MODULE_EXPORT void set_quality_spin (GtkSpinButton * res, gpointer data);
+  G_MODULE_EXPORT void window_quality (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void to_window_quality (GSimpleAction * action, GVariant * parameter, gpointer data);
+
+  GtkWidget * menu_quality (glwin * view, int id);
+
+  GMenu * menu_quality (glwin * view, int popm);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "project.h"
 #include "glwindow.h"
 #include "glview.h"
 
+/*
+*  void set_quality (int q, glwin * view)
+*
+*  Usage:
+*
+*  int q        :
+*  glwin * view : the target glwin
+*/
 void set_quality (int q, glwin * view)
 {
   view -> anim -> last -> img -> quality = q;
@@ -29,6 +59,14 @@ void set_quality (int q, glwin * view)
 #endif
 }
 
+/*
+*  G_MODULE_EXPORT void set_quality_spin (GtkSpinButton * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkSpinButton * res :
+*  gpointer data       : the associated data pointer
+*/
 G_MODULE_EXPORT void set_quality_spin (GtkSpinButton * res, gpointer data)
 {
   glwin * view = (glwin *)data;
@@ -36,6 +74,14 @@ G_MODULE_EXPORT void set_quality_spin (GtkSpinButton * res, gpointer data)
   update_entry_int (GTK_ENTRY(res), view -> anim -> last -> img -> quality);
 }
 
+/*
+*  G_MODULE_EXPORT void window_quality (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void window_quality (GtkWidget * widg, gpointer data)
 {
   glwin * view = (glwin *)data;
@@ -59,6 +105,14 @@ G_MODULE_EXPORT void window_quality (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK3
+/*
+*  GtkWidget * menu_quality (glwin * view, int id)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int id       : main app (0) or popup (1)
+*/
 GtkWidget * menu_quality (glwin * view, int id)
 {
   GtkWidget * menuq = gtk_menu_new ();
@@ -75,20 +129,37 @@ GtkWidget * menu_quality (glwin * view, int id)
   }
   GtkWidget * qs = create_menu_item_from_widget (fixed, FALSE, FALSE, FALSE);
   g_signal_connect (G_OBJECT (qs), "activate", G_CALLBACK(window_quality), view);
-  add_menu_child (menuq, qs);
+  gtk_menu_shell_append ((GtkMenuShell *)menuq, qs);
   return menuq;
 }
 #else
+/*
+*  G_MODULE_EXPORT void to_window_quality (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void to_window_quality (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   window_quality (NULL, data);
 }
 
-GMenu * menu_quality (glwin * view)
+/*
+*  GMenu * menu_quality (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*/
+GMenu * menu_quality (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
   gchar * str = g_strdup_printf ("Quality: %d", view -> anim -> last -> img -> quality);
-  append_opengl_item (view, menu, str, "quality", 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_window_quality), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
+  append_opengl_item (view, menu, str, "quality", popm, popm, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_window_quality), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
   g_free (str);
   return menu;
 }

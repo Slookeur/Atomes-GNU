@@ -11,6 +11,36 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'main.c'
+*
+*  Contains:
+*
+
+ - The initialization of the atomes program
+ - The subroutines required to read data from the command line
+
+*
+*  List of subroutines:
+
+  int test_this_arg (gchar * arg);
+  int main (int argc, char *argv[]);
+
+  gboolean destroy_func (gpointer user_data);
+
+  G_MODULE_EXPORT gboolean splashdraw (GtkWidget * widget, cairo_t * cr, gpointer data);
+
+  void printhelp();
+  void printversion ();
+  void read_this_file (int file_type, gchar * this_file);
+  void open_this_data_file (int file_type, gchar * file_name);
+
+  G_MODULE_EXPORT void run_program (GApplication * app, gpointer data);
+
+  GtkWidget * create_splash_window ();
+
+*/
+
 #include <libavcodec/avcodec.h>
 #include <libavutil/avutil.h>
 #include <libavformat/avformat.h>
@@ -19,13 +49,10 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "version.h"
 #include "global.h"
 #include "bind.h"
-#include "gui.h"
-#include "xmlrw.h"
 #include "callbacks.h"
 #include "interface.h"
 #include "project.h"
 #include "workspace.h"
-#include "valid.h"
 
 #ifdef G_OS_WIN32
 #define APP_EXTENSION ".exe"
@@ -47,6 +74,13 @@ struct file_list * flist = NULL;
 struct file_list * ftmp = NULL;
 gboolean with_workspace = FALSE;
 
+/*
+*  int test_this_arg (gchar * arg)
+*
+*  Usage: test an argument from the command line
+*
+*  gchar * arg : the argument to test
+*/
 int test_this_arg (gchar * arg)
 {
   char * fext[14]={"-awf", "-apf", " -xyz", "NULL", "-c3d", "-trj", "NULL", "-xdatcar", "NULL", "-pdb", "-ent", "-cif", "-hist", "-ipf"};
@@ -62,6 +96,11 @@ int test_this_arg (gchar * arg)
   return 0;
 }
 
+/*
+*  void printhelp()
+*
+*  Usage: print basic help
+*/
 void printhelp()
 {
   char * help    = "\nUsage: ATOMES [OPTION]\n"
@@ -74,7 +113,7 @@ void printhelp()
                    "  -v, --version             version information\n"
                    "  -h, --help                display this help message\n\n"
                    "files, any number, in any order, in the following formats:\n\n"
-                   "  Atomes workspace file: .awf:\n"
+                   "  Atomes workspace file: .awf\n"
                    "  Atomes prject file: .apf\n"
                    "  XYZ coordinates file: .xyz\n"
                    "  Chem3D coordinates file: .c3d\n"
@@ -106,9 +145,14 @@ void printhelp()
   printf("%s\n", eh);
 }
 
+/*
+*  void printversion ()
+*
+*  Usage: print version information
+*/
 void printversion ()
 {
-  char scanid[80]="\n3D model analysis and edition tool\n";
+  char scanid[80]="\n3D atomistic model analysis, creation/edition and post-processing tool\n";
   char bug[20] = "\nReport a bug to <";
   char eh[4] = ">\n";
 
@@ -180,6 +224,13 @@ void printversion ()
   printf ("%s\n", eh);
 }
 
+/*
+*  gboolean destroy_func (gpointer user_data)
+*
+*  Usage: destroy splash screen
+*
+*  gpointer user_data : the splash screen to destroy
+*/
 gboolean destroy_func (gpointer user_data)
 {
   GtkWidget * splashi = (GtkWidget*) user_data;
@@ -188,6 +239,15 @@ gboolean destroy_func (gpointer user_data)
 }
 
 #ifdef GTK3
+/*
+*  G_MODULE_EXPORT gboolean splashdraw (GtkWidget * widget, cairo_t * cr, gpointer data)
+*
+*  Usage: draw splash screen
+*
+*  GtkWidget * widget : the GtkWidget sending the signal
+*  cairo_t * cr       : the cairo drawing context
+*  gpointer data      : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean splashdraw (GtkWidget * widget, cairo_t * cr, gpointer data)
 {
   cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, 0.0); /* transparent */
@@ -196,6 +256,11 @@ G_MODULE_EXPORT gboolean splashdraw (GtkWidget * widget, cairo_t * cr, gpointer 
 }
 #endif
 
+/*
+*  GtkWidget * create_splash_window ()
+*
+*  Usage: create splash screen window
+*/
 GtkWidget * create_splash_window ()
 {
   GtkWidget * splash_window = new_gtk_window ();
@@ -226,6 +291,14 @@ GtkWidget * create_splash_window ()
   return splash_window;
 }
 
+/*
+*  void read_this_file (int file_type, gchar * this_file)
+*
+*  Usage: read file from the command line
+*
+*  int file_type     : File type
+*  gchar * this_file : File name
+*/
 void read_this_file (int file_type, gchar * this_file)
 {
   FILE * fp = fopen (this_file, dfi[0]);
@@ -247,6 +320,14 @@ void read_this_file (int file_type, gchar * this_file)
   fclose (fp);
 }
 
+/*
+*  void open_this_data_file (int file_type, gchar * file_name)
+*
+*  Usage: open data file from the command line
+*
+*  int file_type     : File type
+*  gchar * file_name : File name
+*/
 void open_this_data_file (int file_type, gchar * file_name)
 {
   gchar * end;
@@ -260,7 +341,6 @@ void open_this_data_file (int file_type, gchar * file_name)
   DIR * d;
   struct dirent * dir;
 #endif
-
   switch (file_type)
   {
     case 1:
@@ -326,7 +406,7 @@ void open_this_data_file (int file_type, gchar * file_name)
       break;
     case 14:
       init_project (TRUE);
-      open_this_isaacs_xml_file (file_name, activep, FALSE);
+      open_this_isaacs_xml_file (g_strdup_printf ("%s", file_name), activep, FALSE);
       break;
     default:
       end = g_strdup_printf ("%c", file_name[strlen(file_name)-1]);
@@ -391,6 +471,14 @@ void open_this_data_file (int file_type, gchar * file_name)
   }
 }
 
+/*
+*  G_MODULE_EXPORT void run_program (GApplication * app, gpointer data)
+*
+*  Usage: run the program
+*
+*  GApplication * app : the application to run
+*  gpointer data      : the associated data pointer
+*/
 G_MODULE_EXPORT void run_program (GApplication * app, gpointer data)
 {
 #ifdef GTK3
@@ -427,25 +515,6 @@ G_MODULE_EXPORT void run_program (GApplication * app, gpointer data)
   {
     g_timeout_add_seconds (1, destroy_func, isplash);
   }
-  char * closure = "Starting Atomes <b>demo</b> version:\n"
-                   "\n"
-                   // "  *  this evaluation version will stop in <b>5 min</b>\n"
-                   "\t- saving features have been disabled !\n"
-                   "\n"
-                   "Interested in purchasing the Atomes program ?\n";
-  registered_atomes =TRUE;
- // (testing_atomes) ? TRUE : validate ();
-  if (! registered_atomes)
-  {
-    show_info (closure, 1, MainWindow);
-    correct_this_window_title (MainWindow, g_strdup_printf ("%s - demo version", PACKAGE));
-    // g_timeout_add_seconds (300, (GSourceFunc )quit_gtk, NULL);
-  }
-  else
-  {
-    // gtk_widget_hide (register_button);
-  }
-
   if (flist)
   {
     ftmp = flist;
@@ -481,6 +550,14 @@ G_MODULE_EXPORT void run_program (GApplication * app, gpointer data)
 #endif
 }
 
+/*
+*  int main (int argc, char *argv[])
+*
+*  Usage: initalization of the atomes program
+*
+*  int argc     : number of argument(s) on the command line
+*  char *argv[] : list of argument(s) on the command line
+*/
 int main (int argc, char *argv[])
 {
   gboolean RUNC = FALSE;

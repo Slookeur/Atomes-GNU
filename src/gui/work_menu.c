@@ -11,6 +11,27 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'work_menu.c'
+*
+*  Contains:
+*
+
+ - The workspace menu GTK3 version
+ - Callbacks for the workspace menu
+
+*
+*  List of subroutines:
+
+  G_MODULE_EXPORT void on_create_new_project (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void leaving_from_menu (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void compute_this_prop (GtkWidget * widg, gpointer data);
+
+  GtkWidget * this_work_menu (int p, int c);
+  GtkWidget * work_menu (int p, int c);
+
+*/
+
 #include "global.h"
 #include "callbacks.h"
 #include "interface.h"
@@ -21,6 +42,14 @@ If not, see <https://www.gnu.org/licenses/> */
 extern G_MODULE_EXPORT void on_calc_activate (GtkWidget * widg, gpointer data);
 extern G_MODULE_EXPORT void set_mode (GtkWidget * widg, gpointer data);
 
+/*
+*  G_MODULE_EXPORT void on_create_new_project (GtkWidget * widg, gpointer data)
+*
+*  Usage: create a new project
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void on_create_new_project (GtkWidget * widg, gpointer data)
 {
   init_project (TRUE);
@@ -29,7 +58,7 @@ G_MODULE_EXPORT void on_create_new_project (GtkWidget * widg, gpointer data)
   apply_project (FALSE);
 #ifdef GTK3
   // GTK3 Menu Action To Check
-  check_menu_item_set_active ((gpointer)active_project -> modelgl -> ogl_mode[1], TRUE);
+  gtk_check_menu_item_set_active ((GtkCheckMenuItem *)active_project -> modelgl -> ogl_mode[1], TRUE);
   set_mode (active_project -> modelgl -> ogl_mode[1], & active_project -> modelgl -> colorp[1][0]);
 #else
   set_mode (NULL, & active_project -> modelgl -> colorp[1][0]);
@@ -37,6 +66,14 @@ G_MODULE_EXPORT void on_create_new_project (GtkWidget * widg, gpointer data)
   prep_calc_actions ();
 }
 
+/*
+*  G_MODULE_EXPORT void leaving_from_menu (GtkWidget * widg, gpointer data)
+*
+*  Usage: leaving atomes ?
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void leaving_from_menu (GtkWidget * widg, gpointer data)
 {
 #ifdef GTK4
@@ -48,6 +85,14 @@ G_MODULE_EXPORT void leaving_from_menu (GtkWidget * widg, gpointer data)
 
 int calc_to_compute;
 
+/*
+*  G_MODULE_EXPORT void compute_this_prop (GtkWidget * widg, gpointer data)
+*
+*  Usage: to compute the 'calc_to_compute'
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void compute_this_prop (GtkWidget * widg, gpointer data)
 {
   activate_project (NULL, data);
@@ -55,7 +100,15 @@ G_MODULE_EXPORT void compute_this_prop (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK3
-GtkWidget * this_work_menu (int id, int p, int c)
+/*
+*  GtkWidget * this_work_menu (int p, int c)
+*
+*  Usage: create the workspace menu GTK3 version with icons
+*
+*  int p  : project id, or -1
+*  int c  : calculation id, or -1
+*/
+GtkWidget * this_work_menu (int p, int c)
 {
   GtkWidget * menu;
   GtkWidget * port;
@@ -84,7 +137,7 @@ GtkWidget * this_work_menu (int id, int p, int c)
     dmenu = gtk_menu_new ();
     gtk3_menu_item (dmenu, "ISAACS Project File '*.ipf'", IMG_FILE, (gpointer)PACKAGE_MOL, G_CALLBACK(on_isaacs_port), GINT_TO_POINTER(1), FALSE, 0, 0, FALSE, FALSE, FALSE);
     gtk3_menu_item (dmenu, "Atomic Coordinates", IMG_FILE, (gpointer)PACKAGE_CON, G_CALLBACK(on_coord_port), GINT_TO_POINTER(1), FALSE, 0, 0, FALSE, FALSE, FALSE);
-    menu_item_set_submenu (port, dmenu);
+    gtk_menu_item_set_submenu ((GtkMenuItem *)port, dmenu);
   }
   else
   {
@@ -110,12 +163,12 @@ GtkWidget * this_work_menu (int id, int p, int c)
     dmenu = gtk_menu_new ();
     gtk3_menu_item (dmenu, "ISAACS Project File '*.ipf'", IMG_FILE, (gpointer)PACKAGE_MOL, G_CALLBACK(on_isaacs_port), GINT_TO_POINTER(1), FALSE, 0, 0, FALSE, FALSE, FALSE);
     gtk3_menu_item (dmenu, "Atomic Coordinates", IMG_FILE, (gpointer)PACKAGE_CON, G_CALLBACK(on_coord_port), GINT_TO_POINTER(1), FALSE, 0, 0, FALSE, FALSE, FALSE);
-    menu_item_set_submenu (port, dmenu);
+    gtk_menu_item_set_submenu ((GtkMenuItem *)port, dmenu);
   }
   add_menu_separator (menu);
   port = gtk3_menu_item (menu, imp_str[0], IMG_FILE, (gpointer)PACKAGE_IMP, NULL, NULL, FALSE, 0, 0, FALSE, FALSE, FALSE);
   dmenu = gtk_menu_new ();
-  menu_item_set_submenu (port, dmenu);
+  gtk_menu_item_set_submenu ((GtkMenuItem *)port, dmenu);
   gtk3_menu_item (dmenu, "ISAACS Project File '*.ipf'", IMG_FILE, (gpointer)PACKAGE_MOL, G_CALLBACK(on_isaacs_port), GINT_TO_POINTER(0), FALSE, 0, 0, FALSE, FALSE, FALSE);
   gtk3_menu_item (dmenu, "Atomic Coordinates", IMG_FILE, (gpointer)PACKAGE_IMP, G_CALLBACK(on_coord_port), GINT_TO_POINTER(0), FALSE, 0, 0, FALSE, FALSE, FALSE);
   add_menu_separator (menu);
@@ -129,7 +182,15 @@ extern void atomes_menu_bar_action (GSimpleAction * action, GVariant * parameter
 extern GMenu * create_workspace_menu (gchar * act, int pop_up, int proj, int calc);
 extern GSimpleAction * pop_act[7];
 
-GtkWidget * work_menu (int id, int p, int c)
+/*
+*  GtkWidget * work_menu (int p, int c)
+*
+*  Usage: create the workspace popup menu
+*
+*  int p  : project id, or -1
+*  int c  : calculation id, or -1
+*/
+GtkWidget * work_menu (int p, int c)
 {
   GtkWidget * menu;
 
@@ -175,7 +236,7 @@ GtkWidget * work_menu (int id, int p, int c)
 
   calc_to_compute = (c < AN) ? c : c - 1;
 #ifdef GTK3
-  menu = this_work_menu (1, p, c);
+  menu = this_work_menu (p, c);
   // GMenu * popup = create_workspace_menu ("pop", 1, p, c);
   // gtk_menu_new_from_model (G_MENU_MODEL(popup));
 #else

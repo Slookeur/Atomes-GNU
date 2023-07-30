@@ -11,9 +11,18 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This header file: 'readers.h'
+*
+*  Contains:
+
+*/
+
 #ifndef READERS_H_
 
 #define READERS_H_
+
+#include "read_isaacs.h"
 
 extern double get_z_from_periodic_table (gchar * lab);
 extern void allocatoms (struct project * this_proj);

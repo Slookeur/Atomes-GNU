@@ -85,7 +85,6 @@ AM_FFLAGS = $(OpenMP_FLAGS)
 
 for = fortran/
 gui = gui/
-lic = lic/
 work = workspace/
 proj = project/
 read = project/readers/
@@ -101,7 +100,7 @@ glwin = opengl/win/
 gldraw = opengl/draw/
 gledit = opengl/edit/
 
-inc = -I$(lic) -I$(gui) -I$(work) -I$(proj) -I$(read) -I$(calc) -I$(dlpoly) -I$(lammps) -I$(fields) -I$(cpmd) -I$(cp2k) -I$(curve) -I$(glwin) -I$(gledit) -I$(gldraw) -I$(ogl) -I.
+inc = -I$(gui) -I$(work) -I$(proj) -I$(read) -I$(calc) -I$(dlpoly) -I$(lammps) -I$(fields) -I$(cpmd) -I$(cp2k) -I$(curve) -I$(glwin) -I$(gledit) -I$(gldraw) -I$(ogl) -I.
 includes = $(inc) -DGTK_DISABLE_DEPRECATED
 
 # Use AM_CFLAGS to define additional C flags:
@@ -169,16 +168,14 @@ atomes_gui = $(gui)bdcall.c \
 	     $(gui)spcall.c \
 	     $(gui)sqcall.c \
 	     $(gui)tools.c \
-	     $(gui)work_menu.c \
-	     $(gui)xmlrw.c
-
-atomes_lic = $(lic)valid.c
+	     $(gui)work_menu.c 
 
 atomes_workspace = $(work)modelinfo.c \
 		   $(work)workinfo.c \
 		   $(work)workspace.c
 
-atomes_readers = $(read)read_c3d.c \
+atomes_readers = $(read)read_isaacs.c \
+		 $(read)read_c3d.c \
 		 $(read)read_cif.c \
 		 $(read)read_coord.c \
 		 $(read)read_hist.c \
@@ -360,13 +357,11 @@ atomes_includes = config.h \
 		  global.h \
 		  bind.h \
 		  affero.h \
-		  $(lic)valid.h \
 		  $(gui)callbacks.h \
-		  $(gui)gui.h \
 		  $(gui)interface.h \
-		  $(gui)xmlrw.h \
 		  $(work)workspace.h \
 		  $(proj)project.h \
+		  $(read)read_isaacs.h \
 		  $(read)readers.h \
 		  $(calc)calc.h \
 		  $(cpmd)cpmd.h \
@@ -400,7 +395,6 @@ atomes_SOURCES = \
 	$(atomes_includes) \
 	global.c \
 	$(atomes_gui) \
-	$(atomes_lic) \
 	$(atomes_workspace) \
 	$(atomes_project) \
 	$(atomes_calc) \

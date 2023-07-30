@@ -11,6 +11,25 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'cwidget.c'
+*
+*  Contains:
+*
+
+ - The initialization of the curve widget
+
+*
+*  List of subroutines:
+
+  void curve_default_scale (int rid, int cid);
+  void initcurve (struct project * pid, int rid, int cid);
+  void addcurwidgets (int pid, int rid, int str);
+
+  DataLayout * curve_default_layout (struct project * pid, int rid, int cid);
+
+*/
+
 #include <gtk/gtk.h>
 #include <stdlib.h>
 
@@ -18,6 +37,15 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "interface.h"
 #include "curve.h"
 
+/*
+*  DataLayout * curve_default_layout (struct project * pid, int rid, int cid)
+*
+*  Usage: prepare the default layout for a curve
+*
+*  struct project * pid : the project id
+*  int rid              : the analysis id
+*  int cid              : the curve id
+*/
 DataLayout * curve_default_layout (struct project * pid, int rid, int cid)
 {
   DataLayout * layout = g_malloc0 (sizeof*layout);
@@ -67,6 +95,14 @@ DataLayout * curve_default_layout (struct project * pid, int rid, int cid)
   return layout;
 }
 
+/*
+*  void curve_default_scale (int rid, int cid)
+*
+*  Usage: pick appropriate scale based on the type of analysis
+*
+*  int rid : analysis id
+*  int cid : curve id
+*/
 void curve_default_scale (int rid, int cid)
 {
   if (rid < RI || rid == MS)
@@ -100,6 +136,15 @@ void curve_default_scale (int rid, int cid)
   }
 }
 
+/*
+*  void initcurve (struct project * pid, int rid, int cid)
+*
+*  Usage: initialize curve widget
+*
+*  struct project * pid : the project id
+*  int rid              : the analysis id
+*  int cid              : the curve id
+*/
 void initcurve (struct project * pid, int rid, int cid)
 {
   int k;
@@ -194,6 +239,15 @@ void initcurve (struct project * pid, int rid, int cid)
   activer = rid;
 }
 
+/*
+*  void addcurwidgets (int pid, int rid, int str)
+*
+*  Usage: add curve widgets to the project
+*
+*  int pid : the project id
+*  int rid : the analysis id
+*  int str : at the project creation stage (1) or latter on (0)
+*/
 void addcurwidgets (int pid, int rid, int str)
 {
   int j, k, l;

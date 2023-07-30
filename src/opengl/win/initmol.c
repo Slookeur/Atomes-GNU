@@ -11,9 +11,37 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'initmol.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  int * merge_mol_data (int val_a, int val_b, int table_a[val_a], int table_b[val_b]);
+
+  gboolean are_identical_molecules (struct search_molecule * mol_a, struct search_molecule * mol_b);
+
+  void duplicate_molecule (struct molecule * new_mol, struct search_molecule * old_mol);
+  void allocate_mol_for_step_ (int * sid, int * mol_in_step);
+  void allocate_mol_data_ ();
+  void send_mol_neighbors_ (int * stp, int * mol, int * aid, int * nvs, int neigh[* nvs]);
+  void update_mol_details (struct search_molecule * mol, int sp, int cp);
+  void send_mol_details_ (int * stp, int * mol, int * ats, int * sps, int spec_in_mol[* sps], int atom_in_mol[* ats]);
+  void free_search_molecule_data (struct search_molecule * smol);
+  void setup_molecules_ (int * stepid);
+  void setup_menu_molecules_ ();
+  void setup_fragments_ (int * sid, int coord[active_project -> natomes]);
+
+  struct search_molecule * duplicate_search_molecule (struct search_molecule * old_mol);
+
+*/
+
 #include "global.h"
 #include "interface.h"
-#include "gui.h"
 #include "bind.h"
 #include "color_box.h"
 #include "glwindow.h"
@@ -42,6 +70,14 @@ struct search_molecule * tmp_search = NULL;
 struct search_molecule ** in_calc_mol = NULL;
 extern struct molecule * tmp_mol;
 
+/*
+*  void duplicate_molecule (struct molecule * new_mol, struct search_molecule * old_mol)
+*
+*  Usage: create a copy of a molecule data structure
+*
+*  struct molecule * new_mol        : the new molecule
+*  struct search_molecule * old_mol : the molecule to copy
+*/
 void duplicate_molecule (struct molecule * new_mol, struct search_molecule * old_mol)
 {
   new_mol -> id = old_mol -> id;
@@ -53,6 +89,13 @@ void duplicate_molecule (struct molecule * new_mol, struct search_molecule * old
   new_mol -> species = duplicate_int (active_project -> nspec, old_mol -> species);
 }
 
+/*
+*  struct search_molecule * duplicate_search_molecule (struct search_molecule * old_mol)
+*
+*  Usage: create a copy of a search molecule data structure
+*
+*  struct search_molecule * old_mol : the search molecule data structure to copy
+*/
 struct search_molecule * duplicate_search_molecule (struct search_molecule * old_mol)
 {
   struct search_molecule * new_mol = g_malloc0(sizeof*new_mol);
@@ -98,12 +141,25 @@ struct search_molecule * duplicate_search_molecule (struct search_molecule * old
   return new_mol;
 }
 
+/*
+*  void allocate_mol_for_step_ (int * sid, int * mol_in_step)
+*
+*  Usage: allocate the data to store molecule information for a MD step
+*
+*  int * sid         : the MD step
+*  int * mol_in_step : the number of molecule(s) for this MD step
+*/
 void allocate_mol_for_step_ (int * sid, int * mol_in_step)
 {
   in_calc_mol[* sid -1] = g_malloc0(* mol_in_step*sizeof*in_calc_mol[* sid -1]);
   active_project -> modelfc -> mol_by_step[* sid - 1] = * mol_in_step;
 }
 
+/*
+*  void allocate_mol_data_ ()
+*
+*  Usage: allocate data to store molecule information
+*/
 void allocate_mol_data_ ()
 {
   int i;
@@ -132,6 +188,17 @@ void allocate_mol_data_ ()
   }
 }
 
+/*
+*  void send_mol_neighbors_ (int * stp, int * mol, int * aid, int * nvs, int neigh[* nvs])
+*
+*  Usage: update molecule typology information from Fortran90
+*
+*  int * stp        : the MD step
+*  int * mol        : the molecule id
+*  int * aid        : the atom id
+*  int * nvs        : the number of neighbor(s) for this atom
+*  int neigh[* nvs] : the list of neighbor(s) for this atom
+*/
 void send_mol_neighbors_ (int * stp, int * mol, int * aid, int * nvs, int neigh[* nvs])
 {
   int i, j, k, l, m, n, o, p, q, r, s, t, u;
@@ -168,10 +235,18 @@ void send_mol_neighbors_ (int * stp, int * mol, int * aid, int * nvs, int neigh[
   }
 }
 
-void update_mol_details (struct search_molecule * mol, int at, int sp, int cp)
+/*
+*  void update_mol_details (struct search_molecule * mol, int sp, int cp)
+*
+*  Usage: update molecule information
+*
+*  struct search_molecule * mol : the molecule to update
+*  int sp                       : the chemical species
+*  int cp                       : the partial coordination id
+*/
+void update_mol_details (struct search_molecule * mol, int sp, int cp)
 {
   int i, j, k, l, m;
-  /* The atom 'at' has been added, now we look for standard bonds and angles */
   for (i=0; i<active_project -> nspec; i++)
   {
     j = active_coord -> partial_geo[sp][cp][i];
@@ -191,6 +266,18 @@ void update_mol_details (struct search_molecule * mol, int at, int sp, int cp)
   }
 }
 
+/*
+*  void send_mol_details_ (int * stp, int * mol, int * ats, int * sps, int spec_in_mol[* sps], int atom_in_mol[* ats])
+*
+*  Usage: overall molecule information from Fortran90
+*
+*  int * stp              : the MD step
+*  int * mol              : the molecule id
+*  int * ats              : the number of atom(s) in the molecule
+*  int * sps              : the number of chemical species in the molecule
+*  int spec_in_mol[* sps] : the number of atom(s) by chemical species in the molecule
+*  int atom_in_mol[* ats] : the list of atom(s) in the molecule
+*/
 void send_mol_details_ (int * stp, int * mol, int * ats, int * sps, int spec_in_mol[* sps], int atom_in_mol[* ats])
 {
   int i, j, k, l;
@@ -211,7 +298,7 @@ void send_mol_details_ (int * stp, int * mol, int * ats, int * sps, int spec_in_
     k = active_project -> atoms[0][j].sp;
     l = active_project -> atoms[* stp - 1][j].coord[1];
     tmp_mol -> lgeo[k][pgeo[k]+l] ++;
-    update_mol_details (tmp_mol, j, k, l);
+    update_mol_details (tmp_mol, k, l);
   }
   j = 0;
   for (i=0; i<active_project -> nspec; i++)
@@ -224,6 +311,14 @@ void send_mol_details_ (int * stp, int * mol, int * ats, int * sps, int spec_in_
   tmp_mol -> nangles /= 2;
 }
 
+/*
+*  gboolean are_identical_molecules (struct search_molecule * mol_a, struct search_molecule * mol_b)
+*
+*  Usage: test if 2 molecules are identicals
+*
+*  struct search_molecule * mol_a : the 1st molecule
+*  struct search_molecule * mol_b : the 2nd molecule
+*/
 gboolean are_identical_molecules (struct search_molecule * mol_a, struct search_molecule * mol_b)
 {
   int i, j, k;
@@ -279,6 +374,16 @@ gboolean are_identical_molecules (struct search_molecule * mol_a, struct search_
   return TRUE;
 }
 
+/*
+*  int * merge_mol_data (int val_a, int val_b, int table_a[val_a], int table_b[val_b])
+*
+*  Usage: merge molecule a and molecule b data
+*
+*  int val_a          : multiplicity for molecule a
+*  int val_b          : multiplicity for molecule b
+*  int table_a[val_a] : the list of molecular fragment(s) for molecule a
+*  int table_a[val_a] : the list of molecular fragment(s) for molecule b
+*/
 int * merge_mol_data (int val_a, int val_b, int table_a[val_a], int table_b[val_b])
 {
   int * p_data;
@@ -296,6 +401,13 @@ int * merge_mol_data (int val_a, int val_b, int table_a[val_a], int table_b[val_
   return p_data;
 }
 
+/*
+*  void free_search_molecule_data (struct search_molecule * smol)
+*
+*  Usage: free search molecule data structure
+*
+*  struct search_molecule * smol : the search molecule data structure to free
+*/
 void free_search_molecule_data (struct search_molecule * smol)
 {
   int i, j;
@@ -320,6 +432,13 @@ void free_search_molecule_data (struct search_molecule * smol)
   g_free (smol -> fragments);
 }
 
+/*
+*  void setup_molecules_ (int * stepid)
+*
+*  Usage: setup molecule data
+*
+*  int * stepid : the MD step
+*/
 void setup_molecules_ (int * stepid)
 {
   int i, j, k, l, m, n;
@@ -391,6 +510,11 @@ void setup_molecules_ (int * stepid)
   g_free (first_mol);
 }
 
+/*
+*  void setup_menu_molecules_ ()
+*
+*  Usage: prepare the menu elements related to molecule(s)
+*/
 void setup_menu_molecules_ ()
 {
   int i, j;
@@ -408,6 +532,14 @@ void setup_menu_molecules_ ()
   init_menu_fragmol_ (& i);
 }
 
+/*
+*  void setup_fragments_ (int * sid, int coord[active_project -> natomes])
+*
+*  Usage: atom(s) fragment(s) information from Fortran90
+*
+*  int * sid                            : the MD step
+*  int coord[active_project -> natomes] : the fragment(s) information
+*/
 void setup_fragments_ (int * sid, int coord[active_project -> natomes])
 {
   int i;

@@ -11,6 +11,25 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'm_proj.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  G_MODULE_EXPORT void set_camera_pos (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void to_set_camera_pos (GSimpleAction * action, GVariant * parameter, gpointer data);
+
+  GtkWidget * menu_proj (glwin * view);
+
+  GMenu * menu_proj (glwin * view, int popm);
+
+*/
+
 #include "global.h"
 #include "glview.h"
 #include "glwindow.h"
@@ -24,6 +43,14 @@ enum position {
   BACK = 5,
 };
 
+/*
+*  G_MODULE_EXPORT void set_camera_pos (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_camera_pos (GtkWidget * widg, gpointer data)
 {
   tint * id = (tint *)data;
@@ -70,44 +97,68 @@ G_MODULE_EXPORT void set_camera_pos (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK3
+/*
+*  GtkWidget * menu_proj (glwin * view)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*/
 GtkWidget * menu_proj (glwin * view)
 {
   GtkWidget * menup = gtk_menu_new ();
   GtkWidget * r = create_menu_item (FALSE, "Right [1, 0, 0]");
   g_signal_connect (G_OBJECT (r), "activate", G_CALLBACK(set_camera_pos), & view -> colorp[RIGHT][0]);
-  add_menu_child (menup, r);
+  gtk_menu_shell_append ((GtkMenuShell *)menup, r);
   GtkWidget * l = create_menu_item (FALSE, "Left [-1, 0, 0]");
   g_signal_connect (G_OBJECT (l), "activate", G_CALLBACK(set_camera_pos), & view -> colorp[LEFT][0]);
-  add_menu_child (menup, l);
+  gtk_menu_shell_append ((GtkMenuShell *)menup, l);
   GtkWidget * t = create_menu_item (FALSE, "Top [0, 1, 0]");
   g_signal_connect (G_OBJECT (t), "activate", G_CALLBACK(set_camera_pos), & view -> colorp[TOP][0]);
-  add_menu_child (menup, t);
+  gtk_menu_shell_append ((GtkMenuShell *)menup, t);
   GtkWidget * b = create_menu_item (FALSE, "Bottom [0, -1, 0]");
   g_signal_connect (G_OBJECT (b), "activate", G_CALLBACK(set_camera_pos), & view -> colorp[BOTTOM][0]);
-  add_menu_child (menup, b);
+  gtk_menu_shell_append ((GtkMenuShell *)menup, b);
   GtkWidget * f = create_menu_item (FALSE, "Front [0, 0, 1]");
   g_signal_connect (G_OBJECT (f), "activate", G_CALLBACK(set_camera_pos), & view -> colorp[FRONT][0]);
-  add_menu_child (menup, f);
+  gtk_menu_shell_append ((GtkMenuShell *)menup, f);
   GtkWidget * a = create_menu_item (FALSE, "Back [0, 0, -1]");
   g_signal_connect (G_OBJECT (a), "activate", G_CALLBACK(set_camera_pos), & view -> colorp[BACK][0]);
-  add_menu_child (menup, a);
+  gtk_menu_shell_append ((GtkMenuShell *)menup, a);
 
   return menup;
 }
 #else
+/*
+*  G_MODULE_EXPORT void to_set_camera_pos (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void to_set_camera_pos (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   set_camera_pos (NULL, data);
 }
 
-GMenu * menu_proj (glwin * view)
+/*
+*  GMenu * menu_proj (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*/
+GMenu * menu_proj (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
   gchar * projection[6]={"Right [1, 0, 0]", "Left [-1, 0, 0]", "Top [0, 1, 0]", "Bottom [0, -1, 0]", "Front [0, 0, 1]", "Back [0, 0, -1]"};
   int i;
   for (i=0; i<6; i++)
   {
-    append_opengl_item (view, menu, projection[i], "proj", 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_set_camera_pos), & view -> colorp[i][0], FALSE, FALSE, FALSE, TRUE);
+    append_opengl_item (view, menu, projection[i], "proj", popm, i, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_set_camera_pos), & view -> colorp[i][0], FALSE, FALSE, FALSE, TRUE);
   }
   return menu;
 }

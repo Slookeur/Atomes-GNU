@@ -11,9 +11,43 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'atom_action.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  int action_atoms_from_project (struct project * this_proj, atom_search * asearch, gboolean visible);
+
+  gboolean do_we_have_objects_in_selection (struct project * this_proj, atom_search * asearch, gboolean editing);
+
+  void free_dummies (struct dummy_atom * tmp_pick);
+  void clean_this_project (struct project * this_proj);
+  void clean_motion_search (struct project * this_proj, atom_search * asearch, int sid);
+  void clean_all_trees (atom_search * asearch, struct project * this_proj);
+  void apply_action (struct project * this_proj, atom_search * asearch);
+  void prepare_random_action (struct project * this_proj, atom_search * asearch);
+
+  G_MODULE_EXPORT void take_action (GtkButton * but, gpointer data);
+
+  atom_search * duplicate_atom_search (atom_search * asearch);
+
+*/
+
 #include "atom_edit.h"
 #include "curve.h"
 
+/*
+*  void free_dummies (struct dummy_atom * tmp_pick)
+*
+*  Usage:
+*
+*  struct dummy_atom * tmp_pick :
+*/
 void free_dummies (struct dummy_atom * tmp_pick)
 {
   while (tmp_pick)
@@ -32,6 +66,13 @@ void free_dummies (struct dummy_atom * tmp_pick)
   }
 }
 
+/*
+*  void clean_this_project (struct project * this_proj)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*/
 void clean_this_project (struct project * this_proj)
 {
   int i, j;
@@ -112,6 +153,15 @@ void clean_this_project (struct project * this_proj)
   prepare_opengl_menu_bar (opengl_project -> modelgl);
 }
 
+/*
+*  void clean_motion_search (struct project * this_proj, atom_search * asearch, int sid)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  atom_search * asearch      :
+*  int sid                    :
+*/
 void clean_motion_search (struct project * this_proj, atom_search * asearch, int sid)
 {
   int i;
@@ -136,6 +186,15 @@ void clean_motion_search (struct project * this_proj, atom_search * asearch, int
   this_proj -> modelgl -> atom_win -> rebuilt[sid] = FALSE;
 }
 
+/*
+*  int action_atoms_from_project (struct project * this_proj, atom_search * asearch, gboolean visible)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  atom_search * asearch      :
+*  gboolean visible           :
+*/
 int action_atoms_from_project (struct project * this_proj, atom_search * asearch, gboolean visible)
 {
   int i, j, k, l, m, n, o, p;
@@ -357,7 +416,7 @@ int action_atoms_from_project (struct project * this_proj, atom_search * asearch
           // GTK3 Menu Action To Check
           if (this_proj -> modelgl -> color_styles[i*ATOM_MAPS])
           {
-            check_menu_item_set_active ((gpointer)this_proj -> modelgl -> color_styles[i*ATOM_MAPS], TRUE);
+            gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> color_styles[i*ATOM_MAPS], TRUE);
             set_color_map (this_proj -> modelgl -> color_styles[i*ATOM_MAPS], & this_proj -> modelgl  -> colorp[i*ATOM_MAPS][0]);
           }
 #endif
@@ -380,7 +439,7 @@ int action_atoms_from_project (struct project * this_proj, atom_search * asearch
         {
           j = i*ATOM_MAPS;
 #ifdef GTK3
-          check_menu_item_set_active ((gpointer)this_proj -> modelgl -> color_styles[j], TRUE);
+          gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> color_styles[j], TRUE);
           set_color_map (this_proj -> modelgl -> color_styles[j], & this_proj -> modelgl -> colorp[j][0]);
           if (i) widget_set_sensitive (this_proj -> modelgl -> color_styles[j+6], 0);
 #endif
@@ -403,12 +462,16 @@ int action_atoms_from_project (struct project * this_proj, atom_search * asearch
     {
       clean_rings_data (i, this_proj -> modelgl);
     }
+#ifdef GTK3
     update_rings_menus (this_proj -> modelgl);
+#endif
   }
   if (this_proj -> modelgl -> chains)
   {
     clean_chains_data (this_proj -> modelgl);
+#ifdef GTK3
     update_chains_menus (this_proj -> modelgl);
+#endif
   }
   clean_volumes_data (this_proj -> modelgl);
 
@@ -420,6 +483,7 @@ int action_atoms_from_project (struct project * this_proj, atom_search * asearch
 
   struct atom * new_list = NULL;
   struct atom * tmp_new = NULL;
+  gboolean * showfrag;
   int ** tmpgeo[2];
   int new_atoms = 0;
   int * old_id;
@@ -516,15 +580,17 @@ int action_atoms_from_project (struct project * this_proj, atom_search * asearch
     {
       if (asearch -> update_bonding)
       {
-        remove_bonds_from_project (this_proj, old_id, new_atoms, new_list,
-                                  ((asearch -> action == DISPL) || (asearch -> action == RANMOVE)) ? FALSE : TRUE);
+        showfrag = remove_bonds_from_project (this_proj, NULL, old_id, new_atoms, new_list, ((asearch -> action == DISPL) || (asearch -> action == RANMOVE)) ? FALSE : TRUE);
       }
     }
     else
     {
       i = this_proj -> coord -> totcoord[2] + edit -> coord -> totcoord[2];
       showfrag = allocbool (i);
-      for (j=0; j<this_proj -> coord -> totcoord[2]; j++) showfrag[j] = this_proj -> modelgl -> anim -> last -> img -> show_coord[2][j];
+      for (j=0; j<this_proj -> coord -> totcoord[2]; j++)
+      {
+        showfrag[j] = this_proj -> modelgl -> anim -> last -> img -> show_coord[2][j];
+      }
       for (j=this_proj -> coord -> totcoord[2]; j<i; j++) showfrag[j] = TRUE;
     }
     if (! passivating) g_free (old_id);
@@ -533,14 +599,16 @@ int action_atoms_from_project (struct project * this_proj, atom_search * asearch
   {
     for (i=0; i<2; i++)
     {
-      j= edit -> coord -> species;
-      showfrag = allocbool(j);
-      tmpgeo[i] = g_malloc (j*sizeof*tmpgeo[i]);
-      for (k=0; k<j; k++)
+      tmpgeo[i] = g_malloc (edit -> coord -> species*sizeof*tmpgeo[i]);
+      for (j=0; j<edit -> coord -> species; j++)
       {
-        showfrag[k] = TRUE;
-        tmpgeo[i][k] = allocint (edit -> coord -> ntg[i][k]);
+        tmpgeo[i][j] = allocint (edit -> coord -> ntg[i][j]);
       }
+    }
+    showfrag = allocbool(edit -> coord -> totcoord[2]);
+    for (j=0; j<edit -> coord -> totcoord[2]; j++)
+    {
+      showfrag[j] = TRUE;
     }
   }
 
@@ -820,7 +888,7 @@ int action_atoms_from_project (struct project * this_proj, atom_search * asearch
     this_proj -> natomes = new_atoms;
   }
   // Active project changes in the next call
-  recover_opengl_data (this_proj, nmols, edit -> add_spec, rem_spec, spid, spdel, tmpgeo, asearch -> update_bonding);
+  recover_opengl_data (this_proj, nmols, edit -> add_spec, rem_spec, spid, spdel, tmpgeo, showfrag, asearch -> update_bonding);
 
 #ifdef DEBUG
   if (this_proj -> natomes)
@@ -942,6 +1010,14 @@ int action_atoms_from_project (struct project * this_proj, atom_search * asearch
   }
 }
 
+/*
+*  void clean_all_trees (atom_search * asearch, struct project * this_proj)
+*
+*  Usage:
+*
+*  atom_search * asearch      :
+*  struct project * this_proj : the target project
+*/
 void clean_all_trees (atom_search * asearch, struct project * this_proj)
 {
   int i, j;
@@ -1016,6 +1092,14 @@ void clean_all_trees (atom_search * asearch, struct project * this_proj)
   for (i=0 ;i<2; i++) this_proj -> modelgl -> atom_win -> adv_bonding[i] = this_proj -> modelgl -> adv_bonding[i];
 }
 
+/*
+*  void apply_action (struct project * this_proj, atom_search * asearch)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  atom_search * asearch      :
+*/
 void apply_action (struct project * this_proj, atom_search * asearch)
 {
   gchar * str;
@@ -1079,6 +1163,14 @@ void apply_action (struct project * this_proj, atom_search * asearch)
   clean_other_window_after_edit (this_proj);
 }
 
+/*
+*  void prepare_random_action (struct project * this_proj, atom_search * asearch)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  atom_search * asearch      :
+*/
 void prepare_random_action (struct project * this_proj, atom_search * asearch)
 {
   int i, j, k, l, m, n, o, p, q;
@@ -1268,6 +1360,15 @@ void prepare_random_action (struct project * this_proj, atom_search * asearch)
   }
 }
 
+/*
+*  gboolean do_we_have_objects_in_selection (struct project * this_proj, atom_search * asearch, gboolean editing)
+*
+*  Usage:
+*
+*  struct project * this_proj : the target project
+*  atom_search * asearch      :
+*  gboolean editing           :
+*/
 gboolean do_we_have_objects_in_selection (struct project * this_proj, atom_search * asearch, gboolean editing)
 {
   int i, j, k, l, m, n, o, p, q;
@@ -1862,6 +1963,13 @@ gboolean do_we_have_objects_in_selection (struct project * this_proj, atom_searc
   return taking_action;
 }
 
+/*
+*  atom_search * duplicate_atom_search (atom_search * asearch)
+*
+*  Usage:
+*
+*  atom_search * asearch :
+*/
 atom_search * duplicate_atom_search (atom_search * asearch)
 {
   atom_search * bsearch = g_malloc0 (sizeof*bsearch);
@@ -1895,6 +2003,14 @@ atom_search * duplicate_atom_search (atom_search * asearch)
   return bsearch;
 }
 
+/*
+*  G_MODULE_EXPORT void take_action (GtkButton * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkButton * but : the GtkButton sending the signal
+*  gpointer data   : the associated data pointer
+*/
 G_MODULE_EXPORT void take_action (GtkButton * but, gpointer data)
 {
   tint * id = (tint *)data;

@@ -11,6 +11,34 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'color_box.c'
+*
+*  Contains:
+*
+
+ - The subroutines to create the color palettes for the menus of the OpenGL window
+ - The callbacks to set the color using the color palettes
+
+*
+*  List of subroutines:
+
+  void get_color (ColRGBA * but, int cid);
+  void color_box (glwin * view, int ideo, int spec, int geo);
+
+  G_MODULE_EXPORT void set_back_color (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void set_box_color (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void set_at_color (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void set_rings_color (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void set_total_coord_color (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void set_partial_coord_color (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void set_frag_mol_color (GtkWidget * widg, gpointer data);
+
+  GtkWidget * color_box (glwin * view, int ideo, int spec, int geo);
+  GtkWidget * color_palette (glwin * view, int ideo, int spec, int geo);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "project.h"
@@ -18,6 +46,14 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "color_box.h"
 #include "glview.h"
 
+/*
+*  void get_color (ColRGBA * but, int cid)
+*
+*  Usage: get color from the color palette id
+*
+*  ColRGBA * but : the color to prepare
+*  int cid       : the color palette id, in [0-63]
+*/
 void get_color (ColRGBA * but, int cid)
 {
   int rid = cid / 4;
@@ -28,6 +64,17 @@ void get_color (ColRGBA * but, int cid)
   if (bid == 3) but -> blue = 1.0;
 }
 
+/*
+*  cairo_surface_t * col_surface (double r, double g, double b, int x, int y)
+*
+*  Usage: create a cairo sufrace painted with the appropriate color
+*
+*  double r : red value
+*  double g : green value
+*  double b : blue value
+*  int x    : surface x size
+*  int y    : surface y size
+*/
 cairo_surface_t * col_surface (double r, double g, double b, int x, int y)
 {
   cairo_surface_t * cst;
@@ -40,6 +87,14 @@ cairo_surface_t * col_surface (double r, double g, double b, int x, int y)
   return cst;
 }
 
+/*
+*  G_MODULE_EXPORT void set_back_color (GtkWidget * widg, gpointer data)
+*
+*  Usage: set background color
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_back_color (GtkWidget * widg, gpointer data)
 {
   tint * col = (tint *) data;
@@ -49,6 +104,14 @@ G_MODULE_EXPORT void set_back_color (GtkWidget * widg, gpointer data)
   update (this_proj -> modelgl);
 }
 
+/*
+*  G_MODULE_EXPORT void set_box_color (GtkWidget * widg, gpointer data)
+*
+*  Usage: set box color
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_box_color (GtkWidget * widg, gpointer data)
 {
   tint * col = (tint *) data;
@@ -58,6 +121,14 @@ G_MODULE_EXPORT void set_box_color (GtkWidget * widg, gpointer data)
   update (this_proj -> modelgl);
 }
 
+/*
+*  G_MODULE_EXPORT void set_at_color (GtkWidget * widg, gpointer data)
+*
+*  Usage: set atomic species color
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_at_color (GtkWidget * widg, gpointer data)
 {
   tint * col = (tint *) data;
@@ -70,6 +141,14 @@ G_MODULE_EXPORT void set_at_color (GtkWidget * widg, gpointer data)
   update (this_proj -> modelgl);
 }
 
+/*
+*  G_MODULE_EXPORT void set_rings_color (GtkWidget * widg, gpointer data)
+*
+*  Usage: set ring polyhedra color
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_rings_color (GtkWidget * widg, gpointer data)
 {
   qint * col = (qint *)data;
@@ -80,6 +159,14 @@ G_MODULE_EXPORT void set_rings_color (GtkWidget * widg, gpointer data)
   update (this_proj -> modelgl);
 }
 
+/*
+*  G_MODULE_EXPORT void set_total_coord_color (GtkWidget * widg, gpointer data)
+*
+*  Usage: set total coordination color
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_total_coord_color (GtkWidget * widg, gpointer data)
 {
   qint * col = (qint *)data;
@@ -92,6 +179,14 @@ G_MODULE_EXPORT void set_total_coord_color (GtkWidget * widg, gpointer data)
   update (this_proj -> modelgl);
 }
 
+/*
+*  G_MODULE_EXPORT void set_partial_coord_color (GtkWidget * widg, gpointer data)
+*
+*  Usage: set partial coordination color
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_partial_coord_color (GtkWidget * widg, gpointer data)
 {
   qint * col = (qint *)data;
@@ -104,6 +199,14 @@ G_MODULE_EXPORT void set_partial_coord_color (GtkWidget * widg, gpointer data)
   update (this_proj -> modelgl);
 }
 
+/*
+*  G_MODULE_EXPORT void set_frag_mol_color (GtkWidget * widg, gpointer data)
+*
+*  Usage: set fragment color
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_frag_mol_color (GtkWidget * widg, gpointer data)
 {
   qint * col = (qint *)data;
@@ -117,8 +220,28 @@ G_MODULE_EXPORT void set_frag_mol_color (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  void color_box (glwin * view, int ideo, int spec, int geo)
+*
+*  Usage: create the color palette menus data pointers GTK4
+*
+*  glwin * view : the target glwin
+*  int ideo     : geometry id or else
+*  int spec     : species or else
+*  int geo      : geometry or else
+*/
 void color_box (glwin * view, int ideo, int spec, int geo)
 #else
+/*
+*  GtkWidget * color_box (glwin * view, int ideo, int spec, int geo)
+*
+*  Usage: create the color palette pointers and menus GTK3 version
+*
+*  glwin * view : the target glwin
+*  int ideo     : geometry id or else
+*  int spec     : species or else
+*  int geo      : geometry or else
+*/
 GtkWidget * color_box (glwin * view, int ideo, int spec, int geo)
 #endif
 {
@@ -227,7 +350,7 @@ GtkWidget * color_box (glwin * view, int ideo, int spec, int geo)
   }
 #ifdef GTK3
   but = create_menu_item (FALSE, "More colors ...");
-  add_menu_child (coltable, but);
+  gtk_menu_shell_append ((GtkMenuShell *)coltable, but);
 // #endif
   if (ideo < -2)
   {
@@ -263,6 +386,16 @@ GtkWidget * color_box (glwin * view, int ideo, int spec, int geo)
 }
 
 #ifdef GTK4
+/*
+*  GtkWidget * color_palette (glwin * view, int ideo, int spec, int geo)
+*
+*  Usage: create the color palette menus GTK4 version
+*
+*  glwin * view : the target glwin
+*  int ideo     : geometry id or else
+*  int spec     : species or else
+*  int geo      : geometry or else
+*/
 GtkWidget * color_palette (glwin * view, int ideo, int spec, int geo)
 {
   int l, m, n, p;

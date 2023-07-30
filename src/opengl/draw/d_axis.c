@@ -11,6 +11,29 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'd_axis.c'
+*
+*  Contains:
+*
+
+ - The subroutines to prepare the axis OpenGL rendering
+
+*
+*  List of subroutines:
+
+  int create_axis_lists ();
+
+  void setup_arrow (float * vert, vec3_t a, vec3_t b, vec3_t c, vec3_t d, vec3_t e);
+  void init_axis_param ();
+  void prepare_axis_data (float * vert_a, float * vert_b, float * vert_c);
+
+  ColRGBA color_axis (int id);
+
+  mat4_t create_axis_matrices (int type);
+
+*/
+
 #include "global.h"
 #include "glview.h"
 
@@ -36,6 +59,13 @@ float axis_radius;
 float arrow_base;
 float label_pos;
 
+/*
+*  ColRGBA color_axis (int id)
+*
+*  Usage: get axis color
+*
+*  int id : axis x (0), y(1) or z(2)
+*/
 ColRGBA color_axis (int id)
 {
   if (plot -> axis_color != NULL)
@@ -53,7 +83,14 @@ ColRGBA color_axis (int id)
   }
 }
 
-mat4_t create_axis_matrices (int type, vec3_t pos)
+/*
+*  mat4_t create_axis_matrices (int type)
+*
+*  Usage: create axis OpenGL rendering matrices
+*
+*  int type   : axis type (standard: 0, atom edition viewer axis: 1)
+*/
+mat4_t create_axis_matrices (int type)
 {
   GLfloat x, y, z;
   float from_edge = 50.0;
@@ -121,6 +158,18 @@ mat4_t create_axis_matrices (int type, vec3_t pos)
   return m4_mul (axis_projection_matrix, axis_model_view_matrix);
 }
 
+/*
+*  void setup_arrow (float * vert, vec3_t a, vec3_t b, vec3_t c, vec3_t d, vec3_t e)
+*
+*  Usage: setup axis 3D arrow rendering data
+*
+*  float * vert : the OpenGL buffer data to fill
+*  vec3_t a     : position vector a
+*  vec3_t b     : position vector b
+*  vec3_t c     : position vector c
+*  vec3_t d     : position vector d
+*  vec3_t e     : position vector e
+*/
 void setup_arrow (float * vert, vec3_t a, vec3_t b, vec3_t c, vec3_t d, vec3_t e)
 {
   setup_triangles (vert, a, b, c);
@@ -131,6 +180,11 @@ void setup_arrow (float * vert, vec3_t a, vec3_t b, vec3_t c, vec3_t d, vec3_t e
   setup_triangles (vert, b, d, e);
 }
 
+/*
+*  void init_axis_param ()
+*
+*  Usage: initialize axis rendering parameters
+*/
 void init_axis_param ()
 {
   arrow_length = 0.5;
@@ -148,6 +202,15 @@ void init_axis_param ()
   }
 }
 
+/*
+*  void prepare_axis_data (float * vert_a, float * vert_b, float * vert_c)
+*
+*  Usage: prepare axis OpenGL rendering data buffer
+*
+*  float * vert_a : OpenGL buffer data to fill
+*  float * vert_b : OpenGL buffer data to fill
+*  float * vert_c : OpenGL buffer data to fill
+*/
 void prepare_axis_data (float * vert_a, float * vert_b, float * vert_c)
 {
   init_axis_param ();
@@ -189,6 +252,11 @@ void prepare_axis_data (float * vert_a, float * vert_b, float * vert_c)
   }
 }
 
+/*
+*  int create_axis_lists ()
+*
+*  Usage: prepare axis OpenGL rendering
+*/
 int create_axis_lists ()
 {
   vec3_t pos;

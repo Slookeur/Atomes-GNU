@@ -59,7 +59,8 @@
         <p>- Bug corrections, see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.12</p>
 	<p>- Improvements:</p>
 	<ul>
-          <li>Code cleaining to remove older file compatibilities on open project</li>
+          <li>Massive code cleaining</li>
+          <li>Massive addition of comments in the code</li>
 	  <li>File association(s) added for standard atomic coordinates</li>
 	  <li>BASH completion adapted accordingly</li>
 	  <li>Separate 'Makefile.am' for architecture independent data</li>

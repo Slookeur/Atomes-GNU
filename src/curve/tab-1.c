@@ -11,6 +11,41 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'tab-1.c'
+*
+*  Contains:
+*
+
+ - The 1st tab of the curve edition dialog
+
+*
+*  List of subroutines:
+
+  void set_frame_style (gpointer data);
+
+  G_MODULE_EXPORT void set_window_size (GtkEntry * maj, gpointer data);
+  G_MODULE_EXPORT void set_title (GtkCheckButton * but, gpointer data);
+  G_MODULE_EXPORT void set_title (GtkToggleButton * but, gpointer data);
+  G_MODULE_EXPORT void set_title_default (GtkCheckButton * but, gpointer data);
+  G_MODULE_EXPORT void set_title_default (GtkToggleButton * but, gpointer data);
+  G_MODULE_EXPORT void set_title_custom (GtkEntry * tit, gpointer data);
+  G_MODULE_EXPORT void set_title_font (GtkFontButton * fontb, gpointer data);
+  G_MODULE_EXPORT void set_title_color (GtkColorChooser * colob, gpointer data);
+  G_MODULE_EXPORT void set_title_pos (GtkEntry * entry, gpointer data);
+  G_MODULE_EXPORT void set_show_frame (GtkCheckButton * but, gpointer data);
+  G_MODULE_EXPORT void set_show_frame (GtkToggleButton * but, gpointer data);
+  G_MODULE_EXPORT void set_background_color (GtkColorChooser * colob, gpointer data);
+  G_MODULE_EXPORT void set_frame_type (GtkComboBox * fbox, gpointer data);
+  G_MODULE_EXPORT void set_frame_line (GtkComboBox * fbox, gpointer data);
+  G_MODULE_EXPORT void set_frame_thickness (GtkEntry * entry, gpointer data);
+  G_MODULE_EXPORT void set_frame_color (GtkColorChooser * colob, gpointer data);
+  G_MODULE_EXPORT void set_frame_pos (GtkEntry * fen, gpointer data);
+
+  GtkWidget * create_tab_1 (gpointer data);
+
+*/
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -43,6 +78,14 @@ qint framxe[4];
 GtkWidget * custom_title = NULL;
 int a, b, c, d;
 
+/*
+*  G_MODULE_EXPORT void set_window_size (GtkEntry * maj, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * maj :
+*  gpointer data  :
+*/
 G_MODULE_EXPORT void set_window_size (GtkEntry * maj, gpointer data)
 {
   const gchar *m;
@@ -81,6 +124,25 @@ G_MODULE_EXPORT void set_window_size (GtkEntry * maj, gpointer data)
   update_entry_int (maj, this_proj -> curves[b][c] -> wsize[d]);
 }
 
+/*
+*  cairo_surface_t * draw_frame_surface (int tf,
+                                         int da,
+                                         double ti,
+                                         double x[2],
+                                         double y[2],
+                                         ColRGBA dcol,
+                                         ColRGBA bcol)
+*
+*  Usage:
+*
+*  int tf       :
+*  int da       :
+*  double ti    :
+*  double x[2]  :
+*  double y[2]  :
+*  ColRGBA dcol :
+*  ColRGBA bcol :
+*/
 cairo_surface_t * draw_frame_surface (int tf,
                                       int da,
                                       double ti,
@@ -104,8 +166,24 @@ cairo_surface_t * draw_frame_surface (int tf,
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void set_title (GtkCheckButton * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkCheckButton * but : the GtkCheckButton sending the signal
+*  gpointer data        : the associated data pointer
+*/
 G_MODULE_EXPORT void set_title (GtkCheckButton * but, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void set_title (GtkToggleButton * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkToggleButton * but : the GtkToggleButton sending the signal
+*  gpointer data         : the associated data pointer
+*/
 G_MODULE_EXPORT void set_title (GtkToggleButton * but, gpointer data)
 #endif
 {
@@ -124,8 +202,24 @@ G_MODULE_EXPORT void set_title (GtkToggleButton * but, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void set_title_default (GtkCheckButton * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkCheckButton * but : the GtkCheckButton sending the signal
+*  gpointer data        : the associated data pointer
+*/
 G_MODULE_EXPORT void set_title_default (GtkCheckButton * but, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void set_title_default (GtkToggleButton * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkToggleButton * but : the GtkToggleButton sending the signal
+*  gpointer data         : the associated data pointer
+*/
 G_MODULE_EXPORT void set_title_default (GtkToggleButton * but, gpointer data)
 #endif
 {
@@ -149,6 +243,14 @@ G_MODULE_EXPORT void set_title_default (GtkToggleButton * but, gpointer data)
   update_curve (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_title_custom (GtkEntry * tit, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * tit : the GtkEntry sending the signal
+*  gpointer data  : the associated data pointer
+*/
 G_MODULE_EXPORT void set_title_custom (GtkEntry * tit, gpointer data)
 {
   tint * ad = (tint *)data;
@@ -162,6 +264,14 @@ G_MODULE_EXPORT void set_title_custom (GtkEntry * tit, gpointer data)
   update_curve (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_title_font (GtkFontButton * fontb, gpointer data)
+*
+*  Usage:
+*
+*  GtkFontButton * fontb :
+*  gpointer data         : the associated data pointer
+*/
 G_MODULE_EXPORT void set_title_font (GtkFontButton * fontb, gpointer data)
 {
   tint * ad = (tint *)data;
@@ -174,6 +284,14 @@ G_MODULE_EXPORT void set_title_font (GtkFontButton * fontb, gpointer data)
   update_curve (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_title_color (GtkColorChooser * colob, gpointer data)
+*
+*  Usage:
+*
+*  GtkColorChooser * colob :
+*  gpointer data           :
+*/
 G_MODULE_EXPORT void set_title_color (GtkColorChooser * colob, gpointer data)
 {
   tint * ad = (tint *)data;
@@ -185,6 +303,14 @@ G_MODULE_EXPORT void set_title_color (GtkColorChooser * colob, gpointer data)
   update_curve (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_title_pos (GtkEntry * entry, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * entry : the GtkEntry sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_title_pos (GtkEntry * entry, gpointer data)
 {
   const gchar * p;
@@ -213,6 +339,13 @@ G_MODULE_EXPORT void set_title_pos (GtkEntry * entry, gpointer data)
   update_curve ((gpointer)& cd);
 }
 
+/*
+*  void set_frame_style (gpointer data)
+*
+*  Usage:
+*
+*  gpointer data :
+*/
 void set_frame_style (gpointer data)
 {
   cairo_surface_t * surf;
@@ -241,8 +374,24 @@ void set_frame_style (gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void set_show_frame (GtkCheckButton * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkCheckButton * but : the GtkCheckButton sending the signal
+*  gpointer data        : the associated data pointer
+*/
 G_MODULE_EXPORT void set_show_frame (GtkCheckButton * but, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void set_show_frame (GtkToggleButton * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkToggleButton * but : the GtkToggleButton sending the signal
+*  gpointer data         : the associated data pointer
+*/
 G_MODULE_EXPORT void set_show_frame (GtkToggleButton * but, gpointer data)
 #endif
 {
@@ -260,6 +409,14 @@ G_MODULE_EXPORT void set_show_frame (GtkToggleButton * but, gpointer data)
   update_curve (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_background_color (GtkColorChooser * colob, gpointer data)
+*
+*  Usage:
+*
+*  GtkColorChooser * colob :
+*  gpointer data           :
+*/
 G_MODULE_EXPORT void set_background_color (GtkColorChooser * colob, gpointer data)
 {
   tint * ad = (tint *)data;
@@ -271,6 +428,14 @@ G_MODULE_EXPORT void set_background_color (GtkColorChooser * colob, gpointer dat
   set_data_style (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_frame_type (GtkComboBox * fbox, gpointer data)
+*
+*  Usage:
+*
+*  GtkComboBox * fbox : the GtkComboBox sending the signal
+*  gpointer data      : the associated data pointer
+*/
 G_MODULE_EXPORT void set_frame_type (GtkComboBox * fbox, gpointer data)
 {
   tint * ad = (tint *)data;
@@ -281,6 +446,14 @@ G_MODULE_EXPORT void set_frame_type (GtkComboBox * fbox, gpointer data)
   set_frame_style (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_frame_line (GtkComboBox * fbox, gpointer data)
+*
+*  Usage:
+*
+*  GtkComboBox * fbox : the GtkComboBox sending the signal
+*  gpointer data      : the associated data pointer
+*/
 G_MODULE_EXPORT void set_frame_line (GtkComboBox * fbox, gpointer data)
 {
   tint * ad = (tint *)data;
@@ -291,6 +464,14 @@ G_MODULE_EXPORT void set_frame_line (GtkComboBox * fbox, gpointer data)
   set_frame_style (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_frame_thickness (GtkEntry * entry, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * entry : the GtkEntry sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_frame_thickness (GtkEntry * entry, gpointer data)
 {
   const gchar * str;
@@ -305,6 +486,14 @@ G_MODULE_EXPORT void set_frame_thickness (GtkEntry * entry, gpointer data)
   set_frame_style (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_frame_color (GtkColorChooser * colob, gpointer data)
+*
+*  Usage:
+*
+*  GtkColorChooser * colob :
+*  gpointer data           :
+*/
 G_MODULE_EXPORT void set_frame_color (GtkColorChooser * colob, gpointer data)
 {
   tint * ad = (tint *)data;
@@ -316,6 +505,14 @@ G_MODULE_EXPORT void set_frame_color (GtkColorChooser * colob, gpointer data)
   set_frame_style (data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_frame_pos (GtkEntry * fen, gpointer data)
+*
+*  Usage:
+*
+*  GtkEntry * fen : the GtkEntry sending the signal
+*  gpointer data  : the associated data pointer
+*/
 G_MODULE_EXPORT void set_frame_pos (GtkEntry * fen, gpointer data)
 {
   qint * cd = (qint *)data;
@@ -388,6 +585,13 @@ G_MODULE_EXPORT void set_frame_pos (GtkEntry * fen, gpointer data)
   set_frame_style (data);
 }
 
+/*
+*  GtkWidget * create_tab_1 (gpointer data)
+*
+*  Usage: handle the creation of the 1st tab of the curve edition dialog
+*
+*  gpointer data :
+*/
 GtkWidget * create_tab_1 (gpointer data)
 {
   GtkWidget * graphbox;
@@ -440,7 +644,7 @@ GtkWidget * create_tab_1 (gpointer data)
   add_box_child_start (GTK_ORIENTATION_HORIZONTAL, ghbox, xyp[1], FALSE, FALSE, 0);
   add_box_child_start (GTK_ORIENTATION_HORIZONTAL, ghbox, markup_label("pixels", -1, -1, 0.0, 0.5), FALSE, FALSE, 20);
 
-  add_box_child_start (GTK_ORIENTATION_VERTICAL, graphbox, create_hsep (), FALSE, FALSE, 5);
+  add_box_child_start (GTK_ORIENTATION_VERTICAL, graphbox, gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), FALSE, FALSE, 5);
   add_box_child_start (GTK_ORIENTATION_VERTICAL, graphbox,
                        check_button ("Insert title", -1, -1, this_proj -> curves[b][c] -> show_title, G_CALLBACK(set_title), data),
                        FALSE, FALSE, 10);
@@ -487,7 +691,7 @@ GtkWidget * create_tab_1 (gpointer data)
   }
   widget_set_sensitive (title_box, this_proj -> curves[b][c] -> show_title);
 
-  add_box_child_start (GTK_ORIENTATION_VERTICAL, graphbox, create_hsep (), FALSE, FALSE, 10);
+  add_box_child_start (GTK_ORIENTATION_VERTICAL, graphbox, gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), FALSE, FALSE, 10);
 
   ghbox = create_hbox (0);
   add_box_child_start (GTK_ORIENTATION_VERTICAL, graphbox, ghbox, FALSE, FALSE, 0);
@@ -496,7 +700,7 @@ GtkWidget * create_tab_1 (gpointer data)
                       color_button (this_proj -> curves[b][c] -> backcolor, TRUE, 100, -1, G_CALLBACK(set_background_color), data),
                       FALSE, FALSE, 40);
 
-  add_box_child_start (GTK_ORIENTATION_VERTICAL, graphbox, create_hsep (), FALSE, FALSE, 10);
+  add_box_child_start (GTK_ORIENTATION_VERTICAL, graphbox, gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), FALSE, FALSE, 10);
 
 // Frame
   add_box_child_start (GTK_ORIENTATION_VERTICAL, graphbox,

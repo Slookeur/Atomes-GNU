@@ -11,6 +11,28 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'ogl_utils.c'
+*
+*  Contains:
+*
+
+ - 2D and 3D calculations utilities for distances and angles
+
+*
+*  List of subroutines:
+
+  double arc_cos (double val);
+
+  struct distance distance_2d (struct atom * at, struct atom * bt);
+  struct distance distance_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt);
+  struct angle angle_2d (struct atom * at, struct atom * bt, struct atom * ct);
+  struct angle angle_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt, struct atom * ct);
+  struct angle dihedral_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt, struct atom * ct, struct atom * dt);
+  struct angle inversion_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt, struct atom * ct, struct atom * dt);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "glview.h"
@@ -19,6 +41,14 @@ If not, see <https://www.gnu.org/licenses/> */
 extern gboolean field_color;
 extern ColRGBA init_color (int id, int numid);
 
+/*
+*  struct distance distance_2d (struct atom * at, struct atom * bt)
+*
+*  Usage: distance between atom a and b in 2D
+*
+*  struct atom * at : atom a
+*  struct atom * bt : atom b
+*/
 struct distance distance_2d (struct atom * at, struct atom * bt)
 {
   struct distance dist;
@@ -30,6 +60,16 @@ struct distance distance_2d (struct atom * at, struct atom * bt)
   return dist;
 }
 
+/*
+*  struct distance distance_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt)
+*
+*  Usage: distance between atom a and b in 3D
+*
+*  cell_info * cell : unit cell
+*  int mdstep       : the MD step
+*  struct atom * at : atom a
+*  struct atom * bt : atom b
+*/
 struct distance distance_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt)
 {
   struct distance dist;
@@ -73,6 +113,13 @@ struct distance distance_3d (cell_info * cell, int mdstep, struct atom * at, str
   return dist;
 }
 
+/*
+*  double arc_cos (double val)
+*
+*  Usage: compute arc cosinus
+*
+*  double val : the angle
+*/
 double arc_cos (double val)
 {
   if (val < -1.0)
@@ -89,6 +136,15 @@ double arc_cos (double val)
   }
 }
 
+/*
+*  struct angle angle_2d (struct atom * at, struct atom * bt, struct atom * ct)
+*
+*  Usage: angle between atom a, b and c in 2D
+*
+*  struct atom * at : atom a
+*  struct atom * bt : atom b
+*  struct atom * ct : atom c
+*/
 struct angle angle_2d (struct atom * at, struct atom * bt, struct atom * ct)
 {
   struct angle theta;
@@ -101,6 +157,17 @@ struct angle angle_2d (struct atom * at, struct atom * bt, struct atom * ct)
   return theta;
 }
 
+/*
+*  struct angle angle_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt, struct atom * ct)
+*
+*  Usage: angle between atom a, b and c in 3D
+*
+*  cell_info * cell : unit cell
+*  int mdstep       : the MD step
+*  struct atom * at : atom a
+*  struct atom * bt : atom b
+*  struct atom * ct : atom c
+*/
 struct angle angle_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt, struct atom * ct)
 {
   struct angle theta;
@@ -114,6 +181,18 @@ struct angle angle_3d (cell_info * cell, int mdstep, struct atom * at, struct at
   return theta;
 }
 
+/*
+*  struct angle dihedral_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt, struct atom * ct, struct atom * dt)
+*
+*  Usage: dihedral between atom a, b, c and d in 3D
+*
+*  cell_info * cell : unit cell
+*  int mdstep       : the MD step
+*  struct atom * at : atom a
+*  struct atom * bt : atom b
+*  struct atom * ct : atom c
+*  struct atom * dt : atom d
+*/
 struct angle dihedral_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt, struct atom * ct, struct atom * dt)
 {
   struct angle phi;
@@ -138,6 +217,18 @@ struct angle dihedral_3d (cell_info * cell, int mdstep, struct atom * at, struct
   return phi;
 }
 
+/*
+*  struct angle inversion_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt, struct atom * ct, struct atom * dt)
+*
+*  Usage: inversion angle between atom a, b, c and d in 3D
+*
+*  cell_info * cell : unit cell
+*  int mdstep       : the MD step
+*  struct atom * at : atom a
+*  struct atom * bt : atom b
+*  struct atom * ct : atom c
+*  struct atom * dt : atom d
+*/
 struct angle inversion_3d (cell_info * cell, int mdstep, struct atom * at, struct atom * bt, struct atom * ct, struct atom * dt)
 {
   struct angle inv;

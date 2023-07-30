@@ -11,9 +11,15 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
-void set_advanced_bonding_menus (glwin * view);
+/*
+* This header file: 'initcoord.h'
+*/
+
+#ifdef GTK3
 void prep_all_coord_menus (glwin * view);
 void prep_all_ring_menus (glwin * view);
+#endif // GTK3
+void set_advanced_bonding_menus (glwin * view);
 void partial_geo_out_ (int * sp, int * id, int * ngsp, int coord[* ngsp]);
 void allocate_partial_geo_ (int * sp, int * ngsp);
 void init_menu_coordinations_ (int * id, int * sp, int * ngsp, int coordt[* ngsp]);

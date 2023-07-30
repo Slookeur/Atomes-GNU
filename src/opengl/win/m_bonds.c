@@ -11,6 +11,28 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'm_bonds.c'
+*
+*  Contains:
+*
+
+ -  The subroutine to create the 'Bond(s)' submenu
+
+*
+*  List of subroutines:
+
+  gchar * label_cutrab (struct project * this_proj, glwin * view, int id);
+
+  GtkWidget * create_bond_menu_item (gchar * str, GtkWidget * menu);
+  GtkWidget * create_bond_layout_widget (gchar * str, GtkWidget * widg, int va, tint * data);
+  GtkWidget * menu_bonds (glwin * view, int id, int at);
+
+  GMenu * create_bond_layout_section (glwin * view, gchar * str, gchar * key, int popm, int id, GCallback handler, gpointer data, gboolean sensitive);
+  GMenu * menu_bonds (glwin * view, int popm, int at);
+
+*/
+
 #include "global.h"
 #include "glview.h"
 #include "glwindow.h"
@@ -25,6 +47,15 @@ extern G_MODULE_EXPORT void window_cuts (GtkWidget * widg, gpointer data);
 extern G_MODULE_EXPORT void set_bond_parameter (GtkWidget * widg, gpointer data);
 #endif
 
+/*
+*  gchar * label_cutrab (struct project * this_proj, glwin * view, int id)
+*
+*  Usage: prepare the text of a menu item in the 'Model -> Bond(s)' submenu
+*
+*  struct project * this_proj : the target project
+*  glwin * view               : the target glwin
+*  int id                     : the type of label to prepare
+*/
 gchar * label_cutrab (struct project * this_proj, glwin * view, int id)
 {
   int i, j, k, m;
@@ -130,19 +161,37 @@ gchar * label_cutrab (struct project * this_proj, glwin * view, int id)
 }
 
 #ifdef GTK3
-GtkWidget * create_bond_layout_menu (gchar * str, GtkWidget * menu)
+/*
+*  GtkWidget * create_bond_menu_item (gchar * str, GtkWidget * menu)
+*
+*  Usage: create a menu item, and attach it to menu
+*
+*  gchar * str      : the label of the menu item
+*  GtkWidget * menu : the GtkWidget menu to attach the menu item to
+*/
+GtkWidget * create_bond_menu_item (gchar * str, GtkWidget * menu)
 {
   GtkWidget * layout = create_menu_item (FALSE, str);
-  add_menu_child (menu, layout);
+  gtk_menu_shell_append ((GtkMenuShell *)menu, layout);
   return  layout;
 }
 
+/*
+*  GtkWidget * create_bond_layout_widget (gchar * str, GtkWidget * widg, int va, tint * data)
+*
+*  Usage: *  Usage: create a 'Model -> Bond(s)' menu item GTK3
+*
+*  gchar * str      : the menu item name
+*  GtkWidget * widg : the menu GtkWidget to attach the menu item to
+*  int va           : the type of bond item to set the appropriate action
+*  tint * data      : the associated data pointer
+*/
 GtkWidget * create_bond_layout_widget (gchar * str, GtkWidget * widg, int va, tint * data)
 {
   GtkWidget * menu = gtk_menu_new ();
-  menu_item_set_submenu (widg, menu);
+  gtk_menu_item_set_submenu ((GtkMenuItem *)widg, menu);
   GtkWidget * layout = create_menu_item (FALSE, str);
-  add_menu_child (menu, layout);
+  gtk_menu_shell_append ((GtkMenuShell *)menu, layout);
   switch (va)
   {
     case 0:
@@ -158,6 +207,15 @@ GtkWidget * create_bond_layout_widget (gchar * str, GtkWidget * widg, int va, ti
   return layout;
 }
 
+/*
+*  GtkWidget * menu_bonds (glwin * view, int id, int at)
+*
+*  Usage: create the 'Bond(s)' submenu GTK3
+*
+*  glwin * view : the target glwin
+*  int id       : main app (0) or popup (1)
+*  int at       : atoms (0) or clones (1)
+*/
 GtkWidget * menu_bonds (glwin * view, int id, int at)
 {
   GtkWidget * widg;
@@ -177,7 +235,7 @@ GtkWidget * menu_bonds (glwin * view, int id, int at)
     {
       str = g_strdup_printf ("Cylinder(s) [ %f Å ]", view -> anim -> last -> img -> radall[1]);
     }
-    view -> ogl_bonds[8*at] = create_bond_layout_menu ("Radius", menub);
+    view -> ogl_bonds[8*at] = create_bond_menu_item ("Radius", menub);
     view -> ogl_bonds[1+8*at] = create_bond_layout_widget (str, view -> ogl_bonds[8*at], 0, & view -> colorp[2+at][0]);
     g_free (str);
     if (at == 1 && ! view -> anim -> last -> img -> draw_clones)
@@ -195,7 +253,7 @@ GtkWidget * menu_bonds (glwin * view, int id, int at)
     {
       str = g_strdup_printf ("Cylinder(s) [ %f Å ]", view -> anim -> last -> img -> radall[1]);
     }
-    widg = create_bond_layout_menu ("Cylinder Radius(ii)", menub);
+    widg = create_bond_menu_item ("Cylinder Radius(ii)", menub);
     widg = create_bond_layout_widget (str, widg, 0, & view -> colorp[2+at][0]);
     g_free (str);
     if (at == 1 && ! view -> anim -> last -> img -> draw_clones)
@@ -207,7 +265,7 @@ GtkWidget * menu_bonds (glwin * view, int id, int at)
   if (id == 0)
   {
     str = label_cutrab (get_project_by_id(view -> proj), view, 1+at);
-    view -> ogl_bonds[2+8*at] = create_bond_layout_menu ("Radius(ii)", menub);
+    view -> ogl_bonds[2+8*at] = create_bond_menu_item ("Radius(ii)", menub);
     view -> ogl_bonds[3+8*at] = create_bond_layout_widget (str, view -> ogl_bonds[2+8*at], 1, & view -> colorp[at][0]);
     g_free (str);
     if (at == 1 && ! view -> anim -> last -> img -> draw_clones)
@@ -218,7 +276,7 @@ GtkWidget * menu_bonds (glwin * view, int id, int at)
   else if (i == BALL_AND_STICK)
   {
     str = label_cutrab (get_project_by_id(view -> proj), view, 1+at);
-    widg = create_bond_layout_menu ("Radius(ii)", menub);
+    widg = create_bond_menu_item ("Radius(ii)", menub);
     widg = create_bond_layout_widget (str, widg, 1, & view -> colorp[at][0]);
     g_free (str);
     if (at == 1 && ! view -> anim -> last -> img -> draw_clones)
@@ -230,7 +288,7 @@ GtkWidget * menu_bonds (glwin * view, int id, int at)
   if (id == 0)
   {
     str = label_cutrab (get_project_by_id(view -> proj), view, 3+at);
-    view -> ogl_bonds[4+8*at] = create_bond_layout_menu ("Line Width(s)", menub);
+    view -> ogl_bonds[4+8*at] = create_bond_menu_item ("Line Width(s)", menub);
     view -> ogl_bonds[5+8*at] = create_bond_layout_widget (str, view -> ogl_bonds[4+8*at], 1, & view -> colorp[at][1]);
     g_free (str);
     if (at == 1 && ! view -> anim -> last -> img -> draw_clones)
@@ -241,7 +299,7 @@ GtkWidget * menu_bonds (glwin * view, int id, int at)
   else if (i == WIREFRAME)
   {
     str = label_cutrab (get_project_by_id(view -> proj), view, 3+at);
-    widg = create_bond_layout_menu ("Line Width(s)", menub);;
+    widg = create_bond_menu_item ("Line Width(s)", menub);;
     widg = create_bond_layout_widget (str, widg, 1, & view -> colorp[at][1]);
     g_free (str);
     if (at == 1 && ! view -> anim -> last -> img -> draw_clones)
@@ -255,12 +313,12 @@ GtkWidget * menu_bonds (glwin * view, int id, int at)
     str = label_cutrab (get_project_by_id(view -> proj), view, 0);
     if (id == 0)
     {
-      view -> ogl_bonds[6] = create_bond_layout_menu ("Cutoff(s)", menub);
+      view -> ogl_bonds[6] = create_bond_menu_item ("Cutoff(s)", menub);
       view -> ogl_bonds[7] = create_bond_layout_widget (str, view -> ogl_bonds[6], 2, & view -> colorp[at][0]);
     }
     else
     {
-      widg = create_bond_layout_menu ("Cutoff(s)", menub);
+      widg = create_bond_menu_item ("Cutoff(s)", menub);
       widg = create_bond_layout_widget (str, widg, 2, & view -> colorp[at][0]);
     }
     g_free (str);
@@ -268,14 +326,37 @@ GtkWidget * menu_bonds (glwin * view, int id, int at)
   return menub;
 }
 #else
-GMenu * create_bond_layout_section (glwin * view, gchar * str, gchar * key, int id, GCallback handler, gpointer data, gboolean sensitive)
+/*
+*  GMenu * create_bond_layout_section (glwin * view, gchar * str, gchar * key, int popm, int id, GCallback handler, gpointer data, gboolean sensitive)
+*
+*  Usage: create a bond menu item GTK4
+*
+*  glwin * view       : the target glwin
+*  gchar * str        : menu item name
+*  gchar * key        : menu item action key
+*  int popm           : main app (0) or popup (1)
+*  int id             : menu item action id
+*  GCallback handler  : the associated callback
+*  gpointer data      : the associated data pointer
+*  gboolean sensitive : menu item sensitivity
+*/
+GMenu * create_bond_layout_section (glwin * view, gchar * str, gchar * key, int popm, int id, GCallback handler, gpointer data, gboolean sensitive)
 {
   GMenu * menu = g_menu_new ();
-  append_opengl_item (view, menu, str, key, id, NULL,  IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, sensitive);
+  append_opengl_item (view, menu, str, key, popm, id, NULL, IMG_NONE, NULL, FALSE, handler, data, FALSE, FALSE, FALSE, sensitive);
   return  menu;
 }
 
-GMenu * menu_bonds (glwin * view, int at)
+/*
+*  GMenu * menu_bonds (glwin * view, int popm, int at)
+*
+*  Usage: create the 'Bond(s)' submenu GTK4
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*  int at       : atoms (0) or clones (1)
+*/
+GMenu * menu_bonds (glwin * view, int popm, int at)
 {
   gchar * str;
   gboolean sensitive = (at == 1 && ! view -> anim -> last -> img -> draw_clones) ? FALSE : TRUE;
@@ -291,17 +372,17 @@ GMenu * menu_bonds (glwin * view, int at)
       {
         str = g_strdup_printf ("Cylinder(s) [ %f Å ]", view -> anim -> last -> img -> radall[1]);
       }
-      g_menu_append_submenu (menu, "Cylinder Radius(ii)", (GMenuModel *)create_bond_layout_section (view, str, (at) ? "clone-cyl-rad" : "atom-cyl-rad", 0, G_CALLBACK(window_bonds), & view -> colorp[2+at][0], sensitive));
+      append_submenu (menu, "Cylinder Radius(ii)", create_bond_layout_section (view, str, (at) ? "clone-cyl-rad" : "atom-cyl-rad", popm, at, G_CALLBACK(window_bonds), & view -> colorp[2+at][0], sensitive));
       g_free (str);
       break;
     case BALL_AND_STICK:
       str = label_cutrab (get_project_by_id(view -> proj), view, 1+at);
-      g_menu_append_submenu (menu, "Radius(ii)", (GMenuModel *)create_bond_layout_section (view, str, (at) ? "clone-rad" : "atom-rad", 1, G_CALLBACK(set_bond_parameter), & view -> colorp[at][0], sensitive));
+      append_submenu (menu, "Radius(ii)", create_bond_layout_section (view, str, (at) ? "clone-rad" : "atom-rad", popm, at+1, G_CALLBACK(set_bond_parameter), & view -> colorp[at][0], sensitive));
       g_free (str);
       break;
     case WIREFRAME:
       str = label_cutrab (get_project_by_id(view -> proj), view, 3+at);
-      g_menu_append_submenu (menu, "Line Width(s)", (GMenuModel *)create_bond_layout_section (view, str, (at) ? "clone-line" : "atom-line", 2, G_CALLBACK(set_bond_parameter), & view -> colorp[at][1], sensitive));
+      append_submenu (menu, "Line Width(s)", create_bond_layout_section (view, str, (at) ? "clone-line" : "atom-line", popm, at+2, G_CALLBACK(set_bond_parameter), & view -> colorp[at][1], sensitive));
       g_free (str);
       break;
   }
@@ -309,7 +390,7 @@ GMenu * menu_bonds (glwin * view, int at)
   if (! at)
   {
     str = label_cutrab (get_project_by_id(view -> proj), view, 0);
-    g_menu_append_submenu (menu, "Cutoff(s)", (GMenuModel *)create_bond_layout_section (view, str, "bond-cutoffs", 3, G_CALLBACK(window_cuts), & view -> colorp[at][0], sensitive));
+    append_submenu (menu, "Cutoff(s)", create_bond_layout_section (view, str, "bond-cutoffs", popm, at+3, G_CALLBACK(window_cuts), & view -> colorp[at][0], sensitive));
     g_free (str);
   }
   return menu;

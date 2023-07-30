@@ -11,6 +11,43 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This file: 'm_rep.c'
+*
+*  Contains:
+*
+*
+*
+*
+*  List of subroutines:
+
+  G_MODULE_EXPORT gboolean scroll_set_camera (GtkRange * range, GtkScrollType scroll, gdouble value, gpointer data);
+  G_MODULE_EXPORT gboolean on_rep_delete (GtkWindow * widg, gpointer data);
+  G_MODULE_EXPORT gboolean on_rep_delete (GtkWidget * widg, GdkEvent * event, gpointer data);
+
+  void update_labels (glwin * view);
+  void camera_has_changed (gdouble value, gpointer data);
+
+  G_MODULE_EXPORT void reset_view (GtkButton * but, gpointer data);
+  G_MODULE_EXPORT void to_reset_view (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void to_reset_view (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void set_camera (GtkRange * range, gpointer data);
+  G_MODULE_EXPORT void set_camera_spin (GtkSpinButton * res, gpointer data);
+  G_MODULE_EXPORT void representation_advanced (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void set_rep (GtkWidget * widg, gpointer data);
+  G_MODULE_EXPORT void change_rep_radio (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void to_rep_advanced (GSimpleAction * action, GVariant * parameter, gpointer data);
+  G_MODULE_EXPORT void to_center_molecule (GSimpleAction * action, GVariant * parameter, gpointer data);
+
+  GtkWidget * menu_rep (glwin * view, int id);
+
+  GMenu * menu_rep (glwin * view, int popm);
+  GMenu * menu_reset (glwin * view, int popm);
+  GMenu * menu_fullscreen (glwin * view, int popm);
+  GMenu * menu_view (glwin * view, int popm);
+
+*/
+
 #include "global.h"
 #include "interface.h"
 #include "glview.h"
@@ -28,6 +65,13 @@ extern G_MODULE_EXPORT void set_full_screen (GtkWidget * widg, gpointer data);
 
 gchar * text_reps[OGL_REPS] = {"Orthographic", "Perspective"};
 
+/*
+*  void update_labels (glwin * view)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*/
 void update_labels (glwin * view)
 {
   int i;
@@ -36,6 +80,14 @@ void update_labels (glwin * view)
   if (view -> anim -> last -> img -> labels_scale[3]) view -> create_shaders[MEASU] = TRUE;
 }
 
+/*
+*  void camera_has_changed (gdouble value, gpointer data)
+*
+*  Usage:
+*
+*  gdouble value :
+*  gpointer data : the associated data pointer
+*/
 void camera_has_changed (gdouble value, gpointer data)
 {
   tint * cid = (tint *)data;
@@ -98,6 +150,14 @@ void camera_has_changed (gdouble value, gpointer data)
   update (this_proj -> modelgl);
 }
 
+/*
+*  G_MODULE_EXPORT void reset_view (GtkButton * but, gpointer data)
+*
+*  Usage:
+*
+*  GtkButton * but : the GtkButton sending the signal
+*  gpointer data   : the associated data pointer
+*/
 G_MODULE_EXPORT void reset_view (GtkButton * but, gpointer data)
 {
   glwin * view = (glwin *)data;
@@ -110,33 +170,93 @@ G_MODULE_EXPORT void reset_view (GtkButton * but, gpointer data)
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT void to_reset_view (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void to_reset_view (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT void to_reset_view (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void to_reset_view (GtkWidget * widg, gpointer data)
 #endif
 {
   reset_view (NULL, data);
 }
 
+/*
+*  G_MODULE_EXPORT gboolean scroll_set_camera (GtkRange * range, GtkScrollType scroll, gdouble value, gpointer data)
+*
+*  Usage:
+*
+*  GtkRange * range     :
+*  GtkScrollType scroll :
+*  gdouble value        :
+*  gpointer data        : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean scroll_set_camera (GtkRange * range, GtkScrollType scroll, gdouble value, gpointer data)
 {
   camera_has_changed (value, data);
   return FALSE;
 }
 
+/*
+*  G_MODULE_EXPORT void set_camera (GtkRange * range, gpointer data)
+*
+*  Usage:
+*
+*  GtkRange * range :
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_camera (GtkRange * range, gpointer data)
 {
   camera_has_changed (gtk_range_get_value (range), data);
 }
 
+/*
+*  G_MODULE_EXPORT void set_camera_spin (GtkSpinButton * res, gpointer data)
+*
+*  Usage:
+*
+*  GtkSpinButton * res :
+*  gpointer data       : the associated data pointer
+*/
 G_MODULE_EXPORT void set_camera_spin (GtkSpinButton * res, gpointer data)
 {
   camera_has_changed (gtk_spin_button_get_value(res), data);
 }
 
 #ifdef GTK4
+/*
+*  G_MODULE_EXPORT gboolean on_rep_delete (GtkWindow * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWindow * widg :
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean on_rep_delete (GtkWindow * widg, gpointer data)
 #else
+/*
+*  G_MODULE_EXPORT gboolean on_rep_delete (GtkWidget * widg, GdkEvent * event, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  GdkEvent * event : the GdkEvent triggering the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT gboolean on_rep_delete (GtkWidget * widg, GdkEvent * event, gpointer data)
 #endif
 {
@@ -150,6 +270,14 @@ G_MODULE_EXPORT gboolean on_rep_delete (GtkWidget * widg, GdkEvent * event, gpoi
   return TRUE;
 }
 
+/*
+*  G_MODULE_EXPORT void representation_advanced (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void representation_advanced (GtkWidget * widg, gpointer data)
 {
   glwin * view = (glwin *)data;
@@ -220,6 +348,14 @@ G_MODULE_EXPORT void representation_advanced (GtkWidget * widg, gpointer data)
   show_the_widgets (arep);
 }
 
+/*
+*  G_MODULE_EXPORT void set_rep (GtkWidget * widg, gpointer data)
+*
+*  Usage:
+*
+*  GtkWidget * widg : the GtkWidget sending the signal
+*  gpointer data    : the associated data pointer
+*/
 G_MODULE_EXPORT void set_rep (GtkWidget * widg, gpointer data)
 {
   tint * the_data = (tint *)data;
@@ -230,16 +366,16 @@ G_MODULE_EXPORT void set_rep (GtkWidget * widg, gpointer data)
 #ifdef GTK4
   if (i != j)
 #else
-  if (i != j && check_menu_item_get_active ((gpointer)widg))
+  if (i != j && gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg))
 #endif
   {
     this_proj -> modelgl -> anim -> last -> img -> rep = NONE;
 #ifdef GTK3
     // GTK3 Menu Action To Check
-    check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_rep[i], FALSE);
+    gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_rep[i], FALSE);
     if (widg != this_proj -> modelgl -> ogl_rep[j])
     {
-      check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_rep[j], TRUE);
+      gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_rep[j], TRUE);
     }
 #endif
     this_proj -> modelgl -> anim -> last -> img -> rep = j;
@@ -261,14 +397,22 @@ G_MODULE_EXPORT void set_rep (GtkWidget * widg, gpointer data)
   }
 #ifdef GTK3
   // GTK3 Menu Action To Check
-  else if (i == j && ! check_menu_item_get_active ((gpointer)widg))
+  else if (i == j && ! gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg))
   {
-    check_menu_item_set_active ((gpointer)this_proj -> modelgl -> ogl_rep[j], TRUE);
+    gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_rep[j], TRUE);
   }
 #endif
 }
 
 #ifdef GTK3
+/*
+*  GtkWidget * menu_rep (glwin * view, int id)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int id       :
+*/
 GtkWidget * menu_rep (glwin * view, int id)
 {
   int i, j;
@@ -292,77 +436,149 @@ GtkWidget * menu_rep (glwin * view, int id)
   return menur;
 }
 #else
+/*
+*  G_MODULE_EXPORT void change_rep_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void change_rep_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   glwin * view = (glwin *)data;
   const gchar * rep = g_variant_get_string (parameter, NULL);
-  gchar * rep_name = NULL;
-  int i;
-  for (i=0; i<NSELECTION; i++)
+  int lgt = strlen (rep);
+  gchar * name = g_strdup_printf ("%c%c", rep[lgt-2], rep[lgt-1]);
+  if (g_strcmp0(name, ".1") == 0)
   {
-    rep_name = g_strdup_printf ("set-rep.%d", i);
-    if (g_strcmp0(rep, (const gchar *)rep_name) == 0)
+    g_free (name);
+    name = g_strdup_printf ("%.*s.0", lgt-2, rep);
+    g_action_group_activate_action ((GActionGroup *)view -> action_group, "set-rep", g_variant_new_string((const gchar *)name));
+    g_free (name);
+  }
+  else
+  {
+    const gchar * rep = g_variant_get_string (parameter, NULL);
+    gchar * rep_name = NULL;
+    int i;
+    for (i=0; i<OGL_REPS; i++)
     {
-      set_rep (NULL, & view -> colorp[i][0]);
+      rep_name = g_strdup_printf ("set-rep.%d.0", i);
+      if (g_strcmp0(rep, (const gchar *)rep_name) == 0)
+      {
+        set_rep (NULL, & view -> colorp[i][0]);
+        g_free (rep_name);
+        rep_name = NULL;
+        break;
+      }
       g_free (rep_name);
       rep_name = NULL;
-      break;
     }
-    g_free (rep_name);
-    rep_name = NULL;
+    g_action_change_state (G_ACTION (action), parameter);
   }
-  g_action_change_state (G_ACTION (action), parameter);
 }
 
+/*
+*  G_MODULE_EXPORT void to_rep_advanced (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void to_rep_advanced (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   representation_advanced (NULL, data);
 }
 
-GMenu * menu_rep (glwin * view)
+/*
+*  GMenu * menu_rep (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*/
+GMenu * menu_rep (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
   int i, j;
-  j = view -> anim -> last -> img -> rep;
-  for (i=0; i<OGL_REPS; i++)
+  i = view -> anim -> last -> img -> rep;
+  for (j=0; j<OGL_REPS; j++)
   {
-    append_opengl_item (view, menu, text_reps[i], "rep", i, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(change_rep_radio), (gpointer)view, FALSE, (i == j) ? TRUE : FALSE, TRUE, TRUE);
+    append_opengl_item (view, menu, text_reps[j], "rep", popm, j, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(change_rep_radio), (gpointer)view, FALSE, (i == j) ? TRUE : FALSE, TRUE, TRUE);
   }
-  append_opengl_item (view, menu, "Advanced", "rep-adv", 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_rep_advanced), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
+  append_opengl_item (view, menu, "Advanced", "rep-adv", popm, j, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_rep_advanced), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
   return menu;
 }
 
+/*
+*  G_MODULE_EXPORT void to_center_molecule (GSimpleAction * action, GVariant * parameter, gpointer data)
+*
+*  Usage:
+*
+*  GSimpleAction * action : the GAction sending the signal
+*  GVariant * parameter   : GVariant parameter of the GAction
+*  gpointer data          : the associated data pointer
+*/
 G_MODULE_EXPORT void to_center_molecule (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   center_this_molecule (data);
 }
 
-GMenu * menu_reset (glwin * view)
+/*
+*  GMenu * menu_reset (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*/
+GMenu * menu_reset (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
-  append_opengl_item (view, menu, "Reset view", "reset-view", 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_reset_view), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
-  append_opengl_item (view, menu, "Center molecule", "center-mol", 0, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_center_molecule), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
+  append_opengl_item (view, menu, "Reset view", "reset-view", popm, popm, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_reset_view), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
+  append_opengl_item (view, menu, "Center molecule", "center-mol", popm, popm, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(to_center_molecule), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
   return menu;
 }
 
-GMenu * menu_fullscreen (glwin * view)
+/*
+*  GMenu * menu_fullscreen (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*/
+GMenu * menu_fullscreen (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
-  append_opengl_item (view, menu, "Fullscreen", "full", 0, "<CTRL>F", IMG_STOCK, (gpointer)FULLSCREEN, FALSE, G_CALLBACK(set_full_screen), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
+  append_opengl_item (view, menu, "Fullscreen", "full", popm, popm, "<CTRL>F", IMG_STOCK, (gpointer)FULLSCREEN, FALSE, G_CALLBACK(set_full_screen), (gpointer)view, FALSE, FALSE, FALSE, TRUE);
   return menu;
 }
 
+/*
+*  GMenu * menu_view (glwin * view, int popm)
+*
+*  Usage:
+*
+*  glwin * view : the target glwin
+*  int popm     : main app (0) or popup (1)
+*/
 GMenu * menu_view (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
-  g_menu_append_submenu (menu, "Representation", (GMenuModel*)menu_rep(view));
-  g_menu_append_submenu (menu, "Projection", (GMenuModel*)menu_proj(view));
-  g_menu_append_submenu (menu, "Background", (GMenuModel*)menu_back(view));
-  if (get_project_by_id(view -> proj) -> nspec) g_menu_append_item (menu, menu_box_axis (view, 1));
+  append_submenu (menu, "Representation", menu_rep(view, popm));
+  append_submenu (menu, "Projection", menu_proj(view, popm));
+  append_submenu (menu, "Background", menu_back(view, popm));
+  if (get_project_by_id(view -> proj) -> nspec) g_menu_append_item (menu, menu_box_axis (view, popm, 1));
   if (! popm)
   {
-    g_menu_append_section (menu, NULL, (GMenuModel*)menu_reset(view));
-    g_menu_append_section (menu, NULL, (GMenuModel*)menu_fullscreen(view));
+    g_menu_append_section (menu, NULL, (GMenuModel*)menu_reset(view, popm));
+    g_menu_append_section (menu, NULL, (GMenuModel*)menu_fullscreen(view, popm));
   }
   return menu;
 }

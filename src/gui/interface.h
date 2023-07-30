@@ -11,6 +11,13 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with Atomes.
 If not, see <https://www.gnu.org/licenses/> */
 
+/*
+* This header file: 'interface.h'
+*
+*  Contains:
+
+*/
+
 #ifndef INTERFACE_H_
 #define INTERFACE_H_
 G_MODULE_EXPORT void create_about_dialog (GtkWidget * widg, gpointer data);
@@ -36,7 +43,6 @@ gchar * cask (char * question,  char * lab, int id, char * old, GtkWidget * win)
 void print_info  (gchar * str, gchar * stag, GtkTextBuffer * buffer);
 gchar * textcolor (int i);
 
-void set_progress_ (gdouble * prog);
 
 gchar * env_name (struct project * this_proj, int g, int s, int f, GtkTextBuffer * buffer);
 void init_data_ (int * nats, int * nspc, int * stps, int * cid);
@@ -47,6 +53,4 @@ void update_after_calc (int calc);
 void prepostcalc (GtkWidget * widg, gboolean status, int run, int adv, double opc);
 void prep_calc_actions ();
 void initcwidgets ();
-void initbonds ();
-void initcnames (int w, int s);
 #endif
