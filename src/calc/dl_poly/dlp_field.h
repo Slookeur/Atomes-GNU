@@ -14,7 +14,7 @@ If not, see <https://www.gnu.org/licenses/> */
 /*
 * This header file: 'dlp_field.h'
 *
-*  Contains: 
+*  Contains:
 
 */
 
@@ -272,10 +272,11 @@ struct field_external{
   struct field_external * next;
 };
 
+/* simplified atom data structure */
 struct field_neighbor{
-  int id;
-  int num;
-  int * vois;
+  int id;               // atom id in molecule/fragment
+  int num;              // number of neighbor(s)
+  int * vois;           // list of neighbor(s)
   struct field_neighbor * prev;
   struct field_neighbor * next;
 };
@@ -304,8 +305,8 @@ struct field_molecule{
   // 2 = angles
   // 3 = angles restraints
   // 4 = diehdrals
-  // 5 = impropers
-  // 6 = torsional restraints
+  // 5 = torsional restraints
+  // 6 = impropers
   // 7 = inversions
   int nstruct[8];
   struct field_struct * first_struct[8];
@@ -388,7 +389,7 @@ extern int test_for_dihedrals (struct field_atom * at,
 extern void clean_field_struct_list (struct field_struct * stru);
 
 // Create force field data structure
-extern void set_mol_num_label (void);
+extern void set_mol_num_label ();
 extern G_MODULE_EXPORT void changed_mol_box (GtkComboBox * box, gpointer data);
 extern void update_field_trees ();
 extern GtkWidget * create_combo_mol (int f);
@@ -401,7 +402,6 @@ extern int * duplicate_int (int num, int * old_val);
 extern gboolean * duplicate_bool (int num, gboolean * old_val);
 extern float * duplicate_float (int num, float * old_val);
 extern struct field_atom * duplicate_field_atom (struct field_atom * old_fat);
-extern struct field_neighbor * duplicate_field_neighbor (struct field_neighbor * old_ngb);
 extern struct field_shell * duplicate_field_shell (struct field_shell * old_shell);
 extern struct field_constraint * duplicate_field_constraint (struct field_constraint * old_cons);
 extern struct field_rigid * duplicate_field_rigid (struct field_rigid * old_rig);

@@ -39,7 +39,7 @@ If not, see <https://www.gnu.org/licenses/> */
   G_MODULE_EXPORT void render_gl_image (GtkWidget * widg, gpointer data);
   G_MODULE_EXPORT void on_win_realize (GtkWidget * widg, gpointer data);
 
-  GtkWidget * prep_rings_menu (glwin * view, int id, int ri);
+  GtkWidget * prep_rings_menu (glwin * view, int id);
   GtkWidget * coord_menu (glwin * view);
   GtkWidget * menu_opengl (glwin * view, int pop);
   GtkWidget * menu_model (glwin * view, int pop);
@@ -75,7 +75,7 @@ extern G_MODULE_EXPORT void set_box_axis_style (GtkWidget * widg, gpointer data)
 extern G_MODULE_EXPORT void window_measures (GtkWidget * widg, gpointer data);
 extern G_MODULE_EXPORT void window_recorder (GtkWidget * widg, gpointer data);
 extern void window_encode (glwin * view, gboolean video);
-extern GtkWidget * menupoly (glwin * view, int jd, int id, int hd, gchar * poln);
+extern GtkWidget * menupoly (glwin * view, int jd, int id, gchar * poln);
 extern G_MODULE_EXPORT void set_color_map (GtkWidget * widg, gpointer data);
 #ifdef GTK4
 extern void update_menu_bar (glwin * view);
@@ -105,27 +105,26 @@ extern int is_selected;
 extern int is_labelled;
 extern G_MODULE_EXPORT void on_create_new_project (GtkWidget * widg, gpointer data);
 extern gchar * action_atoms[3];
-extern int get_measure_type (glwin * view);
+extern int get_selection_type (glwin * view);
 
 #ifdef GTK3
 /*
-*  GtkWidget * prep_rings_menu (glwin * view, int id, int ri)
+*  GtkWidget * prep_rings_menu (glwin * view, int id)
 *
 *  Usage: create the 'Rings' submenu GTK3
 *
 *  glwin * view : the target glwin
-*  int id       : atoms in ring(s) or polyhedra from rings (0/1)
-*  int ri       : the type of rings
+*  int id       : atoms in ring(s) (0) or polyhedra from rings (1)
 */
-GtkWidget * prep_rings_menu (glwin * view, int id, int ri)
+GtkWidget * prep_rings_menu (glwin * view, int id)
 {
   if (id == 0)
   {
-    return menu_rings (view, 0, ri);
+    return menu_rings (view, 0);
   }
   else
   {
-    return menupoly (view, 0, 2, ri, NULL);
+    return menupoly (view, 0, 2, NULL);
   }
 }
 
@@ -196,7 +195,7 @@ GtkWidget * coord_menu (glwin * view)
   }
   for (i=0; i<2; i++)
   {
-    view -> ogl_rings[i*6] = menu_item_new_with_submenu ("Ring(s)", view -> rings, prep_rings_menu (view, i*6, 0));
+    view -> ogl_rings[i*6] = menu_item_new_with_submenu ("Ring(s)", view -> rings, prep_rings_menu (view, i*6));
   }
   view -> ogl_chains[0] = menu_item_new_with_submenu ("Chain(s)", view -> chains, add_menu_coord (view, 0, 9));
   view -> ogl_coord[1] = menu_coord (view, 0);
@@ -707,7 +706,7 @@ void glwin_key_pressed (guint keyval, GdkModifierType state, gpointer data)
       {
         opengl_project_changed (view -> proj);
         selected_aspec = -1;
-        i = get_measure_type (view);
+        i = get_selection_type (view);
         if (view -> anim -> last -> img -> selected[i] -> selected == opengl_project -> natomes)
         {
 #ifdef GTK4
@@ -891,6 +890,7 @@ void glwin_key_pressed (guint keyval, GdkModifierType state, gpointer data)
       break;
     case GDK_KEY_n:
       if (state & GDK_CONTROL_MASK) on_create_new_project (NULL, NULL);
+      break;
     case GDK_KEY_p:
       if (get_project_by_id(view -> proj) -> natomes) change_color_map (view, 1);
       break;

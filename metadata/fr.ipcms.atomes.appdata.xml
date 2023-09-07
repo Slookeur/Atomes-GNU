@@ -53,55 +53,47 @@
   <content_rating type="oars-1.1"/>
   
   <releases>
-    <release version="1.1.12" date="2023-07-17">
+    <release version="1.1.12" date="2023-09-7">
       <description>
         <p>Release of version 1.1.12:</p>
-        <p>- Bug corrections, see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.12</p>
-	<p>- Improvements:</p>
-	<ul>
-          <li>Massive code cleaining</li>
-          <li>Massive addition of comments in the code</li>
-	  <li>File association(s) added for standard atomic coordinates</li>
-	  <li>BASH completion adapted accordingly</li>
-	  <li>Separate 'Makefile.am' for architecture independent data</li>
-	  <li>Cleaning of 'fr.ipcms.atomes.appdata.xml'</li> 
-        </ul>
+	<p>- Bug corrections, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.12</url></p>
+	<p>- Improvements, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.12</url></p>
       </description>
     </release>
     <release version="1.1.11" date="2023-03-27">
       <description>
         <p>Release of version 1.1.11:</p>
-        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.11</p>
+	<p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.11</url></p>
       </description>
     </release>	  
     <release version="1.1.10" date="2022-11-04">
       <description>
         <p>Release of version 1.1.10:</p>
-        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.10</p>
+	<p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.10</url></p>
       </description>
     </release>
     <release version="1.1.9" date="2022-10-28">
       <description>
         <p>Release of version 1.1.9:</p>
-        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.9</p>
+	<p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.9</url></p>
       </description>
     </release>
     <release version="1.1.8" date="2022-10-27">
       <description>
         <p>Release of version 1.1.8:</p>
-        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.8</p>
+	<p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.8</url></p>
       </description>
     </release>
     <release version="1.1.7" date="2022-10-13">
       <description>
         <p>Release of version 1.1.7:</p>
-        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.7</p>
+	<p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.7</url></p>
       </description>
     </release>
     <release version="1.1.6" date="2022-10-10">
       <description>
         <p>Release of version 1.1.6:</p>
-        <p>- Bug corrections: see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.6</p>
+	<p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.6</url></p>
       </description>
     </release>
     <release version="1.1.5" date="2022-09-23">

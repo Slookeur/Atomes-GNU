@@ -174,11 +174,11 @@ atomes_workspace = $(work)modelinfo.c \
 		   $(work)workinfo.c \
 		   $(work)workspace.c
 
-atomes_readers = $(read)read_isaacs.c \
-		 $(read)read_c3d.c \
+atomes_readers = $(read)read_c3d.c \
 		 $(read)read_cif.c \
 		 $(read)read_coord.c \
 		 $(read)read_hist.c \
+		 $(read)read_isaacs.c \
 		 $(read)read_npt.c \
 		 $(read)read_pdb.c \
 		 $(read)read_trj.c \
@@ -358,10 +358,11 @@ atomes_includes = config.h \
 		  bind.h \
 		  affero.h \
 		  $(gui)callbacks.h \
+		  $(gui)gui.h \
 		  $(gui)interface.h \
+		  $(gui)xmlrw.h \
 		  $(work)workspace.h \
 		  $(proj)project.h \
-		  $(read)read_isaacs.h \
 		  $(read)readers.h \
 		  $(calc)calc.h \
 		  $(cpmd)cpmd.h \

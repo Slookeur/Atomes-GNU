@@ -87,13 +87,8 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %{_metainfodir}/fr.ipcms.%{name}.appdata.xml
 
 %changelog
-* Sun Jul 30 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.12-1
-- Several bug corrections (see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.12)
-- Massive code cleaning
-- Massive addition of comments in the code
-- File associations added for standards atomic coordinates file formats
-- BASH completion adapted accordingly
-- Separate Makefile.am for non architecture dependent data
+* Thu Sep 7 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.12-1
+- Several bug corrections and improvements (see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.12)
 
 * Fri Apr 14 2023 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.11-8
 - Initial Fedora commit

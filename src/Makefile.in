@@ -134,9 +134,9 @@ am__objects_5 = $(gui)bdcall.$(OBJEXT) $(gui)calc_menu.$(OBJEXT) \
 	$(gui)work_menu.$(OBJEXT)
 am__objects_6 = $(work)modelinfo.$(OBJEXT) $(work)workinfo.$(OBJEXT) \
 	$(work)workspace.$(OBJEXT)
-am__objects_7 = $(read)read_isaacs.$(OBJEXT) $(read)read_c3d.$(OBJEXT) \
-	$(read)read_cif.$(OBJEXT) $(read)read_coord.$(OBJEXT) \
-	$(read)read_hist.$(OBJEXT) $(read)read_npt.$(OBJEXT) \
+am__objects_7 = $(read)read_c3d.$(OBJEXT) $(read)read_cif.$(OBJEXT) \
+	$(read)read_coord.$(OBJEXT) $(read)read_hist.$(OBJEXT) \
+	$(read)read_isaacs.$(OBJEXT) $(read)read_npt.$(OBJEXT) \
 	$(read)read_pdb.$(OBJEXT) $(read)read_trj.$(OBJEXT) \
 	$(read)read_vas.$(OBJEXT) $(read)read_xyz.$(OBJEXT)
 am__objects_8 = $(am__objects_7) $(proj)close_p.$(OBJEXT) \
@@ -726,11 +726,11 @@ atomes_workspace = $(work)modelinfo.c \
 		   $(work)workinfo.c \
 		   $(work)workspace.c
 
-atomes_readers = $(read)read_isaacs.c \
-		 $(read)read_c3d.c \
+atomes_readers = $(read)read_c3d.c \
 		 $(read)read_cif.c \
 		 $(read)read_coord.c \
 		 $(read)read_hist.c \
+		 $(read)read_isaacs.c \
 		 $(read)read_npt.c \
 		 $(read)read_pdb.c \
 		 $(read)read_trj.c \
@@ -908,10 +908,11 @@ atomes_includes = config.h \
 		  bind.h \
 		  affero.h \
 		  $(gui)callbacks.h \
+		  $(gui)gui.h \
 		  $(gui)interface.h \
+		  $(gui)xmlrw.h \
 		  $(work)workspace.h \
 		  $(proj)project.h \
-		  $(read)read_isaacs.h \
 		  $(read)readers.h \
 		  $(calc)calc.h \
 		  $(cpmd)cpmd.h \
