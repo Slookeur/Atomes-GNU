@@ -257,6 +257,11 @@ gchar * family_dir[FAMILY]={"Misc",
                             "Sulfoxides",
                             "Thiols"};
 
+#ifdef GTK3
+#ifndef G_OS_WIN32
+extern void gtk_window_change_gdk_visual (GtkWidget * win);
+#endif // G_OS_WIN32
+#endif // GTK3
 extern gboolean create_3d_model (int p, gboolean load);
 extern G_MODULE_EXPORT void on_realize (GtkGLArea * area, gpointer data);
 extern xmlNodePtr findnode (xmlNodePtr startnode, char * nname);
@@ -1079,6 +1084,13 @@ int select_from_library (gboolean visible, struct project * this_proj, atom_sear
   int active = activep;
   lib_visible = visible;
   GtkWidget * lib = dialogmodal ("Library", GTK_WINDOW(this_proj -> modelgl -> win));
+#ifdef GTK3
+#ifdef GTKGLAREA
+#ifndef G_OS_WIN32
+  if (! atomes_visual) gtk_window_change_gdk_visual (lib);
+#endif // G_OS_WIN32
+#endif // GTKGLAREA
+#endif // GTK3
   gtk_dialog_add_button (GTK_DIALOG(lib), (asearch -> action == REPLACE) ? "Replace" : "Insert", GTK_RESPONSE_APPLY);
   GtkWidget * vbox = dialog_get_content_area (lib);
   GtkWidget * hbox = create_hbox (5);

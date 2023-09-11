@@ -53,7 +53,7 @@
   <content_rating type="oars-1.1"/>
   
   <releases>
-    <release version="1.1.12" date="2023-09-7">
+    <release version="1.1.12" date="2023-09-11">
       <description>
         <p>Release of version 1.1.12:</p>
 	<p>- Bug corrections, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.12</url></p>
