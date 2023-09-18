@@ -2,8 +2,8 @@
 Type=Application
 Name=atomes
 GenericName=atomes
-Comment=An atomic scale toolbox
-Comment[fr]=Une boite à outils pour la modélisation à l'échelle atomique
+Comment="An atomic scale toolbox"
+Comment[fr]="Une boite à outils pour la modélisation à l'échelle atomique"
 Keywords=chemistry;physics;atom;molecule;crystal;coordination;polyedra;measure;volume;builder;material;
 Keywords[fr]=chimie;physique;atome;molecule;cristal;coordination;polyèdre;mesure;volume;constructeur;matériau;
 Keywords[es]=química;física;átomo;molécula;cristal;coordinación;poliedro;medida;volumen;constructor;material;
