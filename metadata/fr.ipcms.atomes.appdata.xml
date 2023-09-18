@@ -49,6 +49,42 @@
   <provides>
     <id>atomes.desktop</id>
   </provides>
+
+  <keywords>
+    <keyword>chemistry</keyword>
+    <keyword>physics</keyword>
+    <keyword>atom</keyword>
+    <keyword>molecule</keyword>
+    <keyword>crystal</keyword>
+    <keyword>coordination</keyword>
+    <keyword>polyhedra</keyword>
+    <keyword>measure</keyword>
+    <keyword>volume</keyword>
+    <keyword>builder</keyword>
+    <keyword>material</keyword>
+    <keyword xml:lang="fr">chimie</keyword>
+    <keyword xml:lang="fr">physique</keyword>
+    <keyword xml:lang="fr">atome</keyword>
+    <keyword xml:lang="fr">molécule</keyword>
+    <keyword xml:lang="fr">cristal</keyword>
+    <keyword xml:lang="fr">coordination</keyword>
+    <keyword xml:lang="fr">polyhèdre</keyword>
+    <keyword xml:lang="fr">mesure</keyword>
+    <keyword xml:lang="fr">volume</keyword>
+    <keyword xml:lang="fr">constructeur</keyword>
+    <keyword xml:lang="fr">matériau</keyword>
+    <keyword xml:lang="es">química</keyword>
+    <keyword xml:lang="es">física</keyword>
+    <keyword xml:lang="es">átomo</keyword>
+    <keyword xml:lang="es">molécula</keyword>
+    <keyword xml:lang="es">cristal</keyword>
+    <keyword xml:lang="es">ccoordinación</keyword>
+    <keyword xml:lang="es">poliedro</keyword>
+    <keyword xml:lang="es">medida</keyword>
+    <keyword xml:lang="es">volumen</keyword>
+    <keyword xml:lang="es">constructor</keyword>
+    <keyword xml:lang="es">material</keyword>
+  </keywords>
   
   <content_rating type="oars-1.1"/>
   
