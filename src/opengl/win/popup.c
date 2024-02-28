@@ -252,16 +252,16 @@ int get_style (gchar * str)
   {
     if (g_strcmp0 (text_styles[i], str) == 0) return i;
   }
-#endif
-  return NONE;
-  /*for (i=0; i<FILLED_STYLES; i++)
+  for (i=0; i<FILLED_STYLES; i++)
   {
     if (g_strcmp0 (text_filled[i], str) == 0)
     {
       is_filled = i;
+      return SPACEFILL;
     }
   }
-  return SPACEFILL;*/
+#endif
+  return NONE;
 }
 
 /*
@@ -1234,7 +1234,7 @@ G_MODULE_EXPORT void style_this_atom (GtkWidget * widg, gpointer data)
   int i, j;
   int id = GPOINTER_TO_INT (data);
 #ifdef GTK4
-  j = get_style ((gchar *)g_action_get_name(G_ACTION(action)));
+  j = get_style ((gchar *)g_action_get_name (G_ACTION(action)));
 #else
   j = get_style ((char *)gtk_menu_item_get_label (GTK_MENU_ITEM(widg)));
 #endif
@@ -2124,7 +2124,8 @@ void create_new_project_using_data (struct atom_selection * selection)
       active_project -> atoms[i][j].label[1] = FALSE;
       active_project -> atoms[i][j].pick[0] = FALSE;
       active_project -> atoms[i][j].cloned = FALSE;
-      active_project -> atoms[i][j].style = NONE;
+      // Next line for style, to initialize style use: NONE
+      active_project -> atoms[i][j].style = opengl_project -> atoms[i][k].style;
       if (tmp -> next != NULL) tmp = tmp -> next;
     }
   }
@@ -3027,10 +3028,24 @@ void add_style_sub_menu (GtkWidget * item, GCallback handler, gpointer data)
 {
   GtkWidget * menu = gtk_menu_new ();
   gtk_menu_item_set_submenu ((GtkMenuItem *)item, menu);
-  int i;
+  int i; //, j;
   for (i=0; i<OGL_STYLES; i++)
   {
-    gtk3_menu_item (menu, text_styles[i], IMG_NONE, NULL, handler, data, FALSE, 0, 0, FALSE, FALSE, FALSE);
+    //if (i != SPACEFILL)
+    {
+      gtk3_menu_item (menu, text_styles[i], IMG_NONE, NULL, handler, data, FALSE, 0, 0, FALSE, FALSE, FALSE);
+    }
+    /* else
+    {
+      GtkWidget *widg = create_menu_item (FALSE, "Spacefilled");
+      gtk_menu_shell_append ((GtkMenuShell *)menu, widg);
+      GtkWidget * menuf = gtk_menu_new ();
+      gtk_menu_item_set_submenu ((GtkMenuItem *)widg, menuf);
+      for (j=0; j < FILLED_STYLES; j++)
+      {
+        gtk3_menu_item (menuf, text_filled[j], IMG_NONE, NULL, handler, data, FALSE, 0, 0, FALSE, FALSE, FALSE);
+      }
+    } */
   }
 }
 
@@ -4150,7 +4165,8 @@ void popup_main_menu (glwin * view, double ptx, double pty)
       gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Chain(s)", view -> chains, add_menu_coord (view, 1, 9)));
       gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Fragment(s)", opengl_project -> coord -> totcoord[2], add_menu_coord (view, 1, 2)));
       gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Molecule(s)", opengl_project -> coord -> totcoord[3], add_menu_coord (view, 1, 3)));
-      add_advanced_item (menu, G_CALLBACK(coord_properties), (gpointer)& view -> colorp[30][0], TRUE, GDK_KEY_e, GDK_CONTROL_MASK);
+      gtk3_menu_item (menu, "Advanced", IMG_NONE, NULL, G_CALLBACK(coord_properties), (gpointer)& view -> colorp[30][0], TRUE, GDK_KEY_e, GDK_CONTROL_MASK, FALSE, FALSE, FALSE);
+      // add_advanced_item (menu, G_CALLBACK(coord_properties), (gpointer)& view -> colorp[30][0], TRUE, GDK_KEY_e, GDK_CONTROL_MASK);
       add_menu_separator (menu);
     }
     gtk_menu_shell_append ((GtkMenuShell *)menu, menu_item_new_with_submenu ("Tools", TRUE, menu_tools(view, 1)));

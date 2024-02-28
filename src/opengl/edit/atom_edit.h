@@ -87,7 +87,7 @@ extern G_MODULE_EXPORT void set_spec_changed (GtkComboBox * box, gpointer data);
 
 extern void add_bonds_to_list (int ** new_bond_list, int nat, int nbd, struct insert_object * object);
 extern void add_bonds_to_project (struct project * this_proj, int removed, int nbd, int ** new_bond_list);
-extern gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, struct atom * new_list, gboolean remove);
+extern gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, struct atom * new_list, gboolean remove, gboolean passivate);
 #ifdef GTK4
 extern G_MODULE_EXPORT void set_reset_transformation (GtkCheckButton * but, gpointer data);
 #else
@@ -101,7 +101,7 @@ extern void correct_pos_and_get_dim (struct insert_object * object, gboolean adj
 extern struct insert_object * duplicate_insert_object (struct insert_object * old_obj);
 extern struct insert_object * create_object_from_species (struct project * this_proj, int sid, atom_search * remove);
 extern void reconstruct_bonds (struct project * this_proj, int ifcl, int * bcid);
-extern void reconstruct_coordinates_for_object (struct insert_object * this_object, struct project * this_proj, gboolean upcoord);
+extern void reconstruct_coordinates_for_object (struct project * this_proj, struct insert_object * this_object, gboolean upcoord);
 extern struct insert_object * create_object_from_selection (struct project * this_proj);
 extern struct insert_object * create_object_from_atom_coordination (struct project * this_proj, int coord, int aid, atom_search * remove);
 extern struct insert_object * create_object_from_overall_coordination (struct project * this_proj, int coord, int aid, atom_search * remove);
@@ -146,12 +146,12 @@ extern gboolean do_we_have_objects_in_selection (struct project * this_proj, ato
 extern G_MODULE_EXPORT void take_action (GtkButton * but, gpointer data);
 extern GtkWidget * action_tab (int aid, struct project * this_proj);
 
-extern int new_geo (int id, coord_info * obj, int * old_z, int old_geo, int old_sp, int new_sp, coord_info * coord, double * new_z);
+extern int find_this_geo_id (int id, coord_info * obj, int * old_z, int old_geo, int old_sp, int new_sp, coord_info * coord, double * new_z);
 extern void check_coord_modification (struct project * this_proj, int old_id[], struct atom * new_list,
                                       struct insert_object * this_object, gboolean movtion, gboolean passivating);
 extern void print_coord_info (struct project * this_proj, coord_info * coord);
 extern coord_info * duplicate_coord_info (coord_info * old_coord);
-extern void recover_opengl_data (struct project * this_proj, int nmols, int add, int rem, int * num, int * rec, int *** tmpgeo, gboolean * showfrag, gboolean update_frag);
+extern void recover_opengl_data (struct project * this_proj, int nmols, int add, int rem, int * num, int * rec, int *** tmpgeo, gboolean * showfrag);
 
 extern chemical_data * duplicate_chemical_data (int spec, chemical_data * chem);
 extern int find_spec_id (int s, int z, double * list_z);

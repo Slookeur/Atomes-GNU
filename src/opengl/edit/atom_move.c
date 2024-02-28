@@ -494,8 +494,7 @@ void random_move_this_object (struct project * this_proj, struct insert_object *
 void trigger_refresh (struct project * this_proj, atom_search * asearch)
 {
   clean_all_trees (asearch, this_proj);
-  // = TRUE;
-  this_proj -> modelgl -> atom_win -> rebuilt[(asearch -> action == DISPL) ? 0 : 1] = asearch -> update_bonding;
+  this_proj -> modelgl -> atom_win -> rebuilt[(asearch -> action == DISPL) ? 0 : 1] = TRUE;
   update_search_tree (this_proj -> modelgl -> search_widg[(asearch -> action == DISPL) ? 6 : 2]);
   check_all_trees (this_proj);
 }
@@ -555,7 +554,7 @@ gboolean rebuild_selection (struct project * this_proj, atom_search * asearch, i
     object = this_proj -> modelgl -> atom_win -> to_be_moved[i];
     while (object)
     {
-      if (object -> ifcl) reconstruct_coordinates_for_object (object, this_proj, TRUE);
+      if (object -> ifcl) reconstruct_coordinates_for_object (this_proj, object, TRUE);
       if (filter < 3)
       {
         recons = TRUE;
@@ -670,7 +669,7 @@ void random_move (struct project * this_proj, atom_search * asearch)
       }
     }
   }
-  if (! asearch -> update_bonding)
+  if (asearch -> recompute_bonding)
   {
     i = activep;
     active_project_changed (activep);
@@ -877,12 +876,15 @@ void move_selection (struct project * this_proj, int action, int axis, vec3_t tr
   if (move_it)
   {
     int i;
+    g_debug ("Moving it !");
     if (this_proj -> modelgl -> atom_win -> to_be_moved[0])
     {
+    g_debug ("Object in selection !");
       recons = move_objects (this_proj, asearch, action, axis, trans, ang);
     }
     else
     {
+      g_debug ("Atom(s) in selection , rebuild[0][0]= %d, rebuilt[0]= %d!", this_proj -> modelgl -> rebuild[0][0], this_proj -> modelgl -> atom_win -> rebuilt[0]);
       if (this_proj -> modelgl -> rebuild[0][0] && ! this_proj -> modelgl -> atom_win -> rebuilt[0])
       {
         apply_action (this_proj, asearch);
@@ -896,7 +898,8 @@ void move_selection (struct project * this_proj, int action, int axis, vec3_t tr
         }
       }
     }
-    if (! asearch -> update_bonding)
+    g_debug ("After motion: recons= %d", recons);
+    if (asearch -> recompute_bonding)
     {
       i = activep;
       active_project_changed (activep);
@@ -1240,8 +1243,8 @@ GtkWidget * add_motion_interaction (atom_search * asearch, int axd, struct proje
   }
   hbox = create_hbox (5);
   add_box_child_start (GTK_ORIENTATION_VERTICAL, vbox, hbox, FALSE, FALSE, 20);
-  add_box_child_start (GTK_ORIENTATION_HORIZONTAL, hbox,
-                      check_button ("Reset transformation(s)", -1, 35, FALSE, G_CALLBACK(set_reset_transformation), & asearch -> pointer[0]),
-                      FALSE, FALSE, 10);
+  //add_box_child_start (GTK_ORIENTATION_HORIZONTAL, hbox,
+  //                    check_button ("Reset transformation(s)", -1, 35, FALSE, G_CALLBACK(set_reset_transformation), & asearch -> pointer[0]),
+  //                    FALSE, FALSE, 10);
   return vbox;
 }

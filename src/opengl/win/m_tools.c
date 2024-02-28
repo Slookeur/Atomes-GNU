@@ -167,6 +167,9 @@ G_MODULE_EXPORT void set_mode (GtkWidget * widg, gpointer data)
   struct project * this_proj = get_project_by_id(the_data -> a);
   int i = this_proj -> modelgl -> mode;
   int j = the_data -> b;
+
+  if (! (j == EDITION && is_atom_win_active(this_proj -> modelgl)))
+  {
 #ifdef GTK4
   if (i != j)
 #else
@@ -232,6 +235,7 @@ G_MODULE_EXPORT void set_mode (GtkWidget * widg, gpointer data)
     gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_mode[j], TRUE);
   }
 #endif
+  }
 }
 
 /*
@@ -304,6 +308,7 @@ GtkWidget * menu_tools (glwin * view, int id)
   GtkWidget * menum = gtk_menu_new ();
   gtk_menu_item_set_submenu ((GtkMenuItem *)widg, menum);
   guint accel[3]={GDK_KEY_a, GDK_KEY_e, GDK_KEY_i};
+  guint acces[4]={GDK_KEY_A, GDK_KEY_C, GDK_KEY_F, GDK_KEY_M};
   if (id == 0)
   {
     for (i=0; i<2; i++)
@@ -354,8 +359,16 @@ GtkWidget * menu_tools (glwin * view, int id)
   {
     for (i=0; i<NSELECTION; i++)
     {
-      view -> ogl_smode[i] = gtk3_menu_item (menusm, smodes[i], IMG_NONE, NULL, G_CALLBACK(set_selection_mode), & view -> colorp[i][0],
-                                             FALSE, 0, 0, TRUE, TRUE, (i == view -> selection_mode) ? TRUE : FALSE);
+      if (i < 4)
+      {
+        view -> ogl_smode[i] = gtk3_menu_item (menusm, smodes[i], IMG_NONE, NULL, G_CALLBACK(set_selection_mode), & view -> colorp[i][0],
+                                               TRUE, acces[i], GDK_SHIFT_MASK, TRUE, TRUE, (i == view -> selection_mode) ? TRUE : FALSE);
+      }
+      else
+      {
+        view -> ogl_smode[i] = gtk3_menu_item (menusm, smodes[i], IMG_NONE, NULL, G_CALLBACK(set_selection_mode), & view -> colorp[i][0],
+                                               FALSE, 0, 0, TRUE, TRUE, (i == view -> selection_mode) ? TRUE : FALSE);
+      }
       if (i == NSELECTION-1) widget_set_sensitive (view -> ogl_smode[i], (view -> mode == EDITION) ? 1 : 0);
     }
   }
@@ -363,8 +376,16 @@ GtkWidget * menu_tools (glwin * view, int id)
   {
     for (i=0; i<NSELECTION; i++)
     {
-      widg = gtk3_menu_item (menusm, smodes[i], IMG_NONE, NULL, G_CALLBACK(set_selection_mode), & view -> colorp[i][0],
-                             FALSE, 0, 0, TRUE, TRUE, (i == view -> selection_mode) ? TRUE : FALSE);
+      if (i < 4)
+      {
+        widg = gtk3_menu_item (menusm, smodes[i], IMG_NONE, NULL, G_CALLBACK(set_selection_mode), & view -> colorp[i][0],
+                               TRUE, acces[i], GDK_SHIFT_MASK, TRUE, TRUE, (i == view -> selection_mode) ? TRUE : FALSE);
+      }
+      else
+      {
+        widg = gtk3_menu_item (menusm, smodes[i], IMG_NONE, NULL, G_CALLBACK(set_selection_mode), & view -> colorp[i][0],
+                               FALSE, 0, 0, TRUE, TRUE, (i == view -> selection_mode) ? TRUE : FALSE);
+      }
       if (i == NSELECTION-1) widget_set_sensitive (widg, (view -> mode == EDITION) ? 1 : 0);
     }
   }
@@ -528,7 +549,8 @@ G_MODULE_EXPORT void change_mouse_mode_radio (GSimpleAction * action, GVariant *
       g_free (mode_name);
       mode_name = NULL;
     }
-    g_action_change_state (G_ACTION (action), parameter);
+    // Update the menu bar is required to activate / deactivate the selection mode option
+    update_menu_bar (view);
   }
 }
 
@@ -608,12 +630,24 @@ G_MODULE_EXPORT void change_sel_mode_radio (GSimpleAction * action, GVariant * p
 GMenu * selection_mode_menu (glwin * view, int popm)
 {
   GMenu * menu = g_menu_new ();
+  gchar * acces[4]={"A", "C", "F", "M"};
+  gchar * str;
   int i, j;
   for (i=0; i<NSELECTION; i++)
   {
     j = (i == NSELECTION-1) ? (view -> mode == EDITION) ? 1 : 0 : TRUE;
-    append_opengl_item (view, menu, smodes[i], "sel-mode", popm, i, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(change_sel_mode_radio), (gpointer)view,
-                        FALSE, (i == view -> selection_mode) ? TRUE : FALSE, TRUE, j);
+    if (i < 4)
+    {
+      str = g_strdup_printf ("<SHIFT>%s", acces[i]);
+      append_opengl_item (view, menu, smodes[i], "sel-mode", popm, i, str, IMG_NONE, NULL, FALSE, G_CALLBACK(change_sel_mode_radio), (gpointer)view,
+                          FALSE, (i == view -> selection_mode) ? TRUE : FALSE, TRUE, j);
+      g_free (str);
+    }
+    else
+    {
+      append_opengl_item (view, menu, smodes[i], "sel-mode", popm, i, NULL, IMG_NONE, NULL, FALSE, G_CALLBACK(change_sel_mode_radio), (gpointer)view,
+                          FALSE, (i == view -> selection_mode) ? TRUE : FALSE, TRUE, j);
+    }
   }
   return menu;
 }

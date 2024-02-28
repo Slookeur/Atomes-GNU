@@ -54,7 +54,7 @@ alloc_data = ALLOCHEM ()
 
 END FUNCTION
 
-SUBROUTINE prep_spec (idatoms, nsps) BIND (C,NAME='prep_spec_')
+SUBROUTINE prep_spec (idatoms, nsps, open_apf) BIND (C,NAME='prep_spec_')
 
 USE PARAMETERS
 USE MENDELEIEV
@@ -63,26 +63,29 @@ IMPLICIT NONE
 
 INTEGER (KIND=c_int), DIMENSION(NSP), INTENT(IN) :: nsps
 REAL (KIND=c_double), DIMENSION(NSP), INTENT(IN) :: idatoms
+INTEGER (KIND=c_int), INTENT(IN) :: open_apf
+
 CHARACTER (LEN=14) :: ELEM
 ! Now we are calling the GTK+ routines
 
 do i=1, NSP
   NBSPBS(i) = nsps(i)
   j = int(idatoms(i))
-  if (j .gt. 0) then
-    TL(i) = ATSYM(j)
-    ELEM = ELEMENT(j)
-  else
-    TL(i) = "X "
-    ELEM = "Unknown"
-  endif
   ATOMID(i) = j
-  ! In C all string must be terminated by a CHAR(0)
-  ! To spec_data_
-  call spec_data (0, i-1, ATOMID(i), NBSPBS(i), &
-                  TL(i)//CHAR(0), ELEM//CHAR(0), &
-                  0.0d0, 0.0d0, 0.0d0, 0.0d0)
-
+  if (open_apf .eq. 1) then
+    if (j .gt. 0) then
+      TL(i) = ATSYM(j)
+      ELEM = ELEMENT(j)
+    else
+      TL(i) = "X "
+      ELEM = "Unknown"
+    endif
+    ! In C all string must be terminated by a CHAR(0)
+    ! To spec_data_
+    call spec_data (0, i-1, ATOMID(i), NBSPBS(i), &
+                    TL(i)//CHAR(0), ELEM//CHAR(0), &
+                    0.0d0, 0.0d0, 0.0d0, 0.0d0)
+  endif
 enddo
 NBSPBS(NSP+1) = NA
 
@@ -295,7 +298,7 @@ do NOA=1, NSP
       prep_data = 0
       goto 001
     case (0)
-      ELEMID(NOA) = "Unknown"
+      ELEMID(NOA) = "Dummy "//TL(NOA)
       MASS(NOA) = 1.0
       RVDW(NOA) = 0.5
       NSCATTL(NOA) = 0.0
@@ -365,9 +368,9 @@ do ELEMT=1, MAXE
 enddo
 
 if (FINDID .eq. 0) then
-  call show_error ("Problem with the atomic coordinates"//CHAR(0), &
-                   "Atom "//NAMEAT//" does not exist "//CHAR(0), " "//CHAR(0))
-  FINDID = dummy_ask ("Do you want to use dummy atoms to replace "//NAMEAT//" atoms ?"//CHAR(0));
+  call show_warning ("Problem with the atomic coordinates"//CHAR(0), &
+                     "Element "//NAMEAT//" does not exist "//CHAR(0), " "//CHAR(0))
+  FINDID = dummy_ask ("Do you want to use dummy atom(s) for unknown species "//NAMEAT//" ?"//CHAR(0));
 endif
 
 END FUNCTION
@@ -402,7 +405,7 @@ if (SW .lt. 108) then
     RAD = ARCRY(SW)
   endif
 else
-  RAD = 0.00
+  RAD = 0.0
 endif
 set_radius = RAD
 

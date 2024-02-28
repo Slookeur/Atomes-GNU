@@ -59,12 +59,12 @@ G_MODULE_EXPORT void turn_rebuild_on (GtkCheckButton * but, gpointer data)
 G_MODULE_EXPORT void turn_rebuild_on (GtkToggleButton * but, gpointer data)
 #endif
 {
+  tint * dat = (tint *) data;
   int i;
 #ifdef GTK4
   i = gtk_check_button_get_active (but);
-  // DO SOMETHING HERE !!!
+  get_project_by_id(dat -> a) -> modelgl -> rebuild[0][dat -> c] = i;
 #else
-  tint * dat = (tint *) data;
   i = gtk_toggle_button_get_active (but);
   get_project_by_id(dat -> a) -> modelgl -> rebuild[0][dat -> c] = i;
   gtk_check_menu_item_set_active ((GtkCheckMenuItem *)get_project_by_id(dat -> a) -> modelgl -> rbuild[i], i);
@@ -100,7 +100,7 @@ G_MODULE_EXPORT void turn_bonding_on (GtkToggleButton * but, gpointer data)
 #else
   i = gtk_toggle_button_get_active (but);
 #endif
-  asearch -> update_bonding = i;
+  asearch -> recompute_bonding = i;
 }
 
 /*
@@ -145,8 +145,8 @@ GtkWidget * create_search_box (int aid, struct project * this_proj)
   {
     hbox = create_hbox (0);
     add_box_child_start (GTK_ORIENTATION_VERTICAL, vbox, hbox, FALSE, FALSE, 0);
-    widg = check_button("Update bonding information, but do not recompute bonding using bond cutoff(s)",
-                        -1, 25, this_proj -> modelgl -> search_widg[aid+1] -> update_bonding, G_CALLBACK(turn_bonding_on),  this_proj -> modelgl -> search_widg[aid+1]);
+    widg = check_button("Recompute bonding information using bond cutoff(s)",
+                        -1, 25, this_proj -> modelgl -> search_widg[aid+1] -> recompute_bonding, G_CALLBACK(turn_bonding_on),  this_proj -> modelgl -> search_widg[aid+1]);
     add_box_child_start (GTK_ORIENTATION_HORIZONTAL, hbox, widg, FALSE, FALSE, 50);
   }
 
@@ -306,6 +306,7 @@ GtkWidget * action_tab (int aid, struct project * this_proj)
         add_container_child (CONTAINER_EXP, this_proj -> modelgl -> atom_win -> at_expand[i], add_motion_interaction (asearch, i-1, this_proj));
         gtk_expander_set_expanded (GTK_EXPANDER(this_proj -> modelgl -> atom_win -> at_expand[i]), FALSE);
         if (i == 2) widget_set_sensitive (this_proj -> modelgl -> atom_win -> at_expand[2], asearch -> object);
+
       }
       g_signal_connect (G_OBJECT(this_proj -> modelgl -> atom_win -> at_expand[i]), "activate", G_CALLBACK(expanding_atoms), & asearch -> pointer[0]);
     }
@@ -329,7 +330,7 @@ GtkWidget * action_tab (int aid, struct project * this_proj)
     add_box_child_start (GTK_ORIENTATION_VERTICAL, sbox, tbox, FALSE, FALSE, 0);
   }
   add_box_child_start (GTK_ORIENTATION_VERTICAL, vbox, sbox, FALSE, FALSE, 5);
-  if (aid == 4)
+  if (! aid || aid == 4)
   {
     hbox = create_hbox (5);
     add_box_child_start (GTK_ORIENTATION_VERTICAL, vbox, hbox, FALSE, FALSE, 20);

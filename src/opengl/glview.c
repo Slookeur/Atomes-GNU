@@ -294,9 +294,11 @@ ColRGBA set_default_color (int z)
                   {0.97, 0.00, 0.10},
                   {0.98, 0.00, 0.10},
                   {0.99, 0.00, 0.10}};
-  col.red = colors[z-1][0];
-  col.green = colors[z-1][1];
-  col.blue = colors[z-1][2];
+  // Dumy atoms have z < 1
+  int Z = (z < 1) ? 1 : z;
+  col.red = colors[Z-1][0];
+  col.green = colors[Z-1][1];
+  col.blue = colors[Z-1][2];
   col.alpha = 1.0;
   return col;
 }
@@ -594,8 +596,7 @@ void edit_for_motion (glwin * view)
   }
   view -> baryc[1] = get_bary (this_proj, 1);
   move_search = free_this_search_data (move_search);
-  view -> rebuild[0][0] = FALSE;
-  view -> rebuild[0][1] = TRUE;
+  view -> prepare_motion = FALSE;
 }
 
 /*
@@ -614,7 +615,7 @@ void motion (glwin * view, gint x, gint y, GdkModifierType state)
   int i;
   if (view -> mouseStatus == CLICKED)
   {
-    if (view -> mode == EDITION && view -> rebuild[0][0]) edit_for_motion (view);
+    if (view -> mode == EDITION && view -> prepare_motion && view -> rebuild[0][0]) edit_for_motion (view);
 
     if (state & GDK_BUTTON1_MASK)
     {
@@ -1669,6 +1670,7 @@ void init_glwin (glwin * view)
   view -> zoom_factor = ZOOM_FACTOR;
   view -> mode = ANALYZE;
   view -> selection_mode = ATOMS;
+  // On normal motion and copy rebuild:
   view -> rebuild[0][0] = view -> rebuild[1][0] = (this_proj -> steps > 1) ? FALSE : TRUE;
   view -> init = TRUE;
   init_opengl (view);
@@ -1766,7 +1768,9 @@ G_MODULE_EXPORT void on_realize (GtkWidget * widg, gpointer data)
     g_free (errm);
     atomes_visual = -1;
   }
+#ifdef GTK3
   end:;
+#endif
 }
 
 #ifdef GTKGLAREA

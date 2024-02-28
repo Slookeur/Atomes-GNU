@@ -23,15 +23,13 @@ If not, see <https://www.gnu.org/licenses/> */
 *
 *  List of subroutines:
 
-  int test_this_fragment (int natomes, int fcoord, int fid, struct atom * new_list, int tmpbond[2], int ** tmpbondid[2], int * old_id, gboolean remove);
+  int test_this_fragment (int natomes, int fcoord, int fid, struct atom * atom_list, int * old_id, gboolean remove);
 
-  gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, struct atom * new_list, gboolean remove);
+  gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, struct atom * new_list, gboolean remove, gboolean  passivate);
 
   void set_mol_data (int the_atom, int the_mol);
   void to_remove_this_list_of_objects (struct project * this_proj, atom_search * asearch);
   void to_passivate_using_the_objects (struct project * this_proj, atom_search * asearch);
-
-  struct atom * get_atom_pointer (int aid, struct atom * new_list);
 
 */
 
@@ -40,6 +38,8 @@ If not, see <https://www.gnu.org/licenses/> */
 int tmbs;
 int molcounter;
 int atoms_in_frag;
+int * tigl;
+int * migl;
 int * togl;
 int * ats_in_frag;
 int * ats_id;
@@ -49,27 +49,31 @@ int ** neighbors;
 extern atom_search * allocate_atom_search (int proj, int action, int searchid, int tsize);
 
 /*
-*  void set_mol_data (int the_atom, int the_mol)
+*  void set_mol_data_list (int the_atom, struct atom ** mol_list, int the_mol)
 *
 *  Usage: set molecule id for atom
 *
-*  int the_atom : the atom id
-*  int the_mol  : the molecule id
+*  int the_atom            : the atom id
+*  struct atom ** mol_list : the list of atom(s) to look up
+*  int the_mol             : the molecule id
 */
-void set_mol_data (int the_atom, int the_mol)
-{
-  int ac, ad;
-  molcounter ++;
 
+void set_mol_data_list (int aid, struct atom ** mol_list, int the_mol)
+{
+  int ab, ac, ad;
+  molcounter ++;
+  int the_atom = tigl[aid];
   togl[the_atom] = the_mol;
   tmbs ++;
 
   if (molcounter == 10000) goto end;
   if (tmbs == atoms_in_frag) goto end;
-  for (ac=0; ac < contacts[the_atom]; ac++)
+  int mid = migl[aid];
+  for (ab=0; ab < mol_list[mid] -> numv; ab++)
   {
-    ad = ats_id[neighbors[the_atom][ac]];
-    if (! togl[ad] && molcounter < 100000) set_mol_data (ad, the_mol);
+    ac = mol_list[mid] -> vois[ab];
+    ad = tigl[ac];
+    if (! togl[ad] && molcounter < 100000) set_mol_data_list (ac, mol_list, the_mol);
     if (tmbs == atoms_in_frag) goto end;
     if (molcounter == 10000) goto end;
   }
@@ -79,163 +83,125 @@ void set_mol_data (int the_atom, int the_mol)
 }
 
 /*
-*  int test_this_fragment (int natomes, int fcoord, int fid, struct atom * new_list, int tmpbond[2], int ** tmpbondid[2], int * old_id, gboolean remove)
+*  int test_this_fragment (int natomes, int fcoord, int fid, struct atom * atom_list, int * old_id, gboolean remove)
 *
 *  Usage: verify that all atom(s) in the fragment are connected somehow, otherwise create new fragment
 *
-*  int natomes            : number of atom(s)
-*  int fcoord             : the number of fragment(s)
-*  int fid                : the fragment id
-*  struct atom * new_list : the atom(s) list
-*  int tmpbond[2]         : the number of bond(s) and clone bond(s)
-*  int ** tmpbondid[2]    : the bond atoms id list
-*  int * old_id           : the atom(s) id list
-*  gboolean remove        : remove (1) or motion (0) action
+*  int natomes             : number of atom(s)
+*  int fcoord              : the number of fragment(s)
+*  int fid                 : the fragment id
+*  struct atom * atom_list : the atom(s) list
+*  int * old_id            : the atom(s) old id list
+*  gboolean remove         : remove (1) or motion (0) action
 */
-int test_this_fragment (int natomes, int fcoord, int fid, struct atom * new_list, int tmpbond[2], int ** tmpbondid[2], int * old_id, gboolean remove)
+int test_this_fragment (int natomes, int fcoord, int fid, struct atom ** atom_list, int * old_id, gboolean remove)
 {
   int i, j, k, l, m, n;
-  struct atom * tmp_list;
   gboolean modif;
-  for (i=0; i<2; i++)
+  tigl = allocint(natomes);
+  migl = allocint(natomes);
+  i = 0;
+  for (j=0; j<natomes; j++)
   {
-    if (i)
+    modif = FALSE;
+    if (! remove)
     {
-      ats_in_frag = allocint(k);
-      ats_id = allocint(natomes);
-      contacts = allocint(k);
-      neighbors = allocdint(k, k);
-      togl = allocint(k);
+      modif = TRUE;
     }
-    k = 0;
-    tmp_list = new_list;
-    while (tmp_list)
+    else if (old_id)
     {
-      modif = FALSE;
-      if (! remove)
+      if (atom_list[j])
       {
-        modif = TRUE;
+        if (old_id[atom_list[j] -> id] > 0) modif = TRUE;
       }
-      else if (old_id)
+    }
+    if (modif)
+    {
+      if (atom_list[j] -> coord[2] == fid)
       {
-         if (old_id[tmp_list -> id] > 0) modif = TRUE;
+         tigl[atom_list[j] -> id] = i;
+         migl[atom_list[j] -> id] = j;
+         i ++;
       }
-      if (modif)
+    }
+  }
+
+  if (i)
+  {
+    togl = allocint(i);
+    atoms_in_frag = i;
+
+    // Check each atoms (recursive testing)
+    int totmol = 0;
+    tmbs = molcounter = 0;
+    start:;
+    i = 0;
+    for (j=0; j<natomes; j++)
+    {
+      if (atom_list[j])
       {
-        if (tmp_list -> coord[2] == fid)
+        if (atom_list[j] -> coord[2] == fid)
         {
-          if (i)
+          k = tigl[atom_list[j] -> id];
+          if (! molcounter && ! togl[k])
           {
-            ats_in_frag[k] = tmp_list -> id;
-            ats_id[tmp_list -> id] = k;
+            totmol ++;
+            set_mol_data_list (atom_list[j] -> id, atom_list, totmol);
+            if (tmbs == atoms_in_frag) goto end;
+            if (molcounter == 10000) goto start;
+            molcounter = 0;
           }
-          k ++;
-        }
-      }
-      tmp_list = tmp_list -> next;
-    }
-  }
-  atoms_in_frag = k;
-  // Build neighbors map for frag fid
-  for (i=0; i<atoms_in_frag; i++)
-  {
-    for (j=0; j<2; j++)
-    {
-      for (k=0; k < tmpbond[j]; k++)
-      {
-        l = tmpbondid[j][k][0];
-        m = tmpbondid[j][k][1];
-        if (l == ats_in_frag[i] || m == ats_in_frag[i])
-        {
-          n = (l == ats_in_frag[i]) ? m : l;
-          neighbors[i][contacts[i]] = n;
-          contacts[i] ++;
+          else if (molcounter > 0 && togl[k] == totmol)
+          {
+            for (l=0; l<atom_list[j] -> numv; l++)
+            {
+              m = atom_list[j] -> vois[l];
+              n = tigl[m];
+              if (! togl[n])
+              {
+                molcounter = 0;
+                i = 1;
+                set_mol_data_list (m, atom_list, totmol);
+                if (tmbs == atoms_in_frag) goto end;
+                if (molcounter == 10000) goto start;
+                molcounter = 1;
+              }
+            }
+          }
         }
       }
     }
-  }
-  // Check each atoms (recursive testing)
-  int totmol = 0;
-  tmbs = molcounter = 0;
-  start:;
-  m = n = 0;
-  for (i=0; i<atoms_in_frag; i++)
-  {
-    m ++;
-    if (molcounter > 0 && togl[i] == totmol)
+    if (tmbs < atoms_in_frag)
     {
-      for (j=0; j<contacts[i]; j++)
-      {
-        l = ats_id[neighbors[i][j]];
-        if (! togl[l])
-        {
-          molcounter = 0;
-          n = 1;
-          set_mol_data (l, totmol);
-          if (tmbs == atoms_in_frag) goto end;
-          molcounter = 1;
-          goto start;
-        }
-      }
-    }
-    else if (! molcounter && ! togl[i])
-    {
-      totmol ++;
-      set_mol_data (i, totmol);
-      if (tmbs == atoms_in_frag) goto end;
-      if (molcounter == 10000) goto start;
       molcounter = 0;
+      goto start;
     }
-  }
-  if (m == atoms_in_frag)
-  {
-    if (! n) molcounter = 0;
-    goto start;
-  }
-  if (molcounter) goto start;
-  end:;
-
-  l = 0;
-  for (i=0; i<atoms_in_frag; i++)
-  {
-    if (togl[i] > 1)
+    if (molcounter) goto start;
+    end:;
+    i = 0;
+    for (j=0; j<natomes; j++)
     {
-      j = ats_in_frag[i];
-      tmp_list = new_list;
-      while (tmp_list -> id != j) tmp_list = tmp_list -> next;
-      tmp_list -> coord[2] = fcoord + togl[i] - 2;
+      if (atom_list[j])
+      {
+        k = atom_list[j] -> id;
+        l = tigl[k];
+        if (togl[l] > 1)
+        {
+          atom_list[j] -> coord[2] = fcoord + togl[l] - 2;
+          // g_debug ("togl[l] = %d, j= %d, atom_list[j] -> coord[2]= %d", togl[l], j, atom_list[j] -> coord[2]);
+        }
+        i = max (i, togl[l]);
+      }
     }
-    l = max (l, togl[i]);
+    g_free (togl);
   }
-  g_free (ats_in_frag);
-  g_free (ats_id);
-  g_free (contacts);
-  g_free (neighbors);
-  g_free (togl);
-  return  l-1;
+  g_free (tigl);
+  g_free (migl);
+  return  i-1;
 }
 
 /*
-*  struct atom * get_atom_pointer (int aid, struct atom * new_list)
-*
-*  Usage: return atom structure with matching id
-*
-*  int aid                : the atom id
-*  struct atom * new_list : the atom(s) list
-*/
-struct atom * get_atom_pointer (int aid, struct atom * new_list)
-{
-  struct atom * tmp_list;
-  tmp_list = new_list;
-  while (tmp_list)
-  {
-    if (tmp_list -> id == aid) return tmp_list;
-  }
-  return NULL;
-}
-
-/*
-*  gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, struct atom * new_list, gboolean remove)
+*  gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, struct atom * new_list, gboolean remove, gboolean passivate)
 *
 * Usage: remove bond(s) from project
 *
@@ -244,20 +210,22 @@ struct atom * get_atom_pointer (int aid, struct atom * new_list)
 *  int * old_id                       : the atom(s) id list
 *  struct atom * new_list             : the new atom list
 *  gboolean remove                    : remove (1) or motion (0) action
+*  gboolean passivate                 : surface passivation (1) or (0)
 */
-gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, struct atom * new_list, gboolean remove)
+gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, struct atom * new_list, gboolean remove, gboolean passivate)
 {
   int h, i, j, k, l, m;
   int tmpbond[2];
   int ** tmpbondid[2];
   struct atom * tmp_list;
-  gboolean split = FALSE;
   gboolean * frag_to_test;
-  int * per_frag;
-  int * in_frag;
+  gboolean * frag_to_remove;
+  gboolean * show_frag = NULL;
+  gboolean * tmp_show_frag = NULL;
+  int * per_frag, * tmp_per_frag;
+  int * in_frag, * tmp_in_frag;
   int * tmp_vois = NULL;
   int * id_mod = NULL;
-  int * id_frag = NULL;
 
   /* tmp_list = new_list;
   while (tmp_list)
@@ -275,46 +243,60 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
     tmp_list = tmp_list -> next;
   }*/
 
-  // The next lines refresh the bonding information without calculating the distance matrix
-  tmp_list = new_list;
-  tmp_vois = allocint (20);
-  h = -1;
+  int tcf = (this_proj) ? this_proj -> coord -> totcoord[2] : this_object -> coord -> totcoord[2];
   if (this_proj)
   {
-    id_mod = allocint (this_proj -> natomes);
-    while (tmp_list)
+    if (tcf)
     {
-      i = tmp_list -> id;
-      if (old_id[i] > 0 || (! remove && old_id[i] < 0))
+      show_frag  = duplicate_bool (tcf, this_proj -> modelgl -> anim -> last -> img -> show_coord[2]);
+    }
+    else
+    {
+      show_frag = allocbool (1);
+      show_frag[0] = TRUE;
+      tcf = 1;
+    }
+  }
+
+  int nat = (this_proj) ? this_proj -> natomes : this_object -> atoms;
+  per_frag = allocint (tcf);
+  in_frag = allocint (tcf);
+  id_mod = allocint (nat);
+  tmp_vois = allocint (20);
+  h = -1;
+  tmp_list = new_list;
+  for (i=0; i<nat; i++)
+  {
+    j = (this_proj) ? this_proj -> atoms[0][i].coord[2] : tmp_list -> coord[2];
+    per_frag[j] ++;
+    if (old_id[i] < 0)
+    {
+      in_frag[j] ++;
+      if (! remove || passivate)
       {
-        h ++;
-        id_mod[i] = h;
+        if (! remove && ! passivate) h ++;
+        id_mod[tmp_list -> id] = h;
       }
+    }
+    else
+    {
+      h ++;
+      id_mod[tmp_list -> id] = h;
+    }
+
+    if (old_id[i] > 0 || ! remove)
+    {
       if (tmp_list -> numv > 0)
       {
         k = 0;
-        if (old_id[i] > 0)
+        // Save the neighbors list for this atom
+        for (l=0; l<tmp_list -> numv; l++)
         {
-          for (j=0; j<tmp_list -> numv; j++)
+          m = tmp_list -> vois[l];
+          if ((remove && old_id[m] > 0) || (! remove && old_id[i] > 0 && old_id[m] > 0) || (! remove && old_id[i] < 0 && old_id[m] < 0))
           {
-            l = tmp_list -> vois[j];
-            if (old_id[l] > 0)
-            {
-              tmp_vois[k] = l;
-              k ++;
-            }
-          }
-        }
-        else if (! remove && old_id[i] < 0)
-        {
-          for (j=0; j<tmp_list -> numv; j++)
-          {
-            l = tmp_list -> vois[j];
-            if (old_id[l] < 0)
-            {
-              tmp_vois[k] = l;
-              k ++;
-            }
+            tmp_vois[k] = m;
+            k ++;
           }
         }
         g_free (tmp_list -> vois);
@@ -322,69 +304,173 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
         tmp_list -> numv = k;
         if (k)
         {
+          // Correct the neighbor list for this atom
           tmp_list -> vois = allocint (k);
-          for (j=0; j<k; j++) tmp_list -> vois[j] = tmp_vois[j];
+          for (l=0; l<k; l++) tmp_list -> vois[l] = tmp_vois[l];
         }
       }
-      tmp_list = tmp_list -> next;
     }
-    g_free (tmp_vois);
-    tmp_list = new_list;
-    while (tmp_list)
-    {
-      i = tmp_list -> id;
-      if (old_id[i] > 0 || (! remove && old_id[i] < 0))
-      {
-        if (tmp_list -> numv > 0)
-        {
-          for (j=0; j<tmp_list -> numv; j++)
-          {
-            k = tmp_list -> vois[j];
-            tmp_list -> vois[j] = id_mod[k];
-          }
-        }
-      }
-      tmp_list = tmp_list -> next;
-    }
+    if ( old_id[i] > 0 || ! remove)  tmp_list = tmp_list -> next;
   }
-  int tcf = (this_proj) ? this_proj -> coord -> totcoord[2] : this_object -> coord -> totcoord[2];
-  int nat = (this_proj) ? this_proj -> natomes : this_object -> atoms;
-  if (tcf)
+  g_free (tmp_vois);
+
+  // Taking care of the isolated atom(s)
+  tmp_list = new_list;
+  while (tmp_list)
   {
-    frag_to_test = allocbool (tcf + 1);
-    per_frag = allocint (tcf + 1);
-    in_frag = allocint (tcf + 1);
-    for (i=0; i<nat; i++)
+    i =  tmp_list -> coord[2];
+    if (! tmp_list -> numv && per_frag[i] > 1 && old_id[tmp_list -> id] > 0)
     {
-      j = (this_proj) ? this_proj -> atoms[0][i].coord[2] : this_object -> at_list[i].coord[2];
-      per_frag[j] ++;
-      if (this_proj)
+      // If the atom has no neighbors, and if it is not the last one in the fragment
+      tmp_show_frag = allocbool (tcf+1);
+      tmp_per_frag = allocint (tcf+1);
+      tmp_in_frag = allocint (tcf+1);
+      for (j=0; j<tcf; j++)
       {
-        if (old_id[i] > 0 || (! remove && old_id[i] <0)) in_frag[j] ++;
+        tmp_show_frag[j] = show_frag[j];
+        tmp_per_frag[j] = per_frag[j];
+        tmp_in_frag[j] = in_frag[j];
+      }
+      tmp_show_frag[j] = show_frag[i];
+      tmp_per_frag[j] = 1;
+      g_free (show_frag);
+      g_free (per_frag);
+      g_free (in_frag);
+      show_frag = duplicate_bool (tcf+1, tmp_show_frag);
+      per_frag = duplicate_int (tcf+1, tmp_per_frag);
+      in_frag = duplicate_int (tcf+1, tmp_in_frag);
+      g_free (tmp_per_frag);
+      g_free (tmp_in_frag);
+      g_free (tmp_show_frag);
+      per_frag[i] --;
+      tmp_list -> coord[2] = tcf;
+      tcf ++;
+    }
+    tmp_list = tmp_list -> next;
+  }
+
+  frag_to_test = allocbool (tcf);
+  frag_to_remove = allocbool (tcf);
+  for (i=0; i<tcf; i++)
+  {
+    if (in_frag[i] == per_frag[i])
+    {
+      if (remove)
+      {
+        frag_to_remove[i] = TRUE;
       }
       else
       {
-        in_frag[j] ++;
-      }
-    }
-
-    for (i=0; i<tcf; i++)
-    {
-      if (in_frag[i] > 1)
-      {
         frag_to_test[i] = TRUE;
-        split = TRUE;
+      }
+    }
+    else if (per_frag[i] > 1 && in_frag[i])
+    {
+      frag_to_test[i] = TRUE;
+    }
+    // g_debug ("i= %d, frag_to_test[%d]= %d, frag_to_remove[%d]= %d, in_frag[%d]= %d, per_frag[%d]= %d", i, i, frag_to_test[i], i, frag_to_remove[i], i, in_frag[i], i, per_frag[i]);
+  }
+  g_free (in_frag);
+  g_free (per_frag);
+  struct atom ** atom_list = g_malloc0 (nat*sizeof*atom_list);
+  tmp_list = new_list;
+  while (tmp_list)
+  {
+    i = tmp_list -> id;
+    if (old_id[i] > 0 || ! remove)
+    {
+      atom_list[i] = duplicate_atom (tmp_list);
+    }
+    tmp_list = tmp_list -> next;
+  }
+
+  if (remove && this_proj)
+  {
+    i = 0;
+    // Removing fragment(s) if needed
+    for (j=0; j<tcf; j++)
+    {
+      if (frag_to_remove[j])
+      {
+        // All atoms in fragment j are modified
+        // All other atoms will be affected
+        for (k=0; k<nat; k++)
+        {
+          if (atom_list[k])
+          {
+            if (atom_list[k] -> coord[2] > j)
+            {
+              atom_list[k] -> coord[2] --;
+            }
+          }
+        }
+        i ++;
+        for (k=j+1; k<tcf-i; k++) show_frag[k-1] = show_frag[k];
+        for (k=j+1; k<tcf-i; k++) frag_to_test[k-1] = frag_to_test[k];
+      }
+    }
+    tcf -= i;
+    if (i)
+    {
+      tmp_show_frag = allocbool (tcf);
+      for (j=0; j<tcf; j++)
+      {
+        tmp_show_frag[j] = show_frag[j];
+      }
+      g_free (show_frag);
+      show_frag = duplicate_bool (tcf, tmp_show_frag);
+      g_free (tmp_show_frag);
+    }
+  }
+  i = tcf;
+  for (j=0; j<i; j++)
+  {
+    if (frag_to_test[j])
+    {
+      // g_debug ("testing frag[%d], remove= %d, tcf= %d, nat= %d, j= %d", j, remove, tcf, nat, j);
+      k = test_this_fragment (nat, tcf, j, atom_list, old_id, remove);
+      // g_debug ("After testing: k= %d", k);
+      if (k > 0)
+      {
+        tmp_show_frag = allocbool (tcf+k);
+        for (l=0; l<tcf; l++) tmp_show_frag[l] = show_frag[l];
+        for (l=tcf; l<tcf+k; l++) tmp_show_frag[l] = show_frag[j];
+        g_free (show_frag);
+        show_frag = duplicate_bool (tcf+k, tmp_show_frag);
+        g_free (tmp_show_frag);
+        tcf += k;
       }
     }
   }
-
-  for (i=0; i<2; i++)
+  g_free (frag_to_test);
+  g_free (frag_to_remove);
+  tmp_list = new_list;
+  while (tmp_list)
   {
-    tmpbondid[i] = NULL;
-    tmpbond[i] = 0;
+    i = tmp_list -> id;
+    tmp_list -> coord[2] = atom_list[i] -> coord[2];
+    g_free (atom_list[i]);
+    // g_debug ("End:: id= %d, coord[2]= %d", tmp_list -> id, tmp_list -> coord[2]);
+    tmp_list = tmp_list -> next;
   }
+  g_free (atom_list);
+
   if (this_proj)
   {
+    this_proj -> coord -> totcoord[2] = tcf;
+  }
+  else
+  {
+    this_object -> coord -> totcoord[2] = tcf;
+  }
+
+  if (this_proj)
+  {
+    for (i=0; i<2; i++)
+    {
+      tmpbondid[i] = NULL;
+      tmpbond[i] = 0;
+    }
     for (i=0; i<2; i++)
     {
       if (this_proj -> modelgl -> bonds[0][i])
@@ -401,7 +487,7 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
             tmpbondid[i][j][1] = m;
             j ++;
           }
-          else if (! remove && (old_id[l] < 0 && old_id[m] < 0))
+          else if (! remove && ! passivate && ((old_id[l] < 0 && old_id[m] < 0)))
           {
             tmpbondid[i][j][0] = l;
             tmpbondid[i][j][1] = m;
@@ -412,167 +498,6 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
         // g_debug ("i= %d, tmpbond[%d]= %d", i, i, tmpbond[i]);
       }
     }
-  }
-  else
-  {
-    tmpbond[0] = this_object -> bonds;
-    tmpbondid[0] = allocdint (this_object -> bonds, 2);
-    for (i=0; i<this_object -> bonds; i++)
-    {
-      tmpbondid[0][i][0] = this_object -> ibonds[i][0];
-      tmpbondid[0][i][1] = this_object -> ibonds[i][1];
-    }
-  }
-  gboolean * show_this;
-  gboolean * showfrag = NULL;
-  if (split)
-  {
-    if (this_proj)
-    {
-      show_this = duplicate_bool (this_proj -> coord -> totcoord[2], this_proj -> modelgl -> anim -> last -> img -> show_coord[2]);
-      showfrag = duplicate_bool (this_proj -> coord -> totcoord[2], this_proj -> modelgl -> anim -> last -> img -> show_coord[2]);
-    }
-    if (! remove)
-    {
-      if (this_proj)
-      {
-        tmp_list = new_list;
-        while (tmp_list)
-        {
-          j = tmp_list -> id;
-          if (old_id[j] < 0)
-          {
-            tmp_list -> coord[2] = this_proj -> coord -> totcoord[2];
-          }
-          tmp_list = tmp_list -> next;
-        }
-        frag_to_test[tcf] = TRUE;
-        tcf ++;
-        g_free (showfrag);
-        showfrag = allocbool (tcf);
-        for (m=0; m<tcf-1; m++) showfrag[m] = show_this[m];
-        showfrag[m] = TRUE;
-        g_free (show_this);
-        show_this = duplicate_bool (tcf, showfrag);
-      }
-    }
-    j = tcf;
-    l = 0;
-    for (i=0; i<j; i++)
-    {
-      k = 0;
-      if (per_frag[i] == in_frag[i] && i<j-1)
-      {
-        tmp_list = new_list;
-        while (tmp_list)
-        {
-          if (this_proj)
-          {
-            if (! remove || old_id[tmp_list -> id] > 0)
-            {
-              if (tmp_list -> coord[2] > i-l)
-              {
-                tmp_list -> coord[2] --;
-              }
-            }
-          }
-          else
-          {
-            if (tmp_list -> coord[2] > i-l)
-            {
-              tmp_list -> coord[2] --;
-            }
-          }
-          tmp_list = tmp_list -> next;
-        }
-        if (this_proj)
-        {
-          g_free (showfrag);
-          showfrag = allocbool (tcf-1);
-          for (m=0; m<i-l; m++) showfrag[m] = show_this[m];
-          for (m=i-l+1; m<tcf; m++) showfrag[m-1] = show_this[m];
-          g_free (show_this);
-          show_this = duplicate_bool (tcf-1, showfrag);
-        }
-        k = -1;
-        l ++;
-      }
-      else if (frag_to_test[i])
-      {
-        k = test_this_fragment (nat, tcf, i-l, new_list, tmpbond, tmpbondid, old_id, remove);
-        if (k > 0)
-        {
-          if (this_proj)
-          {
-            g_free (showfrag);
-            showfrag = allocbool (tcf+k);
-            for (m=0; m<tcf; m++) showfrag[m] = show_this[m];
-            for (m=tcf; m<tcf+k; m++) showfrag[m] = show_this[i-l];
-            g_free (show_this);
-            show_this = duplicate_bool (tcf+k, showfrag);
-          }
-        }
-      }
-      tcf += k;
-    }
-    g_free (frag_to_test);
-    if (this_proj) g_free (show_this);
-  }
-
-  id_frag = allocint (tcf);
-  tmp_list = new_list;
-  i = 0;
-  while (tmp_list)
-  {
-    j = tmp_list -> id;
-
-    if ((this_proj && (old_id[j] > 0 || (! remove && old_id[j] <0))) || this_object)
-    {
-      if (! id_frag[tmp_list -> coord[2]])
-      {
-        id_frag[tmp_list -> coord[2]] = i+1;
-        i ++;
-      }
-    }
-    tmp_list = tmp_list -> next;
-  }
-  tmp_list = new_list;
-  while (tmp_list)
-  {
-    tmp_list -> coord[2] = id_frag[tmp_list -> coord[2]] - 1;
-    tmp_list = tmp_list -> next;
-  }
-  if (i < tcf)
-  {
-    if (this_proj && split)
-    {
-      show_this = allocbool (i);
-      for (j=0; j<tcf; j++)
-      {
-        if (id_frag[j]) show_this[id_frag[j]-1] = showfrag[j];
-      }
-      g_free (showfrag);
-      showfrag = duplicate_bool (i, show_this);
-      g_free (show_this);
-    }
-    tcf = i;
-  }
-  if (this_proj)
-  {
-    this_proj -> coord -> totcoord[2] = tcf;
-  }
-  else
-  {
-    this_object -> coord -> totcoord[2] = tcf;
-  }
-  if (id_frag)
-  {
-    g_free (id_frag);
-    id_frag = NULL;
-  }
-
-  if (this_proj)
-  {
     struct distance clo;
     for (i=0; i<2; i++)
     {
@@ -616,6 +541,26 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
     }
   }
 
+  if (this_proj)
+  {
+    tmp_list = new_list;
+    while (tmp_list)
+    {
+      i = tmp_list -> id;
+      if (old_id[i] > 0 || ! remove)
+      {
+        if (tmp_list -> numv > 0)
+        {
+          for (j=0; j<tmp_list -> numv; j++)
+          {
+            k = tmp_list -> vois[j];
+            tmp_list -> vois[j] = id_mod[k];
+          }
+        }
+      }
+      tmp_list = tmp_list -> next;
+    }
+  }
   if (id_mod)
   {
     g_free (id_mod);
@@ -636,7 +581,7 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
     }
     tmp_list = tmp_list -> next;
   }*/
-  return showfrag;
+  return show_frag;
 }
 
 /*
@@ -712,7 +657,7 @@ void to_remove_this_list_of_objects (struct project * this_proj, atom_search * a
 /*
 *  void to_passivate_using_the_objects (struct project * this_proj, atom_search * asearch)
 *
-*  Usage: prepare passivation (delete of an object, then insertion of another one at the same location)
+*  Usage: prepare passivation (delete of an object, then insert of another one at the same location)
 *
 *  struct project * this_proj : the target project
 *  atom_search * asearch      : the target atom search
