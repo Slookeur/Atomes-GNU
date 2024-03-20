@@ -1,34 +1,49 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file ogl_shading.h
+* @short Variable declarations related to GLSL programs \n
+         Data structure declarations related to GLSL programs
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This header file: 'ogl_shading.h'
 *
-*  Contains: 
+* Contains:
+
+ - Variable declarations related to GLSL programs
+ - Data structure declarations related to GLSL programs
 
 */
 
 #ifndef OGL_SHADING_H_
 #define OGL_SHADING_H_
 
-#define GLSL_POINTS     0
-#define GLSL_SPHERES    1
-#define GLSL_LINES      2
-#define GLSL_CYLINDERS  3
-#define GLSL_CAPS       4
-#define GLSL_POLYEDRA   5
-#define GLSL_STRING     6
-#define GLSL_LIGHT      7
+/*! \enum glsl_styles */
+enum glsl_styles {
+  GLSL_POINTS    = 0, /*!< 0 */
+  GLSL_SPHERES   = 1, /*!< 1 */
+  GLSL_LINES     = 2, /*!< 2 */
+  GLSL_CYLINDERS = 3, /*!< 3 */
+  GLSL_CAPS      = 4, /*!< 4 */
+  GLSL_POLYEDRA  = 5, /*!< 5 */
+  GLSL_STRING    = 6, /*!< 6 */
+  GLSL_LIGHT     = 7  /*!< 7 */
+};
 
 #define POLY_BUFF_SIZE 10  // p(x,y,z), n(x,y,z), color (r,g,b,a)
 #define LINE_BUFF_SIZE  7  // p(x,y,z), color (r,g,b,a)
@@ -85,39 +100,46 @@ extern const GLchar * string_vertex;
 extern const GLchar * string_color;
 extern const GLchar * string_color_2d;
 
+/*! \typedef object_3d */
+typedef struct object_3d object_3d;
+struct object_3d
+{
+  int quality;             /*!< OpenGL rendering quality */
+  int num_vertices;        /*!< Number of vertices to render, if any */
+  int vert_buffer_size;    /*!< Buffer size for the vertices, if any  */
+  float * vertices;        /*!< Vertices to render, if any  */
+  int num_indices;         /*!< Number of indices, if any  */
+  int ind_buffer_size;     /*!< Buffer size for the indices, if any  */
+  int * indices;           /*!< Indices to render, if any  */
+  int num_instances;       /*!< Number of instances, if any  */
+  int inst_buffer_size;    /*!< Buffer size for the instances, if any  */
+  float * instances;       /*!< Instances to render, if any  */
+  GLuint texture;          /*!< Texture ID, if any */
+  float shift[4];          /*!< 0 to 2, texture position shift, if any: \n
+                             (0 = x_shift, 1 = y_shift, 2 = z_shift), \n
+                              3 visibility (0 = normal, 1 = always) */
+};
 
-typedef struct {
-  int quality;
-  int num_vertices;
-  int vert_buffer_size;
-  float * vertices;
-  int num_indices;
-  int ind_buffer_size;
-  int * indices;
-  int num_instances;
-  int inst_buffer_size;
-  float * instances;
-  GLuint texture;       // Texture ID if any
-  float shift[4];       // Texture shift if any (0-2: x,y,z), visible (3: always/normal)
-} object_3d;
-
-typedef struct {
-  int id;
-  int object;
-  GLuint vertex_shader;
-  GLuint geometry_shader;
-  GLuint fragment_shader;
-  GLenum vert_type;
-  int draw_type;
-  gboolean draw_instanced;
-  GLuint vao;
-  GLuint * vbo;
-  GLuint * array_pointer;
-  GLuint * uniform_loc;
-  GLuint * light_uniform;
-  object_3d * obj;
-  float line_width;
-  ColRGBA * col;
-} glsl_program;
+/*! \typedef glsl_program */
+typedef struct glsl_program glsl_program;
+struct glsl_program
+{
+  int id;                  /*!< The GLSL program ID */
+  int object;              /*!< The number of 3D object(s) to render */
+  GLuint vertex_shader;    /*!< The vertex shader ID */
+  GLuint geometry_shader;  /*!< The geometry shader ID */
+  GLuint fragment_shader;  /*!< The fragement shader ID */
+  GLenum vert_type;        /*!< The type of vertex */
+  int draw_type;           /*!< In \enum glsl_styles */
+  gboolean draw_instanced; /*!< 0 = single instance, 1 = multiple instances */
+  GLuint vao;              /*!< Vertex object array ID */
+  GLuint * vbo;            /*!< Binding buffer(s) */
+  GLuint * array_pointer;  /*!< Vertex pointer(s) */
+  GLuint * uniform_loc;    /*!< Uniform location pointer(s) */
+  GLuint * light_uniform;  /*!< Light(s) uniform */
+  object_3d * obj;         /*!< The 3D object(s) to render */
+  float line_width;        /*!< Wireframe line width */
+  ColRGBA * col;           /*!< String color */
+};
 
 #endif

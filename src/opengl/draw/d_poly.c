@@ -1,25 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file d_poly.c
+* @short Functions to prepare the OpenGL rendering of coordination polyhedra
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'd_poly.c'
 *
-*  Contains:
+* Contains:
 *
+
+ - The functions to prepare the OpenGL rendering of coordination polyhedra
+
 *
-*
-*
-*  List of subroutines:
+* List of functions:
 
   int is_atom_cloned (int at);
 
@@ -34,7 +43,7 @@ If not, see <https://www.gnu.org/licenses/> */
   void setup_tetrahedron (float * vertices, GLfloat ** xyz);
   void get_centroid (GLfloat ** xyz, int id);
   void check_triangles (int s, GLfloat ** xyz);
-  void prepare_poly_gl (float * vertices, struct atom at, int c);
+  void prepare_poly_gl (float * vertices, atom at, int c);
   void create_poly_lists ();
 
   vec3_t get_triangle_normal (vec3_t v1, vec3_t v2, vec3_t v3);
@@ -55,14 +64,14 @@ extern int nbs, nbl, nba;
 float the_sign;
 float poly_alpha;
 
-/*
-*  void setup_summit (float * vertices, vec3_t s, vec3_t n)
-*
-*  Usage: prepare the polygon summit to render
-*
-*  float * vertices : the OpenGL data buffer to fill
-*  vec3_t s         : position vector
-*  vec3_t n         : normal vector
+/*!
+  \fn void setup_summit (float * vertices, vec3_t s, vec3_t n)
+
+  \brief prepare the polygon summit to render
+
+  \param vertices the OpenGL data buffer to fill
+  \param s position vector
+  \param n normal vector
 */
 void setup_summit (float * vertices, vec3_t s, vec3_t n)
 {
@@ -80,14 +89,14 @@ void setup_summit (float * vertices, vec3_t s, vec3_t n)
   nba ++;
 }
 
-/*
-*  vec3_t get_triangle_normal (vec3_t v1, vec3_t v2, vec3_t v3)
-*
-*  Usage: compute triangle normal vector
-*
-*  vec3_t v1 : 1st summit
-*  vec3_t v2 : 2nd summit
-*  vec3_t v3 : 3rd summit
+/*!
+  \fn vec3_t get_triangle_normal (vec3_t v1, vec3_t v2, vec3_t v3)
+
+  \brief compute triangle normal vector
+
+  \param v1 1st summit
+  \param v2 2nd summit
+  \param v3 3rd summit
 */
 vec3_t get_triangle_normal (vec3_t v1, vec3_t v2, vec3_t v3)
 {
@@ -104,15 +113,15 @@ vec3_t get_triangle_normal (vec3_t v1, vec3_t v2, vec3_t v3)
   return v3_muls (normal, sign);
 }
 
-/*
-*  void setup_triangles (float * vertices, vec3_t sa, vec3_t sb, vec3_t sc)
-*
-*  Usage:
-*
-*  float * vertices :
-*  vec3_t sa        : 1st summit
-*  vec3_t sb        : 2nd summit
-*  vec3_t sc        : 3rd summit
+/*!
+  \fn void setup_triangles (float * vertices, vec3_t sa, vec3_t sb, vec3_t sc)
+
+  \brief setup triangle veertices
+
+  \param vertices
+  \param sa 1st summit
+  \param sb 2nd summit
+  \param sc 3rd summit
 */
 void setup_triangles (float * vertices, vec3_t sa, vec3_t sb, vec3_t sc)
 {
@@ -131,14 +140,14 @@ void setup_triangles (float * vertices, vec3_t sa, vec3_t sb, vec3_t sc)
   return v3_norm(v3_add(ta, v3_add(tb, tc)));
 }*/
 
-/*
-*  void setup_polyhedron (float * vertices, GLfloat ** xyz, int s)
-*
-*  Usage: fill the OpenGL data buffer for a polyhedron to render
-*
-*  float * vertices : the OpenGL buffer data to fill
-*  GLfloat ** xyz   : the summits coordinates
-*  int s            : the number of summits
+/*!
+  \fn void setup_polyhedron (float * vertices, GLfloat ** xyz, int s)
+
+  \brief fill the OpenGL data buffer for a polyhedron to render
+
+  \param vertices the OpenGL buffer data to fill
+  \param xyz the summits coordinates
+  \param s the number of summits
 */
 void setup_polyhedron (float * vertices, GLfloat ** xyz, int s)
 {
@@ -188,16 +197,16 @@ void setup_polyhedron (float * vertices, GLfloat ** xyz, int s)
   }
 }
 
-/*
-*  void setup_tetra (float * vertices, vec3_t a, vec3_t b, vec3_t c, vec3_t d)
-*
-*  Usage: fill the OpenGL data buffer for a tetrahedra to render
-*
-*  float * vertices : the OpenGL buffer data to fill
-*  vec3_t a         : 1st summit
-*  vec3_t b         : 2nd summit
-*  vec3_t c         : 3rd summit
-*  vec3_t d         : 4th summit
+/*!
+  \fn void setup_tetra (float * vertices, vec3_t a, vec3_t b, vec3_t c, vec3_t d)
+
+  \brief fill the OpenGL data buffer for a tetrahedra to render
+
+  \param vertices the OpenGL buffer data to fill
+  \param a 1st summit
+  \param b 2nd summit
+  \param c 3rd summit
+  \param d 4th summit
 */
 void setup_tetra (float * vertices, vec3_t a, vec3_t b, vec3_t c, vec3_t d)
 {
@@ -207,13 +216,13 @@ void setup_tetra (float * vertices, vec3_t a, vec3_t b, vec3_t c, vec3_t d)
   setup_triangles (vertices, a, b, d);
 }
 
-/*
-*  void setup_tetrahedron (float * vertices, GLfloat ** xyz)
-*
-*  Usage: fill the OpenGL data buffer for a tetrahedra to render
-*
-*  float * vertices : the OpenGL buffer data to fill
-*  GLfloat ** xyz   : the summits coordinates
+/*!
+  \fn void setup_tetrahedron (float * vertices, GLfloat ** xyz)
+
+  \brief fill the OpenGL data buffer for a tetrahedra to render
+
+  \param vertices the OpenGL buffer data to fill
+  \param xyz the summits coordinates
 */
 void setup_tetrahedron (float * vertices, GLfloat ** xyz)
 {
@@ -247,13 +256,13 @@ void setup_tetrahedron (float * vertices, GLfloat ** xyz)
   }
 }
 
-/*
-*  void get_centroid (GLfloat ** xyz, int id)
-*
-*  Usage: find the barycenter of a polyhedron
-*
-*  GLfloat ** xyz : the OpenGL buffer data to fill
-*  int id         : the number of summits
+/*!
+  \fn void get_centroid (GLfloat ** xyz, int id)
+
+  \brief find the barycenter of a polyhedron
+
+  \param xyz the OpenGL buffer data to fill
+  \param id the number of summits
 */
 void get_centroid (GLfloat ** xyz, int id)
 {
@@ -268,14 +277,14 @@ void get_centroid (GLfloat ** xyz, int id)
   centroid = v3_divs (centroid, id);
 }
 
-/*
-*  gboolean is_inside (vec3_t p, float * mi, float * ma)
-*
-*  Usage: is this point inside the polyhedron ?
-*
-*  vec3_t p   : the position to test
-*  float * mi : the min values in the summits coordinates on each axis
-*  float * ma : the max values in the summits coordinates on each axis
+/*!
+  \fn gboolean is_inside (vec3_t p, float * mi, float * ma)
+
+  \brief is this point inside the polyhedron ?
+
+  \param p the position to test
+  \param mi the min values in the summits coordinates on each axis
+  \param ma the max values in the summits coordinates on each axis
 */
 gboolean is_inside (vec3_t p, float * mi, float * ma)
 {
@@ -292,15 +301,15 @@ gboolean is_inside (vec3_t p, float * mi, float * ma)
   return FALSE;
 }
 
-/*
-*  gboolean is_in_triangle (vec3_t p, vec3_t a, vec3_t b, vec3_t c)
-*
-*  Usage: is this point inside a triangle ?
-*
-*  vec3_t p : the position to test
-*  vec3_t a : 1st summit of the triangle
-*  vec3_t b : 2nd summit of the triangle
-*  vec3_t c : 3rd summit of the triangle
+/*!
+  \fn gboolean is_in_triangle (vec3_t p, vec3_t a, vec3_t b, vec3_t c)
+
+  \brief is this point inside a triangle ?
+
+  \param p the position to test
+  \param a 1st summit of the triangle
+  \param b 2nd summit of the triangle
+  \param c 3rd summit of the triangle
 */
 gboolean is_in_triangle (vec3_t p, vec3_t a, vec3_t b, vec3_t c)
 {
@@ -318,15 +327,15 @@ gboolean is_in_triangle (vec3_t p, vec3_t a, vec3_t b, vec3_t c)
   }
 }
 
-/*
-*  gboolean check_it (int i, int j, int k, int l)
-*
-*  Usage: test this atom id ?
-*
-*  int i : 1st summit atom id
-*  int j : 2nd summit atom id
-*  int k : 3rd summit atom id
-*  int l : atom id to test
+/*!
+  \fn gboolean check_it (int i, int j, int k, int l)
+
+  \brief test this atom id ?
+
+  \param i 1st summit atom id
+  \param j 2nd summit atom id
+  \param k 3rd summit atom id
+  \param l atom id to test
 */
 gboolean check_it (int i, int j, int k, int l)
 {
@@ -340,13 +349,13 @@ gboolean check_it (int i, int j, int k, int l)
   }
 }
 
-/*
-*  void check_triangles (int s, GLfloat ** xyz)
-*
-*  Usage:
-*
-*  int s          : number of summits for the polygon
-*  GLfloat ** xyz : the coordinates of the summits
+/*!
+  \fn void check_triangles (int s, GLfloat ** xyz)
+
+  \brief check triangle intersection
+
+  \param s number of summits for the polygon
+  \param xyz the coordinates of the summits
 */
 void check_triangles (int s, GLfloat ** xyz)
 {
@@ -494,21 +503,21 @@ void check_triangles (int s, GLfloat ** xyz)
   }
 }
 
-/*
-*  void prepare_poly_gl (float * vertices, struct atom at, int c)
-*
-*  Usage: prepare the OpenGL rendering of a polyhedron
-*
-*  float * vertices : the OpenGL data buffer to fill
-*  struct atom at   : the atom origin of the polyhedron
-*  int c            : the coordination (0= total, 1= partial)
+/*!
+  \fn void prepare_poly_gl (float * vertices, atom at, int c)
+
+  \brief prepare the OpenGL rendering of a polyhedron
+
+  \param vertices the OpenGL data buffer to fill
+  \param at the atom origin of the polyhedron
+  \param c the coordination (0= total, 1= partial)
 */
-void prepare_poly_gl (float * vertices, struct atom at, int c)
+void prepare_poly_gl (float * vertices, atom at, int c)
 {
   int j, k, l;
   gboolean clones;
   GLfloat ** xyz;
-  struct distance d;
+  distance d;
   xyz = allocdfloat (at.numv+1, 3);
   clones = FALSE;
   for (l=0; l < at.numv; l++)
@@ -550,7 +559,7 @@ void prepare_poly_gl (float * vertices, struct atom at, int c)
       }
       else if (pcolorm == 5)
       {
-        struct field_molecule * fmol = get_active_field_molecule_from_model_id (proj_gl, at.id);
+        field_molecule * fmol = get_active_field_molecule_from_model_id (proj_gl, at.id);
         if (fmol)
         {
           l = proj_gl -> atoms[0][at.id].fid;
@@ -594,12 +603,12 @@ void prepare_poly_gl (float * vertices, struct atom at, int c)
   xyz = NULL;
 }
 
-/*
-*  int is_atom_cloned (int at)
-*
-*  Usage: does this atom have clone(s) ?
-*
-*  int at : the atom id to test
+/*!
+  \fn int is_atom_cloned (int at)
+
+  \brief does this atom have clone(s) ?
+
+  \param at the atom id to test
 */
 int is_atom_cloned (int at)
 {
@@ -613,10 +622,10 @@ int is_atom_cloned (int at)
   return i;
 }
 
-/*
-*  void create_poly_lists ()
-*
-*  Usage: prepare coordination polyhedra(s) OpenGL rendering
+/*!
+  \fn void create_poly_lists ()
+
+  \brief prepare coordination polyhedra(s) OpenGL rendering
 */
 void create_poly_lists ()
 {
@@ -673,7 +682,7 @@ void create_poly_lists ()
                  o += coord_gl -> partial_geo[n][m][p];
               }
               p = (plot -> draw_clones) ? 1 + is_atom_cloned (k) : 1;
-              // q is the number of summit of the polyedra
+              // q is the number of summit of the polyhedra
               // +1 if only a coord 3 to include the central atom
               q = (o == 3) ? o+1: o;
               // Then we need the max number of triangle for this polyedron

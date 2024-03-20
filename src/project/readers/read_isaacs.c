@@ -1,26 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_isaacs.c
+* @short Functions to read an ISAACS XML file \n
+         Functions to write an ISAACS XML file
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_isaacs.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The reader/writer subroutines for the ISAACS XML file
+ - The functions to read an ISAACS XML file
+ - The functions to write an ISAACS XML file
 
 *
-*  List of subroutines:
+* List of functions:
 
   int XmlwriterFilename (const char *uri);
   int write_xml (const char * filetosave);
@@ -67,35 +77,35 @@ char * reg_types[NFORMATS] = {"XYZ file",
                               "multiple Chem3D file",
                               "PDB file"};
 
-/*
-*  size_t strfind (char * ida)
-*
-*  Usage:
-*
-*  char * ida :
+/*!
+  \fn size_t strfind (char * ida)
+
+  \brief size of a string without spaces
+
+  \param ida
 */
 size_t strfind (char * ida)
 {
   size_t a, b, c;
 
-  a=strlen(ida);
+  a = strlen(ida);
   b = 0;
   for ( c=0 ; c < a ; c++)
   {
     if (ida[c] != ' ')
     {
-      b++;
+      b ++;
     }
   }
   return b;
 }
 
-/*
-*  int XmlwriterFilename (const char *uri)
-*
-*  Usage: write ISAACS XML file
-*
-*  const char *uri : the file name
+/*!
+  \fn int XmlwriterFilename (const char *uri)
+
+  \brief write ISAACS XML file
+
+  \param *uri the file name
 */
 int XmlwriterFilename (const char *uri)
 {
@@ -487,12 +497,12 @@ int XmlwriterFilename (const char *uri)
   return 1;
 }
 
-/*
-*  int write_xml (const char * filetosave)
-*
-*  Usage: write XML file
-*
-*  const char * filetosave : File to write
+/*!
+  \fn int write_xml (const char * filetosave)
+
+  \brief write XML file
+
+  \param filetosave File to write
 */
 int write_xml (const char * filetosave)
 {
@@ -509,12 +519,12 @@ int write_xml (const char * filetosave)
   return res;
 }
 
-/*
-*  gboolean file_exists(const char * filename)
-*
-*  Usage: file exists ?
-*
-*  const char * filename : File name
+/*!
+  \fn gboolean file_exists(const char * filename)
+
+  \brief file exists ?
+
+  \param filename File name
 */
 gboolean file_exists(const char * filename)
 {
@@ -527,13 +537,13 @@ gboolean file_exists(const char * filename)
   return FALSE;
 }
 
-/*
-*  xmlNodePtr findnode (xmlNodePtr startnode, char * nname)
-*
-*  Usage: find XML node
-*
-*  xmlNodePtr startnode : Starting node
-*  char * nname         : Node name to find
+/*!
+  \fn xmlNodePtr findnode (xmlNodePtr startnode, char * nname)
+
+  \brief find XML node
+
+  \param startnode Starting node
+  \param nname Node name to find
 */
 xmlNodePtr findnode (xmlNodePtr startnode, char * nname)
 {
@@ -551,12 +561,12 @@ xmlNodePtr findnode (xmlNodePtr startnode, char * nname)
   return tmp;
 }
 
-/*
-*  int get_spec_from_data (xmlChar * data)
-*
-*  Usage: get atomic species from data
-*
-*  xmlChar * data : the data
+/*!
+  \fn int get_spec_from_data (xmlChar * data)
+
+  \brief get atomic species from data
+
+  \param data the data
 */
 int get_spec_from_data (xmlChar * data)
 {
@@ -571,12 +581,12 @@ int get_spec_from_data (xmlChar * data)
   return -1;
 }
 
-/*
-*  int setprop (xmlNodePtr pnode)
-*
-*  Usage: read chemical properties from XML node
-*
-*  xmlNodePtr pnode : the XML node
+/*!
+  \fn int setprop (xmlNodePtr pnode)
+
+  \brief read chemical properties from XML node
+
+  \param pnode the XML node
 */
 int setprop (xmlNodePtr pnode)
 {
@@ -676,13 +686,13 @@ pend:
   return res;
 }
 
-/*
-*  int testopening (char * tdata, char * tfichier)
-*
-*  Usage: test atomic coordinates file opening
-*
-*  char * tdata    : Type of coordinates
-*  char * tfichier : File name
+/*!
+  \fn int testopening (char * tdata, char * tfichier)
+
+  \brief test atomic coordinates file opening
+
+  \param tdata Type of coordinates
+  \param tfichier File name
 */
 int testopening (char * tdata, char * tfichier)
 {
@@ -753,12 +763,12 @@ int testopening (char * tdata, char * tfichier)
   }
 }
 
-/*
-*  int setchemistry (xmlNodePtr xsnode)
-*
-*  Usage: read chemistry data from node
-*
-*  xmlNodePtr xsnode : the XML node
+/*!
+  \fn int setchemistry (xmlNodePtr xsnode)
+
+  \brief read chemistry data from node
+
+  \param xsnode the XML node
 */
 int setchemistry (xmlNodePtr xsnode)
 {
@@ -847,12 +857,12 @@ xend:
   return res;
 }
 
-/*
-*  int setbox (xmlNodePtr boxnode)
-*
-*  Usage: read box properties from node
-*
-*  xmlNodePtr boxnode : the XML node
+/*!
+  \fn int setbox (xmlNodePtr boxnode)
+
+  \brief read box properties from node
+
+  \param boxnode the XML node
 */
 int setbox (xmlNodePtr boxnode)
 {
@@ -1040,12 +1050,12 @@ bend:
   return box;
 }
 
-/*
-*  int setpbc (xmlNodePtr pbcnode)
-*
-*  Usage: read the PBC information from node
-*
-*  xmlNodePtr pbcnode : the XML node
+/*!
+  \fn int setpbc (xmlNodePtr pbcnode)
+
+  \brief read the PBC information from node
+
+  \param pbcnode the XML node
 */
 int setpbc (xmlNodePtr pbcnode)
 {
@@ -1094,12 +1104,12 @@ pend:
   return pbc;
 }
 
-/*
-*  int setcutoffs (xmlNodePtr cutnode)
-*
-*  Usage: read bond cutoffs from node
-*
-*  xmlNodePtr cutnode : the XML node
+/*!
+  \fn int setcutoffs (xmlNodePtr cutnode)
+
+  \brief read bond cutoffs from node
+
+  \param cutnode the XML node
 */
 int setcutoffs (xmlNodePtr cutnode)
 {
@@ -1157,12 +1167,12 @@ cend:
   return cut;
 }
 
-/*
-*  int settime(xmlNodePtr timenode)
-*
-*  Usage: read MD information from node
-*
-*  xmlNodePtr timenode : the XML node
+/*!
+  \fn int settime(xmlNodePtr timenode)
+
+  \brief read MD information from node
+
+  \param timenode the XML node
 */
 int settime(xmlNodePtr timenode)
 {
@@ -1217,12 +1227,12 @@ tend:
   return tps;
 }
 
-/*
-*  int check_xml (const char * filetocheck)
-*
-*  Usage: check the opening of ISAACS XML file
-*
-*  const char * filetocheck : File name
+/*!
+  \fn int check_xml (const char * filetocheck)
+
+  \brief check the opening of ISAACS XML file
+
+  \param filetocheck File name
 */
 int check_xml (const char * filetocheck)
 {
@@ -1389,12 +1399,12 @@ end:
   return res;
 }
 
-/*
-*  gchar * open_xml (const char * filetoread)
-*
-*  Usage: Open ISAACS XML file
-*
-*  const char * filetoread : File name
+/*!
+  \fn gchar * open_xml (const char * filetoread)
+
+  \brief Open ISAACS XML file
+
+  \param filetoread File name
 */
 gchar * open_xml (const char * filetoread)
 {

@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file cpmd_restart.c
+* @short Functions to configure the restart section for the CPMD input file creation assistant
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'cpmd_restart.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to configure the restart section for the CPMD input file creation assistant
+ - The functions to configure the restart section for the CPMD input file creation assistant
 
 *
-*  List of subroutines:
+* List of functions:
 
   G_MODULE_EXPORT void update_restart_parameter (GtkEntry * res, gpointer data);
   G_MODULE_EXPORT void update_restart_check (GtkCheckButton * but, gpointer data);
@@ -40,13 +48,13 @@ If not, see <https://www.gnu.org/licenses/> */
 extern void print_the_section (int s, int p, GtkTextBuffer * buffer);
 extern GtkWidget * cpmd_box (GtkWidget * box, gchar * lab, int v_space, int h_space, int dim);
 
-/*
-*  G_MODULE_EXPORT void update_restart_parameter (GtkEntry * res, gpointer data)
-*
-*  Usage: CPMD input file update restart parameter value entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void update_restart_parameter (GtkEntry * res, gpointer data)
+
+  \brief CPMD input file update restart parameter value entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void update_restart_parameter (GtkEntry * res, gpointer data)
 {
@@ -67,23 +75,23 @@ GtkWidget * sace[2];
 GtkWidget * trap_box[2];
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void update_restart_check (GtkCheckButton * but, gpointer data)
-*
-*  Usage: CPMD input file restart option toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void update_restart_check (GtkCheckButton * but, gpointer data)
+
+  \brief CPMD input file restart option toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void update_restart_check (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void update_restart_check (GtkToggleButton * but, gpointer data)
-*
-*  Usage: CPMD input file restart option toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void update_restart_check (GtkToggleButton * but, gpointer data)
+
+  \brief CPMD input file restart option toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void update_restart_check (GtkToggleButton * but, gpointer data)
 #endif
@@ -105,13 +113,13 @@ G_MODULE_EXPORT void update_restart_check (GtkToggleButton * but, gpointer data)
   for (i=1; i<4; i++) print_the_section (i, 0, qmbuffer[i]);
 }
 
-/*
-*  G_MODULE_EXPORT void changed_restart_box (GtkComboBox * box, gpointer data)
-*
-*  Usage: CPMD input file change restart type
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void changed_restart_box (GtkComboBox * box, gpointer data)
+
+  \brief CPMD input file change restart type
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void changed_restart_box (GtkComboBox * box, gpointer data)
 {
@@ -120,10 +128,10 @@ G_MODULE_EXPORT void changed_restart_box (GtkComboBox * box, gpointer data)
   for (i=1; i<4; i++) print_the_section (i, 0, qmbuffer[i]);
 }
 
-/*
-*  GtkWidget * restart_box ()
-*
-*  Usage: prepare the CPMD input preparation assistant restart widgets
+/*!
+  \fn GtkWidget * restart_box ()
+
+  \brief prepare the CPMD input preparation assistant restart widgets
 */
 GtkWidget * restart_box ()
 {

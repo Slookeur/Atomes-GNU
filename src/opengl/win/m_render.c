@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file m_render.c
+* @short Functions to create the 'OpenGL -> Render' submenu
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'm_render.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the 'OpenGL -> Render' submenu
+ - The functions to create the 'OpenGL -> Render' submenu
 
 *
-*  List of subroutines:
+* List of functions:
 
   G_MODULE_EXPORT void set_render (GtkWidget * widg, gpointer data);
   G_MODULE_EXPORT void change_render_radio (GSimpleAction * action, GVariant * parameter, gpointer data);
@@ -37,18 +45,18 @@ If not, see <https://www.gnu.org/licenses/> */
 
 gchar * text_renders[OGL_RENDERS] = {"Filled", "Lines", "Points"};
 
-/*
-*  G_MODULE_EXPORT void set_render (GtkWidget * widg, gpointer data)
-*
-*  Usage: set OpenGL rendering mode callback
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_render (GtkWidget * widg, gpointer data)
+
+  \brief set OpenGL rendering mode callback
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_render (GtkWidget * widg, gpointer data)
 {
   tint * the_data = (tint *)data;
-  struct project * this_proj = get_project_by_id(the_data -> a);
+  project * this_proj = get_project_by_id(the_data -> a);
   int i = this_proj -> modelgl -> anim -> last -> img -> render;
   int j = the_data -> b;
 #ifdef GTK3
@@ -78,13 +86,13 @@ G_MODULE_EXPORT void set_render (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK3
-/*
-*  GtkWidget * menu_render (glwin * view, int id)
-*
-*  Usage: create the 'OpenGL -> Render' submenu - GTK3
-*
-*  glwin * view : the target glwin
-*  int id       : main app (0) or popup (1)
+/*!
+  \fn GtkWidget * menu_render (glwin * view, int id)
+
+  \brief create the 'OpenGL -> Render' submenu - GTK3
+
+  \param view the target glwin
+  \param id main app (0) or popup (1)
 */
 GtkWidget * menu_render (glwin * view, int id)
 {
@@ -120,14 +128,14 @@ GtkWidget * menu_render (glwin * view, int id)
 }
 #else
 
-/*
-*  G_MODULE_EXPORT void change_render_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: set OpenGL rendering mode callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void change_render_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief set OpenGL rendering mode callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void change_render_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
@@ -163,13 +171,13 @@ G_MODULE_EXPORT void change_render_radio (GSimpleAction * action, GVariant * par
   }
 }
 
-/*
-*  GMenu * menu_render (glwin * view, int popm)
-*
-*  Usage: create the 'OpenGL -> Render' submenu - GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * menu_render (glwin * view, int popm)
+
+  \brief create the 'OpenGL -> Render' submenu - GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * menu_render (glwin * view, int popm)
 {

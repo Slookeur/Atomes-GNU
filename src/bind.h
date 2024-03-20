@@ -1,20 +1,28 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file bind.h
+* @short Binding to the Fortran90 subroutines
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This header file: 'bind.h'
 *
-*  Contains:
+* Contains:
 
  - Binding to the Fortran90 subroutines
 
@@ -22,6 +30,10 @@ If not, see <https://www.gnu.org/licenses/> */
 
 #ifndef BIND_H_
 #define BIND_H_
+
+extern void send_label_ (int *,
+                         int *,
+                         char *);
 
 extern int write_xyz_ (char *,
                        int *,
@@ -54,11 +66,6 @@ extern int read_vas_ (char *,
                       int *,
                       int *,
                       int *);
-
-extern int getnspec_ (int *);
-
-extern void getlabel_ (int *,
-                       char *);
 
 extern double fdmax_ (int *);
 extern double fkmin_ (int *);
@@ -150,10 +157,6 @@ extern int molecules_ (int *,
 extern int bond_angles_ (int *);
 extern int bond_diedrals_ (int *);
 extern int dihedrals_for_mol_ ();
-
-extern void label_spec_ (int *,
-                         int *,
-                         int *);
 
 extern int initrings_ (int *,
                        int *,

@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file m_proj.c
+* @short Functions to create the 'View -> Projection' submenu
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'm_proj.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the 'View -> Projection' submenu
+ - The functions to create the 'View -> Projection' submenu
 
 *
-*  List of subroutines:
+* List of functions:
 
   G_MODULE_EXPORT void set_camera_pos (GtkWidget * widg, gpointer data);
   G_MODULE_EXPORT void to_set_camera_pos (GSimpleAction * action, GVariant * parameter, gpointer data);
@@ -35,22 +43,23 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "glview.h"
 #include "glwindow.h"
 
+/*! \enum position */
 enum position {
-  RIGHT = 0,
-  LEFT = 1,
-  TOP = 2,
-  BOTTOM = 3,
-  FRONT = 4,
-  BACK = 5,
+  RIGHT  = 0, /*!< 0 */
+  LEFT   = 1, /*!< 1 */
+  TOP    = 2, /*!< 2 */
+  BOTTOM = 3, /*!< 3 */
+  FRONT  = 4, /*!< 4 */
+  BACK   = 5  /*!< 5 */
 };
 
-/*
-*  G_MODULE_EXPORT void set_camera_pos (GtkWidget * widg, gpointer data)
-*
-*  Usage: set camera position callback
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_camera_pos (GtkWidget * widg, gpointer data)
+
+  \brief set camera position callback
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_camera_pos (GtkWidget * widg, gpointer data)
 {
@@ -98,12 +107,12 @@ G_MODULE_EXPORT void set_camera_pos (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK3
-/*
-*  GtkWidget * menu_proj (glwin * view)
-*
-*  Usage: create the 'View -> Projection' submenu - GTK3
-*
-*  glwin * view : the target glwin
+/*!
+  \fn GtkWidget * menu_proj (glwin * view)
+
+  \brief create the 'View -> Projection' submenu - GTK3
+
+  \param view the target glwin
 */
 GtkWidget * menu_proj (glwin * view)
 {
@@ -130,27 +139,27 @@ GtkWidget * menu_proj (glwin * view)
   return menup;
 }
 #else
-/*
-*  G_MODULE_EXPORT void to_set_camera_pos (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: set camera position callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void to_set_camera_pos (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief set camera position callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void to_set_camera_pos (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   set_camera_pos (NULL, data);
 }
 
-/*
-*  GMenu * menu_proj (glwin * view, int popm)
-*
-*  Usage: create the 'View -> Projection' submenu - GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * menu_proj (glwin * view, int popm)
+
+  \brief create the 'View -> Projection' submenu - GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * menu_proj (glwin * view, int popm)
 {

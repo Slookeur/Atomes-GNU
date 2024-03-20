@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_npt.c
+* @short Functions to read NPT data
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_npt.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to read NPT data
+ - The functions to read NPT data
 
 *
-*  List of subroutines:
+* List of functions:
 
   int cell_get_lattice (int format);
   int open_cell_file (int format, gchar * filename);
@@ -41,35 +49,35 @@ If not, see <https://www.gnu.org/licenses/> */
   extern ssize_t getline(char **lineptr, size_t *n, FILE *stream);
 #endif
 
-extern void file_get_to_line (FILE * this_file, int line_id);
-
 FILE * cellp;
 
-typedef struct {
+typedef struct cell_file cell_file;
+struct cell_file
+{
   cell_info lattice;
   gchar * info;
-} cell_file;
+};
 
 cell_file * this_cell;
 
-/*
-*  void add_cell_info (gchar * info)
-*
-*  Usage: append information message to the cell information
-*
-*  gchar * info : the cell information message
+/*!
+  \fn void add_cell_info (gchar * info)
+
+  \brief append information message to the cell information
+
+  \param info the cell information message
 */
 void add_cell_info (gchar * info)
 {
   this_cell -> info = (this_cell -> info) ? g_strdup_printf ("%s\n%s", this_cell -> info, info) : g_strdup_printf ("%s", info);
 }
 
-/*
-*  int cell_get_lattice (int format)
-*
-*  Usage: get the lattice parameters format from the file
-*
-*  int format : File format
+/*!
+  \fn int cell_get_lattice (int format)
+
+  \brief get the lattice parameters format from the file
+
+  \param format File format
 */
 int cell_get_lattice (int format)
 {
@@ -213,13 +221,13 @@ int cell_get_lattice (int format)
   return 1;
 }
 
-/*
-*  int open_cell_file (int format, gchar * filename)
-*
-*  Usage: open the file that contains the cell parameters
-*
-*  int format       : File format
-*  gchar * filename : File name
+/*!
+  \fn int open_cell_file (int format, gchar * filename)
+
+  \brief open the file that contains the cell parameters
+
+  \param format File format
+  \param filename File name
 */
 int open_cell_file (int format, gchar * filename)
 {

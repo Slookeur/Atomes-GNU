@@ -1,35 +1,43 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file d_measures.c
+* @short Functions to prepare the OpenGL rendering of the measure(s)
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'd_measures.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to prepare the measure(s) OpenGL rendering
+ - The functions to prepare the OpenGL rendering of the measure(s)
 
 *
-*  List of subroutines:
+* List of functions:
 
   int prepare_measure_shaders (int type, int shaders);
 
-  void draw_angle_label (struct atom * at, struct atom * bt, struct atom * ct, int pi);
+  void draw_angle_label (atom * at, atom * bt, atom * ct, int pi);
   void set_measure_color (int selected, int id, int num);
   void setup_this_measured_angle (int s, int sa, int sb, int sc, int pi);
   void angles_loop (glwin * view, int id, int pi, GtkTreeStore * store);
   void dihedrals_loop (glwin * view, int id, int pi, GtkTreeStore * store);
-  void draw_bond_label (struct atom * at, struct atom * bt, int pi);
+  void draw_bond_label (atom * at, atom * bt, int pi);
   void setup_this_measured_bond (int s, int sa, int sb, int pi);
   void bonds_loop (glwin * view, int id, int pi, GtkTreeStore * store);
   void create_measures_lists ();
@@ -58,9 +66,9 @@ extern int ** tmp_object_id[3];
 int type_of_measure;
 int measures_drawing;
 
-struct selatom * tmp_a, * tmp_b, * tmp_c, * tmp_d;
-struct atom * ta, * tb, * tc, * td, * te, * tf;
-struct distance dist_ba, dist_bc;
+atom_in_selection * tmp_a, * tmp_b, * tmp_c, * tmp_d;
+atom * ta, * tb, * tc, * td, * te, * tf;
+distance dist_ba, dist_bc;
 int * shift;
 double dist;
 
@@ -69,19 +77,19 @@ object_3d * measure;
 ColRGBA col;
 ColRGBA col_gdk;
 
-/*
-*  void draw_angle_label (struct atom * at, struct atom * bt, struct atom * ct, int pi)
-*
-*  Usage: prepare an measured angle label OpenGL rendering
-*
-*  struct atom * at : 1st atom
-*  struct atom * bt : 2nd atom
-*  struct atom * ct : 3rd atom
-*  int pi           : 0 = mouse analysis mode, 1 = mouse edition mode
+/*!
+  \fn void draw_angle_label (atom * at, atom * bt, atom * ct, int pi)
+
+  \brief prepare an measured angle label OpenGL rendering
+
+  \param at 1st atom
+  \param bt 2nd atom
+  \param ct 3rd atom
+  \param pi 0 = mouse analysis mode, 1 = mouse edition mode
 */
-void draw_angle_label (struct atom * at, struct atom * bt, struct atom * ct, int pi)
+void draw_angle_label (atom * at, atom * bt, atom * ct, int pi)
 {
-  struct angle real_theta = angle_3d (cell_gl, (cell_gl -> npt) ? step : 0, at, bt, ct);
+  angle real_theta = angle_3d (cell_gl, (cell_gl -> npt) ? step : 0, at, bt, ct);
   gchar * str;
   if (real_theta.pbc)
   {
@@ -97,14 +105,14 @@ void draw_angle_label (struct atom * at, struct atom * bt, struct atom * ct, int
   g_free (str);
 }
 
-/*
-*  void set_measure_color (int selected, int id, int num)
-*
-*  Usage:
-*
-*  int selected : total number of selected atom(s)
-*  int id       : measured element id number
-*  int num      : total number of measured element(s) in the list
+/*!
+  \fn void set_measure_color (int selected, int id, int num)
+
+  \brief set measure color
+
+  \param selected total number of selected atom(s)
+  \param id measured element id number
+  \param num total number of measured element(s) in the list
 */
 void set_measure_color (int selected, int id, int num)
 {
@@ -121,16 +129,16 @@ void set_measure_color (int selected, int id, int num)
   }
 }
 
-/*
-*  void setup_this_measured_angle (int s, int sa, int sb, int sc, int pi)
-*
-*  Usage: prepare measured angle to render
-*
-*  int s  : measured line (0) or label (1)
-*  int sa : 1st atom
-*  int sb : 2nd atom
-*  int sc ! 3rd atom
-*  int pi : 0 = mouse analysis mode, 1 = mouse edition mode
+/*!
+  \fn void setup_this_measured_angle (int s, int sa, int sb, int sc, int pi)
+
+  \brief prepare measured angle to render
+
+  \param s measured line (0) or label (1)
+  \param sa 1st atom
+  \param sb 2nd atom
+  \param sc 3rd atom
+  \param pi 0 = mouse analysis mode, 1 = mouse edition mode
 */
 void setup_this_measured_angle (int s, int sa, int sb, int sc, int pi)
 {
@@ -138,7 +146,7 @@ void setup_this_measured_angle (int s, int sa, int sb, int sc, int pi)
   float shift[3];
   int p, q, r;
   vec3_t pos_a, pos_b, pos_c;
-  struct atom * at, * bt, * ct;
+  atom * at, * bt, * ct;
   at = & proj_gl -> atoms[step][sa];
   bt = & proj_gl -> atoms[step][sb];
   ct = & proj_gl -> atoms[step][sc];
@@ -178,20 +186,20 @@ void setup_this_measured_angle (int s, int sa, int sb, int sc, int pi)
   }
 }
 
-/*
-*  void angles_loop (glwin * view, int id, int pi, GtkTreeStore * store)
-*
-*  Usage: do things for the measured angles selection
-*
-*  glwin * view         : the target glwin
-*  int id               : action to perform:
-*                          -2 = save angles selection
-*                          -1 = clean angles selection
-*                           0 = prepare OpenGL buffer data analysis mode selection measure
-*                           1 = prepare OpenGL buffer data edition mode selection measure
-*                           2 = fill angles tree store measures window
-*  int pi               : 0 = mouse analysis mode, 1 = mouse edition mode
-*  GtkTreeStore * store : the tree store to fill, if any
+/*!
+  \fn void angles_loop (glwin * view, int id, int pi, GtkTreeStore * store)
+
+  \brief do things for the measured angles selection
+
+  \param view the target glwin
+  \param id action to perform: \n
+                           -2 = save angles selection, \n
+                           -1 = clean angles selection, \n
+                            0 = prepare OpenGL buffer data analysis mode selection measure, \n
+                            1 = prepare OpenGL buffer data edition mode selection measure, \n
+                            2 = fill angles tree store measures window
+  \param pi 0 = mouse analysis mode, 1 = mouse edition mode
+  \param store the tree store to fill, if any
 */
 void angles_loop (glwin * view, int id, int pi, GtkTreeStore * store)
 {
@@ -293,20 +301,20 @@ void angles_loop (glwin * view, int id, int pi, GtkTreeStore * store)
   g_free (did_it);
 }
 
-/*
-*  void dihedrals_loop (glwin * view, int id, int pi, GtkTreeStore * store)
-*
-*  Usage: do things for the measured dihedrals selection
-*
-*  glwin * view         : the target glwin
-*  int id               : action to perform:
-*                          -2 = save dihedrals selection
-*                          -1 = clean dihedrals selection
-*                           0 = prepare OpenGL buffer data analysis mode selection measure
-*                           1 = prepare OpenGL buffer data edition mode selection measure
-*                           2 = fill dihedrals tree store measures window
-*  int pi               : 0 = mouse analysis mode, 1 = mouse edition mode
-*  GtkTreeStore * store : the tree store to fill, if any
+/*!
+  \fn void dihedrals_loop (glwin * view, int id, int pi, GtkTreeStore * store)
+
+  \brief do things for the measured dihedrals selection
+
+  \param view the target glwin
+  \param id action to perform: \n
+                           -2 = save dihedrals selection \n
+                           -1 = clean dihedrals selection \n
+                            0 = prepare OpenGL buffer data analysis mode selection measure \n
+                            1 = prepare OpenGL buffer data edition mode selection measure \n
+                            2 = fill dihedrals tree store measures window
+  \param pi 0 = mouse analysis mode, 1 = mouse edition mode
+  \param store the tree store to fill, if any
 */
 void dihedrals_loop (glwin * view, int id, int pi, GtkTreeStore * store)
 {
@@ -418,18 +426,18 @@ void dihedrals_loop (glwin * view, int id, int pi, GtkTreeStore * store)
   g_free (did_it);
 }
 
-/*
-*  void draw_bond_label (struct atom * at, struct atom * bt, int pi)
-*
-*  Usage: prepare a measured distance OpenGL rendering
-*
-*  struct atom * at : 1st atom
-*  struct atom * bt : 2nd atom
-*  int pi           : 0 = mouse analysis mode, 1 = mouse edition mode
+/*!
+  \fn void draw_bond_label (atom * at, atom * bt, int pi)
+
+  \brief prepare a measured distance OpenGL rendering
+
+  \param at 1st atom
+  \param bt 2nd atom
+  \param pi 0 = mouse analysis mode, 1 = mouse edition mode
 */
-void draw_bond_label (struct atom * at, struct atom * bt, int pi)
+void draw_bond_label (atom * at, atom * bt, int pi)
 {
-  struct distance dist = distance_3d (cell_gl, (cell_gl -> npt) ? step : 0, at, bt);
+  distance dist = distance_3d (cell_gl, (cell_gl -> npt) ? step : 0, at, bt);
   vec3_t pos;
   if (dist.pbc)
   {
@@ -453,15 +461,15 @@ void draw_bond_label (struct atom * at, struct atom * bt, int pi)
   g_free (str);
 }
 
-/*
-*  void setup_this_measured_bond (int s, int sa, int sb, int pi)
-*
-*  Usage: prepare measured distance to render
-*
-*  int s  : measured line (0) or label (1)
-*  int sa : 1st atom
-*  int sb : 2nd atom
-*  int pi : 0 = mouse analysis mode, 1 = mouse edition mode
+/*!
+  \fn void setup_this_measured_bond (int s, int sa, int sb, int pi)
+
+  \brief prepare measured distance to render
+
+  \param s measured line (0) or label (1)
+  \param sa 1st atom
+  \param sb 2nd atom
+  \param pi 0 = mouse analysis mode, 1 = mouse edition mode
 */
 void setup_this_measured_bond (int s, int sa, int sb, int pi)
 {
@@ -469,7 +477,7 @@ void setup_this_measured_bond (int s, int sa, int sb, int pi)
   float shift[3];
   int p, q, r;
   vec3_t pos_a, pos_b;
-  struct atom * at, * bt;
+  atom * at, * bt;
   at = & proj_gl -> atoms[step][sa];
   bt = & proj_gl -> atoms[step][sb];
 
@@ -504,20 +512,20 @@ void setup_this_measured_bond (int s, int sa, int sb, int pi)
   }
 }
 
-/*
-*  void bonds_loop (glwin * view, int id, int pi, GtkTreeStore * store)
-*
-*  Usage: do things for the measured distances selection
-*
-*  glwin * view         : the target glwin
-*  int id               : action to perform:
-*                          -2 = save bonds selection
-*                          -1 = clean bonds selection
-*                           0 = prepare OpenGL buffer data analysis mode selection measure
-*                           1 = prepare OpenGL buffer data edition mode selection measure
-*                           2 = fill bonds distances tree store measures window
-*  int pi               : 0 = mouse analysis mode, 1 = mouse edition mode
-*  GtkTreeStore * store : the tree store to fill, if any
+/*!
+  \fn void bonds_loop (glwin * view, int id, int pi, GtkTreeStore * store)
+
+  \brief do things for the measured distances selection
+
+  \param view the target glwin
+  \param id action to perform: \n
+                           -2 = save bonds selection \n
+                           -1 = clean bonds selection \n
+                            0 = prepare OpenGL buffer data analysis mode selection measure \n
+                            1 = prepare OpenGL buffer data edition mode selection measure \n
+                            2 = fill bonds distances tree store measures window
+  \param pi 0 = mouse analysis mode, 1 = mouse edition mode
+  \param store the tree store to fill, if any
 */
 void bonds_loop (glwin * view, int id, int pi, GtkTreeStore * store)
 {
@@ -589,13 +597,13 @@ void bonds_loop (glwin * view, int id, int pi, GtkTreeStore * store)
   g_free (did_it);
 }
 
-/*
-*  int prepare_measure_shaders (int type, int shaders)
-*
-*  Usage: prepare measure OpenGL rendering
-*
-*  int type    : the measure type (0 = distances, 1 = angles, 2 = dihedrals)
-*  int shaders : the shader id
+/*!
+  \fn int prepare_measure_shaders (int type, int shaders)
+
+  \brief prepare measure OpenGL rendering
+
+  \param type the measure type (0 = distances, 1 = angles, 2 = dihedrals)
+  \param shaders the shader id
 */
 int prepare_measure_shaders (int type, int shaders)
 {
@@ -657,10 +665,10 @@ int prepare_measure_shaders (int type, int shaders)
   return nshaders;
 }
 
-/*
-*  void create_measures_lists ()
-*
-*  Usage: prepare measure(s) OpenGL rendering
+/*!
+  \fn void create_measures_lists ()
+
+  \brief prepare measure(s) OpenGL rendering
 */
 void create_measures_lists ()
 {

@@ -1,54 +1,65 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file dlp_print.c
+* @short Functions to handle the output of the DL-POLY FIELD file \n
+         Functions to handle the output of the DL-POLY CONTROL file \n
+         Functions to handle the output of the DL-POLY CONFIG file \n
+         Functions to fill the structural element(s) tree models in the assistant
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'dlp_print.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to handle the output of the DL-POLY FIELD file
- - The subroutines to handle the output of the DL-POLY CONTROL file
- - The subroutines to handle the output of the DL-POLY CONFIG file
- - The subroutines to fill the structural element(s) tree models in the assistant
+ - The functions to handle the output of the DL-POLY FIELD file
+ - The functions to handle the output of the DL-POLY CONTROL file
+ - The functions to handle the output of the DL-POLY CONFIG file
+ - The functions to fill the structural element(s) tree models in the assistant
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int get_num_struct_to_print (struct field_molecule * fmol, int sid);
+  int get_num_struct_to_print (field_molecule * fmol, int sid);
   int get_pbc ();
 
-  gboolean print_this_imp_inv (struct imp_inv * inv, int di, int a, int b, int c, int d);
-  gboolean member_of_atom (struct field_atom * fat, int id);
+  gboolean print_this_imp_inv (imp_inv * inv, int di, int a, int b, int c, int d);
+  gboolean member_of_atom (field_atom* fat, int id);
   gboolean print_ana ();
 
-  void print_field_prop (struct field_prop * pro, int st, struct field_molecule * mol);
-  void print_field_struct (struct field_struct * stru, struct field_molecule * mol);
-  void print_all_field_struct (struct field_molecule * mol, int str);
-  void print_dlp_improper_inversion (int di, GtkTextBuffer * buf,  struct field_struct * dhii, int fi, GtkTreeStore * store, GtkTreeIter * iter);
-  void print_dlp_dihedral (int dih, GtkTextBuffer * buf,  struct field_struct * dh, int fi, GtkTreeStore * store, GtkTreeIter * iter);
-  void print_dlp_angle (int ai, GtkTextBuffer * buf,  struct field_struct * an, int fi, GtkTreeStore * store, GtkTreeIter * iter);
-  void print_dlp_bond (int bi, GtkTextBuffer * buf,  struct field_struct * bd, int fi, GtkTreeStore * store, GtkTreeIter * iter);
-  void print_dlp_rigid (GtkTextBuffer * buf, struct field_rigid * rig);
-  void print_dlp_tet (GtkTextBuffer * buf, struct field_tethered * tet);
-  void print_dlp_pmf (GtkTextBuffer * buf, struct field_pmf * pmf);
-  void print_dlp_cons (GtkTextBuffer * buf, struct field_constraint * cons);
-  void print_dlp_shell (GtkTextBuffer * buf, struct field_molecule * fmol, struct field_shell * shell);
+  void print_field_prop (field_prop * pro, int st, field_molecule * mol);
+  void print_field_struct (field_struct * stru, field_molecule * mol);
+  void print_all_field_struct (field_molecule * mol, int str);
+  void print_dlp_improper_inversion (int di, GtkTextBuffer * buf,  field_struct * dhii, int fi, GtkTreeStore * store, GtkTreeIter * iter);
+  void print_dlp_dihedral (int dih, GtkTextBuffer * buf,  field_struct * dh, int fi, GtkTreeStore * store, GtkTreeIter * iter);
+  void print_dlp_angle (int ai, GtkTextBuffer * buf,  field_struct * an, int fi, GtkTreeStore * store, GtkTreeIter * iter);
+  void print_dlp_bond (int bi, GtkTextBuffer * buf,  field_struct * bd, int fi, GtkTreeStore * store, GtkTreeIter * iter);
+  void print_dlp_rigid (GtkTextBuffer * buf, field_rigid * rig);
+  void print_dlp_tet (GtkTextBuffer * buf, field_tethered * tet);
+  void print_dlp_pmf (GtkTextBuffer * buf, field_pmf * pmf);
+  void print_dlp_cons (GtkTextBuffer * buf, field_constraint * cons);
+  void print_dlp_shell (GtkTextBuffer * buf, field_molecule * fmol, field_shell * shell);
   void print_dlp_atom (GtkTextBuffer * buf, int at, int numat);
-  void print_dlp_molecule (GtkTextBuffer * buf, struct field_molecule * fmol);
-  void print_dlp_body (GtkTextBuffer * buf, struct field_nth_body * body);
-  void print_dlp_tersoff_cross (GtkTextBuffer * buf, struct field_nth_body * body_a, struct field_nth_body * body_b);
-  void print_dlp_tersoff (GtkTextBuffer * buf, struct field_nth_body * body);
+  void print_dlp_molecule (GtkTextBuffer * buf, field_molecule * fmol);
+  void print_dlp_body (GtkTextBuffer * buf, field_nth_body * body);
+  void print_dlp_tersoff_cross (GtkTextBuffer * buf, field_nth_body * body_a, field_nth_body * body_b);
+  void print_dlp_tersoff (GtkTextBuffer * buf, field_nth_body * body);
   void print_dlp_field (GtkTextBuffer * buf);
   void print_dlp_config (GtkTextBuffer * buf);
   void print_int (GtkTextBuffer * buf, int data);
@@ -69,21 +80,21 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern gboolean in_bond (int at, int bd[2]);
 extern int get_num_vdw_max ();
-extern gchar * get_body_element_name (struct field_nth_body * body, int aid, int nbd);
+extern gchar * get_body_element_name (field_nth_body * body, int aid, int nbd);
 
-/*
-*  void print_field_prop (struct field_prop * pro, int st, struct field_molecule * mol)
-*
-*  Usage: print force field property
-*
-*  struct field_prop * pro     : the field property to print
-*  int st                      : the type of structural element
-*  struct field_molecule * mol : the target field molecule
+/*!
+  \fn void print_field_prop (field_prop * pro, int st, field_molecule * mol)
+
+  \brief print force field property
+
+  \param pro the field property to print
+  \param st the type of structural element
+  \param mol the target field molecule
 */
-void print_field_prop (struct field_prop * pro, int st, struct field_molecule * mol)
+void print_field_prop (field_prop * pro, int st, field_molecule * mol)
 {
   int i, j, k, u, v;
-  struct field_atom * fat;
+  field_atom* fat;
   j = struct_id(st+7);
 #ifdef DEBUG
   int w;
@@ -132,15 +143,15 @@ void print_field_prop (struct field_prop * pro, int st, struct field_molecule * 
 #endif
 }
 
-/*
-*  void print_field_struct (struct field_struct * stru, struct field_molecule * mol)
-*
-*  Usage: print force field structural element
-*
-*  struct field_struct * stru  : the target field structural element
-*  struct field_molecule * mol : the target field molecule
+/*!
+  \fn void print_field_struct (field_struct * stru, field_molecule * mol)
+
+  \brief print force field structural element
+
+  \param stru the target field structural element
+  \param mol the target field molecule
 */
-void print_field_struct (struct field_struct * stru, struct field_molecule * mol)
+void print_field_struct (field_struct * stru, field_molecule * mol)
 {
 #ifdef DEBUG
   int i;
@@ -162,7 +173,7 @@ void print_field_struct (struct field_struct * stru, struct field_molecule * mol
 #ifdef DEBUG
     g_debug ("Other property(ies):: ");
 #endif
-    struct field_prop * tmp_pr;
+    field_prop * tmp_pr;
     tmp_pr = stru -> other;
     print_field_prop (tmp_pr, stru -> st, mol);
     while (tmp_pr -> next != NULL)
@@ -173,18 +184,18 @@ void print_field_struct (struct field_struct * stru, struct field_molecule * mol
   }
 }
 
-/*
-*  void print_all_field_struct (struct field_molecule * mol, int str)
-*
-*  Usage: print all field structural element(s)
-*
-*  struct field_molecule * mol : the target field molecule
-*  int str                     : the type of structural element
+/*!
+  \fn void print_all_field_struct (field_molecule * mol, int str)
+
+  \brief print all field structural element(s)
+
+  \param mol the target field molecule
+  \param str the type of structural element
 */
-void print_all_field_struct (struct field_molecule * mol, int str)
+void print_all_field_struct (field_molecule * mol, int str)
 {
   int i;
-  struct field_struct * tmp_s;
+  field_struct * tmp_s;
 #ifdef DEBUG
   g_debug (" ");
   g_debug ("IN MOL:: %d", mol -> id);
@@ -202,28 +213,30 @@ void print_all_field_struct (struct field_molecule * mol, int str)
 #endif
 }
 
-struct imp_inv{
+typedef struct imp_inv imp_inv;
+struct imp_inv
+{
   int a;
   int b;
   int c;
   int d;
-  struct imp_inv * next;
-  struct imp_inv * prev;
+  imp_inv * next;
+  imp_inv * prev;
 };
 
-/*
-*  gboolean print_this_imp_inv (struct imp_inv * inv, int di, int a, int b, int c, int d)
-*
-*  Usage: print this improper / inversion structure or not (already printed) ?
-*
-*  struct imp_inv * inv : the improper / inversion structure to check
-*  int di               : 6 = improper, 7 = inversion
-*  int a                : 1st atom id
-*  int b                : 2nd atom id
-*  int c                : 3rd atom id
-*  int d                : 4th atom id
+/*!
+  \fn gboolean print_this_imp_inv (imp_inv * inv, int di, int a, int b, int c, int d)
+
+  \brief print this improper / inversion structure or not (already printed) ?
+
+  \param inv the improper / inversion structure to check
+  \param di 6 = improper, 7 = inversion
+  \param a 1st atom id
+  \param b 2nd atom id
+  \param c 3rd atom id
+  \param d 4th atom id
 */
-gboolean print_this_imp_inv (struct imp_inv * inv, int di, int a, int b, int c, int d)
+gboolean print_this_imp_inv (imp_inv * inv, int di, int a, int b, int c, int d)
 {
   if (! inv) return TRUE;
   while (inv)
@@ -253,15 +266,15 @@ gboolean print_this_imp_inv (struct imp_inv * inv, int di, int a, int b, int c, 
   return TRUE;
 }
 
-/*
-*  gboolean member_of_atom (struct field_atom * fat, int id)
-*
-*  Usage: is the id atom from the model in target field atom
-*
-*  struct field_atom * fat : the target field atom
-*  int id                  : the atom id in the model
+/*!
+  \fn gboolean member_of_atom (field_atom* fat, int id)
+
+  \brief is the id atom from the model in target field atom
+
+  \param fat the target field atom
+  \param id the atom id in the model
 */
-gboolean member_of_atom (struct field_atom * fat, int id)
+gboolean member_of_atom (field_atom* fat, int id)
 {
   int i;
   for (i=0; i<tmp_fat -> num; i++)
@@ -271,19 +284,19 @@ gboolean member_of_atom (struct field_atom * fat, int id)
   return FALSE;
 }
 
-/*
-*  void print_dlp_improper_inversion (int di, GtkTextBuffer * buf,  struct field_struct * dhii, int fi, GtkTreeStore * store, GtkTreeIter * iter)
-*
-*  Usage: print / fill tree store with force field improper(s)/inversion(s) information
-*
-*  int di                     : 6 = improper(s), 7 = inversion(s)
-*  GtkTextBuffer * buf        : the GtkTextBuffer to print into, if input print
-*  struct field_struct * dhii : the field improper / inversion structural element(s) to print
-*  int fi                     : the target fragment id
-*  GtkTreeStore * store       : the target GtkTreeStore to store, if assistant tab creation / refresh
-*  GtkTreeIter * iter         : the target tree iter  to store the data, if assistant tab creation / refresh
+/*!
+  \fn void print_dlp_improper_inversion (int di, GtkTextBuffer * buf,  field_struct * dhii, int fi, GtkTreeStore * store, GtkTreeIter * iter)
+
+  \brief print / fill tree store with force field improper(s)/inversion(s) information
+
+  \param di 6 = improper(s), 7 = inversion(s)
+  \param buf the GtkTextBuffer to print into, if input print
+  \param dhii the field improper / inversion structural element(s) to print
+  \param fi the target fragment id
+  \param store the target GtkTreeStore to store, if assistant tab creation / refresh
+  \param iter the target tree iter to store the data, if assistant tab creation / refresh
 */
-void print_dlp_improper_inversion (int di, GtkTextBuffer * buf, struct field_struct * dhii, int fi, GtkTreeStore * store, GtkTreeIter * iter)
+void print_dlp_improper_inversion (int di, GtkTextBuffer * buf, field_struct * dhii, int fi, GtkTreeStore * store, GtkTreeIter * iter)
 {
   int a, b, c, d, e, i, j, k, l, m, n, o, p, q, r, s, t, u, v;
   gboolean show;
@@ -291,8 +304,8 @@ void print_dlp_improper_inversion (int di, GtkTextBuffer * buf, struct field_str
   float w;
   GtkTreeIter di_level;
   int * ids = allocint(4);
-  struct imp_inv * first_imp_inv = NULL;
-  struct imp_inv * this_ii = NULL;
+  imp_inv * first_imp_inv = NULL;
+  imp_inv * this_ii = NULL;
 
   for (i=0; i<tmp_fat -> num; i++)
   {
@@ -471,19 +484,19 @@ void print_dlp_improper_inversion (int di, GtkTextBuffer * buf, struct field_str
   g_free (ids);
 }
 
-/*
-*  void print_dlp_dihedral (int dih, GtkTextBuffer * buf,  struct field_struct * dh, int fi, GtkTreeStore * store, GtkTreeIter * iter)
-*
-*  Usage: print / fill tree store with force field dihedral(s) information
-*
-*  int dih                  : 4 = dihderale(s), 5 = dihedral restraint(s)
-*  GtkTextBuffer * buf      : the GtkTextBuffer to print into, if input print
-*  struct field_struct * dh : the field dihedral / dihedral restraint structural element(s) to print
-*  int fi                   : the target fragment id
-*  GtkTreeStore * store     : the target GtkTreeStore to store, if assistant tab creation / refresh
-*  GtkTreeIter * iter       : the target tree iter  to store the data, if assistant tab creation / refresh
+/*!
+  \fn void print_dlp_dihedral (int dih, GtkTextBuffer * buf,  field_struct * dh, int fi, GtkTreeStore * store, GtkTreeIter * iter)
+
+  \brief print / fill tree store with force field dihedral(s) information
+
+  \param dih 4 = dihderale(s), 5 = dihedral restraint(s)
+  \param buf the GtkTextBuffer to print into, if input print
+  \param dh the field dihedral / dihedral restraint structural element(s) to print
+  \param fi the target fragment id
+  \param store the target GtkTreeStore to store, if assistant tab creation / refresh
+  \param iter the target tree iter to store the data, if assistant tab creation / refresh
 */
-void print_dlp_dihedral (int dih, GtkTextBuffer * buf, struct field_struct * dh, int fi, GtkTreeStore * store, GtkTreeIter * iter)
+void print_dlp_dihedral (int dih, GtkTextBuffer * buf, field_struct * dh, int fi, GtkTreeStore * store, GtkTreeIter * iter)
 {
   int a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s;
   gboolean show;
@@ -621,19 +634,19 @@ void print_dlp_dihedral (int dih, GtkTextBuffer * buf, struct field_struct * dh,
   if (same_atom) g_free (already_done);
 }
 
-/*
-*  void print_dlp_angle (int ai, GtkTextBuffer * buf,  struct field_struct * an, int fi, GtkTreeStore * store, GtkTreeIter * iter)
-*
-*  Usage: print / fill tree store with force field angle(s) information
-*
-*  int ai                   : 2 = angle(s), 3 = angular restraint(s)
-*  GtkTextBuffer * buf      : the GtkTextBuffer to print into, if input print
-*  struct field_struct * an : the field angle / angle restraint structural element(s) to print
-*  int fi                   : the target fragment id
-*  GtkTreeStore * store     : the target GtkTreeStore to store, if assistant tab creation / refresh
-*  GtkTreeIter * iter       : the target tree iter  to store the data, if assistant tab creation / refresh
+/*!
+  \fn void print_dlp_angle (int ai, GtkTextBuffer * buf,  field_struct * an, int fi, GtkTreeStore * store, GtkTreeIter * iter)
+
+  \brief print / fill tree store with force field angle(s) information
+
+  \param ai 2 = angle(s), 3 = angular restraint(s)
+  \param buf the GtkTextBuffer to print into, if input print
+  \param an the field angle / angle restraint structural element(s) to print
+  \param fi the target fragment id
+  \param store the target GtkTreeStore to store, if assistant tab creation / refresh
+  \param iter the target tree iter to store the data, if assistant tab creation / refresh
 */
-void print_dlp_angle (int ai, GtkTextBuffer * buf, struct field_struct * an, int fi, GtkTreeStore * store, GtkTreeIter * iter)
+void print_dlp_angle (int ai, GtkTextBuffer * buf, field_struct * an, int fi, GtkTreeStore * store, GtkTreeIter * iter)
 {
   int a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, u;
   gboolean show;
@@ -746,19 +759,19 @@ void print_dlp_angle (int ai, GtkTextBuffer * buf, struct field_struct * an, int
   if (same_atom) g_free (already_done);
 }
 
-/*
-*  void print_dlp_bond (int bi, GtkTextBuffer * buf,  struct field_struct * bd, int fi, GtkTreeStore * store, GtkTreeIter * iter)
-*
-*  Usage: print / fill tree store with force field bond(s) information
-*
-*  int bi                   : 0 = bond(s), 1 = bond restraint(s)
-*  GtkTextBuffer * buf      : the GtkTextBuffer to print into, if input print
-*  struct field_struct * bd : the field bond / bond restraint structural element(s) to print
-*  int fi                   : the target fragment id
-*  GtkTreeStore * store     : the target GtkTreeStore to store, if assistant tab creation / refresh
-*  GtkTreeIter * iter       : the target tree iter  to store the data, if assistant tab creation / refresh
+/*!
+  \fn void print_dlp_bond (int bi, GtkTextBuffer * buf,  field_struct * bd, int fi, GtkTreeStore * store, GtkTreeIter * iter)
+
+  \brief print / fill tree store with force field bond(s) information
+
+  \param bi 0 = bond(s), 1 = bond restraint(s)
+  \param buf the GtkTextBuffer to print into, if input print
+  \param bd the field bond / bond restraint structural element(s) to print
+  \param fi the target fragment id
+  \param store the target GtkTreeStore to store, if assistant tab creation / refresh
+  \param iter the target tree iter to store the data, if assistant tab creation / refresh
 */
-void print_dlp_bond (int bi, GtkTextBuffer * buf,  struct field_struct * bd, int fi, GtkTreeStore * store, GtkTreeIter * iter)
+void print_dlp_bond (int bi, GtkTextBuffer * buf,  field_struct * bd, int fi, GtkTreeStore * store, GtkTreeIter * iter)
 {
   int i, j, k, l, m, n, o, p, q, r, s, t, u;
   gboolean show;
@@ -853,15 +866,15 @@ void print_dlp_bond (int bi, GtkTextBuffer * buf,  struct field_struct * bd, int
   if (same_atom) g_free (already_done);
 }
 
-/*
-*  void print_dlp_rigid (GtkTextBuffer * buf, struct field_rigid * rig)
-*
-*  Usage: print force field rigid
-*
-*  GtkTextBuffer * buf      : the GtkTextBuffer to print into
-*  struct field_rigid * rig : the field rigid to print
+/*!
+  \fn void print_dlp_rigid (GtkTextBuffer * buf, field_rigid * rig)
+
+  \brief print force field rigid
+
+  \param buf the GtkTextBuffer to print into
+  \param rig the field rigid to print
 */
-void print_dlp_rigid (GtkTextBuffer * buf, struct field_rigid * rig)
+void print_dlp_rigid (GtkTextBuffer * buf, field_rigid * rig)
 {
   gchar * str;
   int h, i, j, k, l, m, n;
@@ -891,15 +904,15 @@ void print_dlp_rigid (GtkTextBuffer * buf, struct field_rigid * rig)
   g_free (str);
 }
 
-/*
-*  void print_dlp_tet (GtkTextBuffer * buf, struct field_tethered * tet)
-*
-*  Usage: print force field tethered potential
-*
-*  GtkTextBuffer * buf         : the GtkTextBuffer to print into
-*  struct field_tethered * tet : the field tethered potential to print
+/*!
+  \fn void print_dlp_tet (GtkTextBuffer * buf, field_tethered * tet)
+
+  \brief print force field tethered potential
+
+  \param buf the GtkTextBuffer to print into
+  \param tet the field tethered potential to print
 */
-void print_dlp_tet (GtkTextBuffer * buf, struct field_tethered * tet)
+void print_dlp_tet (GtkTextBuffer * buf, field_tethered * tet)
 {
   gchar * str;
   str = g_strdup_printf ("%4s\t\%d", fkeysw[activef][1][tet -> key], tet -> num);
@@ -915,15 +928,15 @@ void print_dlp_tet (GtkTextBuffer * buf, struct field_tethered * tet)
   print_info ("\n", NULL, buf);
 }
 
-/*
-*  void print_dlp_pmf (GtkTextBuffer * buf, struct field_pmf * pmf)
-*
-*  Usage: print force field mean force potential
-*
-*  GtkTextBuffer * buf    : the GtkTextBuffer to print into
-*  struct field_pmf * pmf : the field PMF to print
+/*!
+  \fn void print_dlp_pmf (GtkTextBuffer * buf, field_pmf * pmf)
+
+  \brief print force field mean force potential
+
+  \param buf the GtkTextBuffer to print into
+  \param pmf the field PMF to print
 */
-void print_dlp_pmf (GtkTextBuffer * buf, struct field_pmf * pmf)
+void print_dlp_pmf (GtkTextBuffer * buf, field_pmf * pmf)
 {
   gchar * str;
   int i, j;
@@ -945,15 +958,15 @@ void print_dlp_pmf (GtkTextBuffer * buf, struct field_pmf * pmf)
   }
 }
 
-/*
-*  void print_dlp_cons (GtkTextBuffer * buf, struct field_constraint * cons)
-*
-*  Usage: print force field constraint
-*
-*  GtkTextBuffer * buf            : the GtkTextBuffer to print into
-*  struct field_constraint * cons : the field constraint to print
+/*!
+  \fn void print_dlp_cons (GtkTextBuffer * buf, field_constraint * cons)
+
+  \brief print force field constraint
+
+  \param buf the GtkTextBuffer to print into
+  \param cons the field constraint to print
 */
-void print_dlp_cons (GtkTextBuffer * buf, struct field_constraint * cons)
+void print_dlp_cons (GtkTextBuffer * buf, field_constraint * cons)
 {
   gchar * str;
   str = g_strdup_printf ("%d\t\%d\t%f\n", cons -> ia[0], cons -> ia[1], cons -> length);
@@ -961,16 +974,16 @@ void print_dlp_cons (GtkTextBuffer * buf, struct field_constraint * cons)
   g_free (str);
 }
 
-/*
-*  void print_dlp_shell (GtkTextBuffer * buf, struct field_molecule * fmol, struct field_shell * shell)
-*
-*  Usage: print force field core shell
-*
-*  GtkTextBuffer * buf          : the GtkTextBuffer to print into
-*  struct field_molecule * fmol : the target field molecule
-*  struct field_shell * shell   : the field shell to print
+/*!
+  \fn void print_dlp_shell (GtkTextBuffer * buf, field_molecule * fmol, field_shell * shell)
+
+  \brief print force field core shell
+
+  \param buf the GtkTextBuffer to print into
+  \param fmol the target field molecule
+  \param shell the field shell to print
 */
-void print_dlp_shell (GtkTextBuffer * buf, struct field_molecule * fmol, struct field_shell * shell)
+void print_dlp_shell (GtkTextBuffer * buf, field_molecule * fmol, field_shell * shell)
 {
   gchar * str;
   str = g_strdup_printf ("%d\t\%d\t%f\t%f\n", shell -> ia[0], shell -> ia[1], shell -> k2, shell -> k4);
@@ -978,14 +991,14 @@ void print_dlp_shell (GtkTextBuffer * buf, struct field_molecule * fmol, struct 
   g_free (str);
 }
 
-/*
-*  void print_dlp_atom (GtkTextBuffer * buf, int at, int numat)
-*
-*  Usage: print force field atom
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
-*  int at              : the list id in the target field atom
-*  int numat           : the atom id in the fragment / molecule
+/*!
+  \fn void print_dlp_atom (GtkTextBuffer * buf, int at, int numat)
+
+  \brief print force field atom
+
+  \param buf the GtkTextBuffer to print into
+  \param at the list id in the target field atom
+  \param numat the atom id in the fragment / molecule
 */
 void print_dlp_atom (GtkTextBuffer * buf, int at, int numat)
 {
@@ -1002,15 +1015,15 @@ void print_dlp_atom (GtkTextBuffer * buf, int at, int numat)
   g_free (str);
 }
 
-/*
-*  int get_num_struct_to_print (struct field_molecule * fmol, int sid)
-*
-*  Usage: find the number of structural element(s) to print
-*
-*  struct field_molecule * fmol : the target field molecule
-*  int sid                      : the type of structural element
+/*!
+  \fn int get_num_struct_to_print (field_molecule * fmol, int sid)
+
+  \brief find the number of structural element(s) to print
+
+  \param fmol the target field molecule
+  \param sid the type of structural element
 */
-int get_num_struct_to_print (struct field_molecule * fmol, int sid)
+int get_num_struct_to_print (field_molecule * fmol, int sid)
 {
   int i = 0;
   tmp_fstr = fmol -> first_struct[sid];
@@ -1034,15 +1047,15 @@ int get_num_struct_to_print (struct field_molecule * fmol, int sid)
   return i;
 }
 
-/*
-*  void print_dlp_molecule (GtkTextBuffer * buf, struct field_molecule * fmol)
-*
-*  Usage: print force field molecule
-*
-*  GtkTextBuffer * buf          : the GtkTextBuffer to print into
-*  struct field_molecule * fmol : the field molecule to print
+/*!
+  \fn void print_dlp_molecule (GtkTextBuffer * buf, field_molecule * fmol)
+
+  \brief print force field molecule
+
+  \param buf the GtkTextBuffer to print into
+  \param fmol the field molecule to print
 */
-void print_dlp_molecule (GtkTextBuffer * buf, struct field_molecule * fmol)
+void print_dlp_molecule (GtkTextBuffer * buf, field_molecule * fmol)
 {
   gchar * str;
   str = g_strdup_printf ("%s", fmol -> name);
@@ -1268,15 +1281,15 @@ void print_dlp_molecule (GtkTextBuffer * buf, struct field_molecule * fmol)
   print_info ("FINISH\n", "bold_orange", buf);
 }
 
-/*
-*  void print_dlp_body (GtkTextBuffer * buf, struct field_nth_body * body)
-*
-*  Usage: print force field non bonded potential
-*
-*  GtkTextBuffer * buf          : the GtkTextBuffer to print into
-*  struct field_nth_body * body : the non bonded potential to print
+/*!
+  \fn void print_dlp_body (GtkTextBuffer * buf, field_nth_body * body)
+
+  \brief print force field non bonded potential
+
+  \param buf the GtkTextBuffer to print into
+  \param body the non bonded potential to print
 */
-void print_dlp_body (GtkTextBuffer * buf, struct field_nth_body * body)
+void print_dlp_body (GtkTextBuffer * buf, field_nth_body * body)
 {
   gchar * str;
   int i, j;
@@ -1301,16 +1314,16 @@ void print_dlp_body (GtkTextBuffer * buf, struct field_nth_body * body)
   print_info ("\n", NULL, buf);
 }
 
-/*
-*  void print_dlp_tersoff_cross (GtkTextBuffer * buf, struct field_nth_body * body_a, struct field_nth_body * body_b)
-*
-*  Usage: print Tersoff potential cross term
-*
-*  GtkTextBuffer * buf            : the GtkTextBuffer to print into
-*  struct field_nth_body * body_a : 1st non bonded potential
-*  struct field_nth_body * body_b : 2nd non bonded potential
+/*!
+  \fn void print_dlp_tersoff_cross (GtkTextBuffer * buf, field_nth_body * body_a, field_nth_body * body_b)
+
+  \brief print Tersoff potential cross term
+
+  \param buf the GtkTextBuffer to print into
+  \param body_a 1st non bonded potential
+  \param body_b 2nd non bonded potential
 */
-void print_dlp_tersoff_cross (GtkTextBuffer * buf, struct field_nth_body * body_a, struct field_nth_body * body_b)
+void print_dlp_tersoff_cross (GtkTextBuffer * buf, field_nth_body * body_a, field_nth_body * body_b)
 {
   gchar * str;
   int j;
@@ -1327,15 +1340,15 @@ void print_dlp_tersoff_cross (GtkTextBuffer * buf, struct field_nth_body * body_
   print_info ("\n", NULL, buf);
 }
 
-/*
-*  void print_dlp_tersoff (GtkTextBuffer * buf, struct field_nth_body * body)
-*
-*  Usage: print force field Tersoff potential
-*
-*  GtkTextBuffer * buf          : the GtkTextBuffer to print into
-*  struct field_nth_body * body : the non bonded (Tersoff potential) to print
+/*!
+  \fn void print_dlp_tersoff (GtkTextBuffer * buf, field_nth_body * body)
+
+  \brief print force field Tersoff potential
+
+  \param buf the GtkTextBuffer to print into
+  \param body the non bonded (Tersoff potential) to print
 */
-void print_dlp_tersoff (GtkTextBuffer * buf, struct field_nth_body * body)
+void print_dlp_tersoff (GtkTextBuffer * buf, field_nth_body * body)
 {
   gchar * str;
   int i, j, k;
@@ -1368,7 +1381,7 @@ void print_dlp_tersoff (GtkTextBuffer * buf, struct field_nth_body * body)
   }
   if (! body -> key)
   {
-    struct field_nth_body * tmp_fbo;
+    field_nth_body * tmp_fbo;
     tmp_fbo = tmp_field -> first_body[2];
     while (tmp_fbo)
     {
@@ -1378,12 +1391,12 @@ void print_dlp_tersoff (GtkTextBuffer * buf, struct field_nth_body * body)
   }
 }
 
-/*
-*  void print_dlp_field (GtkTextBuffer * buf)
-*
-*  Usage: print DL-POLY classical force field
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
+/*!
+  \fn void print_dlp_field (GtkTextBuffer * buf)
+
+  \brief print DL-POLY classical force field
+
+  \param buf the GtkTextBuffer to print into
 */
 void print_dlp_field (GtkTextBuffer * buf)
 {
@@ -1515,10 +1528,10 @@ void print_dlp_field (GtkTextBuffer * buf)
   print_info ("CLOSE", "bold", buf);
 }
 
-/*
-*  int get_pbc ()
-*
-*  Usage: get the PBC DL-POLY lattice type
+/*!
+  \fn int get_pbc ()
+
+  \brief get the PBC DL-POLY lattice type
 */
 int get_pbc ()
 {
@@ -1552,12 +1565,12 @@ int get_pbc ()
   }
 }
 
-/*
-*  void print_dlp_config (GtkTextBuffer * buf)
-*
-*  Usage: print DL-POLY CONFIG file
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
+/*!
+  \fn void print_dlp_config (GtkTextBuffer * buf)
+
+  \brief print DL-POLY CONFIG file
+
+  \param buf the GtkTextBuffer to print into
 */
 void print_dlp_config (GtkTextBuffer * buf)
 {
@@ -1653,10 +1666,10 @@ gchar * md_text[4]={"# Target temperature in K\n", "# Number of MD steps\n", "# 
 gchar * min_key[3]={"force", "energy", "distance"};
 //gchar * md_legend[3]={"# Target temperature", "# Number of MD steps", "# MD time step d(t)"};
 
-/*
-*  gboolean print_ana ()
-*
-*  Usage: determine if the analysis information section is required
+/*!
+  \fn gboolean print_ana ()
+
+  \brief determine if the analysis information section is required
 */
 gboolean print_ana ()
 {
@@ -1710,13 +1723,13 @@ gchar * io_meth[4]={"mpiio", "direct", "master", "netcdf"};
 gchar * io_pec[2]={"off", "on"};
 gchar * io_typ[2]={"sorted", "unsorted"};
 
-/*
-*  void print_int (GtkTextBuffer * buf, int data)
-*
-*  Usage: print integer value
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
-*  int data            : the integer value to print
+/*!
+  \fn void print_int (GtkTextBuffer * buf, int data)
+
+  \brief print integer value
+
+  \param buf the GtkTextBuffer to print into
+  \param data the integer value to print
 */
 void print_int (GtkTextBuffer * buf, int data)
 {
@@ -1725,16 +1738,16 @@ void print_int (GtkTextBuffer * buf, int data)
   g_free (str);
 }
 
-/*
-*  void print_control_int (GtkTextBuffer * buf, int data, gchar * info_a, gchar * info_b, gchar * key)
-*
-*  Usage: print CONTROL file print integer value
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
-*  int data            : the integer value to print
-*  gchar * info_a      : 1st string to print
-*  gchar * info_b      : 2nd string to print, if any
-*  gchar * key         : DL-POLY key
+/*!
+  \fn void print_control_int (GtkTextBuffer * buf, int data, gchar * info_a, gchar * info_b, gchar * key)
+
+  \brief print CONTROL file print integer value
+
+  \param buf the GtkTextBuffer to print into
+  \param data the integer value to print
+  \param info_a 1st string to print
+  \param info_b 2nd string to print, if any
+  \param key DL-POLY key
 */
 void print_control_int (GtkTextBuffer * buf, int data, gchar * info_a, gchar * info_b, gchar * key)
 {
@@ -1748,13 +1761,13 @@ void print_control_int (GtkTextBuffer * buf, int data, gchar * info_a, gchar * i
   print_int (buf, data);
 }
 
-/*
-*  void print_float (GtkTextBuffer * buf, double data)
-*
-*  Usage: print float value
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
-*  double data         : the float value to print
+/*!
+  \fn void print_float (GtkTextBuffer * buf, double data)
+
+  \brief print float value
+
+  \param buf the GtkTextBuffer to print into
+  \param data the float value to print
 */
 void print_float (GtkTextBuffer * buf, double data)
 {
@@ -1763,16 +1776,16 @@ void print_float (GtkTextBuffer * buf, double data)
   g_free (str);
 }
 
-/*
-*  void print_control_float (GtkTextBuffer * buf, double data, gchar * info_a, gchar * info_b, gchar * key)
-*
-*  Usage: print CONTROL file print float value
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
-*  double data         : the float value to print
-*  gchar * info_a      : 1st string to print
-*  gchar * info_b      : 2nd string to print, if any
-*  gchar * key         : DL-POLY key
+/*!
+  \fn void print_control_float (GtkTextBuffer * buf, double data, gchar * info_a, gchar * info_b, gchar * key)
+
+  \brief print CONTROL file print float value
+
+  \param buf the GtkTextBuffer to print into
+  \param data the float value to print
+  \param info_a 1st string to print
+  \param info_b 2nd string to print, if any
+  \param key DL-POLY key
 */
 void print_control_float (GtkTextBuffer * buf, double data, gchar * info_a, gchar * info_b, gchar * key)
 {
@@ -1786,13 +1799,13 @@ void print_control_float (GtkTextBuffer * buf, double data, gchar * info_a, gcha
   print_float (buf, data);
 }
 
-/*
-*  void print_sci (GtkTextBuffer * buf, double data)
-*
-*  Usage: print float in scientific format
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
-*  double data         : the float value to print
+/*!
+  \fn void print_sci (GtkTextBuffer * buf, double data)
+
+  \brief print float in scientific format
+
+  \param buf the GtkTextBuffer to print into
+  \param data the float value to print
 */
 void print_sci (GtkTextBuffer * buf, double data)
 {
@@ -1801,16 +1814,16 @@ void print_sci (GtkTextBuffer * buf, double data)
   g_free (str);
 }
 
-/*
-*  void print_control_sci (GtkTextBuffer * buf, double data, gchar * info_a, gchar * info_b, gchar * key)
-*
-*  Usage: print CONTROL file print float value in scientific format
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
-*  double data         : the float value to print
-*  gchar * info_a      : 1st string to print
-*  gchar * info_b      : 2nd string to print, if any
-*  gchar * key         : DL-POLY key
+/*!
+  \fn void print_control_sci (GtkTextBuffer * buf, double data, gchar * info_a, gchar * info_b, gchar * key)
+
+  \brief print CONTROL file print float value in scientific format
+
+  \param buf the GtkTextBuffer to print into
+  \param data the float value to print
+  \param info_a 1st string to print
+  \param info_b 2nd string to print, if any
+  \param key DL-POLY key
 */
 void print_control_sci (GtkTextBuffer * buf, double data, gchar * info_a, gchar * info_b, gchar * key)
 {
@@ -1824,13 +1837,13 @@ void print_control_sci (GtkTextBuffer * buf, double data, gchar * info_a, gchar 
   g_free (str);
 }
 
-/*
-*  void print_string (GtkTextBuffer * buf, gchar * string)
-*
-*  Usage: print string
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
-*  gchar * string      : the string to print
+/*!
+  \fn void print_string (GtkTextBuffer * buf, gchar * string)
+
+  \brief print string
+
+  \param buf the GtkTextBuffer to print into
+  \param string the string to print
 */
 void print_string (GtkTextBuffer * buf, gchar * string)
 {
@@ -1838,16 +1851,16 @@ void print_string (GtkTextBuffer * buf, gchar * string)
   print_info (string, "bold_green", buf);
 }
 
-/*
-*  void print_control_string (GtkTextBuffer * buf, gchar * string, gchar * info_a, gchar * info_b, gchar * key)
-*
-*  Usage: print CONTROL file print string
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
-*  gchar * string      : the string to print
-*  gchar * info_a      : 1st string to print, if any
-*  gchar * info_b      : 2nd string to print, if any
-*  gchar * key         : DL-POLY key
+/*!
+  \fn void print_control_string (GtkTextBuffer * buf, gchar * string, gchar * info_a, gchar * info_b, gchar * key)
+
+  \brief print CONTROL file print string
+
+  \param buf the GtkTextBuffer to print into
+  \param string the string to print
+  \param info_a 1st string to print, if any
+  \param info_b 2nd string to print, if any
+  \param key DL-POLY key
 */
 void print_control_string (GtkTextBuffer * buf, gchar * string, gchar * info_a, gchar * info_b, gchar * key)
 {
@@ -1858,14 +1871,14 @@ void print_control_string (GtkTextBuffer * buf, gchar * string, gchar * info_a, 
   if (string) print_string (buf, string);
 }
 
-/*
-*  void print_control_key (GtkTextBuffer * buf, gchar * info, gchar * key)
-*
-*  Usage: print CONTROL file print key
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
-*  gchar * info        : the information string, if any
-*  gchar * key         : DL-POLY key to print
+/*!
+  \fn void print_control_key (GtkTextBuffer * buf, gchar * info, gchar * key)
+
+  \brief print CONTROL file print key
+
+  \param buf the GtkTextBuffer to print into
+  \param info the information string, if any
+  \param key DL-POLY key to print
 */
 void print_control_key (GtkTextBuffer * buf, gchar * info, gchar * key)
 {
@@ -1874,12 +1887,12 @@ void print_control_key (GtkTextBuffer * buf, gchar * info, gchar * key)
 }
 
 
-/*
-*  void print_dlp_control (GtkTextBuffer * buf)
-*
-*  Usage: print DL-POLY CONTROL file
-*
-*  GtkTextBuffer * buf : the GtkTextBuffer to print into
+/*!
+  \fn void print_dlp_control (GtkTextBuffer * buf)
+
+  \brief print DL-POLY CONTROL file
+
+  \param buf the GtkTextBuffer to print into
 */
 void print_dlp_control (GtkTextBuffer * buf)
 {

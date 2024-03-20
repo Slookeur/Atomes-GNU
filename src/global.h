@@ -1,22 +1,33 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file global.h
+* @short Global variable declarations \n
+         Global convenience function declarations \n
+         Global data structure definitions
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This header file: 'global.h'
 *
-*  Contains:
+* Contains:
 
- - Global variable definitions
+ - Global variable declarations
+ - Global convenience function declarations
  - Global data structure definitions
 
 */
@@ -73,46 +84,67 @@ If not, see <https://www.gnu.org/licenses/> */
 
 #include "math_3d.h"
 
-typedef struct {
+// dint, tint and qint structures are used for pointer purposes.
+// dint, tint, qint, ColRGBA and coord_info structures must be defined before including 'glwin.h'
+typedef struct dint dint;
+struct dint
+{
   int a;
   int b;
-} dint;
+};
 
-typedef struct {
+typedef struct tint tint;
+struct tint
+{
   int a;
   int b;
   int c;
-} tint;
+};
 
-typedef struct {
+typedef struct qint qint;
+struct qint
+{
   int a;
   int b;
   int c;
   int d;
-} qint;
+};
 
-typedef struct {
+typedef struct ColRGBA  ColRGBA;
+struct ColRGBA
+{
   float red;
   float green;
   float blue;
   float alpha;
-} ColRGBA;
+};
 
-typedef struct {
-  int species; // The number of chemical species
+/*! \typedef coord_info
+  \brief Data structure to store coordination information
+*/
+typedef struct coord_info coord_info;
+struct coord_info
+{
+  int species;            /*!< The number of chemical species */
   // 0 = tot
   // 1 = partial
   // 2 = fragments
   // 3 = molecules
   // > 3 = rings
   // 9 = chains
-  int totcoord[10];
-  int * ntg[10];
-  int ** geolist[10];     // The matching table for geometries
-  int *** partial_geo;    // List of partial geometries
-  int cmin;               // Min. coordination
-  int cmax;               // Maximum coordination
-} coord_info;
+  int totcoord[10];       /*!< The total number of objects: \n
+                               0 = total coordination(s), \n
+                               1 = partial coordination(s), \n
+                               2 = fragment(s), \n
+                               3 = molecule(s), \n
+                               4 to 8 = ring statistics, \n
+                               9 = chain statistics */
+  int * ntg[10];          /*!< The number of objects by chemical species */
+  int ** geolist[10];     /*!< The corresponding list of geometries */
+  int *** partial_geo;    /*!< The list of partial geometries */
+  int cmin;               /*!< The minimum coordination number */
+  int cmax;               /*!< The Maximum coordination number */
+};
 
 #include "glwin.h"
 
@@ -165,46 +197,55 @@ typedef struct {
 #define ABOUT "help-about"
 
 #ifdef GTK4
+/*! \enum ReliefStyle */
 enum ReliefStyle {
-  GTK_RELIEF_NORMAL  = 0,
-  GTK_RELIEF_HALF = 1,
-  GTK_RELIEF_NONE = 2
+  GTK_RELIEF_NORMAL = 0, /*!< 0 */
+  GTK_RELIEF_HALF   = 1, /*!< 1 */
+  GTK_RELIEF_NONE   = 2  /*!< 2 */
 };
+
+/*! \enum ShadowStyle */
 enum ShadowStyle {
-  GTK_SHADOW_NONE = 0,
-  GTK_SHADOW_IN = 1,
-  GTK_SHADOW_OUT = 2,
-  GTK_SHADOW_ETCHED_IN = 3,
-  GTK_SHADOW_ETCHED_OUT = 4
+  GTK_SHADOW_NONE       = 0, /*!< 0 */
+  GTK_SHADOW_IN         = 1, /*!< 1 */
+  GTK_SHADOW_OUT        = 2, /*!< 2 */
+  GTK_SHADOW_ETCHED_IN  = 3, /*!< 3 */
+  GTK_SHADOW_ETCHED_OUT = 4  /*!< 4 */
 };
 #define BSEP 3
 #else
 #define BSEP 0
 #endif
 
+/*! \enum ContainerType */
 enum ContainerType {
-  CONTAINER_WIN = 0,
-  CONTAINER_SCR = 1,
-  CONTAINER_VIE = 2,
-  CONTAINER_BUT = 3,
-  CONTAINER_FRA = 4,
-  CONTAINER_EXP = 5
+  CONTAINER_WIN = 0, /*!< 0 */
+  CONTAINER_SCR = 1, /*!< 1 */
+  CONTAINER_VIE = 2, /*!< 2 */
+  CONTAINER_BUT = 3, /*!< 3 */
+  CONTAINER_FRA = 4, /*!< 4 */
+  CONTAINER_EXP = 5  /*!< 5 */
 };
 
+/*! \enum ImageFormats */
 enum ImageFormats {
-  IMG_NONE    = 0,
-  IMG_PIXBUF  = 1,
-  IMG_SURFACE = 2,
-  IMG_FILE    = 3,
-  IMG_STOCK   = 4
+  IMG_NONE    = 0, /*!< 0 */
+  IMG_PIXBUF  = 1, /*!< 1 */
+  IMG_SURFACE = 2, /*!< 2 */
+  IMG_FILE    = 3, /*!< 3 */
+  IMG_STOCK   = 4  /*!< 4 */
 };
 
 #define IODEBUG FALSE
 
-#define MAXDATC 8
-#define MAXDATA 21
-
+/*! \def ATOM_LIMIT
+  \brief Atom number limit to compute fragment(s) and molecule(s) analysis automatically
+*/
 #define ATOM_LIMIT 100000
+
+/*!< \def STEP_LIMIT
+  \brief MD step number limit to compute fragment(s) and molecule(s) analysis automatically
+*/
 #define STEP_LIMIT 10000
 
 #define OK            0
@@ -221,17 +262,32 @@ enum ImageFormats {
 #define ERROR_CHAINS 11
 #define ERROR_MOL    12
 
+/*!< \def CHEM_PARAMS
+  \brief Number of chemical parameters
+*/
+#define CHEM_PARAMS 5
 #define CHEM_Z 0
 #define CHEM_M 1
 #define CHEM_R 2
 #define CHEM_N 3
 #define CHEM_X 4
 
-#define NCFORMATS 11
 #define NDOTS 8
-#define CHEM_PARAMS 5
+
+/*!< \def NCALCS
+  \brief Number of analysis
+*/
 #define NCALCS 12
+
+/*!< \def NGRAPHS
+  \brief Number of analysis with results in curve window(s)
+*/
 #define NGRAPHS 10
+
+/*!< \def NCFORMATS
+  \brief Number atomic coordinates file formats
+*/
+#define NCFORMATS 12
 
 #define NITEMS 16
 #define OT 4
@@ -318,7 +374,6 @@ extern gchar * ATOMES_CONFIG;
 extern gchar * ATOMES_URL;
 
 extern gchar * mode_name[2];
-extern gchar * calc_img[NCALCS-2];
 extern gchar * graph_img[NGRAPHS];
 extern gchar * dots[NDOTS];
 extern gchar * bravais_img[14];
@@ -326,9 +381,7 @@ extern gchar * ifield[8];
 extern gchar * projfile;
 extern char * ifbug;
 extern char * coord_files[NCFORMATS+1];
-extern char * file_ext[NCFORMATS+1];
-extern char * text_styles[OGL_STYLES];
-extern char * text_filled[FILLED_STYLES];
+extern char * coord_files_ext[NCFORMATS+1];
 extern char * calc_name[NCALCS-2];
 extern char * graph_name[NGRAPHS] ;
 extern char * rings_type[5];
@@ -351,7 +404,7 @@ extern int mol_update;
 
 extern int tmp_pixels[2];
 extern int * pasted_todo;
-extern struct insert_object * copied_object;
+extern atomic_object * copied_object;
 
 extern GMainLoop * Event_loop[5];
 
@@ -364,6 +417,7 @@ extern gboolean check_label;
 extern gboolean object_motion;
 extern gboolean selected_status;
 extern gboolean silent_input;
+extern gboolean cif_use_symmetry_positions;
 
 extern struct timespec start_time;
 extern struct timespec stop_time;
@@ -402,230 +456,214 @@ extern tint cut_lab;
 
 // Data structures
 #define LINE_SIZE 160
+
+/*! \typedef line_node */
+typedef struct line_node line_node;
 struct line_node
 {
-  gchar * line; //[LINE_SIZE];
+  gchar * line;              /*!< Size max = LINE_SIZE */
   struct line_node * next;
   struct line_node * prev;
 };
 
-typedef struct {
-  int traj;
-  int natomes;
-  int steps;
-  int nrec;
-  int nspec;
-  double * z;
-  int * nsps;
-  double ** coord;
-  int * lot;
-  int ndummy;
-  gchar ** dummy;
-  int setting;
-  cell_info lattice;
-  int mid;
-  gchar * info;
-  // The following is only used for CIF files
-  int * wyckoff;
-  double * occupancy;
-  int ** occupied;
-  int * multi;
-  int stolab;
-  int * smislab;
-  int tolab;
-  int * mislab;
-  int * lmislab;
-  gchar ** label;
-  gboolean cartesian;
-} coord_file;
-
-typedef struct {
-  int natomes;
-  double ** coord;
-  int * lot;
-  int * wyckoff;
-  double * occupancy;
-  int ** occupied;
-  int * multi;
-  int spec;
-  gchar ** label;
-  double * z;
-  int setting;
-  gboolean cartesian;
-  cell_info lattice;
-  gchar * info;
-} cif_file;
-
-typedef struct {
-  GtkWidget * a;
-  GtkWidget * b;
-} dwidget;
-
-typedef struct {
-  gint start_x;
-  gint start_y;
-  gint time;
-  gboolean MouseIsDown;
-} MouseState;
-
-typedef struct {
-  MouseState mouseState;
-  tint * id;
-} CurveState;
-
-typedef struct {
-  ColRGBA datacolor;             // Data color
-  double thickness;              // Data line thickness
-  int dash;                      // Data line style
-  int glyph;                     // Data glyph type
-  double gsize;                  // Data glyph size
-  int gfreq;                     // Data glyph frequency
-  int aspect;                    // X/Y or histogram
-  double hwidth;                 // Histogram width
-  double hopac;                  // Histogram color opacity
-  int hpos;                      // Histogram is transparent ?
-} DataLayout;
-
-struct cextra {
-  tint id;
-  DataLayout * layout;
-  struct cextra * prev;
-  struct cextra * next;
+/*! \typedef coord_file
+  \brief Atomic coordinates file, data container
+*/
+typedef struct coord_file coord_file;
+struct coord_file
+{
+  int natomes;                             /*!< Number of atom(s) */
+  int steps;                               /*!< Number of MD step(s) */
+  int nspec;                               /*!< Number of chemical species */
+  double * z;                              /*!< List of atomic numbers */
+  int * nsps;                              /*!< Number of atoms by species */
+  double ** coord;                         /*!< Atomic coordinates */
+  gboolean cartesian;                      /*!< Cartesian (1) or Fractional coordinates (0) */
+  int * lot;                               /*!< Chemical species by atom */
+  int ndummy;                              /*!< Number of dummy atom(s), if any */
+  gchar ** dummy;                          /*!< List of dummy atom(s), if any */
+  cell_info lattice;                       /*!< Description of the periodicity */
+  int mid;                                 /*!< Message type (0 = error, 1 = warning), if any */
+  gchar * info;                            /*!< Information message, if required */
+  gchar ** label;                          /*!< VAS or TRJ: list of chemical labels, \n CIF: Label list of mis-labelled object(s) */
+  // The following line is only used for DL_POLY history files:
+  int traj;                                /*!< */
+  // The following lines are only used for CIF files:
+  int num_sym_pos;                         /*!< Number of symmetry positions, if any */
+  gchar *** sym_pos;                       /*!< The symmetry positions, if any */
+  int setting;                             /*!< Space group setting */
+  int * wyckoff;                           /*!< Wyckoff positions */
+  double * occupancy;                      /*!< Site(s) occupancy */
+  int ** occupied;                         /*!< Occupancy status */
+  int * multi;                             /*!< Multiplicity */
+  int atom_unlabelled;                     /*!< Number of atom(s) unlabelled */
+  int * u_atom_list;                       /*!< List of unlabelled atom(s) */
+  int object_to_insert;                    /*!< Number of object(s) to label */
+  int * object_list;                       /*!< List of object to insert by atom(s) */
 };
 
-typedef struct {
-  int extras;                    // Total number of data sets
-  struct cextra * first;
-  struct cextra * last;
-} ExtraSets;
+/*! \typedef MouseState
+  \brief Data structure used for zoom in / out on curve widget
+*/
+typedef struct MouseState MouseState;
+struct MouseState
+{
+  gint start_x;                 /*!< Initial x position */
+  gint start_y;                 /*!< Initial y position */
+  gint time;                    /*!< Time */
+  gboolean MouseIsDown;         /*!< Is the mouse button up (0) or down (1) */
+};
 
-typedef struct {
-  int cid;
-  int ndata;                     // number of data points
-  double * data[2];              // X and Y data
-  double * err;                  // Error bar on Y if any.
-  double cmin[2];                // Min of the data on X and Y
-  double cmax[2];                // Max of the data on X and Y
-  GtkWidget * plot;              // Drawing area
-  GtkWidget * button;            // Interaction button for 'Toolboxes'
-  GtkWidget * curve_vbox;        // Curve top boxes for the menu bar
+/*! \typedef CurveState
+  \brief Data structure used for zoom in / out on curve widget
+*/
+typedef struct CurveState CurveState;
+struct CurveState
+{
+  MouseState mouseState;        /*!< Mouse status information */
+  tint * id;                    /*!< Curve data pointer */
+};
+
+/*! \typedef DataLayout
+  \brief Cruve layout information
+*/
+typedef struct DataLayout DataLayout;
+struct DataLayout
+{
+  ColRGBA datacolor;             /*!< Data color */
+  double thickness;              /*!< Data line thickness */
+  int dash;                      /*!< Data line style */
+  int glyph;                     /*!< Data glyph type */
+  double gsize;                  /*!< Data glyph size */
+  int gfreq;                     /*!< Data glyph frequency */
+  int aspect;                    /*!< X/Y or histogram */
+  double hwidth;                 /*!< Histogram width */
+  double hopac;                  /*!< Histogram color opacity */
+  int hpos;                      /*!< Histogram is transparent ? */
+};
+
+/*! \typedef CurveExtra
+  \brief Extra curve(s) data information
+*/
+typedef struct CurveExtra CurveExtra;
+struct CurveExtra
+{
+  tint id;                       /*!< Curve data pointer */
+  DataLayout * layout;           /*!< Curve layout information */
+  CurveExtra * prev;
+  CurveExtra * next;
+};
+
+/*! \typedef ExtraSets
+  \brief List of extra data sets for a curve
+*/
+typedef struct ExtraSets ExtraSets;
+struct ExtraSets
+{
+  int extras;                 /*!< Number of extra data sets, if any */
+  CurveExtra * first;         /*!< First data set of the list, if any */
+  CurveExtra * last;          /*!< Last data set of the list, if any */
+};
+
+/*! \typedef Curve
+  \brief The curve data structure
+*/
+typedef struct Curve Curve;
+struct Curve
+{
+  int cid;                       /*!< Curve id */
+  int ndata;                     /*!< number of data points */
+  double * data[2];              /*!< X and Y data */
+  double * err;                  /*!< Error bar on Y if any. */
+  double cmin[2];                /*!< Min of the data on X and Y */
+  double cmax[2];                /*!< Max of the data on X and Y */
+  GtkWidget * plot;              /*!< Drawing area */
+  GtkWidget * button;            /*!< Interaction button for 'Toolboxes' */
+  GtkWidget * curve_vbox;        /*!< Curve top boxes for the menu bar */
   GtkWidget * curve_hbox;
-  GtkWidget * window;            // Widget for the window
-  GtkWidget * pos;               // Mouse cursor position in graph
-  int wsize[2];                  // Curve window size
-  GtkWidget * datatree;          // Widget for the selection tree
-  qint idcol[2];                 // For navigation in the list view
-  ColRGBA backcolor;             // Background color
-  int format;                    // Format of output (screen, png, pdf, ...)
-  char * name;                   // Name of the curve
+  GtkWidget * window;            /*!< Widget for the window */
+  GtkWidget * pos;               /*!< Mouse cursor position in graph */
+  int wsize[2];                  /*!< Curve window size */
+  GtkWidget * datatree;          /*!< Widget for the selection tree */
+  qint idcol[2];                 /*!< For navigation in the list view */
+  ColRGBA backcolor;             /*!< Background color */
+  int format;                    /*!< Format of output (screen, png, pdf, ...) */
+  char * name;                   /*!< Name of the curve */
 // Axis
-  double axmin[2];               // Min for the axis X and Y
-  double axmax[2];               // Max for the axis X and Y
-  gboolean axis_defaut_title[2]; // Use axis default title
-  char * axis_title[2];          // Title of axis
-  int axis_title_x[2];           // Position of the axis title
-  int axis_title_y[2];           // Position of the axis title
-  gchar * axis_title_font[2];    // Axis title font
-  int scale[2];                  // Axis scale (linear or log)
-  gboolean autoscale[2];         // Autoscale
-  gboolean show_grid[2];         // Show/Hide axis grid
-  gboolean show_axis[2];         // Show/Hide axis bar
-  double majt[2];                // Value for major ticks
-  int mint[2];                   // Number of minor ticks
-  int ticks_io[2];               // Ticks in or out / axis bar
-  int ticks_pos[2];              // Ticks position: normal, opposite, both
-  int majt_size[2];              // Majors ticks size (pixels)
-  int mint_size[2];              // Minors ticks size (pixels)
-  int labels_pos[2];             // Ticks label position: normal, opposite, both
-  int labels_digit[2];           // Significant digits for tick labels
-  gchar * labels_font[2];        // Ticks label font
-  double labels_angle[2];        // Ticks label angle
-  int labels_shift_x[2];         // Ticks position shift from x axis
-  int labels_shift_y[2];         // Ticks position shift from y axis
+  double axmin[2];               /*!< Min for the axis X and Y */
+  double axmax[2];               /*!< Max for the axis X and Y */
+  gboolean axis_defaut_title[2]; /*!< Use axis default title */
+  char * axis_title[2];          /*!< Title of axis */
+  int axis_title_x[2];           /*!< Position of the x axis title */
+  int axis_title_y[2];           /*!< Position of the y axis title */
+  gchar * axis_title_font[2];    /*!< Axis title font */
+  int scale[2];                  /*!< Axis scale (linear or log) */
+  gboolean autoscale[2];         /*!< Autoscale */
+  gboolean show_grid[2];         /*!< Show/Hide axis grid */
+  gboolean show_axis[2];         /*!< Show/Hide axis bar */
+  double majt[2];                /*!< Value for major ticks */
+  int mint[2];                   /*!< Number of minor ticks */
+  int ticks_io[2];               /*!< Ticks in or out / axis bar */
+  int ticks_pos[2];              /*!< Ticks position: normal, opposite, both */
+  int majt_size[2];              /*!< Majors ticks size (pixels) */
+  int mint_size[2];              /*!< Minors ticks size (pixels) */
+  int labels_pos[2];             /*!< Ticks label position: normal, opposite, both */
+  int labels_digit[2];           /*!< Significant digits for tick labels */
+  gchar * labels_font[2];        /*!< Ticks label font */
+  double labels_angle[2];        /*!< Ticks label angle */
+  int labels_shift_x[2];         /*!< Ticks position shift from x axis */
+  int labels_shift_y[2];         /*!< Ticks position shift from y axis */
   // Legend
-  gboolean show_legend;          // Show/Hide legend
-  double legend_pos[2];          // Position of the legend
-  gchar * legend_font;           // Legend font
-  ColRGBA legend_color;          // Legend color
-  gboolean show_legend_box;      // Display legend box
-  int legend_box_dash;           // Legend box line style
-  ColRGBA legend_box_color;      // Legend box color
-  double legend_box_thickness;   // Legend box line thickness
+  gboolean show_legend;          /*!< Show (1) /Hide (0) legend */
+  double legend_pos[2];          /*!< Position of the legend */
+  gchar * legend_font;           /*!< Legend font */
+  ColRGBA legend_color;          /*!< Legend color */
+  gboolean show_legend_box;      /*!< Display legend box */
+  int legend_box_dash;           /*!< Legend box line style */
+  ColRGBA legend_box_color;      /*!< Legend box color */
+  double legend_box_thickness;   /*!< Legend box line thickness */
 // Title
-  char * title;                  // Title to display
-  gboolean show_title;           // Show/Hide title
-  gboolean default_title;        // Use default title
-  double title_pos[2];           // Position of the title
-  gchar * title_font;            // Title font
-  ColRGBA title_color;           // Title color
+  char * title;                  /*!< Title to display */
+  gboolean show_title;           /*!< Show/Hide title */
+  gboolean default_title;        /*!< Use default title */
+  double title_pos[2];           /*!< Position of the title */
+  gchar * title_font;            /*!< Title font */
+  ColRGBA title_color;           /*!< Title color */
 // Frame
-  gboolean show_frame;           // Show/Hide frame
-  int frame_type;                // Frame type
-  int frame_dash;                // Frame line style
-  double frame_thickness;        // Frame line thickness
-  ColRGBA frame_color;           // Frame color
-  double frame_pos[2][2];        // Frame  0 = x, 1 = y, 0 = min and 1 = max
+  gboolean show_frame;           /*!< Show/Hide frame */
+  int frame_type;                /*!< Frame type */
+  int frame_dash;                /*!< Frame line style */
+  double frame_thickness;        /*!< Frame line thickness */
+  ColRGBA frame_color;           /*!< Frame color */
+  double frame_pos[2][2];        /*!< Frame  0 = x, 1 = y, 0 = min and 1 = max */
 
-  DataLayout * layout;           // The curve layout
-  ExtraSets * extrac;            // Extra data set(s) added to graph
-  cairo_surface_t * surface;     // The rendering surface
-  int draw_id;
-  int bshift;
+  DataLayout * layout;           /*!< The curve layout */
+  ExtraSets * extrac;            /*!< Extra data set(s) added to graph */
+  cairo_surface_t * surface;     /*!< The rendering surface */
+  int draw_id;                   /*!< Curve drawing order */
+  int bshift;                    /*!< Curve x shift for bar diagram */
 
   gboolean displayed;
   char * cfile;
-  gchar * path;                  // For the toolbox
-  int action_id;                 // Unique Id to identify actions
-  CurveState state;
+  gchar * path;                  /*!< Path for the toolbox tree */
+  int action_id;                 /*!< Unique Id to identify actions */
+  CurveState state;              /*!< Curve state */
   GSimpleActionGroup * action_group;
-} curve;
-
-struct atom {
-  int id;                        // The id in the model
-  int sp;                        // The chemical species
-  double x, y, z;                // The coordinates
-  int numv;                      // The number of neighbors
-  int * vois;                    // The list of neighbors
-  // 0 = Total coordination
-  // 1 = Partial coordination
-  // 2 = Fragment
-  // 3 = Molecule
-  // 4 = Field object id
-  int coord[5];                   // Coordination information
-  // 0 = All
-  // 1 = King's
-  // 2 = Guttman's
-  // 3 = Primitive
-  // 4 = Strong
-  int ** rings[5];                // Rings statistics information
-  int ** chain;                   // Chain statistics information
-  int style;                      // Rendering style if not global
-  int fid;                        // Force field id
-  int faid;                       // Force field id in fragment
-  gboolean show[2];               // Show / Hide (0 = atom, 1 = clone)
-  gboolean label[2];              // Label / unlabel (0 = atom, 1 = clone)
-  gboolean pick[2];               // Selected / Unselected (0 = atom, 1 = clone)
-  gboolean cloned;                // Clone(s) ?
-  struct atom * prev;
-  struct atom * next;
 };
 
-struct molecule {
-  int id;                                 // Molecule id number
-  int md;                                 // MD step
-  int multiplicity;                       // Multiplicity
-  int * fragments;                        // Fragments list
-  int natoms;                             // Number of atoms
-  int nspec;                              // Number of chemical species
-  int * species;                          // Number of atom by species
-};
+/*! \def MAXDATC
+  \brief Number of tabs for the description of the classical calculation
+*/
+#define MAXDATC 8
 
-typedef struct {
-  int * mol_by_step;                      // Num of mol by steps
-  struct molecule ** mols;                // List of molecules by steps
-} model;
+/*! \def MAXDATA
+  \brief Number of tabs for the description of the classical force field
+*/
+#define MAXDATA 21
 
-typedef struct {
+typedef struct classical_field classical_field;
+struct classical_field
+{
   gboolean prepare_file[2];
   // Field and Config files
   gboolean afp[MAXDATC+MAXDATA];
@@ -637,7 +675,7 @@ typedef struct {
   int nbody[5];
   struct field_nth_body * first_body[5];
   // Tersoff potential cross terms
-  double *** cross;
+  double *** cross; /*!< Tersoff potential cross termms */
   int extern_fields;
   struct field_external * first_external;
 
@@ -654,10 +692,11 @@ typedef struct {
   double * thermo_opts;
   double * md_opts;
   double * out_opts;
+};
 
-} classical_field;
-
-struct thermostat {
+typedef struct thermostat thermostat;
+struct thermostat
+{
   int id;
   // For CPMD: 0 = none, 2 = controlled, 3 = nose
   // For CP2K: 0 = none, 2 = langevin, 3 = csvr, 4 = gle, 5 = nose
@@ -669,11 +708,13 @@ struct thermostat {
   double params[4];
   int natoms;
   int * list;
-  struct thermostat * next;
-  struct thermostat * prev;
+  thermostat * next;
+  thermostat * prev;
 };
 
-struct dummy_atom {
+typedef struct dummy_atom dummy_atom;
+struct dummy_atom
+{
   // 0 = type1, 1 = type2, ...
   int id;
   int type;
@@ -685,33 +726,37 @@ struct dummy_atom {
   int * list;
   int numv;
   int * vois;
-  struct dummy_atom * next;
-  struct dummy_atom * prev;
+  dummy_atom * next;
+  dummy_atom * prev;
 };
 
-typedef struct {
+typedef struct cpmd cpmd;
+struct cpmd
+{
   int calc_type;
   int restart[10];
   int thermostats;
-  struct thermostat * ions_thermostat;
-  struct thermostat * elec_thermostat;
+  thermostat * ions_thermostat;
+  thermostat * elec_thermostat;
   int fixat;
   int * fixlist;
   int ** fixcoord;
   int dummies;
-  struct dummy_atom * dummy;
+  dummy_atom * dummy;
   double default_opts[17];
   double calc_opts[24];
   int ** pp;
   gchar * info;
-} cpmd;
+};
 
-typedef struct {
+typedef struct cp2k cp2k;
+struct cp2k
+{
   int input_type;
   double opts[42];
   double extra_opts[3][4];
   int thermostats;
-  struct thermostat * ions_thermostat;
+  thermostat * ions_thermostat;
   int fixat[2];
   int * fixlist[2];
   int ** fixcoord[2];
@@ -719,132 +764,234 @@ typedef struct {
   gchar *** spec_files;
   int ** spec_data;
   gchar * info;
-} cp2k;
+};
 
-typedef struct {
-  gchar * lab;
-  gchar * name;
-  int Z;
-  float M;
-  /* float r_cov;
-  float r_vdw;
-  float r_ion;
-  float r_cry;
-  float b_coh; */
+/*! \typedef molecule */
+typedef struct molecule molecule;
+struct molecule
+{
+  int id;                         /*!< Molecule id number */
+  int md;                         /*!< MD step */
+  int multiplicity;               /*!< Multiplicity */
+  int * fragments;                /*!< Fragments list */
+  int natoms;                     /*!< Number of atoms */
+  int nspec;                      /*!< Number of chemical species */
+  int * species;                  /*!< Number of atom by species */
+};
 
- /* int s;
-  int p;
-  int d;
-  int f; */
-} element_data;
+/*! \typedef model
+  \brief Data stucture to describe the topology
+*/
+typedef struct model model;
+struct model
+{
+  int * mol_by_step;       /*!< Num of mol by steps */
+  molecule ** mols;        /*!< List of molecules by steps */
+};
 
-typedef struct {
+/*! \typedef element_data
+  \brief element description used for the periodic table defined in 'w_periodic.c'
+*/
+typedef struct element_data element_data;
+struct element_data
+{
+  gchar * lab;      /*!< Label */
+  gchar * name;     /*!< Name */
+  int Z;            /*!< Atomic number */
+  float M;          /*!< Atomic mass */
+};
+
+typedef struct chemical_data chemical_data;
+struct chemical_data
+{
   // 0 = Z, 1 = Mass, 2 = Radius, 3 = Neutrons, 4 = X-rays
-  double ** chem_prop;
-  int * nsps;
-  int * formula;
-  char ** label;
-  char ** element;
-  double ** cutoffs;
-  double grtotcutoff;
-} chemical_data;
+  double ** chem_prop; /*!< chemical properties: \n
+                            0 = Z, \n
+                            1 = Mass, \n
+                            2 = Radius, \n
+                            3 = Neutrons, \n
+                            4 = X-rays */
+  int * nsps;          /*!< Number of atom(s) by chemical species */
+  int * formula;       /*!< Chemical formula */
+  char ** label;       /*!< Element label(s) */
+  char ** element;     /*!< Element name(s) */
+  double ** cutoffs;   /*!< partial cutoff(s) */
+  double grtotcutoff;  /*!< Total cutoff */
+};
 
-struct insertion {
+/*! \typedef insertion_menu
+  \brief Data structure for the insertion pop-up menu
+*/
+typedef struct insertion_menu insertion_menu;
+struct insertion_menu
+{
   gchar * type;
   gchar * object;
   double Z;
   int ats;
 };
 
-typedef struct {
-  double Z;
-  int natomes;
-} sp_in_mol ;
-
-struct project {
-  int id;
-  char * name;
-  char * projfile;
-  char * coordfile;
-  char * bondfile;
-  gboolean newproj;
-  gboolean run;
-  gboolean trun;
-  gboolean runok[NGRAPHS];
-  gboolean initok[NGRAPHS];
-  gboolean visok[NGRAPHS];
-  gboolean dmtx;
-  gboolean initgl;
-  int tfile;
-  int nspec;                // Number of chemical species
-  int natomes;              // Number of atoms
-  int dummies;              // Number of atoms including extra cells
-  int steps;                // Number of MD steps
-  int tunit;                // Time unit between steps, if MD
-  int numwid;
-
-  int xcor;                 // S(q) X-rays calculation f(q) or approximated
-  int readata;
-  gboolean tovalidate;
-
-  gboolean runc[3];         // Bonds, Angles, Mol
-  int numc[NGRAPHS];
-  int num_delta[NGRAPHS];
-  // gr, sq, sk, gftt, bd, an, frag-mol, ch, sp, msd
-  double calc_time[NGRAPHS];
-  // 0 = Search type, 1 = NUMA
-  int rsearch[2];
-  // First col : search type (up to chains stat). Second col: search info
-  // 0 = Initnode, 1 = RMAX, 2 = ABAB, 3 = Homo, 4 = , 5 = Done ?
-  int rsparam[5][6];
-  double rsdata[5][5];
-
-  int csearch; // CNUMA
-  // 0 = Initnode, 1 = AAAA, 2 = ABAB, 3 = Homo, 4 = 1221, 5 = RMAX, 6 = Done ?
-  int csparam[7];
-  double csdata[2];
-
-  double delta[NGRAPHS];
-  double min[NGRAPHS];
-  double max[NGRAPHS];
-
-  double fact[4];
-  double sk_advanced[2];
-
-  chemical_data * chemistry;
-  coord_info * coord;
-  cell_info cell;
-  glwin * modelgl;
-  model * modelfc;
-  gboolean was_moved;
-
-  struct atom ** atoms;
-  int nmols;
-  int tmp_pixels[2];
-  GtkTextBuffer * text_buffer[NITEMS];
-  tint * idcc[NGRAPHS];
-  curve ** curves[NGRAPHS];
-
-  classical_field * force_field[2];
-  cpmd * cpmd_input[2];
-  cp2k * cp2k_input[2];
-
-#ifdef DEBUG
-  GtkWidget * pix_tab[3];
-  GtkWidget * pix_box;
-  int pix[3];
-  int ** pixels;
-  int actif_pix;
-#endif
-
-  struct project * next;
-  struct project * prev;
+/*! \typedef atom
+  \brief The data structure for an atom
+*/
+typedef struct atom atom;
+struct atom
+{
+  int id;                        /*!< The atom's id in the model */ // The id in the model
+  int sp;                        /*!< The chemical species */ // The chemical species
+  // The coordinates
+  double x;                      /*!< x coordinate */
+  double y;                      /*!< y coordinate */
+  double z;                      /*!< z coordinate */
+  int numv;                      /*!< The number of neighbors */ // The number of neighbors
+  int * vois;                    /*!< The list of neighbors */ // The list of neighbors
+  // 0 = Total coordination
+  // 1 = Partial coordination
+  // 2 = Fragment
+  // 3 = Molecule
+  // 4 = Field object id
+  int coord[5];                   /*!< Coordination information: \n
+    0 = Total coordination, \n
+    1 = Partial coordination, \n
+    2 = Fragment, \n
+    3 = Molecule, \n
+    4 = Field object id
+   */ // Coordination information
+  // 0 = All
+  // 1 = King's
+  // 2 = Guttman's
+  // 3 = Primitive
+  // 4 = Strong
+  int ** rings[5];                /*!< Ring statistics information: \n
+    0 = All, \n
+    1 = King's, \n
+    2 = Guttman, \n
+    3 = Primitive, \n
+    4 = Strong
+   */ // Rings statistics information
+  int ** chain;                   /*!< Chain statistics information */
+  int fid;                        /*!< Force field id */
+  int faid;                       /*!< Force field id in fragment */
+  gboolean show[2];               /*!< Show / Hide (0 = atom, 1 = clone) */
+  gboolean label[2];              /*!< Label / Unlabel (0 = atom, 1 = clone) */
+  gboolean pick[2];               /*!< Selected / Unselected (0 = atom, 1 = clone) */
+  gboolean cloned;                /*!< Clone(s) ? (0 = no, 1 = yes) */
+  int style;                      /*!< Rendering style if not global */
+  atom * prev;
+  atom * next;
 };
 
-typedef struct {
-  struct project * first;
-  struct project * last;
-}  workspace;
+/*! \typedef project
+  \brief The data structure for the 'atomes' project
+*/
+typedef struct project project;
+struct project
+{
+  /*
+     General parameters
+  */
+  int id;                              /*!< Project ID */
+  char * name;                         /*!< Project name */
+  char * projfile;                     /*!< Name of the project file, if any */
+  char * coordfile;                    /*!< Name of atomic coordinates file, if any */
+  char * bondfile;                     /*!< Name of the file to ouput bonding information, if any */
+  gboolean newproj;                    /*!< New project ? yes / no */
+  gboolean run;                        /*!< Run this project ? yes / no */
+  gboolean dmtx;                       /*!< Trigger the calculation of the distance matrix ? yes / no */
+  int tfile;                           /*!< File format for the atomic coordinates, when imported */
+  int nspec;                           /*!< Number of chemical species */
+  int natomes;                         /*!< Number of atoms */
+  int dummies;                         /*!< Number of atoms including extra cells */
+  int steps;                           /*!< Number of MD steps */
+  int tunit;                           /*!< Time unit between steps, if MD */
+  chemical_data * chemistry;           /*!< Chemical data */
+  coord_info * coord;                  /*!< Coordination(s) data */
+  cell_info cell;                      /*!< Periodicity data */
+  atom ** atoms;                /*!< Atom list: atoms[steps][natomes] */
+  /*
+     Analysis related parameters
+  */
+  gboolean runok[NGRAPHS];             /*!< Analysis calculation availability */
+  gboolean initok[NGRAPHS];            /*!< Curves initizalization  */
+  gboolean visok[NGRAPHS];             /*!< Analysis calculation confirmation */
+  int xcor;                            /*!< S(q) X-rays type of calculation: f(q) (1) or approximated (0) */
+  gboolean runc[3];                    /*!< Trigger to run bonds, angles and molecules analysis */
+  // gr, sq, sk, gftt, bd, an, frag-mol, ch, sp, msd
+  int numc[NGRAPHS];                   /*!< Number of curves: \n 0 = gr, \n 1 = sq, \n 2 = sk, \n 3 = gftt, \n 4 = bd, \n 5 = an, \n 6 = frag-mol, \n 7 = ch, \n 8 = sp, \n 9 = msd */
+  int num_delta[NGRAPHS];              /*!< Number of x points: \n 0 = gr, \n 1 = sq, \n 2 = sk, \n 3 = gftt, \n 4 = bd, \n 5 = an, \n 6 = frag-mol, \n 7 = ch, \n 8 = sp, \n 9 = msd */
+  double calc_time[NGRAPHS];           /*!< Calculation time: \n 0 = gr, \n 1 = sq, \n 2 = sk, \n 3 = gftt, \n 4 = bd, \n 5 = an, \n 6 = frag-mol, \n 7 = ch, \n 8 = sp, \n 9 = msd */
+  double delta[NGRAPHS];               /*!< Discretization: \n 0 = gr, \n 1 = sq, \n 2 = sk, \n 3 = gftt, \n 4 = bd, \n 5 = an, \n 6 = frag-mol, \n 7 = ch, \n 8 = sp, \n 9 = msd */
+  double min[NGRAPHS];                 /*!< Minimum x value: \n 0 = gr, \n 1 = sq, \n 2 = sk, \n 3 = gftt, \n 4 = bd, \n 5 = an, \n 6 = frag-mol, \n 7 = ch, \n 8 = sp, \n 9 = msd */
+  double max[NGRAPHS];                 /*!< Maximum x value: \n 0 = gr, \n 1 = sq, \n 2 = sk, \n 3 = gftt, \n 4 = bd, \n 5 = an, \n 6 = frag-mol, \n 7 = ch, \n 8 = sp, \n 9 = msd */
+  // 0 = Search type, 1 = NUMA
+  int rsearch[2];                      /*!< Ring statistics parameters: 0 = Search type, 1 = Ring's allocation parameter NUMA */
+  // First col : search type (up to chains stat). Second col: search info
+  // 0 = Initnode, 1 = RMAX, 2 = ABAB, 3 = Homo, 4 = Homo in DMTX, 5 = Done + Rings
+  int rsparam[5][6];                   /*!< Ring statistics parameters (first column the type of rings): \n
+                                            0 = Initial node(s) for the search: selected chemical species or all atoms, \n
+                                            1 = Maximum size of ring for the search Rmax, \n
+                                            2 = Search only for ABAB rings or not, \n
+                                            3 = Include Homopolar bond(s) in the analysis or not, \n
+                                            4 = Include homopolar bond(s) when calculating the distance matrix, \n
+                                            5 = Analysis completed and rings were found (yes / no) */
+  double rsdata[5][5];                 /*!< Results for the ring statistics (first column the type of rings): \n
+                                            0 = Total number of ring(s) per MD step: RpS, \n
+                                            1 = Standard deviation for RpS, \n
+                                            2 = Number of ring(s) with size > Rmax that potentially exist per MD step: RpE, \n
+                                            3 = Standard deviation for RpE, \n
+                                            4 = calculation time for the analysis */
+  int csearch;                         /*!< Chain statistics allocation parameter: CNUMA */
+  // 0 = Initnode, 1 = AAAA, 2 = ABAB, 3 = Homo, 4 = 1221, 5 = RMAX, 6 = Done + Chains
+  int csparam[7];                      /*!< Chain statistics parameters: \n
+                                            0 = Initial node(s) for the search: selected chemical species or all atoms, \n
+                                            1 = Search only for AAAA chains or not, \n
+                                            2 = Search only for ABAB chains or not, \n
+                                            3 = Include Homopolar bond(s) in the analysis or not, \n
+                                            4 = Search only for 1-(2)n-1 chains, \n
+                                            5 = Maximum size of chain for the search Rmax
+                                            6 = Analysis completed and chains were found (yes / no) */
+  double csdata[2];                    /*!< Results for the chain statistics: \n
+                                            0 = Total number of chains) per MD step: CpS, \n
+                                            1 = Standard deviation for CpS */
+  double fact[4];                      /*!< Gaussian smoothing factors: \n 0 = gr, \n 1 = sq, \n 2 = sk, \n 3 = gftt */
+  double sk_advanced[2];               /*!< */
+  GtkTextBuffer * text_buffer[NITEMS]; /*!< The text buffer for the results of the calculations */
+  tint * idcc[NGRAPHS];                /*!< Pointers for the curves */
+  int numwid;                          /*!< total number of curves for this project */
+  Curve ** curves[NGRAPHS];            /*!< The curves, graph for the results of the calculations */
+  /*
+     OpenGL related parameters
+  */
+  gboolean initgl;                     /*!< Was OpenGL rendering initialized ? yes / no */
+  int tmp_pixels[2];                   /*!< Saved size of the OpenGL window */
+  glwin * modelgl;                     /*!< The OpenGL widget */
+  /*
+     Molecular dynamics related parameters
+  */
+  model * modelfc;                     /*!< Description of the topology */
+  // MD input files
+  classical_field * force_field[2];    /*!< Classical MD input files: \n 0 = DL_POLY, \n 1 = LAMMPS */
+  cpmd * cpmd_input[2];                /*!< CPMD input files: \n 0 = Ab-initio, \n 1= QM-MM */
+  cp2k * cp2k_input[2];                /*!< CP2K input files: \n 0 = Ab-initio, \n 1= QM-MM */
+
+#ifdef DEBUG
+  GtkWidget * pix_tab[3];              /*!< Not used anymore see 'cell_pixel.c' */
+  GtkWidget * pix_box;                 /*!< Not used anymore see 'cell_pixel.c' */
+  int pix[3];                          /*!< Not used anymore see 'cell_pixel.c' */
+  int ** pixels;                       /*!< Not used anymore see 'cell_pixel.c' */
+  int actif_pix;                       /*!< Not used anymore see 'cell_pixel.c' */
+#endif
+
+  project * next;
+  project * prev;
+};
+
+typedef struct workspace workspace;
+struct workspace
+{
+  project * first;
+  project * last;
+};
 
 extern gchar * edition_action_names[3];
 extern gchar * analyze_action_names[9];
@@ -857,20 +1004,20 @@ extern void remove_edition_and_analyze_actions ();
 
 extern GtkApplication * AtomesApp;
 extern workspace workzone;
-extern struct project * proj;
+extern project * proj;
 extern chemical_data * active_chem;
 extern coord_info * active_coord;
 extern cell_info * active_cell;
 extern box_info * active_box;
 extern image * active_image;
 extern glwin * active_glwin;
-extern struct project * active_project;
-extern struct project * opengl_project;
+extern project * active_project;
+extern project * opengl_project;
 extern element_data periodic_table_info[];
 
-extern struct project * get_project_by_id (int p);
+extern project * get_project_by_id (int p);
 extern void opengl_project_changed (int id);
-extern gboolean in_md_shaders (struct project * this_proj, int id);
+extern gboolean in_md_shaders (project * this_proj, int id);
 extern void recreate_all_shaders (glwin * view);
 extern gboolean is_atom_win_active (glwin * view);
 

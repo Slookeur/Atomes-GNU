@@ -1,31 +1,39 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file w_atoms.c
+* @short Functions to create the atom(s) / clone(s) advanced configuration window
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'w_atoms.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the atom(s) / clone(s) advanced configuration window
+ - The functions to create the atom(s) / clone(s) advanced configuration window
 
 *
-*  List of subroutines:
+* List of functions:
 
   G_MODULE_EXPORT gboolean close_event_model (GtkWindow * widg, gpointer data);
   G_MODULE_EXPORT gboolean close_event_model (GtkWidget * widg, GdkEvent * event, gpointer data);
 
-  void atoms_input_win (GtkWidget * win, struct project * this_proj, int nspec, int aoc, double * val);
+  void atoms_input_win (GtkWidget * win, project * this_proj, int nspec, int aoc, double * val);
 
   G_MODULE_EXPORT void update_atom_size (GtkEntry * res, gpointer data);
   G_MODULE_EXPORT void set_atom_parameter (GtkWidget * widg, gpointer data);
@@ -51,18 +59,18 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "color_box.h"
 
 extern atom_search * allocate_atom_search (int proj, int action, int searchid, int tsize);
-extern gchar * label_atpts (struct project * this_proj, glwin * view, int id);
+extern gchar * label_atpts (project * this_proj, glwin * view, int id);
 extern GtkWidget * labels_tab (glwin * view, int id);
 extern GtkWidget * selection_tab (atom_search * asearch, int nats);
 extern GtkTreeStore * atom_model;
 
-/*
-*  G_MODULE_EXPORT void update_atom_size (GtkEntry * res, gpointer data)
-*
-*  Usage: update atom radius callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void update_atom_size (GtkEntry * res, gpointer data)
+
+  \brief update atom radius callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void update_atom_size (GtkEntry * res, gpointer data)
 {
@@ -71,7 +79,7 @@ G_MODULE_EXPORT void update_atom_size (GtkEntry * res, gpointer data)
   tint * the_data = (tint *)data;
   int a, t;
   a = the_data -> c;
-  struct project * this_proj = get_project_by_id (the_data -> a);
+  project * this_proj = get_project_by_id (the_data -> a);
   j = this_proj -> modelgl -> anim -> last -> img -> style;
   const gchar * m = entry_get_text (res);
   double v = atof(m);
@@ -121,18 +129,18 @@ G_MODULE_EXPORT void update_atom_size (GtkEntry * res, gpointer data)
   update (this_proj -> modelgl);
 }
 
-/*
-*  void atoms_input_win (GtkWidget * win, struct project * this_proj, int nspec, int aoc, double * val)
-*
-*  Usage: prepare atom radii entry list
-*
-*  GtkWidget * win            : the GtkWidget sending the signal
-*  struct project * this_proj : the target project
-*  int npsec                  : total number of chemical species
-*  int aoc                    : atom(s) (0) or clone(s) (1)
-*  double * val               : radii list
+/*!
+  \fn void atoms_input_win (GtkWidget * win, project * this_proj, int nspec, int aoc, double * val)
+
+  \brief prepare atom radii entry list
+
+  \param win the GtkWidget sending the signal
+  \param this_proj the target project
+  \param nspec total number of chemical species
+  \param aoc atom(s) (0) or clone(s) (1)
+  \param val radii list
 */
-void atoms_input_win (GtkWidget * win, struct project * this_proj, int nspec, int aoc, double * val)
+void atoms_input_win (GtkWidget * win, project * this_proj, int nspec, int aoc, double * val)
 {
   int i, j, k;
   GtkWidget * vbox = dialog_get_content_area (win);
@@ -173,13 +181,13 @@ void atoms_input_win (GtkWidget * win, struct project * this_proj, int nspec, in
   show_the_widgets (vbox);
 }
 
-/*
-*  G_MODULE_EXPORT void set_atom_parameter (GtkWidget * widg, gpointer data)
-*
-*  Usage: set atom parameter - creating the dialog
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_atom_parameter (GtkWidget * widg, gpointer data)
+
+  \brief set atom parameter - creating the dialog
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_atom_parameter (GtkWidget * widg, gpointer data)
 {
@@ -209,19 +217,19 @@ G_MODULE_EXPORT void set_atom_parameter (GtkWidget * widg, gpointer data)
   run_this_gtk_dialog (win, G_CALLBACK(run_destroy_dialog), NULL);
 }
 
-/*
-*  G_MODULE_EXPORT void set_atom_color (GtkColorChooser * colob, gpointer data)
-*
-*  Usage: set atom color callback
-*
-*  GtkColorChooser * colob : the GtkColorChooser sending the signal
-*  gpointer data           : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_atom_color (GtkColorChooser * colob, gpointer data)
+
+  \brief set atom color callback
+
+  \param colob the GtkColorChooser sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_atom_color (GtkColorChooser * colob, gpointer data)
 {
   tint * the_data = (tint *)data;
   int a;
-  struct project * this_proj = get_project_by_id(the_data -> a);
+  project * this_proj = get_project_by_id(the_data -> a);
   a = the_data -> c;
   this_proj -> modelgl -> anim -> last -> img -> at_color[a] = get_button_color (colob);
   int shaders[2] = {ATOMS, BONDS};
@@ -230,23 +238,23 @@ G_MODULE_EXPORT void set_atom_color (GtkColorChooser * colob, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void toggled_show_hide_atom (GtkCheckButton * but, gpointer data)
-*
-*  Usage: toggle show/hide atom(s) callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void toggled_show_hide_atom (GtkCheckButton * but, gpointer data)
+
+  \brief toggle show/hide atom(s) callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void toggled_show_hide_atom (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void toggled_show_hide_atom (GtkToggleButton * but, gpointer data)
-*
-*  Usage: toggle show/hide atom(s) callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void toggled_show_hide_atom (GtkToggleButton * but, gpointer data)
+
+  \brief toggle show/hide atom(s) callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void toggled_show_hide_atom (GtkToggleButton * but, gpointer data)
 #endif
@@ -258,7 +266,7 @@ G_MODULE_EXPORT void toggled_show_hide_atom (GtkToggleButton * but, gpointer dat
   k = id -> c;
   gboolean show;
 #ifdef GTK4
-  struct project * this_proj = get_project_by_id (i);
+  project * this_proj = get_project_by_id (i);
   int l, m;
   show = gtk_check_button_get_active (but);
   for (l=0; l<this_proj -> steps; l++)
@@ -281,23 +289,23 @@ G_MODULE_EXPORT void toggled_show_hide_atom (GtkToggleButton * but, gpointer dat
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void toggled_show_hide_label (GtkCheckButton * but, gpointer data)
-*
-*  Usage: toggle show/hide label(s) callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void toggled_show_hide_label (GtkCheckButton * but, gpointer data)
+
+  \brief toggle show/hide label(s) callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void toggled_show_hide_label (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void toggled_show_hide_label (GtkToggleButton * but, gpointer data)
-*
-*  Usage: toggle show/hide label(s) callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void toggled_show_hide_label (GtkToggleButton * but, gpointer data)
+
+  \brief toggle show/hide label(s) callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void toggled_show_hide_label (GtkToggleButton * but, gpointer data)
 #endif
@@ -308,7 +316,7 @@ G_MODULE_EXPORT void toggled_show_hide_label (GtkToggleButton * but, gpointer da
   j = id -> b;
   k = id -> c;
   gboolean show;
-  struct project * this_proj = get_project_by_id (i);
+  project * this_proj = get_project_by_id (i);
 #ifdef GTK4
   int l, m;
   show = gtk_check_button_get_active (but);
@@ -333,13 +341,13 @@ G_MODULE_EXPORT void toggled_show_hide_label (GtkToggleButton * but, gpointer da
 #endif
 }
 
-/*
-*  GtkWidget * prop_tab (glwin * view, int aoc)
-*
-*  Usage: create atom(s)/clone(s) properties tab
-*
-*  glwin * view : the target glwin
-*  int aoc      : atom(s) (0) or clone(s) (1)
+/*!
+  \fn GtkWidget * prop_tab (glwin * view, int aoc)
+
+  \brief create atom(s)/clone(s) properties tab
+
+  \param view the target glwin
+  \param aoc atom(s) (0) or clone(s) (1)
 */
 GtkWidget * prop_tab (glwin * view, int aoc)
 {
@@ -350,7 +358,7 @@ GtkWidget * prop_tab (glwin * view, int aoc)
   GtkWidget * hbox;
   GtkWidget * but;
   GtkWidget * entry;
-  struct project * this_proj = get_project_by_id(view -> proj);
+  project * this_proj = get_project_by_id(view -> proj);
   gchar * col[5] = {"<b>Color</b>",
                     "<b>Radius [Å]</b>",
                     "<b>Show</b>",
@@ -444,18 +452,18 @@ GtkWidget * prop_tab (glwin * view, int aoc)
   return prop;
 }
 
-/*
-*  G_MODULE_EXPORT void close_model (GtkButton * but, gpointer data)
-*
-*  Usage: free 'model_win' data
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void close_model (GtkButton * but, gpointer data)
+
+  \brief free 'model_win' data
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void close_model (GtkButton * but, gpointer data)
 {
   tint * dat = (tint *)data;
-  struct project * this_proj = get_project_by_id(dat -> a);
+  project * this_proj = get_project_by_id(dat -> a);
   this_proj -> modelgl -> model_win[dat -> b] -> win = destroy_this_widget (this_proj -> modelgl -> model_win[dat -> b] -> win);
   g_free (this_proj -> modelgl -> model_win[dat -> b]);
   this_proj -> modelgl -> model_win[dat -> b] = NULL;
@@ -464,24 +472,24 @@ G_MODULE_EXPORT void close_model (GtkButton * but, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT gboolean close_event_model (GtkWindow * widg, gpointer data)
-*
-*  Usage: close event callback GTK4
-*
-*  GtkWindow * widg : the GtkWindow sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT gboolean close_event_model (GtkWindow * widg, gpointer data)
+
+  \brief close event callback GTK4
+
+  \param widg the GtkWindow sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT gboolean close_event_model (GtkWindow * widg, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT gboolean close_event_model (GtkWidget * widg, GdkEvent * event, gpointer data)
-*
-*  Usage: close event callback GTK3
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  GdkEvent * event : the GdkEvent triggering the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT gboolean close_event_model (GtkWidget * widg, GdkEvent * event, gpointer data)
+
+  \brief close event callback GTK3
+
+  \param widg the GtkWidget sending the signal
+  \param event the GdkEvent triggering the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT gboolean close_event_model (GtkWidget * widg, GdkEvent * event, gpointer data)
 #endif
@@ -490,13 +498,13 @@ G_MODULE_EXPORT gboolean close_event_model (GtkWidget * widg, GdkEvent * event, 
   return FALSE;
 }
 
-/*
-*  GtkWidget * advance_atom_notebook (glwin * view, int atom_or_clone)
-*
-*  Usage: create atom(s) advanced properties notebook
-*
-*  glwin * view      : the target glwin
-*  int atom_or_clone : atom(s) (0) or clone(s) (1)
+/*!
+  \fn GtkWidget * advance_atom_notebook (glwin * view, int atom_or_clone)
+
+  \brief create atom(s) advanced properties notebook
+
+  \param view the target glwin
+  \param atom_or_clone atom(s) (0) or clone(s) (1)
 */
 GtkWidget * advance_atom_notebook (glwin * view, int atom_or_clone)
 {
@@ -514,13 +522,13 @@ GtkWidget * advance_atom_notebook (glwin * view, int atom_or_clone)
   return notebook;
 }
 
-/*
-*  GtkWidget * advanced_atom_properties (int atom_or_clone, glwin * view)
-*
-*  Usage: create atom advanced properties window 'model_win'
-*
-*  int atom_or_clone : atom(s) (0) or clone(s) (1)
-*  glwin * view      : the target glwin
+/*!
+  \fn GtkWidget * advanced_atom_properties (int atom_or_clone, glwin * view)
+
+  \brief create atom advanced properties window 'model_win'
+
+  \param atom_or_clone atom(s) (0) or clone(s) (1)
+  \param view the target glwin
 */
 GtkWidget * advanced_atom_properties (int atom_or_clone, glwin * view)
 {
@@ -543,31 +551,31 @@ GtkWidget * advanced_atom_properties (int atom_or_clone, glwin * view)
 }
 
 #ifdef GTK3
-/*
-*  G_MODULE_EXPORT void atom_properties (GtkWidget * widg, gpointer data)
-*
-*  Usage: atom(s) propery callback GTK3
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void atom_properties (GtkWidget * widg, gpointer data)
+
+  \brief atom(s) propery callback GTK3
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void atom_properties (GtkWidget * widg, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void atom_properties (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: atom(s) propery callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void atom_properties (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief atom(s) propery callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void atom_properties (GSimpleAction * action, GVariant * parameter, gpointer data)
 #endif
 {
   tint * the_data = (tint *) data;
   int atom_or_clone = the_data -> b;
-  struct project * this_proj = get_project_by_id (the_data -> a);
+  project * this_proj = get_project_by_id (the_data -> a);
   if (this_proj -> modelgl -> model_win[atom_or_clone] == NULL)
   {
     this_proj -> modelgl -> model_win[atom_or_clone] = g_malloc0 (sizeof*this_proj -> modelgl -> model_win[atom_or_clone]);

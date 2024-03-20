@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file arcball.c
+* @short Mouse trackball rotation functions
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'arcball.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The mouse trackball rotation subroutines
+ - The mouse trackball rotation functions
 
 *
-*  List of subroutines:
+* List of functions:
 
   void arc_ball_rotation (glwin * view, int x, int y);
 
@@ -29,7 +37,7 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "global.h"
 #include "glview.h"
 
-extern void rotate_quat (struct project * this_proj, vec4_t q, int status, int axis);
+extern void rotate_quat (project * this_proj, vec4_t q, int status, int axis);
 
 vec3_t arc_ball_init;
 vec3_t arc_ball_new;
@@ -53,14 +61,14 @@ vec3_t get_arc_ball_vector (glwin * view, int x, int y)
   return v3_norm (vect);
 }
 
-/*
-*  void arc_ball_rotation (glwin * view, int x, int y)
-*
-*  Usage:
-*
-*  glwin * view : the target glwin
-*  int x        : x position
-*  int y        : y position
+/*!
+  \fn void arc_ball_rotation (glwin * view, int x, int y)
+
+  \brief Perform arcball rotation
+
+  \param view the target glwin
+  \param x x position
+  \param y y position
 */
 void arc_ball_rotation (glwin * view, int x, int y)
 {

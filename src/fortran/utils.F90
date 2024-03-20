@@ -1,15 +1,22 @@
-! This file is part of Atomes.
+! This file is part of the 'atomes' software.
 !
-! Atomes is free software: you can redistribute it and/or modify it under the terms
+! 'atomes' is free software: you can redistribute it and/or modify it under the terms
 ! of the GNU Affero General Public License as published by the Free Software Foundation,
 ! either version 3 of the License, or (at your option) any later version.
 !
-! Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+! 'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 ! without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ! See the GNU General Public License for more details.
 !
-! You should have received a copy of the GNU Affero General Public License along with Atomes.
+! You should have received a copy of the GNU Affero General Public License along with 'atomes'.
 ! If not, see <https://www.gnu.org/licenses/>
+!
+! Copyright (C) 2022-2024 by CNRS and University of Strasbourg
+!
+!>
+!! @file utils.F90
+!! @short Global function declarations
+!! @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
 
 !
 ! This file contains various tools
@@ -145,7 +152,7 @@ enddo
 
 if (.not.PBC) goto 001
 
-! Test if the simulation box is cubic-like symetric
+! Test if the simulation box is cubic-like symmetric
 ! For that we check the lattice angles
 if (THE_BOX(SID)%GLASS) then
 
@@ -162,7 +169,6 @@ else
     Nij(R1) = Nij(R1) - AnINT(Nij(R1))
   enddo
   Rij = MATMUL(Nij,THE_BOX(SID)%fractocart)
-
 
 endif
 

@@ -1,32 +1,40 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file cell_cut.c
+* @short Functions to create the 'slab cutting' tab of the cell edition window
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'cell_cut.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the slab cutting tab of the cell edition window
+ - The functions to create the 'slab cutting' tab of the cell edition window
 
 *
-*  List of subroutines:
+* List of functions:
 
   G_MODULE_EXPORT gboolean scroll_set_slab_alpha (GtkRange * range, GtkScrollType scroll, gdouble value, gpointer data);
 
-  void create_slab_info (struct project * this_proj);
+  void create_slab_info (project * this_proj);
   void slab_alpha_has_changed (gpointer data, GLfloat v);
-  void invert_selection (struct project * this_proj);
+  void invert_selection (project * this_proj);
 
   G_MODULE_EXPORT void setup_passivate (GtkButton * but, gpointer data);
   G_MODULE_EXPORT void set_slab_property (GtkCheckButton * but, gpointer data);
@@ -37,9 +45,9 @@ If not, see <https://www.gnu.org/licenses/> */
   G_MODULE_EXPORT void select_this_slab (GtkButton * but, gpointer data);
   G_MODULE_EXPORT void cut_this_slab (GtkButton * but, gpointer data);
 
-  GtkWidget * prepare_slab_box (int sid, struct project * this_proj);
-  GtkWidget * create_slab_param_combo (int sid, struct project * this_proj);
-  GtkWidget * cut_in_model (struct project * this_proj);
+  GtkWidget * prepare_slab_box (int sid, project * this_proj);
+  GtkWidget * create_slab_param_combo (int sid, project * this_proj);
+  GtkWidget * cut_in_model (project * this_proj);
 
 */
 
@@ -48,17 +56,17 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern G_MODULE_EXPORT void set_filter_changed (GtkComboBox * box, gpointer data);
 
-/*
-*  G_MODULE_EXPORT void setup_passivate (GtkButton * but, gpointer data)
-*
-*  Usage: passivate button callback
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void setup_passivate (GtkButton * but, gpointer data)
+
+  \brief passivate button callback
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void setup_passivate (GtkButton * but, gpointer data)
 {
-  struct project * this_proj = (struct project *)data;
+  project * this_proj = (project *)data;
 
   gchar * str = g_strdup_printf ("Cell edition - %s: surface passivation", this_proj -> name);
   GtkWidget * dial = dialogmodal (prepare_for_title(str), GTK_WINDOW(this_proj -> modelgl -> cell_win -> win));
@@ -91,14 +99,14 @@ G_MODULE_EXPORT void setup_passivate (GtkButton * but, gpointer data)
   this_proj -> modelgl -> search_widg[8] -> passivating = FALSE;
 }
 
-/*
-*  void create_slab_info (struct project * this_proj)
-*
-*  Usage: create slab information widget
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn void create_slab_info (project * this_proj)
+
+  \brief create slab information widget
+
+  \param this_proj the target project
 */
-void create_slab_info (struct project * this_proj)
+void create_slab_info (project * this_proj)
 {
   this_proj -> modelgl -> cell_win -> slab_info = destroy_this_widget (this_proj -> modelgl -> cell_win -> slab_info);
   this_proj -> modelgl -> cell_win -> slab_info = create_vbox (BSEP);
@@ -133,23 +141,23 @@ void create_slab_info (struct project * this_proj)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void set_slab_property (GtkCheckButton * but, gpointer data)
-*
-*  Usage: set slab property toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_slab_property (GtkCheckButton * but, gpointer data)
+
+  \brief set slab property toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_slab_property (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void set_slab_property (GtkToggleButton * but, gpointer data)
-*
-*  Usage: set slab property toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_slab_property (GtkToggleButton * but, gpointer data)
+
+  \brief set slab property toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_slab_property (GtkToggleButton * but, gpointer data)
 #endif
@@ -209,15 +217,15 @@ G_MODULE_EXPORT void set_slab_property (GtkToggleButton * but, gpointer data)
   update (view);
 }
 
-/*
-*  GtkWidget * prepare_slab_box (int sid, struct project * this_proj)
-*
-*  Usage: create slab parameters widget box
-*
-*  int sid                    : the type of slab
-*  struct project * this_proj : the target project
+/*!
+  \fn GtkWidget * prepare_slab_box (int sid, project * this_proj)
+
+  \brief create slab parameters widget box
+
+  \param sid the type of slab
+  \param this_proj the target project
 */
-GtkWidget * prepare_slab_box (int sid, struct project * this_proj)
+GtkWidget * prepare_slab_box (int sid, project * this_proj)
 {
   gchar * option[6]={"- Position the center of the slab: ", // 6, 7, 8
                      "- Size of the slab: ",                // 9, 10, 11
@@ -252,17 +260,17 @@ GtkWidget * prepare_slab_box (int sid, struct project * this_proj)
   return vbox;
 }
 
-/*
-*  G_MODULE_EXPORT void set_slab_option (GtkComboBox * box, gpointer data)
-*
-*  Usage: change slab option combo
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_slab_option (GtkComboBox * box, gpointer data)
+
+  \brief change slab option combo
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_slab_option (GtkComboBox * box, gpointer data)
 {
-  struct project * this_proj = (struct project *)data;
+  project * this_proj = (project *)data;
   int i, j;
   i = gtk_combo_box_get_active (box);
   for (j=0; j<6; j++)
@@ -290,15 +298,15 @@ G_MODULE_EXPORT void set_slab_option (GtkComboBox * box, gpointer data)
   }
 }
 
-/*
-*  GtkWidget * create_slab_param_combo (int sid, struct project * this_proj)
-*
-*  Usage:  create slab parameters combo widget
-*
-*  int sid                    : the slab type
-*  struct project * this_proj : the target project
+/*!
+  \fn GtkWidget * create_slab_param_combo (int sid, project * this_proj)
+
+  \brief  create slab parameters combo widget
+
+  \param sid the slab type
+  \param this_proj the target project
 */
-GtkWidget * create_slab_param_combo (int sid, struct project * this_proj)
+GtkWidget * create_slab_param_combo (int sid, project * this_proj)
 {
   GtkWidget * combo = create_combo ();
   gchar * options[4] = {"Position", "Size", "Angles", "Rotation"};
@@ -314,17 +322,17 @@ GtkWidget * create_slab_param_combo (int sid, struct project * this_proj)
   return combo;
 }
 
-/*
-*  G_MODULE_EXPORT void set_slab_type (GtkComboBox * box, gpointer data)
-*
-*  Usage: change slab type
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_slab_type (GtkComboBox * box, gpointer data)
+
+  \brief change slab type
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_slab_type (GtkComboBox * box, gpointer data)
 {
-  struct project * this_proj = (struct project *)data;
+  project * this_proj = (project *)data;
   int i;
   for (i=0; i<3; i++) gtk_widget_hide (this_proj -> modelgl -> cell_win -> slab_hbox[i]);
   this_proj -> modelgl -> cell_win -> slab_type = i = gtk_combo_box_get_active (box);
@@ -338,13 +346,13 @@ G_MODULE_EXPORT void set_slab_type (GtkComboBox * box, gpointer data)
   }
 }
 
-/*
-*  void slab_alpha_has_changed (gpointer data, GLfloat v)
-*
-*  Usage: change slab opacity
-*
-*  gpointer data : the associated data pointer
-*  GLfloat v     : the new opacity value
+/*!
+  \fn void slab_alpha_has_changed (gpointer data, GLfloat v)
+
+  \brief change slab opacity
+
+  \param data the associated data pointer
+  \param v the new opacity value
 */
 void slab_alpha_has_changed (gpointer data, GLfloat v)
 {
@@ -357,15 +365,15 @@ void slab_alpha_has_changed (gpointer data, GLfloat v)
   }
 }
 
-/*
-*  G_MODULE_EXPORT gboolean scroll_set_slab_alpha (GtkRange * range, GtkScrollType scroll, gdouble value, gpointer data)
-*
-*  Usage: change slab opactiy callback - scoll
-*
-*  GtkRange * range     : the GtkRange sending the signal
-*  GtkScrollType scroll : the associated scroll type
-*  gdouble value        : the range value
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT gboolean scroll_set_slab_alpha (GtkRange * range, GtkScrollType scroll, gdouble value, gpointer data)
+
+  \brief change slab opactiy callback - scoll
+
+  \param range the GtkRange sending the signal
+  \param scroll the associated scroll type
+  \param value the range value
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT gboolean scroll_set_slab_alpha (GtkRange * range, GtkScrollType scroll, gdouble value, gpointer data)
 {
@@ -373,27 +381,27 @@ G_MODULE_EXPORT gboolean scroll_set_slab_alpha (GtkRange * range, GtkScrollType 
   return FALSE;
 }
 
-/*
-*  G_MODULE_EXPORT void set_slab_alpha (GtkRange * range, gpointer data)
-*
-*  Usage: change slab opactiy callback - range
-*
-*  GtkRange * range : the GtkRange sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_slab_alpha (GtkRange * range, gpointer data)
+
+  \brief change slab opactiy callback - range
+
+  \param range the GtkRange sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_slab_alpha (GtkRange * range, gpointer data)
 {
   slab_alpha_has_changed (data, (GLfloat) gtk_range_get_value (range));
 }
 
-/*
-*  void invert_selection (struct project * this_proj)
-*
-*  Usage: invert atom(s) selection
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn void invert_selection (project * this_proj)
+
+  \brief invert atom(s) selection
+
+  \param this_proj the target project
 */
-void invert_selection (struct project * this_proj)
+void invert_selection (project * this_proj)
 {
   save_all_selections (this_proj -> modelgl, 0);
   int i, j, k;
@@ -443,17 +451,17 @@ void invert_selection (struct project * this_proj)
   re_create_md_shaders (1, shaders, this_proj);
 }
 
-/*
-*  G_MODULE_EXPORT void select_this_slab (GtkButton * but, gpointer data)
-*
-*  Usage: select / unselect atom(s) in slab callback
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void select_this_slab (GtkButton * but, gpointer data)
+
+  \brief select / unselect atom(s) in slab callback
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void select_this_slab (GtkButton * but, gpointer data)
 {
-  struct project * this_proj = (struct project *)data;
+  project * this_proj = (project *)data;
   this_proj -> modelgl -> cell_win -> cut_this_slab = TRUE;
   opengl_project_changed (this_proj -> id);
   selected_aspec = -1;
@@ -474,17 +482,17 @@ G_MODULE_EXPORT void select_this_slab (GtkButton * but, gpointer data)
   update (this_proj -> modelgl);
 }
 
-/*
-*  G_MODULE_EXPORT void cut_this_slab (GtkButton * but, gpointer data)
-*
-*  Usage: cut this slab callback
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void cut_this_slab (GtkButton * but, gpointer data)
+
+  \brief cut this slab callback
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void cut_this_slab (GtkButton * but, gpointer data)
 {
-  struct project * this_proj = (struct project *)data;
+  project * this_proj = (project *)data;
   int is_out, i;
   if (this_proj -> modelgl-> cell_win -> slab_atoms)
   {
@@ -577,13 +585,13 @@ G_MODULE_EXPORT void cut_this_slab (GtkButton * but, gpointer data)
               active_glwin -> search_widg[8] -> in_selection = this_proj -> modelgl -> search_widg[8] -> in_selection;
               active_glwin -> search_widg[8] -> todo_size = this_proj -> modelgl -> search_widg[8] -> todo_size;
               active_glwin -> search_widg[8] -> todo = duplicate_int (active_glwin -> search_widg[8] -> todo_size, this_proj -> modelgl -> search_widg[8] -> todo);
-              active_glwin -> atom_win -> to_be_inserted[3] = duplicate_insert_object (this_proj -> modelgl -> atom_win -> to_be_inserted[3]);
-              struct insert_object * tmp_a, * tmp_b;
+              active_glwin -> atom_win -> to_be_inserted[3] = duplicate_atomic_object (this_proj -> modelgl -> atom_win -> to_be_inserted[3]);
+              atomic_object * tmp_a, * tmp_b;
               tmp_a = this_proj -> modelgl -> atom_win -> to_be_inserted[3];
               tmp_b = active_glwin -> atom_win -> to_be_inserted[3];
               while (tmp_a -> next)
               {
-                tmp_b -> next = duplicate_insert_object (tmp_a -> next);
+                tmp_b -> next = duplicate_atomic_object (tmp_a -> next);
                 tmp_b -> next -> prev = tmp_b;
                 tmp_b = tmp_b -> next;
                 tmp_a = tmp_a -> next;
@@ -641,14 +649,14 @@ G_MODULE_EXPORT void cut_this_slab (GtkButton * but, gpointer data)
   }
 }
 
-/*
-*  GtkWidget * cut_in_model (struct project * this_proj)
-*
-*  Usage: create the cut slab tab
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn GtkWidget * cut_in_model (project * this_proj)
+
+  \brief create the cut slab tab
+
+  \param this_proj the target project
 */
-GtkWidget * cut_in_model (struct project * this_proj)
+GtkWidget * cut_in_model (project * this_proj)
 {
   int i;
   GtkWidget * layout;

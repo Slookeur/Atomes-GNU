@@ -1,28 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file dlp_ff_match.c
+* @short Functions the list the available database parameters for the atom database window
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'dlp_ff_match.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the available parameters from the database window
+ - The functions the list the available database parameters for the atom database window
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int this_body_has_atom (struct field_nth_body * body, char * name);
+  int this_body_has_atom (field_nth_body * body, char * name);
 
   gboolean is_this_object_a_match (int fsid, int nat, int * ffc, int * fpar);
 
@@ -33,7 +41,7 @@ If not, see <https://www.gnu.org/licenses/> */
   gchar * get_this_prop_param (int sid, int key, int calc, int newp, float * val);
   gchar * get_this_prop_string (int sid, int oid, int type, int calc);
 
-  void update_result_list (int sid, struct object_match * new_match);
+  void update_result_list (int sid, field_object_match * new_match);
   void fill_update_model (GtkTreeStore * store);
   void get_update_tree_data (GtkWidget * tree, gpointer data, GtkTreePath * path);
   void ff_button_event (double event_x, double event_y, guint event_button, guint event_type, guint32 event_time, gpointer data);
@@ -55,8 +63,8 @@ If not, see <https://www.gnu.org/licenses/> */
 
   GtkTreeModel * global_render_tree ();
 
-  struct field_data * get_ff_data (int i, int j);
-  struct object_match * duplicate_match (struct object_match * old_m);
+  field_data * get_ff_data (int i, int j);
+  field_object_match * duplicate_match (field_object_match * old_m);
 
   dint get_visible (gboolean result, gchar * the_name);
 
@@ -82,15 +90,15 @@ extern GtkWidget * afftype;
 extern GtkWidget * field_key_combo;
 extern GtkWidget * p_box;
 extern GtkWidget * param_box;
-struct object_match * up_match[9];
-struct object_match * tmp_match, * other_match;
-struct field_data * ff_data;
+field_object_match * up_match[9];
+field_object_match * tmp_match, * other_match;
+field_data * ff_data;
 
 extern GtkWidget * param_prop_param_box (int pid);
 extern gchar * get_this_vdw_string ();
 extern G_MODULE_EXPORT void markup_action_renderer (GtkCellRendererCombo * cell, GtkCellEditable * editable, gchar * path_string, gpointer data);
 extern int get_num_vdw_max ();
-extern gchar * get_body_element_name (struct field_nth_body * body, int aid, int nbd);
+extern gchar * get_body_element_name (field_nth_body * body, int aid, int nbd);
 
 #define NUCOL 8
 
@@ -101,19 +109,19 @@ GtkWidget * ff_p_combo[2];
 GtkTreeStore * update_model;
 dint up;
 GtkTreeModel * prop_to_up;
-struct object_match * tmp_res[9];
+field_object_match * tmp_res[9];
 dint pup[2];
 gboolean vdw_same_atom;
 
-/*
-*  gboolean is_this_object_a_match (int fsid, int nat, int * ffc, int * fpar)
-*
-*  Usage: check if object matches parameters from the database
-*
-*  int fsid   : the type of field property
-*  int nat    : the number of atoms for this field property
-*  int * ffc  : object data
-*  int * fpar : field database data
+/*!
+  \fn gboolean is_this_object_a_match (int fsid, int nat, int * ffc, int * fpar)
+
+  \brief check if object matches parameters from the database
+
+  \param fsid the type of field property
+  \param nat the number of atoms for this field property
+  \param ffc object data
+  \param fpar field database data
 */
 gboolean is_this_object_a_match (int fsid, int nat, int * ffc, int * fpar)
 {
@@ -199,15 +207,15 @@ gboolean is_this_object_a_match (int fsid, int nat, int * ffc, int * fpar)
   return TRUE;
 }
 
-/*
-*  struct field_data * get_ff_data (int i, int j)
-*
-*  Usage: retrieve field property from database
-*
-*  int i : the type of field property
-*  int j : the id of the force field database, if any
+/*!
+  \fn field_data * get_ff_data (int i, int j)
+
+  \brief retrieve field property from database
+
+  \param i the type of field property
+  \param j the id of the force field database, if any
 */
-struct field_data * get_ff_data (int i, int j)
+field_data * get_ff_data (int i, int j)
 {
   switch (i/2)
   {
@@ -237,16 +245,16 @@ struct field_data * get_ff_data (int i, int j)
   }
 }
 
-/*
-*  gchar * get_this_prop_param (int sid, int key, int calc, int newp, float * val)
-*
-*  Usage: prepare field property parameters description string
-*
-*  int sid     : the type of field property
-*  int key     : the key, or formalism to use, for the field property
-*  int calc    : from the tree model (1) or from the selection combo box (0)
-*  int newp    : 1 = from 'get_this_prop_string', 0 = else
-*  float * val : the list of parameter(s)
+/*!
+  \fn gchar * get_this_prop_param (int sid, int key, int calc, int newp, float * val)
+
+  \brief prepare field property parameters description string
+
+  \param sid the type of field property
+  \param key the key, or formalism to use, for the field property
+  \param calc from the tree model (1) or from the selection combo box (0)
+  \param newp 1 = from 'get_this_prop_string', 0 = else
+  \param val the list of parameter(s)
 */
 gchar * get_this_prop_param (int sid, int key, int calc, int newp, float * val)
 {
@@ -303,15 +311,15 @@ gchar * get_this_prop_param (int sid, int key, int calc, int newp, float * val)
                           parameters_info ((sid > 7) ? 9 : sid+1, key, vars, val));
 }
 
-/*
-*  gchar * get_this_prop_string (int sid, int oid, int type, int calc)
-*
-*  Usage: get property name
-*
-*  int sid  : the type of field property
-*  int oid  : the number of atoms for this field property
-*  int type : the id of the force field database
-*  int calc : from the tree model (1) or from the selection combo box (0)
+/*!
+  \fn gchar * get_this_prop_string (int sid, int oid, int type, int calc)
+
+  \brief get property name
+
+  \param sid the type of field property
+  \param oid the number of atoms for this field property
+  \param type the id of the force field database
+  \param calc from the tree model (1) or from the selection combo box (0)
 */
 gchar * get_this_prop_string (int sid, int oid, int type, int calc)
 {
@@ -356,16 +364,16 @@ gchar * get_this_prop_string (int sid, int oid, int type, int calc)
   return str;
 }
 
-/*
-*  struct object_match * duplicate_match (struct object_match * old_m)
-*
-*  Usage: create a copy of a field match
-*
-*  struct object_match * old_m : the field match to duplicate
+/*!
+  \fn field_object_match * duplicate_match (field_object_match * old_m)
+
+  \brief create a copy of a field match
+
+  \param old_m the field match to duplicate
 */
-struct object_match * duplicate_match (struct object_match * old_m)
+field_object_match * duplicate_match (field_object_match * old_m)
 {
-  struct object_match * new_m = g_malloc0 (sizeof*new_m);
+  field_object_match * new_m = g_malloc0 (sizeof*new_m);
   new_m -> id = old_m -> id;
   new_m -> obj = old_m -> obj;
   new_m -> oid = old_m -> oid;
@@ -374,19 +382,19 @@ struct object_match * duplicate_match (struct object_match * old_m)
   return new_m;
 }
 
-/*
-*  void update_result_list (int sid, struct object_match * new_match)
-*
-*  Usage: update avialable parameter list
-*
-*  int sid                         : the type of field property
-*  struct object_match * new_match : the field match
+/*!
+  \fn void update_result_list (int sid, field_object_match * new_match)
+
+  \brief update avialable parameter list
+
+  \param sid the type of field property
+  \param new_match the field match
 */
-void update_result_list (int sid, struct object_match * new_match)
+void update_result_list (int sid, field_object_match * new_match)
 {
   if (tmp_res[sid])
   {
-    struct object_match * map, * mbp;
+    field_object_match * map, * mbp;
     map = duplicate_match (new_match);
     mbp = tmp_res[sid];
     while (mbp)
@@ -427,17 +435,17 @@ void update_result_list (int sid, struct object_match * new_match)
   }
 }
 
-/*
-*  void fill_update_model (GtkTreeStore * store)
-*
-*  Usage: fill the parameters database tree store
-*
-*  GtkTreeStore * store : the GtkTreeStore to fill
+/*!
+  \fn void fill_update_model (GtkTreeStore * store)
+
+  \brief fill the parameters database tree store
+
+  \param store the GtkTreeStore to fill
 */
 void fill_update_model (GtkTreeStore * store)
 {
   GtkTreeIter prop_level, struct_level;
-  struct field_atom * upat;
+  field_atom* upat;
   int g, h, i, j;
   gchar * str;
   gchar * stra, * strb, * strc, * strd, * stre;
@@ -588,10 +596,10 @@ void fill_update_model (GtkTreeStore * store)
   }
 }
 
-/*
-*  GtkTreeModel * global_render_tree ()
-*
-*  Usage: create the field property combo box model that contains the list of available parameters
+/*!
+  \fn GtkTreeModel * global_render_tree ()
+
+  \brief create the field property combo box model that contains the list of available parameters
 */
 GtkTreeModel * global_render_tree ()
 {
@@ -622,13 +630,13 @@ GtkTreeModel * global_render_tree ()
   return gtk_tree_model_filter_new(GTK_TREE_MODEL (store), NULL);
 }
 
-/*
-*  dint get_visible (gboolean result, gchar * the_name)
-*
-*  Usage: get cell renderer visibility poitner
-*
-*  gboolean result  : is renderer visible or not ?
-*  gchar * the_name : the target name
+/*!
+  \fn dint get_visible (gboolean result, gchar * the_name)
+
+  \brief get cell renderer visibility poitner
+
+  \param result is renderer visible or not ?
+  \param the_name the target name
 */
 dint get_visible (gboolean result, gchar * the_name)
 {
@@ -670,15 +678,15 @@ dint get_visible (gboolean result, gchar * the_name)
   }
   return vis;
 }
-/*
-*  G_MODULE_EXPORT void changed_update_renderer (GtkCellRendererCombo * combo, gchar * path_string, GtkTreeIter * iter, gpointer data)
-*
-*  Usage: change combo box in tree model callback
-*
-*  GtkCellRendererCombo * combo : the cell renderer combo box
-*  gchar * path_string          : the path in the tree model
-*  GtkTreeIter * iter           : the tree iter
-*  gpointer data                : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void changed_update_renderer (GtkCellRendererCombo * combo, gchar * path_string, GtkTreeIter * iter, gpointer data)
+
+  \brief change combo box in tree model callback
+
+  \param combo the cell renderer combo box
+  \param path_string the path in the tree model
+  \param iter the tree iter
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void changed_update_renderer (GtkCellRendererCombo * combo, gchar * path_string, GtkTreeIter * iter, gpointer data)
 {
@@ -699,14 +707,14 @@ G_MODULE_EXPORT void changed_update_renderer (GtkCellRendererCombo * combo, gcha
   }
 }
 
-/*
-*  void get_update_tree_data (GtkWidget * tree, gpointer data, GtkTreePath * path)
-*
-*  Usage: update force field parameters database tree model data
-*
-*  GtkWidget * tree   : the GtkWidget sending the signal
-*  gpointer data      : the associated data pointer
-*  GtkTreePath * path : the path in the tree model
+/*!
+  \fn void get_update_tree_data (GtkWidget * tree, gpointer data, GtkTreePath * path)
+
+  \brief update force field parameters database tree model data
+
+  \param tree the GtkWidget sending the signal
+  \param data the associated data pointer
+  \param path the path in the tree model
 */
 void get_update_tree_data (GtkWidget * tree, gpointer data, GtkTreePath * path)
 {
@@ -721,32 +729,32 @@ void get_update_tree_data (GtkWidget * tree, gpointer data, GtkTreePath * path)
 }
 
 #ifdef GTK4
-/*
-*  void ff_button_event (double event_x, double event_y, guint event_button, guint event_type, guint32 event_time, gpointer data)
-*
-*  Usage: handle mouse button event on the DL-POLY force field parameters database window GTK4
-*
-*  double event_x     : x position
-*  double event_y     : y position
-*  guint event_button : event button
-*  guint event_type   : event type
-*  guint32 event_time : event time
-*  gpointer data      : the associated data pointer
+/*!
+  \fn void ff_button_event (double event_x, double event_y, guint event_button, guint event_type, guint32 event_time, gpointer data)
+
+  \brief handle mouse button event on the DL-POLY force field parameters database window GTK4
+
+  \param event_x x position
+  \param event_y y position
+  \param event_button event button
+  \param event_type event type
+  \param event_time event time
+  \param data the associated data pointer
 */
 void ff_button_event (double event_x, double event_y, guint event_button, guint event_type, guint32 event_time, gpointer data)
 #else
-/*
-*  void ff_button_event (GdkEvent * event, double event_x, double event_y, guint event_button, guint event_type, guint32 event_time, gpointer data)
-*
-*  Usage: handle mouse button event on the DL-POLY force field parameters database window GTK3
-*
-*  GdkEvent * event   : the GdkEvent triggering the signal
-*  double event_x     : x position
-*  double event_y     : y position
-*  guint event_button : event button
-*  guint event_type   : event type
-*  guint32 event_time : event time
-*  gpointer data      : the associated data pointer
+/*!
+  \fn void ff_button_event (GdkEvent * event, double event_x, double event_y, guint event_button, guint event_type, guint32 event_time, gpointer data)
+
+  \brief handle mouse button event on the DL-POLY force field parameters database window GTK3
+
+  \param event the GdkEvent triggering the signal
+  \param event_x x position
+  \param event_y y position
+  \param event_button event button
+  \param event_type event type
+  \param event_time event time
+  \param data the associated data pointer
 */
 void ff_button_event (GdkEvent * event, double event_x, double event_y, guint event_button, guint event_type, guint32 event_time, gpointer data)
 #endif
@@ -771,46 +779,46 @@ void ff_button_event (GdkEvent * event, double event_x, double event_y, guint ev
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void on_ff_button_pressed (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
-*
-*  Usage: mouse button pressed signal on the DL-POLY force field parameters database window
-*
-*  GtkGesture * gesture : the GtkGesture sending the signal
-*  int n_press          : number of times it was pressed
-*  double x             : x position
-*  double y             : y position
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void on_ff_button_pressed (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
+
+  \brief mouse button pressed signal on the DL-POLY force field parameters database window
+
+  \param gesture the GtkGesture sending the signal
+  \param n_press number of times it was pressed
+  \param x x position
+  \param y y position
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void on_ff_button_pressed (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
 {
   ff_button_event (x, y, gtk_gesture_single_get_current_button ((GtkGestureSingle * )gesture), GDK_BUTTON_PRESS, gtk_event_controller_get_current_event_time((GtkEventController *)gesture), data);
 }
 
-/*
-*  G_MODULE_EXPORT void on_ff_button_released (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
-*
-*  Usage: mouse button released signal on the DL-POLY force field parameters database window
-*
-*  GtkGesture * gesture : the GtkGesture sending the signal
-*  int n_press          : number of times it was pressed
-*  double x             : x position
-*  double y             : y position
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void on_ff_button_released (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
+
+  \brief mouse button released signal on the DL-POLY force field parameters database window
+
+  \param gesture the GtkGesture sending the signal
+  \param n_press number of times it was pressed
+  \param x x position
+  \param y y position
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void on_ff_button_released (GtkGesture * gesture, int n_press, double x, double y, gpointer data)
 {
   ff_button_event (x, y, gtk_gesture_single_get_current_button ((GtkGestureSingle * )gesture), GDK_BUTTON_RELEASE, gtk_event_controller_get_current_event_time((GtkEventController *)gesture), data);
 }
 #else
-/*
-*  G_MODULE_EXPORT gboolean on_ff_button_event (GtkWidget * widget, GdkEvent * event, gpointer data)
-*
-*  Usage: mouse button event on the DL-POLY force field parameters database window
-*
-*  GtkWidget * widget : the GtkWidget sending the signal
-*  GdkEvent * event   : the GdkEvent triggering the signal
-*  gpointer data      : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT gboolean on_ff_button_event (GtkWidget * widget, GdkEvent * event, gpointer data)
+
+  \brief mouse button event on the DL-POLY force field parameters database window
+
+  \param widget the GtkWidget sending the signal
+  \param event the GdkEvent triggering the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT gboolean on_ff_button_event (GtkWidget * widget, GdkEvent * event, gpointer data)
 {
@@ -820,14 +828,14 @@ G_MODULE_EXPORT gboolean on_ff_button_event (GtkWidget * widget, GdkEvent * even
 }
 #endif
 
-/*
-*  G_MODULE_EXPORT void on_toggle_update (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
-*
-*  Usage:  on select field parameter toggle callback
-*
-*  GtkCellRendererToggle * cell_renderer : the GtkCellRendererToggle sending the signal
-*  gchar * string_path                   : the path in the tree store
-*  gpointer data                         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void on_toggle_update (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
+
+  \brief  on select field parameter toggle callback
+
+  \param cell_renderer the GtkCellRendererToggle sending the signal
+  \param string_path the path in the tree store
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void on_toggle_update (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
 {
@@ -856,14 +864,14 @@ G_MODULE_EXPORT void on_toggle_update (GtkCellRendererToggle * cell_renderer, gc
   }
 }
 
-/*
-*  static gboolean update_rend (GtkTreeModel * model, GtkTreeIter * iter, gpointer  data)
-*
-*  Usage: udpate cell renderer visibility
-*
-*  GtkTreeModel * model : the target GtkTreeModel
-*  GtkTreeIter * iter   : the target tree iter
-*  gpointer  data       : the associated data pointer
+/*!
+  \fn static gboolean update_rend (GtkTreeModel * model, GtkTreeIter * iter, gpointer  data)
+
+  \brief udpate cell renderer visibility
+
+  \param model the target GtkTreeModel
+  \param iter the target tree iter
+  \param data the associated data pointer
 */
 static gboolean update_rend (GtkTreeModel * model, GtkTreeIter * iter, gpointer  data)
 {
@@ -884,16 +892,16 @@ static gboolean update_rend (GtkTreeModel * model, GtkTreeIter * iter, gpointer 
   return FALSE;
 }
 
-/*
-*  void field_set_markup_and_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
-*
-*  Usage: field parameter set renderer markup and visibility in the parameter database selection tree model
-*
-*  GtkTreeViewColumn * col        : the target GtkTreeViewColumn
-*  GtkTreeCellRenderer * renderer : the target cell renderer
-*  GtkTreeModel                   : the target tree model
-*  GtkTreeIter                    : the target tree iter
-*  gpointer data                  : the associated data pointer
+/*!
+  \fn void field_set_markup_and_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
+
+  \brief field parameter set renderer markup and visibility in the parameter database selection tree model
+
+  \param col the target GtkTreeViewColumn
+  \param renderer the target cell renderer
+  \param mod the target tree model
+  \param iter the target tree iter
+  \param data the associated data pointer
 */
 void field_set_markup_and_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
 {
@@ -911,10 +919,10 @@ void field_set_markup_and_visible (GtkTreeViewColumn * col, GtkCellRenderer * re
   }
 }
 
-/*
-*  GtkWidget * create_update_tree ()
-*
-*  Usage: create the parameters database tree model
+/*!
+  \fn GtkWidget * create_update_tree ()
+
+  \brief create the parameters database tree model
 */
 GtkWidget * create_update_tree ()
 {
@@ -981,12 +989,12 @@ GtkWidget * create_update_tree ()
   return update_tree;
 }
 
-/*
-*  void win_update_tree (GtkWidget * vbx)
-*
-*  Usage: update the parameters database tree model
-*
-*  GtkWidget * vbx : the GtkWidget sending the signal
+/*!
+  \fn void win_update_tree (GtkWidget * vbx)
+
+  \brief update the parameters database tree model
+
+  \param vbx the GtkWidget sending the signal
 */
 void win_update_tree (GtkWidget * vbx)
 {
@@ -1043,17 +1051,17 @@ void win_update_tree (GtkWidget * vbx)
   }
 }
 
-/*
-*  void look_up_this_field_object (int fsid, int fpid, int ssid, int nat, int * fsp, int * fat)
-*
-*  Usage: look up in database for this field property
-*
-*  int fsid  : the type of field property
-*  int fpid  : global propert (0) or atom specific (> 0)
-*  int ssid  : the id of the field property to check
-*  int nat   : the number of atoms for this field property
-*  int * fat : the list of field atom(s)
-*  int * fsp : the list of the chemical species for the field atom(s)
+/*!
+  \fn void look_up_this_field_object (int fsid, int fpid, int ssid, int nat, int * fsp, int * fat)
+
+  \brief look up in database for this field property
+
+  \param fsid the type of field property
+  \param fpid global propert (0) or atom specific (> 0)
+  \param ssid the id of the field property to check
+  \param nat the number of atoms for this field property
+  \param fat the list of field atom(s)
+  \param fsp the list of the chemical species for the field atom(s)
 */
 void look_up_this_field_object (int fsid, int fpid, int ssid, int nat, int * fsp, int * fat)
 {
@@ -1089,23 +1097,23 @@ void look_up_this_field_object (int fsid, int fpid, int ssid, int nat, int * fsp
   }
 }
 
-/*
-*  void check_this_fprop (int fsid, int fpid, int ssid, int * fat, int * fsp)
-*
-*  Usage: check if the database offers parameters for a field property
-*
-*  int fsid  : the type of field property
-*  int fpid  : global propert (0) or atom specific (> 0)
-*  int ssid  : the id of the field property to check
-*  int * fat : the list of field atom(s)
-*  int * fsp : the list of the chemical species for the field atom(s)
+/*!
+  \fn void check_this_fprop (int fsid, int fpid, int ssid, int * fat, int * fsp)
+
+  \brief check if the database offers parameters for a field property
+
+  \param fsid the type of field property
+  \param fpid global propert (0) or atom specific (> 0)
+  \param ssid the id of the field property to check
+  \param fat the list of field atom(s)
+  \param fsp the list of the chemical species for the field atom(s)
 */
 void check_this_fprop (int fsid, int fpid, int ssid, int * fat, int * fsp)
 {
   int i, j, k;
   int * ffat, * ffsp;
   gboolean update = TRUE;
-  struct field_atom * tmpat;
+  field_atom* tmpat;
   i = struct_id(fsid+7);
   for (j=0; j<i; j++)
   {
@@ -1139,15 +1147,15 @@ void check_this_fprop (int fsid, int fpid, int ssid, int * fat, int * fsp)
   }
 }
 
-/*
-*  int this_body_has_atom (struct field_nth_body * body, char * name)
-*
-*  Usage: check if non bonded potential has this field atom
-*
-*  struct field_nth_body * body : the non bonded potential to check
-*  char * name                  : the name of the target field atom
+/*!
+  \fn int this_body_has_atom (field_nth_body * body, char * name)
+
+  \brief check if non bonded potential has this field atom
+
+  \param body the non bonded potential to check
+  \param name the name of the target field atom
 */
-int this_body_has_atom (struct field_nth_body * body, char * name)
+int this_body_has_atom (field_nth_body * body, char * name)
 {
   int i, j, k, l , m;
   m = 0;
@@ -1163,14 +1171,14 @@ int this_body_has_atom (struct field_nth_body * body, char * name)
   return m;
 }
 
-/*
-*  G_MODULE_EXPORT void run_check_atom_for_updates (GtkDialog * dialog, gint response_id, gpointer data)
-*
-*  Usage: check for parameters in the database to be used in the force field - running the dialog
-*
-*  GtkDialog * dialog : the GtkDialog sending the signal
-*  gint response_id   : the response id
-*  gpointer data      : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void run_check_atom_for_updates (GtkDialog * dialog, gint response_id, gpointer data)
+
+  \brief check for parameters in the database to be used in the force field - running the dialog
+
+  \param dialog the GtkDialog sending the signal
+  \param response_id the response id
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void run_check_atom_for_updates (GtkDialog * dialog, gint response_id, gpointer data)
 {
@@ -1292,17 +1300,17 @@ G_MODULE_EXPORT void run_check_atom_for_updates (GtkDialog * dialog, gint respon
   destroy_this_dialog (dialog);
 }
 
-/*
-*  void check_atom_for_updates ()
-*
-*  Usage: check for parameters in the database to be used in the force field - creating the dialog
+/*!
+  \fn void check_atom_for_updates ()
+
+  \brief check for parameters in the database to be used in the force field - creating the dialog
 */
 void check_atom_for_updates ()
 {
   int i, j, k, l;
   int * fsp;
   gboolean update_this = FALSE;
-  struct field_prop * oth;
+  field_prop * oth;
 
   // Lookup for this atoms in bonds, etc ... and if parameters, then look for update is all atoms are field auto
   // Field struct (bonds, bond rest., angles, angles rest., dih, tors. rest., imp., vdw.)
@@ -1400,13 +1408,13 @@ void check_atom_for_updates ()
   }
 }
 
-/*
-*  G_MODULE_EXPORT void changed_field_prop_combo (GtkComboBox * box, gpointer data)
-*
-*  Usage: change the field parameter selection
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void changed_field_prop_combo (GtkComboBox * box, gpointer data)
+
+  \brief change the field parameter selection
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void changed_field_prop_combo (GtkComboBox * box, gpointer data)
 {
@@ -1514,13 +1522,13 @@ G_MODULE_EXPORT void changed_field_prop_combo (GtkComboBox * box, gpointer data)
   show_the_widgets (param_box);
 }
 
-/*
-*  GtkWidget * create_field_prop_combo (int f, int is_moy)
-*
-*  Usage: create field parameter selection combo box
-*
-*  int f      : the type of force field property
-*  int is_moy : global parameter (1) or atom(s) specific parameter (0)
+/*!
+  \fn GtkWidget * create_field_prop_combo (int f, int is_moy)
+
+  \brief create field parameter selection combo box
+
+  \param f the type of force field property
+  \param is_moy global parameter (1) or atom(s) specific parameter (0)
 */
 GtkWidget * create_field_prop_combo (int f, int is_moy)
 {

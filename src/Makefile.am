@@ -118,6 +118,7 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)chains.F90 \
 			$(for)chains_ogl.F90 \
 			$(for)chemistry.F90 \
+			$(for)clean.F90 \
 			$(for)cqvf.F90 \
 			$(for)dmtx.F90 \
 			$(for)dvtb.F90 \
@@ -126,7 +127,6 @@ atomes_fortran_files = $(for)allocbonds.F90 \
 			$(for)gr.F90 \
 			$(for)grfft.F90 \
 			$(for)initchains.F90 \
-			$(for)init.F90 \
 			$(for)initrings.F90 \
 			$(for)lattice.F90 \
 			$(for)molecules.F90 \

@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_curve.c
+* @short Functions to read curve data in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_curve.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to read curve information from atomes project file
+ - The functions to read curve data in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
   int read_project_curve (FILE * fp, int wid, int pid);
 
@@ -31,13 +39,13 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "global.h"
 #include "project.h"
 
-/*
-*  gboolean read_data_layout (FILE * fp, DataLayout * layout)
-*
-*  Usage: read data layout from file
-*
-*  FILE * fp           : the file pointer
-*  DataLayout * layout : the data layout to store the data
+/*!
+  \fn gboolean read_data_layout (FILE * fp, DataLayout * layout)
+
+  \brief read data layout from file
+
+  \param fp the file pointer
+  \param layout the data layout to store the data
 */
 gboolean read_data_layout (FILE * fp, DataLayout * layout)
 {
@@ -54,14 +62,14 @@ gboolean read_data_layout (FILE * fp, DataLayout * layout)
   return TRUE;
 }
 
-/*
-*  int read_project_curve (FILE * fp, int wid, int pid)
-*
-*  Usage: read a project curve from file
-*
-*  FILE * fp : the file pointer
-*  int wid   : the total number of projects in the workspace
-*  int pid   : the active project id
+/*!
+  \fn int read_project_curve (FILE * fp, int wid, int pid)
+
+  \brief read a project curve from file
+
+  \param fp the file pointer
+  \param wid the total number of projects in the workspace
+  \param pid the active project id
 */
 int read_project_curve (FILE * fp, int wid, int pid)
 {
@@ -75,7 +83,7 @@ int read_project_curve (FILE * fp, int wid, int pid)
   {
     pic = pid;
   }
-  struct project * this_proj = get_project_by_id (pic);
+  project * this_proj = get_project_by_id (pic);
   if (fread (& rid, sizeof(int), 1, fp) != 1) return ERROR_RW;
   if (fread (& cid, sizeof(int), 1, fp) != 1) return ERROR_RW;
   if (fread (& this_proj -> curves[rid][cid] -> displayed, sizeof(gboolean), 1, fp) != 1) return ERROR_RW;
@@ -172,7 +180,7 @@ int read_project_curve (FILE * fp, int wid, int pid)
     {
       this_proj -> curves[rid][cid] -> extrac -> first = g_malloc0 (sizeof*this_proj -> curves[rid][cid] -> extrac -> first);
       this_proj -> curves[rid][cid] -> extrac -> last = g_malloc0 (sizeof*this_proj -> curves[rid][cid] -> extrac -> last);
-      struct cextra * ctmp = this_proj -> curves[rid][cid] -> extrac -> first;
+      CurveExtra * ctmp = this_proj -> curves[rid][cid] -> extrac -> first;
       for (i=0; i<this_proj -> curves[rid][cid] -> extrac -> extras; i++)
       {
         if (fread (& ctmp -> id.a, sizeof(int), 1, fp) != 1) return ERROR_RW;

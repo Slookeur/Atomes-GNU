@@ -1,28 +1,38 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file d_box.c
+* @short Functions to prepare the OpenGL rendering for the box(es) \n
+         Functions to prepare the OpenGL rendering for the slab(s) \n
+         Functions to prepare the OpenGL rendering for the volume(s)
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'd_box.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to prepare the box(s) OpenGL rendering
- - The subroutines to prepare the slab(s) OpenGL rendering
- - The subroutines to prepare the volume(s) OpenGL rendering
+ - The functions to prepare the OpenGL rendering for the box(es)
+ - The functions to prepare the OpenGL rendering for the slab(s)
+ - The functions to prepare the OpenGL rendering for the volume(s)
 
 *
-*  List of subroutines:
+* List of functions:
 
   int create_box_lists ();
 
@@ -40,7 +50,7 @@ If not, see <https://www.gnu.org/licenses/> */
   void cuboid_slab (mat4_t rot);
   void cylinder_slab (mat4_t rot);
   void spherical_slab ();
-  void create_slab_lists (struct project * this_proj);
+  void create_slab_lists (project * this_proj);
   void create_volumes_lists ();
 
 */
@@ -55,19 +65,19 @@ extern void setup_line_vertice (float * vertices, vec3_t pos, ColRGBA col, float
 extern void setup_sphere_vertice (float * vertices, vec3_t pos, ColRGBA col, float rad, float alpha);
 extern void setup_cylinder_vertice (float * vertices, vec3_t pos_a, vec3_t pos_b, ColRGBA col, float rad, float alpha, float delta);
 extern void setup_cap_vertice (float * vertices, vec3_t pos_a, vec3_t pos_b, ColRGBA col, float rad, float alpha);
-extern void create_slab_info (struct project * this_proj);
-extern void process_selected_atom (struct project * this_proj, glwin * view, int id, int ac, int se, int pi);
+extern void create_slab_info (project * this_proj);
+extern void process_selected_atom (project * this_proj, glwin * view, int id, int ac, int se, int pi);
 extern ColRGBA pcol;
 
 int BOX_BUFF_SIZE;
 
-/*
-*  gboolean are_identical_vec3 (vec3_t va, vec3_t vb)
-*
-*  Usage: are these 2 vectors indentical
-*
-*  vec3_t va : 1st vector
-*  vec3_t vb : 2nd vector
+/*!
+  \fn gboolean are_identical_vec3 (vec3_t va, vec3_t vb)
+
+  \brief are these 2 vectors indentical
+
+  \param va 1st vector
+  \param vb 2nd vector
 */
 gboolean are_identical_vec3 (vec3_t va, vec3_t vb)
 {
@@ -82,14 +92,14 @@ gboolean are_identical_vec3 (vec3_t va, vec3_t vb)
   }
 }
 
-/*
-*  gboolean not_in_already (vec3_t a, vec3_t b, float * vertices)
-*
-*  Usage: is this box edge vector already saved ?
-*
-*  vec3_t a         : 1st set of coordinates
-*  vec3_t b         : 2nd set of coordinates
-*  float * vertices : the data buffer to check
+/*!
+  \fn gboolean not_in_already (vec3_t a, vec3_t b, float * vertices)
+
+  \brief is this box edge vector already saved ?
+
+  \param a 1st set of coordinates
+  \param b 2nd set of coordinates
+  \param vertices the data buffer to check
 */
 gboolean not_in_already (vec3_t a, vec3_t b, float * vertices)
 {
@@ -113,13 +123,13 @@ gboolean not_in_already (vec3_t a, vec3_t b, float * vertices)
   return TRUE;
 }
 
-/*
-*  gboolean not_in_corners (vec3_t a, float * vertices)
-*
-*  Usage: is this box cornder already saved ?
-*
-*  vec3_t a         : the coordinates
-*  float * vertices : the data buffer to check
+/*!
+  \fn gboolean not_in_corners (vec3_t a, float * vertices)
+
+  \brief is this box cornder already saved ?
+
+  \param a the coordinates
+  \param vertices the data buffer to check
 */
 gboolean not_in_corners (vec3_t a, float * vertices)
 {
@@ -137,15 +147,15 @@ gboolean not_in_corners (vec3_t a, float * vertices)
   return TRUE;
 }
 
-/*
-*  void setup_extra_box_vertices (vec3_t a, vec3_t b, float * c_vert, float * s_vert)
-*
-*  Usage: prepare the extra cell(s) OpenGL rendering
-*
-*  vec3_t a       : 1st point coordinates
-*  vec3_t b       : 2nd point coordinates
-*  float * c_vert : OpenGL cylinder/line data buffer to fill
-*  float * s_vert : OpenGL sphere data buffer to fill, or NULL
+/*!
+  \fn void setup_extra_box_vertices (vec3_t a, vec3_t b, float * c_vert, float * s_vert)
+
+  \brief prepare the extra cell(s) OpenGL rendering
+
+  \param a 1st point coordinates
+  \param b 2nd point coordinates
+  \param c_vert OpenGL cylinder/line data buffer to fill
+  \param s_vert OpenGL sphere data buffer to fill, or NULL
 */
 void setup_extra_box_vertices (vec3_t a, vec3_t b, float * c_vert, float * s_vert)
 {
@@ -190,15 +200,15 @@ void setup_extra_box_vertices (vec3_t a, vec3_t b, float * c_vert, float * s_ver
   }
 }
 
-/*
-*  void setup_box_vertices (vec3_t ax, vec3_t bx, float * c_vert, float * s_vert)
-*
-*  Usage: prepare the unit cell OpenGL rendering
-*
-*  vec3_t ax      : 1st point coordinates
-*  vec3_t bx      : 2nd point coordinates
-*  float * c_vert : OpenGL cylinder/line data buffer to fill
-*  float * s_vert : OpenGL sphere data buffer to fill, or NULL
+/*!
+  \fn void setup_box_vertices (vec3_t ax, vec3_t bx, float * c_vert, float * s_vert)
+
+  \brief prepare the unit cell OpenGL rendering
+
+  \param ax 1st point coordinates
+  \param bx 2nd point coordinates
+  \param c_vert OpenGL cylinder/line data buffer to fill
+  \param s_vert OpenGL sphere data buffer to fill, or NULL
 */
 void setup_box_vertices (vec3_t ax, vec3_t bx, float * c_vert, float * s_vert)
 {
@@ -232,14 +242,14 @@ void setup_box_vertices (vec3_t ax, vec3_t bx, float * c_vert, float * s_vert)
   }
 }
 
-/*
-*  void prepare_box_vertices (void (*c_func)(vec3_t, vec3_t, float *, float *), float * verts, float * serts)
-*
-*  Usage: prepare a box OpenGL rendering
-*
-*  void (*c_func)(vec3_t, vec3_t, int, float *, float *) : the function to use a render
-*  float * verts                                         : OpenGL cylinder/line data buffer to fill
-*  float * serts                                         : OpenGL sphere data buffer to fill, or NULL
+/*!
+  \fn void prepare_box_vertices (void (*c_func)(vec3_t, vec3_t, float *, float *), float * verts, float * serts)
+
+  \brief prepare a box OpenGL rendering
+
+  \param c_func the function to use a render
+  \param verts OpenGL cylinder/line data buffer to fill
+  \param serts OpenGL sphere data buffer to fill, or NULL
 */
 void prepare_box_vertices (void (*c_func)(vec3_t, vec3_t, float *, float *), float * verts, float * serts)
 {
@@ -272,10 +282,10 @@ void prepare_box_vertices (void (*c_func)(vec3_t, vec3_t, float *, float *), flo
   }
 }
 
-/*
-*  int create_box_lists ()
-*
-*  Usage: prepare box OpenGL rendering
+/*!
+  \fn int create_box_lists ()
+
+  \brief prepare box OpenGL rendering
 */
 int create_box_lists ()
 {
@@ -350,12 +360,12 @@ int create_box_lists ()
 
 / *
 *  void setup_cuboid_vertices (vec3_t a, vec3_t b, int id)
-*
-*  Usage:
-*
-*  vec3_t a :
-*  vec3_t b :
-*  int id   :
+
+  \brief NOT USED !
+
+  \param a
+  \param b
+  \param id
 * /
 void setup_cuboid_vertices (vec3_t a, vec3_t b, int id)
 {
@@ -412,13 +422,13 @@ GLfloat cuboid_vertices[] = {
         -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f,
     };
 
-/*
-*  void prepare_cuboid (vec3_t position, int id)
-*
-*  Usage: OpenGL 3D light object rendering
-*
-*  vec3_t position : light position
-*  int id          : shader number
+/*!
+  \fn void prepare_cuboid (vec3_t position, int id)
+
+  \brief OpenGL 3D light object rendering
+
+  \param position light position
+  \param id shader number
 */
 void prepare_cuboid (vec3_t position, int id)
 {
@@ -449,10 +459,10 @@ void prepare_cuboid (vec3_t position, int id)
   g_free (light);
 }
 
-/*
-*  void create_light_lists ()
-*
-*  Usage: prepare light(s) OpenGL rendering
+/*!
+  \fn void create_light_lists ()
+
+  \brief prepare light(s) OpenGL rendering
 */
 void create_light_lists ()
 {
@@ -496,19 +506,19 @@ vec3_t get_normal (vec3_t v1, vec3_t v2, vec3_t v3)
 }
 
 
-/*
-*  double draw_cuboid (gboolean draw, int SHADID, int shadnum, mat4_t rot, vec3_t cpos, double paral[3][3], ColRGBA col, double slab_alpha)
-*
-*  Usage:
-*
-*  gboolean draw      : draw or not (1/0)
-*  int SHADID         : shader id
-*  int shadnum        : shader number
-*  mat4_t rot         : rotation matrix
-*  vec3_t cpos        : position of center of slab
-*  double paral[3][3] : cell parameters
-*  ColRGBA col        : slab color
-*  double slab_alpha  : slab opacity
+/*!
+  \fn double draw_cuboid (gboolean draw, int SHADID, int shadnum, mat4_t rot, vec3_t cpos, double paral[3][3], ColRGBA col, double slab_alpha)
+
+  \brief draw cuboid vertices
+
+  \param draw draw or not (1/0)
+  \param SHADID shader id
+  \param shadnum shader number
+  \param rot rotation matrix
+  \param cpos position of center of slab
+  \param paral cell parameters
+  \param col slab color
+  \param slab_alpha slab opacity
 */
 double draw_cuboid (gboolean draw, int SHADID, int shadnum, mat4_t rot, vec3_t cpos, double paral[3][3], ColRGBA col, double slab_alpha)
 {
@@ -582,12 +592,12 @@ double draw_cuboid (gboolean draw, int SHADID, int shadnum, mat4_t rot, vec3_t c
   return cvol;
 }
 
-/*
-*  void cuboid_slab (mat4_t rot)
-*
-*  Usage: prepare cuboid slab OpenGL rendering
-*
-*  mat4_t rot : rotation matrix
+/*!
+  \fn void cuboid_slab (mat4_t rot)
+
+  \brief prepare cuboid slab OpenGL rendering
+
+  \param rot rotation matrix
 */
 void cuboid_slab (mat4_t rot)
 {
@@ -673,8 +683,8 @@ void cuboid_slab (mat4_t rot)
   for (i=0; i<proj_gl -> nspec; i++) wingl -> cell_win -> slab_lot[i] = 0;
   wingl -> cell_win -> slab_atoms = 0;
   float val, vbl;
-  struct atom slab_center;
-  struct distance at_slab;
+  atom slab_center;
+  distance at_slab;
   slab_center.x = cat.x;
   slab_center.y = cat.y;
   slab_center.z = cat.z;
@@ -711,12 +721,12 @@ void cuboid_slab (mat4_t rot)
   }
 }
 
-/*
-*  void cylinder_slab (mat4_t rot)
-*
-*  Usage: prepare cylinder slab OpenGL rendering
-*
-*  mat4_t rot : rotation matrix
+/*!
+  \fn void cylinder_slab (mat4_t rot)
+
+  \brief prepare cylinder slab OpenGL rendering
+
+  \param rot rotation matrix
 */
 void cylinder_slab (mat4_t rot)
 {
@@ -792,8 +802,8 @@ void cylinder_slab (mat4_t rot)
   for (i=0; i<proj_gl -> nspec; i++) wingl -> cell_win -> slab_lot[i] = 0;
   wingl -> cell_win -> slab_atoms = 0;
   vec3_t atc, patc;
-  struct atom slab_center;
-  struct distance at_slab;
+  atom slab_center;
+  distance at_slab;
   slab_center.x = cat.x;
   slab_center.y = cat.y;
   slab_center.z = cat.z;
@@ -816,10 +826,10 @@ void cylinder_slab (mat4_t rot)
   }
 }
 
-/*
-*  void spherical_slab ()
-*
-*  Usage: prepare spherical slab OpenGL rendering
+/*!
+  \fn void spherical_slab ()
+
+  \brief prepare spherical slab OpenGL rendering
 */
 void spherical_slab ()
 {
@@ -857,8 +867,8 @@ void spherical_slab ()
   vec3_t cat = vec3 (wingl -> cell_win -> cparam[6], wingl -> cell_win -> cparam[7], wingl -> cell_win -> cparam[8]);
   for (i=0; i<proj_gl -> nspec; i++) wingl -> cell_win -> slab_lot[i] = 0;
   wingl -> cell_win -> slab_atoms = 0;
-  struct atom slab_center;
-  struct distance at_slab;
+  atom slab_center;
+  distance at_slab;
   slab_center.x = cat.x;
   slab_center.y = cat.y;
   slab_center.z = cat.z;
@@ -878,14 +888,14 @@ void spherical_slab ()
   }
 }
 
-/*
-*  void create_slab_lists (struct project * this_proj)
-*
-*  Usage: prepare slab(s) OpenGL rendering
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn void create_slab_lists (project * this_proj)
+
+  \brief prepare slab(s) OpenGL rendering
+
+  \param this_proj the target project
 */
-void create_slab_lists (struct project * this_proj)
+void create_slab_lists (project * this_proj)
 {
   wingl = this_proj -> modelgl;
   proj_gl = this_proj;
@@ -921,10 +931,10 @@ void create_slab_lists (struct project * this_proj)
   wingl -> create_shaders[SLABS] = FALSE;
 }
 
-/*
-*  void create_volumes_lists ()
-*
-*  Usage: prepare volume(s) OpenGL rendering
+/*!
+  \fn void create_volumes_lists ()
+
+  \brief prepare volume(s) OpenGL rendering
 */
 void create_volumes_lists ()
 {

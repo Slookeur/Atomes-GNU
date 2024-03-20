@@ -1,35 +1,44 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file atom_remove.c
+* @short Functions to remove bond(s) from a project \n
+         Function to prepare the passivation (removal followed by insertion)
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'atom_remove.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to remove bond(s) from a project
- - The subroutine to prepare the passivation (removal followed by insertion)
+ - The functions to remove bond(s) from a project
+ - The function to prepare the passivation (removal followed by insertion)
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int test_this_fragment (int natomes, int fcoord, int fid, struct atom * atom_list, int * old_id, gboolean remove);
+  int test_this_fragment (int natomes, int fcoord, int fid, atom * atom_list, int * old_id, gboolean remove);
 
-  gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, struct atom * new_list, gboolean remove, gboolean  passivate);
+  gboolean * remove_bonds_from_project (project * this_proj, atomic_object * this_object, int * old_id, atom * new_list, gboolean remove, gboolean passivate);
 
   void set_mol_data (int the_atom, int the_mol);
-  void to_remove_this_list_of_objects (struct project * this_proj, atom_search * asearch);
-  void to_passivate_using_the_objects (struct project * this_proj, atom_search * asearch);
+  void to_remove_this_list_of_objects (project * this_proj, atom_search * asearch);
+  void to_passivate_using_the_objects (project * this_proj, atom_search * asearch);
 
 */
 
@@ -48,17 +57,17 @@ int ** neighbors;
 
 extern atom_search * allocate_atom_search (int proj, int action, int searchid, int tsize);
 
-/*
-*  void set_mol_data_list (int the_atom, struct atom ** mol_list, int the_mol)
-*
-*  Usage: set molecule id for atom
-*
-*  int the_atom            : the atom id
-*  struct atom ** mol_list : the list of atom(s) to look up
-*  int the_mol             : the molecule id
+/*!
+  \fn void set_mol_data_list (int the_atom, atom ** mol_list, int the_mol)
+
+  \brief set molecule id for atom
+
+  \param the_atom the atom id
+  \param mol_list the list of atom(s) to look up
+  \param the_mol the molecule id
 */
 
-void set_mol_data_list (int aid, struct atom ** mol_list, int the_mol)
+void set_mol_data_list (int aid, atom ** mol_list, int the_mol)
 {
   int ab, ac, ad;
   molcounter ++;
@@ -82,19 +91,19 @@ void set_mol_data_list (int aid, struct atom ** mol_list, int the_mol)
   end:;
 }
 
-/*
-*  int test_this_fragment (int natomes, int fcoord, int fid, struct atom * atom_list, int * old_id, gboolean remove)
-*
-*  Usage: verify that all atom(s) in the fragment are connected somehow, otherwise create new fragment
-*
-*  int natomes             : number of atom(s)
-*  int fcoord              : the number of fragment(s)
-*  int fid                 : the fragment id
-*  struct atom * atom_list : the atom(s) list
-*  int * old_id            : the atom(s) old id list
-*  gboolean remove         : remove (1) or motion (0) action
+/*!
+  \fn int test_this_fragment (int natomes, int fcoord, int fid, atom * atom_list, int * old_id, gboolean remove)
+
+  \brief verify that all atom(s) in the fragment are connected somehow, otherwise create new fragment
+
+  \param natomes number of atom(s)
+  \param fcoord the number of fragment(s)
+  \param fid the fragment id
+  \param atom_list the atom(s) list
+  \param old_id the atom(s) old id list
+  \param remove remove (1) or motion (0) action
 */
-int test_this_fragment (int natomes, int fcoord, int fid, struct atom ** atom_list, int * old_id, gboolean remove)
+int test_this_fragment (int natomes, int fcoord, int fid, atom ** atom_list, int * old_id, gboolean remove)
 {
   int i, j, k, l, m, n;
   gboolean modif;
@@ -200,30 +209,29 @@ int test_this_fragment (int natomes, int fcoord, int fid, struct atom ** atom_li
   return  i-1;
 }
 
-/*
-*  gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, struct atom * new_list, gboolean remove, gboolean passivate)
-*
-* Usage: remove bond(s) from project
-*
-*  struct project * this_proj         : the target project
-*  struct insert_object * this_object : the target insert object, if any
-*  int * old_id                       : the atom(s) id list
-*  struct atom * new_list             : the new atom list
-*  gboolean remove                    : remove (1) or motion (0) action
-*  gboolean passivate                 : surface passivation (1) or (0)
+/*!
+  \fn gboolean * remove_bonds_from_project (project * this_proj, atomic_object * this_object, int * old_id, atom * new_list, gboolean remove, gboolean passivate)
+
+  \brief remove bond(s) from project
+
+  \param this_proj the target project
+  \param this_object the target insert object, if any
+  \param old_id the atom(s) id list
+  \param new_list the new atom list
+  \param remove remove (1) or motion (0) action
+  \param passivate passivate (1) or not (0)
 */
-gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_object * this_object, int * old_id, struct atom * new_list, gboolean remove, gboolean passivate)
+gboolean * remove_bonds_from_project (project * this_proj, atomic_object * this_object, int * old_id, atom * new_list, gboolean remove, gboolean passivate)
 {
   int h, i, j, k, l, m;
   int tmpbond[2];
   int ** tmpbondid[2];
-  struct atom * tmp_list;
+  atom * tmp_list;
   gboolean * frag_to_test;
   gboolean * frag_to_remove;
   gboolean * show_frag = NULL;
-  gboolean * tmp_show_frag = NULL;
-  int * per_frag, * tmp_per_frag;
-  int * in_frag, * tmp_in_frag;
+  int * per_frag;
+  int * in_frag;
   int * tmp_vois = NULL;
   int * id_mod = NULL;
 
@@ -272,9 +280,9 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
     if (old_id[i] < 0)
     {
       in_frag[j] ++;
-      if (! remove || passivate)
+      if (! remove && ! passivate)
       {
-        if (! remove && ! passivate) h ++;
+        h ++;
         id_mod[tmp_list -> id] = h;
       }
     }
@@ -310,7 +318,7 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
         }
       }
     }
-    if ( old_id[i] > 0 || ! remove)  tmp_list = tmp_list -> next;
+    if ( old_id[i] > 0 || ! remove || passivate)  tmp_list = tmp_list -> next;
   }
   g_free (tmp_vois);
 
@@ -322,26 +330,11 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
     if (! tmp_list -> numv && per_frag[i] > 1 && old_id[tmp_list -> id] > 0)
     {
       // If the atom has no neighbors, and if it is not the last one in the fragment
-      tmp_show_frag = allocbool (tcf+1);
-      tmp_per_frag = allocint (tcf+1);
-      tmp_in_frag = allocint (tcf+1);
-      for (j=0; j<tcf; j++)
-      {
-        tmp_show_frag[j] = show_frag[j];
-        tmp_per_frag[j] = per_frag[j];
-        tmp_in_frag[j] = in_frag[j];
-      }
-      tmp_show_frag[j] = show_frag[i];
-      tmp_per_frag[j] = 1;
-      g_free (show_frag);
-      g_free (per_frag);
-      g_free (in_frag);
-      show_frag = duplicate_bool (tcf+1, tmp_show_frag);
-      per_frag = duplicate_int (tcf+1, tmp_per_frag);
-      in_frag = duplicate_int (tcf+1, tmp_in_frag);
-      g_free (tmp_per_frag);
-      g_free (tmp_in_frag);
-      g_free (tmp_show_frag);
+      show_frag = g_realloc (show_frag, (tcf+1)*sizeof*show_frag);
+      per_frag = g_realloc (per_frag, (tcf+1)*sizeof*per_frag);
+      in_frag = g_realloc (in_frag, (tcf+1)*sizeof*in_frag);
+      show_frag[tcf] = show_frag[i];
+      per_frag[tcf] = 1;
       per_frag[i] --;
       tmp_list -> coord[2] = tcf;
       tcf ++;
@@ -372,7 +365,7 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
   }
   g_free (in_frag);
   g_free (per_frag);
-  struct atom ** atom_list = g_malloc0 (nat*sizeof*atom_list);
+  atom ** atom_list = g_malloc0 (nat*sizeof*atom_list);
   tmp_list = new_list;
   while (tmp_list)
   {
@@ -383,43 +376,37 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
     }
     tmp_list = tmp_list -> next;
   }
-
   if (remove && this_proj)
   {
     i = 0;
     // Removing fragment(s) if needed
+    int * new_fid = allocint (tcf);
+    for (j=0; j<tcf; j++) new_fid[j] = j;
+    for (j=0; j<tcf-1; j++)
+    {
+      if (frag_to_remove[j])
+      {
+        for (k=j+1; k<tcf; k++) new_fid[k] --;
+      }
+    }
     for (j=0; j<tcf; j++)
     {
       if (frag_to_remove[j])
       {
-        // All atoms in fragment j are modified
-        // All other atoms will be affected
-        for (k=0; k<nat; k++)
-        {
-          if (atom_list[k])
-          {
-            if (atom_list[k] -> coord[2] > j)
-            {
-              atom_list[k] -> coord[2] --;
-            }
-          }
-        }
+        for (k=j; k<tcf-i-1; k++) show_frag[k] = show_frag[k+1];
+        for (k=j; k<tcf-i-1; k++) frag_to_test[k] = frag_to_test[k+1];
         i ++;
-        for (k=j+1; k<tcf-i; k++) show_frag[k-1] = show_frag[k];
-        for (k=j+1; k<tcf-i; k++) frag_to_test[k-1] = frag_to_test[k];
       }
     }
+    for (j=0; j<nat; j++)
+    {
+      if (atom_list[j]) atom_list[j] -> coord[2] = new_fid[atom_list[j] -> coord[2]];
+    }
+    g_free (new_fid);
     tcf -= i;
     if (i)
     {
-      tmp_show_frag = allocbool (tcf);
-      for (j=0; j<tcf; j++)
-      {
-        tmp_show_frag[j] = show_frag[j];
-      }
-      g_free (show_frag);
-      show_frag = duplicate_bool (tcf, tmp_show_frag);
-      g_free (tmp_show_frag);
+      show_frag = g_realloc (show_frag, tcf*sizeof*show_frag);
     }
   }
   i = tcf;
@@ -432,29 +419,14 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
       // g_debug ("After testing: k= %d", k);
       if (k > 0)
       {
-        tmp_show_frag = allocbool (tcf+k);
-        for (l=0; l<tcf; l++) tmp_show_frag[l] = show_frag[l];
-        for (l=tcf; l<tcf+k; l++) tmp_show_frag[l] = show_frag[j];
-        g_free (show_frag);
-        show_frag = duplicate_bool (tcf+k, tmp_show_frag);
-        g_free (tmp_show_frag);
+        show_frag = g_realloc (show_frag, (tcf+k)*sizeof*show_frag);
+        for (l=tcf; l<tcf+k; l++) show_frag[l] = show_frag[j];
         tcf += k;
       }
     }
   }
   g_free (frag_to_test);
   g_free (frag_to_remove);
-  tmp_list = new_list;
-  while (tmp_list)
-  {
-    i = tmp_list -> id;
-    tmp_list -> coord[2] = atom_list[i] -> coord[2];
-    g_free (atom_list[i]);
-    // g_debug ("End:: id= %d, coord[2]= %d", tmp_list -> id, tmp_list -> coord[2]);
-    tmp_list = tmp_list -> next;
-  }
-  g_free (atom_list);
-
   if (this_proj)
   {
     this_proj -> coord -> totcoord[2] = tcf;
@@ -463,6 +435,19 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
   {
     this_object -> coord -> totcoord[2] = tcf;
   }
+  tmp_list = new_list;
+  while (tmp_list)
+  {
+    i = tmp_list -> id;
+    if (old_id[i] > 0 || ! remove)
+    {
+      tmp_list -> coord[2] = atom_list[i] -> coord[2];
+      g_free (atom_list[i]);
+      // g_debug ("End:: id= %d, coord[2]= %d", tmp_list -> id, tmp_list -> coord[2]);
+    }
+    tmp_list = tmp_list -> next;
+  }
+  g_free (atom_list);
 
   if (this_proj)
   {
@@ -487,7 +472,7 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
             tmpbondid[i][j][1] = m;
             j ++;
           }
-          else if (! remove && ! passivate && ((old_id[l] < 0 && old_id[m] < 0)))
+          else if (! remove && (old_id[l] < 0 && old_id[m] < 0))
           {
             tmpbondid[i][j][0] = l;
             tmpbondid[i][j][1] = m;
@@ -498,7 +483,7 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
         // g_debug ("i= %d, tmpbond[%d]= %d", i, i, tmpbond[i]);
       }
     }
-    struct distance clo;
+    distance clo;
     for (i=0; i<2; i++)
     {
       if (this_proj -> modelgl -> bonds[0][i])
@@ -584,19 +569,19 @@ gboolean * remove_bonds_from_project (struct project * this_proj, struct insert_
   return show_frag;
 }
 
-/*
-*  void to_remove_this_list_of_objects (struct project * this_proj, atom_search * asearch)
-*
-*  Usage: prepaer to remove a list of object(s) from a project, one object after another.
-*
-*  struct project * this_proj : the target project
-*  atom_search * asearch      : the target atom search
+/*!
+  \fn void to_remove_this_list_of_objects (project * this_proj, atom_search * asearch)
+
+  \brief prepaer to remove a list of object(s) from a project, one object after another.
+
+  \param this_proj the target project
+  \param asearch the target atom search
 */
-void to_remove_this_list_of_objects (struct project * this_proj, atom_search * asearch)
+void to_remove_this_list_of_objects (project * this_proj, atom_search * asearch)
 {
   int i, j;
-  struct insert_object * tmp_object;
-  struct insert_object * tmp_replace;
+  atomic_object * tmp_object;
+  atomic_object * tmp_replace;
   if (asearch -> action == REPLACE)
   {
     if (asearch -> pointer[0].c == 3)
@@ -654,19 +639,19 @@ void to_remove_this_list_of_objects (struct project * this_proj, atom_search * a
   remove_search -> in_selection = i;
 }
 
-/*
-*  void to_passivate_using_the_objects (struct project * this_proj, atom_search * asearch)
-*
-*  Usage: prepare passivation (delete of an object, then insert of another one at the same location)
-*
-*  struct project * this_proj : the target project
-*  atom_search * asearch      : the target atom search
+/*!
+  \fn void to_passivate_using_the_objects (project * this_proj, atom_search * asearch)
+
+  \brief prepare passivation (delete of an object, then insert of another one at the same location)
+
+  \param this_proj the target project
+  \param asearch the target atom search
 */
-void to_passivate_using_the_objects (struct project * this_proj, atom_search * asearch)
+void to_passivate_using_the_objects (project * this_proj, atom_search * asearch)
 {
   int i, j, k, l, m;
-  struct insert_object * object = NULL;
-  struct insert_object * tmp_oba, * tmp_obb;
+  atomic_object * object = NULL;
+  atomic_object * tmp_oba, * tmp_obb;
   int filter = get_asearch_filter (asearch);
   int num_elem = asearch -> todo_size;
   int * passivate_todo = duplicate_int (num_elem, asearch -> todo);
@@ -675,12 +660,12 @@ void to_passivate_using_the_objects (struct project * this_proj, atom_search * a
   if (this_proj -> modelgl -> atom_win -> to_be_inserted[3])
   {
     tmp_oba = this_proj -> modelgl -> atom_win -> to_be_inserted[3];
-    object = duplicate_insert_object (tmp_oba);
+    object = duplicate_atomic_object (tmp_oba);
     tmp_obb = object;
     while (tmp_oba -> next)
     {
       tmp_oba = tmp_oba -> next;
-      tmp_obb -> next = duplicate_insert_object (tmp_oba);
+      tmp_obb -> next = duplicate_atomic_object (tmp_oba);
       tmp_obb = tmp_obb -> next;
     }
     g_free (this_proj -> modelgl -> atom_win -> to_be_inserted[3]);
@@ -721,12 +706,12 @@ void to_passivate_using_the_objects (struct project * this_proj, atom_search * a
             asearch -> todo[j] = 1;
             if (this_proj -> modelgl -> atom_win -> to_be_inserted[3] == NULL)
             {
-              this_proj -> modelgl -> atom_win -> to_be_inserted[3] = duplicate_insert_object (tmp_oba);
+              this_proj -> modelgl -> atom_win -> to_be_inserted[3] = duplicate_atomic_object (tmp_oba);
               tmp_obb = this_proj -> modelgl -> atom_win -> to_be_inserted[3];
             }
             else
             {
-              tmp_obb -> next = duplicate_insert_object (tmp_oba);
+              tmp_obb -> next = duplicate_atomic_object (tmp_oba);
               tmp_obb -> next -> prev = tmp_obb;
               tmp_obb = tmp_obb -> next;
             }

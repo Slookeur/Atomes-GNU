@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file cbuild_sg.c
+* @short Functions to read space group data from XML files
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'cbuild_sg.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to read space group data from XML files
+ - The functions to read space group data from XML files
 
 *
-*  List of subroutines:
+* List of functions:
 
   int get_this_group_data (space_group * spg,  xmlNodePtr racine);
 
@@ -494,13 +502,13 @@ gchar * hmsymbols[230] = {"P 1",
                           "I 4/m -3 2/m",
                           "I 41/a -3 2/d"};
 
-/*
-*  space_group * clean_sgl_data (xmlDoc * doc, xmlTextReaderPtr reader)
-*
-*  Usage: clean space group and corresponding XML data
-*
-*  xmlDoc * doc            : the XML doc pointer to free
-*  xmlTextReaderPtr reader : the XML reader to free
+/*!
+  \fn space_group * clean_sgl_data (xmlDoc * doc, xmlTextReaderPtr reader)
+
+  \brief clean space group and corresponding XML data
+
+  \param doc the XML doc pointer to free
+  \param reader the XML reader to free
 */
 space_group * clean_sgl_data (xmlDoc * doc, xmlTextReaderPtr reader)
 {
@@ -510,13 +518,13 @@ space_group * clean_sgl_data (xmlDoc * doc, xmlTextReaderPtr reader)
   return NULL;
 }
 
-/*
-*  int get_this_group_data (space_group * spg,  xmlNodePtr racine)
-*
-*  Usage: retrieve space group data
-*
-*  space_group * spg : the space group pointer to fill
-*  xmlNodePtr racine : the XML node root
+/*!
+  \fn int get_this_group_data (space_group * spg,  xmlNodePtr racine)
+
+  \brief retrieve space group data
+
+  \param spg the space group pointer to fill
+  \param racine the XML node root
 */
 int get_this_group_data (space_group * spg,  xmlNodePtr racine)
 {
@@ -634,12 +642,12 @@ int get_this_group_data (space_group * spg,  xmlNodePtr racine)
   return 1;
 }
 
-/*
-*  space_group * read_sg_xml_file (const char * filetoread)
-*
-*  Usage: read space group data from XML file
-*
-*  const char * filetoread : the file to read
+/*!
+  \fn space_group * read_sg_xml_file (const char * filetoread)
+
+  \brief read space group data from XML file
+
+  \param filetoread the file to read
 */
 space_group * read_sg_xml_file (const char * filetoread)
 {

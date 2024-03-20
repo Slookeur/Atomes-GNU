@@ -1,27 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file menu_bar.c
+* @short Functions to create the menu bar of the OpenGL window \n
+         Functions to create the menu items for the menu bar and the pop up menu
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'menu_bar.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutine to create the menu bar of the OpenGL window
- - The subroutine to create the menu items for the menu bar and the pop up menu
+ - The functions to create the menu bar of the OpenGL window
+ - The functions to create the menu items for the menu bar and the pop up menu
 
 *
-*  List of subroutines:
+* List of functions:
 
   void append_opengl_item (glwin * view, GMenu * menu, const gchar * name, const gchar * key, int mpop, int item_id,
                            gchar * accel, int image_format, gpointer icon,
@@ -58,58 +67,58 @@ extern G_MODULE_EXPORT void render_gl_image (GtkWidget * widg, gpointer data);
 extern G_MODULE_EXPORT void to_coord_properties (GSimpleAction * action, GVariant * parameter, gpointer data);
 GSimpleActionGroup * view_pop_actions;
 
-/*
-*  G_MODULE_EXPORT void to_opengl_advanced (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: open OpenGL advanced configuration window callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void to_opengl_advanced (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief open OpenGL advanced configuration window callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void to_opengl_advanced (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   opengl_advanced (NULL, data);
 }
 
-/*
-*  G_MODULE_EXPORT void to_render_gl_image (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: render image from OpenGL window callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void to_render_gl_image (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief render image from OpenGL window callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void to_render_gl_image (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   render_gl_image (NULL, data);
 }
 
-/*
-*  void append_opengl_item (glwin * view, GMenu * menu, const gchar * name, const gchar * key, int mpop, int item_id,
+/*!
+  \fn void append_opengl_item (glwin * view, GMenu * menu, const gchar * name, const gchar * key, int mpop, int item_id,
 *                           gchar * accel, int image_format, gpointer icon,
 *                           gboolean custom, GCallback handler, gpointer data,
 *                           gboolean check, gboolean status, gboolean radio, gboolean sensitive)
-*
-*  Usage: generic function to create menu item for the OpenGL menu bar / pop up menu
-*
-*  glwin * view       : the target glwin
-*  GMenu * menu       : the menu to attach the new menu item to
-*  const gchar * name : the new menu item label, if any
-*  const gchar * key  : the new menu item action key
-*  int mpop           : main app (0) or popup (1)
-*  int item_id        : the new menu item action id
-*  gchar * accel      : keyboard accelerator for the new menu item, if any (NULL otherwise)
-*  int image_format   : the image format (in enum ImageFormats)
-*  gpointer icon      : the image data if any (or NULL)
-*  gboolean custom    : custom menu item (1= yes, 0 = no), to insert a widget later on
-*  GCallback handler  : the new menu item callback (or NULL)
-*  gpointer data      : the associated data pointer (or NULL)
-*  gboolean check     : is the new menu item a check menu item ?
-*  gboolean status    : is 'check' then what is the status of the new check menu item ?
-*  gboolean radio     : is the new menu item a radio menu item ?
-*  gboolean sensitive : new menu item sensitivity
+
+  \brief generic function to create menu item for the OpenGL menu bar / pop up menu
+
+  \param view the target glwin
+  \param menu the menu to attach the new menu item to
+  \param name the new menu item label, if any
+  \param key the new menu item action key
+  \param mpop main app (0) or popup (1)
+  \param item_id the new menu item action id
+  \param accel keyboard accelerator for the new menu item, if any (NULL otherwise)
+  \param image_format the image format (in enum ImageFormats)
+  \param icon the image data if any (or NULL)
+  \param custom custom menu item (1= yes, 0 = no), to insert a widget later on
+  \param handler the new menu item callback (or NULL)
+  \param data the associated data pointer (or NULL)
+  \param check is the new menu item a check menu item ?
+  \param status is 'check' then what is the status of the new check menu item ?
+  \param radio is the new menu item a radio menu item ?
+  \param sensitive new menu item sensitivity
 */
 void append_opengl_item (glwin * view, GMenu * menu, const gchar * name, const gchar * key, int mpop, int item_id,
                          gchar * accel, int image_format, gpointer icon,
@@ -142,13 +151,13 @@ void append_opengl_item (glwin * view, GMenu * menu, const gchar * name, const g
   g_free (str_c);
 }
 
-/*
-*  GMenu * prepare_opengl_menu (glwin * view, int popm)
-*
-*  Usage: create the 'OpenGL' submenu GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * prepare_opengl_menu (glwin * view, int popm)
+
+  \brief create the 'OpenGL' submenu GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * prepare_opengl_menu (glwin * view, int popm)
 {
@@ -164,13 +173,13 @@ GMenu * prepare_opengl_menu (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  GMenu * prepare_model_menu (glwin * view, int popm)
-*
-*  Usage: create the 'Model' submenu GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * prepare_model_menu (glwin * view, int popm)
+
+  \brief create the 'Model' submenu GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * prepare_model_menu (glwin * view, int popm)
 {
@@ -182,13 +191,13 @@ GMenu * prepare_model_menu (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  GMenu * prepare_coord_menu (glwin * view, int popm)
-*
-*  Usage: create the 'Chemistry' submenu GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * prepare_coord_menu (glwin * view, int popm)
+
+  \brief create the 'Chemistry' submenu GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * prepare_coord_menu (glwin * view, int popm)
 {
@@ -231,12 +240,12 @@ GMenu * prepare_coord_menu (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  GMenu * opengl_menu_bar (glwin * view)
-*
-*  Usage: create OpenGL window menu GTK4
-*
-*  glwin * view : the target glwin
+/*!
+  \fn GMenu * opengl_menu_bar (glwin * view)
+
+  \brief create OpenGL window menu GTK4
+
+  \param view the target glwin
 */
 GMenu * opengl_menu_bar (glwin * view)
 {
@@ -258,13 +267,13 @@ GMenu * opengl_menu_bar (glwin * view)
   return menu;
 }
 
-/*
-*  void menu_bar_attach_color_palettes (glwin * view, GtkWidget * menu_bar)
-*
-*  Usage: menu bar attach color palettes GTK4
-*
-*  glwin * view         : the target glwin
-*  GtkWidget * menu_bar : the GtkWidget sending the signal
+/*!
+  \fn void menu_bar_attach_color_palettes (glwin * view, GtkWidget * menu_bar)
+
+  \brief menu bar attach color palettes GTK4
+
+  \param view the target glwin
+  \param menu_bar the GtkWidget sending the signal
 */
 void menu_bar_attach_color_palettes (glwin * view, GtkWidget * menu_bar)
 {
@@ -282,7 +291,7 @@ void menu_bar_attach_color_palettes (glwin * view, GtkWidget * menu_bar)
   */
   int i, j, k, l, m;
   gchar * str;
-  struct project * this_proj = get_project_by_id (view -> proj);
+  project * this_proj = get_project_by_id (view -> proj);
   // Box
   if (! gtk_popover_menu_bar_add_child ((GtkPopoverMenuBar *)menu_bar, color_palette (view, -1, -1, -1), "set-box-color.0"))
   {
@@ -368,12 +377,12 @@ void menu_bar_attach_color_palettes (glwin * view, GtkWidget * menu_bar)
   }
 }
 
-/*
-*  GtkWidget * opengl_window_create_menu_bar (glwin * view)
-*
-*  Usage: create the OpenGL window menu bar widget GTK4
-*
-*  glwin * view : the target glwin
+/*!
+  \fn GtkWidget * opengl_window_create_menu_bar (glwin * view)
+
+  \brief create the OpenGL window menu bar widget GTK4
+
+  \param view the target glwin
 */
 GtkWidget * opengl_window_create_menu_bar (glwin * view)
 {
@@ -396,12 +405,12 @@ GtkWidget * opengl_window_create_menu_bar (glwin * view)
   return menu_bar;
 }
 
-/*
-*  void update_menu_bar (glwin * view)
-*
-*  Usage: update the OpenGL window menu bar GTK4
-*
-*  glwin * view : the target glwin
+/*!
+  \fn void update_menu_bar (glwin * view)
+
+  \brief update the OpenGL window menu bar GTK4
+
+  \param view the target glwin
 */
 void update_menu_bar (glwin * view)
 {

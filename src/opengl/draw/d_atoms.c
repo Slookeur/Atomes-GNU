@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file d_atoms.c
+* @short nctions to prepare the OpenGL rendering atom(s) and clone(s)
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'd_atoms.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to prepare the atom(s) and clone(s) OpenGL rendering
+ - The functions to prepare the OpenGL rendering atom(s) and clone(s)
 
 *
-*  List of subroutines:
+* List of functions:
 
   int sphere_vertices (int qual);
   int sphere_indices (int qual);
@@ -30,9 +38,9 @@ If not, see <https://www.gnu.org/licenses/> */
   float get_sphere_radius (int style, int sp, int ac, int sel);
 
   void setup_sphere_vertice (float * vertices, vec3_t pos, ColRGBA col, float rad, float alpha);
-  void setup_this_atom (int style, gboolean to_pick, gboolean picked, struct atom * at, int ac, float * vert, float al);
+  void setup_this_atom (int style, gboolean to_pick, gboolean picked, atom * at, int ac, float * vert, float al);
   void setup_atom_vertices (int style, gboolean to_pick, float * vertices);
-  void prepare_clone (int style, gboolean to_pick, int picked, struct atom at, struct atom bt, float x, float y, float z, float * vertices);
+  void prepare_clone (int style, gboolean to_pick, int picked, atom at, atom bt, float x, float y, float z, float * vertices);
   void setup_clone_vertices (int style, gboolean to_pick, float * vertices);
   void atom_positions_colors_and_sizes (int style, gboolean to_pick, float * instances);
   void create_atom_lists (gboolean to_pick);
@@ -52,16 +60,16 @@ int atom_id;
 int gColorID[3];
 int all_styles[NUM_STYLES];
 
-/*
-*  ColRGBA get_atom_color (int i, int j, double al, int picked, gboolean to_pick)
-*
-*  Usage: get atom (or clone) color
-*
-*  int i            : chemical species
-*  int j            : the atom id
-*  double al        : opacity (atom: 1.0, clone: 0.5)
-*  int picked       : is the atom (clone) selected (1) or not (0)
-*  gboolean to_pick : to pick (1) or to draw (0)
+/*!
+  \fn ColRGBA get_atom_color (int i, int j, double al, int picked, gboolean to_pick)
+
+  \brief get atom (or clone) color
+
+  \param i chemical species
+  \param j the atom id
+  \param al opacity (atom: 1.0, clone: 0.5)
+  \param picked is the atom (clone) selected (1) or not (0)
+  \param to_pick to pick (1) or to draw (0)
 */
 ColRGBA get_atom_color (int i, int j, double al, int picked, gboolean to_pick)
 {
@@ -140,7 +148,7 @@ ColRGBA get_atom_color (int i, int j, double al, int picked, gboolean to_pick)
     }
     else if (acolorm == 5)
     {
-      struct field_molecule * fmol = get_active_field_molecule_from_model_id (proj_gl, j);
+      field_molecule * fmol = get_active_field_molecule_from_model_id (proj_gl, j);
       if (fmol)
       {
         s = proj_gl -> atoms[0][j].fid;
@@ -167,36 +175,36 @@ ColRGBA get_atom_color (int i, int j, double al, int picked, gboolean to_pick)
 
 int nbs, nbl, nba;
 
-/*
-*  int sphere_vertices (int qual)
-*
-*  Usage: return the number of OpenGL vertices to render a sphere
-*
-*  int qual : OpenGL quality
+/*!
+  \fn int sphere_vertices (int qual)
+
+  \brief return the number of OpenGL vertices to render a sphere
+
+  \param qual OpenGL quality
 */
 int sphere_vertices (int qual)
 {
   return qual * qual;
 }
 
-/*
-*  int sphere_indices (int qual)
-*
-*  Usage: return the number of OpenGL indices to render a sphere
-*
-*  int qual : OpenGL quality
+/*!
+  \fn int sphere_indices (int qual)
+
+  \brief return the number of OpenGL indices to render a sphere
+
+  \param qual OpenGL quality
 */
 int sphere_indices (int qual)
 {
   return 2 * qual * (qual - 1);
 }
 
-/*
-*  object_3d * draw_sphere (int quality)
-*
-*  Usage: OpenGL 3D sphere object rendering
-*
-*  int quality : OpenGL quality
+/*!
+  \fn object_3d * draw_sphere (int quality)
+
+  \brief OpenGL 3D sphere object rendering
+
+  \param quality OpenGL quality
 */
 object_3d * draw_sphere (int quality)
 {
@@ -260,15 +268,15 @@ object_3d * draw_sphere (int quality)
   return new_sphere;
 }
 
-/*
-*  float get_sphere_radius (int style, int sp, int ac, int sel)
-*
-*  Usage: get an atom sphere radius
-*
-*  int style : rendering style
-*  int sp    : chemical species
-*  int ac    : atom (0) or clone (1)
-*  int sel   : is the atom selected (1) or not (0)
+/*!
+  \fn float get_sphere_radius (int style, int sp, int ac, int sel)
+
+  \brief get an atom sphere radius
+
+  \param style rendering style
+  \param sp chemical species
+  \param ac atom (0) or clone (1)
+  \param sel is the atom selected (1) or not (0)
 */
 float get_sphere_radius (int style, int sp, int ac, int sel)
 {
@@ -290,16 +298,16 @@ float get_sphere_radius (int style, int sp, int ac, int sel)
   }
 }
 
-/*
-*  void setup_sphere_vertice (float * vertices, vec3_t pos, ColRGBA col, float rad, float alpha)
-*
-*  Usage: fill the OpenGL data buffer for a atom (or clone) to render
-*
-*  float * vertices : the OpenGL buffer data to fill
-*  vec3_t pos       : the position vector
-*  ColRGBA col      : the color
-*  float rad        : the radius
-*  float alpha      : the opacity (atom: 1.0, clone: 0.5)
+/*!
+  \fn void setup_sphere_vertice (float * vertices, vec3_t pos, ColRGBA col, float rad, float alpha)
+
+  \brief fill the OpenGL data buffer for a atom (or clone) to render
+
+  \param vertices the OpenGL buffer data to fill
+  \param pos the position vector
+  \param col the color
+  \param rad the radius
+  \param alpha the opacity (atom: 1.0, clone: 0.5)
 */
 void setup_sphere_vertice (float * vertices, vec3_t pos, ColRGBA col, float rad, float alpha)
 {
@@ -316,20 +324,20 @@ void setup_sphere_vertice (float * vertices, vec3_t pos, ColRGBA col, float rad,
   nbl ++;
 }
 
-/*
-*  void setup_this_atom (int style, gboolean to_pick, gboolean picked, struct atom * at, int ac, float * vert, float al)
-*
-*  Usage: prepare the OpenGL rendering data of an atom / clone
-*
-*  int style        : rendering style
-*  gboolean to_pick : to pick (1) or to draw (0)
-*  gboolean picked  : is the atom selected (1) or not (0)
-*  struct atom * at : the atom to render
-*  int ac           : atom (0) or clone (1)
-*  float * vert     : the OpenGL buffer data to fill
-*  float al         : the opacity (atom: 1.0, clone: 0.5)
+/*!
+  \fn void setup_this_atom (int style, gboolean to_pick, gboolean picked, atom * at, int ac, float * vert, float al)
+
+  \brief prepare the OpenGL rendering data of an atom / clone
+
+  \param style rendering style
+  \param to_pick to pick (1) or to draw (0)
+  \param picked is the atom selected (1) or not (0)
+  \param at the atom to render
+  \param ac atom (0) or clone (1)
+  \param vert the OpenGL buffer data to fill
+  \param al the opacity (atom: 1.0, clone: 0.5)
 */
-void setup_this_atom (int style, gboolean to_pick, gboolean picked, struct atom * at, int ac, float * vert, float al)
+void setup_this_atom (int style, gboolean to_pick, gboolean picked, atom * at, int ac, float * vert, float al)
 {
   int i, j, k;
   float alpha = 1.0;
@@ -355,12 +363,12 @@ void setup_this_atom (int style, gboolean to_pick, gboolean picked, struct atom 
   }
 }
 
-/*
-*  int find_atom_vertices (gboolean to_pick)
-*
-*  Usage: find the number of atom(s) to render
-*
-*  gboolean to_pick : to pick (1) or to draw (0)
+/*!
+  \fn int find_atom_vertices (gboolean to_pick)
+
+  \brief find the number of atom(s) to render
+
+  \param to_pick to pick (1) or to draw (0)
 */
 int find_atom_vertices (gboolean to_pick)
 {
@@ -402,19 +410,19 @@ int find_atom_vertices (gboolean to_pick)
   return j;
 }
 
-/*
-*  void setup_atom_vertices (int style, gboolean to_pick, float * vertices)
-*
-*  Usage: prepare an atom OpenGL rendering
-*
-*  int style        : the rendering style
-*  gboolean to_pick : to pick (1) or to draw (0)
-*  float * vertices : the OpenGL buffer data to fill
+/*!
+  \fn void setup_atom_vertices (int style, gboolean to_pick, float * vertices)
+
+  \brief prepare an atom OpenGL rendering
+
+  \param style the rendering style
+  \param to_pick to pick (1) or to draw (0)
+  \param vertices the OpenGL buffer data to fill
 */
 void setup_atom_vertices (int style, gboolean to_pick, float * vertices)
 {
   int i;
-  struct atom * tmp_a;
+  atom * tmp_a;
   for (i=0; i<proj_at; i++)
   {
     tmp_a = duplicate_atom (& proj_gl -> atoms[step][i]);
@@ -431,24 +439,24 @@ void setup_atom_vertices (int style, gboolean to_pick, float * vertices)
   }
 }
 
-/*
-*  void prepare_clone (int style, gboolean to_pick, int picked, struct atom at, struct atom bt, float x, float y, float z, float * vertices)
-*
-*  Usage: prepare the rendering data of a clone
-*
-*  int style        : the rendering style
-*  gboolean to_pick : to pick (1) or to draw (0)
-*  int picked       : is the clone selected (1) or not (0)
-*  struct atom at   : 1st atom of the cloned chemical bond
-*  struct atom bt   : 2nd atom of the cloned chemical bond
-*  float x          : x position
-*  float y          : y position
-*  float z          : z position
-*  float * vertices : the OpenGL buffer data to fill
+/*!
+  \fn void prepare_clone (int style, gboolean to_pick, int picked, atom at, atom bt, float x, float y, float z, float * vertices)
+
+  \brief prepare the rendering data of a clone
+
+  \param style the rendering style
+  \param to_pick to pick (1) or to draw (0)
+  \param picked is the clone selected (1) or not (0)
+  \param at 1st atom of the cloned chemical bond
+  \param bt 2nd atom of the cloned chemical bond
+  \param x x position
+  \param y y position
+  \param z z position
+  \param vertices the OpenGL buffer data to fill
 */
-void prepare_clone (int style, gboolean to_pick, int picked, struct atom at, struct atom bt, float x, float y, float z, float * vertices)
+void prepare_clone (int style, gboolean to_pick, int picked, atom at, atom bt, float x, float y, float z, float * vertices)
 {
-  struct atom * tmp_a = duplicate_atom (& bt);
+  atom * tmp_a = duplicate_atom (& bt);
   tmp_a -> x += x;
   tmp_a -> y += y;
   tmp_a -> z += z;
@@ -467,12 +475,12 @@ void prepare_clone (int style, gboolean to_pick, int picked, struct atom at, str
   g_free (tmp_a);
 }
 
-/*
-*  int find_clone_vertices (gboolean to_pick)
-*
-*  Usage: find the number of clones to render
-*
-*  gboolean to_pick : to pick (1) or to draw (0)
+/*!
+  \fn int find_clone_vertices (gboolean to_pick)
+
+  \brief find the number of clones to render
+
+  \param to_pick to pick (1) or to draw (0)
 */
 int find_clone_vertices (gboolean to_pick)
 {
@@ -540,14 +548,14 @@ int find_clone_vertices (gboolean to_pick)
   return l;
 }
 
-/*
-*  void setup_clone_vertices (int style, gboolean to_pick, float * vertices)
-*
-*  Usage: find clone(s) position(s), color(s) and prepare the data for the OpenGL rendering
-*
-*  int style        : rendering style
-*  gboolean to_pick : to pick (1) or to draw (0)
-*  float * vertices : the OpenGL data buffer to fill
+/*!
+  \fn void setup_clone_vertices (int style, gboolean to_pick, float * vertices)
+
+  \brief find clone(s) position(s), color(s) and prepare the data for the OpenGL rendering
+
+  \param style rendering style
+  \param to_pick to pick (1) or to draw (0)
+  \param vertices the OpenGL data buffer to fill
 */
 void setup_clone_vertices (int style, gboolean to_pick, float * vertices)
 {
@@ -572,14 +580,14 @@ void setup_clone_vertices (int style, gboolean to_pick, float * vertices)
   }
 }
 
-/*
-*  void atom_positions_colors_and_sizes (int style, gboolean to_pick, float * instances)
-*
-*  Usage: find atom(s) position(s), color(s) and prepare the data for the OpenGL rendering
-*
-*  int style         : rendering style
-*  gboolean to_pick  : to pick (1) or to draw (0)
-*  float * instances : the OpenGL data buffer to fill
+/*!
+  \fn void atom_positions_colors_and_sizes (int style, gboolean to_pick, float * instances)
+
+  \brief find atom(s) position(s), color(s) and prepare the data for the OpenGL rendering
+
+  \param style rendering style
+  \param to_pick to pick (1) or to draw (0)
+  \param instances the OpenGL data buffer to fill
 */
 void atom_positions_colors_and_sizes (int style, gboolean to_pick, float * instances)
 {
@@ -592,12 +600,12 @@ void atom_positions_colors_and_sizes (int style, gboolean to_pick, float * insta
   }
 }
 
-/*
-*  void create_atom_lists (gboolean to_pick)
-*
-*  Usage: prepare atom(s) and clone(s) OpenGL rendering
-*
-*  gboolean to_pick : to pick (1) or to draw (0)
+/*!
+  \fn void create_atom_lists (gboolean to_pick)
+
+  \brief prepare atom(s) and clone(s) OpenGL rendering
+
+  \param to_pick to pick (1) or to draw (0)
 */
 void create_atom_lists (gboolean to_pick)
 {

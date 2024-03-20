@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file m_clones.c
+* @short Functions to create the 'Model -> Clone(s)' submenu
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'm_clones.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the 'Model -> Clone(s)' submenu
+ - The functions to create the 'Model -> Clone(s)' submenu
 
 *
-*  List of subroutines:
+* List of functions:
 
   G_MODULE_EXPORT void show_hide_clones (GtkWidget * widg, gpointer data);
   G_MODULE_EXPORT void show_hide_clones (GSimpleAction * action, GVariant * parameter, gpointer data);
@@ -38,13 +46,13 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "submenus.h"
 
 #ifdef GTK3
-/*
-*  G_MODULE_EXPORT void show_hide_clones (GtkWidget * widg, gpointer data)
-*
-*  Usage: show/hide clone(s) callback GTK3
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void show_hide_clones (GtkWidget * widg, gpointer data)
+
+  \brief show/hide clone(s) callback GTK3
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void show_hide_clones (GtkWidget * widg, gpointer data)
 {
@@ -75,15 +83,15 @@ G_MODULE_EXPORT void show_hide_clones (GtkWidget * widg, gpointer data)
   update (view);
 }
 
-/*
-*  GtkWidget * create_clone_widget (char * name, gboolean clone, GtkWidget * menu, glwin * view)
-*
-*  Usage: create the 'Show/hide clone(s)' menu item GTK3
-*
-*  char * name      : label of the new menu item
-*  gboolean clone   : draw clones (1) or not (0)
-*  GtkWidget * menu : the GtkMenu to attach the new item to
-*  glwin * view     : the target glwin
+/*!
+  \fn GtkWidget * create_clone_widget (char * name, gboolean clone, GtkWidget * menu, glwin * view)
+
+  \brief create the 'Show/hide clone(s)' menu item GTK3
+
+  \param name label of the new menu item
+  \param clone draw clones (1) or not (0)
+  \param menu the GtkMenu to attach the new item to
+  \param view the target glwin
 */
 GtkWidget * create_clone_widget (char * name, gboolean clone, GtkWidget * menu, glwin * view)
 {
@@ -92,13 +100,13 @@ GtkWidget * create_clone_widget (char * name, gboolean clone, GtkWidget * menu, 
   return clone_widget;
 }
 
-/*
-*  GtkWidget * menu_clones (glwin * view, int id)
-*
-*  Usage: create the 'Clone(s)' submenu GTK3
-*
-*  glwin * view : the target glwin
-*  int id       : main app (0) or popup (1)
+/*!
+  \fn GtkWidget * menu_clones (glwin * view, int id)
+
+  \brief create the 'Clone(s)' submenu GTK3
+
+  \param view the target glwin
+  \param id main app (0) or popup (1)
 */
 GtkWidget * menu_clones (glwin * view, int id)
 {
@@ -119,14 +127,14 @@ GtkWidget * menu_clones (glwin * view, int id)
   return menu;
 }
 #else
-/*
-*  G_MODULE_EXPORT void show_hide_clones (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: show/hide clones menu item callback
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void show_hide_clones (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief show/hide clones menu item callback
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void show_hide_clones (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
@@ -161,13 +169,13 @@ G_MODULE_EXPORT void show_hide_clones (GSimpleAction * action, GVariant * parame
   }
 }
 
-/*
-*  GMenu * menu_clones (glwin * view, int popm)
-*
-*  Usage: create the 'Clone(s)' submenu GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * menu_clones (glwin * view, int popm)
+
+  \brief create the 'Clone(s)' submenu GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * menu_clones (glwin * view, int popm)
 {

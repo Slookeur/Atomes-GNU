@@ -1,15 +1,22 @@
-! This file is part of Atomes.
+! This file is part of the 'atomes' software.
 !
-! Atomes is free software: you can redistribute it and/or modify it under the terms
+! 'atomes' is free software: you can redistribute it and/or modify it under the terms
 ! of the GNU Affero General Public License as published by the Free Software Foundation,
 ! either version 3 of the License, or (at your option) any later version.
 !
-! Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+! 'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 ! without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ! See the GNU General Public License for more details.
 !
-! You should have received a copy of the GNU Affero General Public License along with Atomes.
+! You should have received a copy of the GNU Affero General Public License along with 'atomes'.
 ! If not, see <https://www.gnu.org/licenses/>
+!
+! Copyright (C) 2022-2024 by CNRS and University of Strasbourg
+!
+!>
+!! @file writedata.F90
+!! @short Export curve data using data received from C
+!! @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
 
 CHARACTER (LEN=35) FUNCTION ylegend (job, nleg, idl)
 
@@ -757,6 +764,7 @@ CHARACTER (LEN=scf) :: sfile
 REAL (KIND=c_double), INTENT(IN) :: mdc
 CHARACTER (LEN=5) :: xaxis="xaxis", yaxis="yaxis"
 CHARACTER (LEN=65) :: xlabel
+
 INTERFACE
   CHARACTER(LEN=65) FUNCTION xlegend (job, nleg, idl, cdc)
     INTEGER, INTENT(IN) :: job, nleg, idl
@@ -832,7 +840,6 @@ INTERFACE
     INTEGER, INTENT(IN) :: job, nleg, idl
   END FUNCTION
 END INTERFACE
-
 
 do i=1, lcname
   cname(i:i) = cstring(i)

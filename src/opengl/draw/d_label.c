@@ -1,30 +1,38 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file d_label.c
+* @short Functions to prepare the OpenGL rendering of the atomic label(s)
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'd_label.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to prepare the atomic label(s) OpenGL rendering
+ - The functions to prepare the OpenGL rendering of the atomic label(s)
 
 *
-*  List of subroutines:
+* List of functions:
 
   int create_label_lists ();
 
-  void prepare_label (struct atom at, int id, double al);
+  void prepare_label (atom at, int id, double al);
   void clean_labels (int id);
 
   mat4_t create_label_matrices ();
@@ -40,26 +48,26 @@ extern ColRGBA init_color (int id, int numid);
 extern ColRGBA get_atom_color (int i, int j, double al, int picked, gboolean to_pick);
 extern float get_sphere_radius (int style, int sp, int ac, int sel);
 
-/*
-*  mat4_t create_label_matrices ()
-*
-*  Usage: create label projection matrices
+/*!
+  \fn mat4_t create_label_matrices ()
+
+  \brief create label projection matrices
 */
 mat4_t create_label_matrices ()
 {
   return m4_ortho (0.0, wingl -> view_port.y, 0.0, wingl -> view_port.z, 1.0, 0.0);
 }
 
-/*
-*  void prepare_label (struct atom at, int id, double al)
-*
-*  Usage: prepare an atomic label OpenGL rendering
-*
-*  struct atom at : the atom to label
-*  int id         : the label id
-*  double al      : opacity
+/*!
+  \fn void prepare_label (atom at, int id, double al)
+
+  \brief prepare an atomic label OpenGL rendering
+
+  \param at the atom to label
+  \param id the label id
+  \param al opacity
 */
-void prepare_label (struct atom at, int id, double al)
+void prepare_label (atom at, int id, double al)
 {
   int k, l;
   char * str = NULL;
@@ -125,12 +133,12 @@ void prepare_label (struct atom at, int id, double al)
   g_free (str);
 }
 
-/*
-*  void clean_labels (int id)
-*
-*  Usage: clean atomic label shaders
-*
-*  int id : label id
+/*!
+  \fn void clean_labels (int id)
+
+  \brief clean atomic label shaders
+
+  \param id label id
 */
 void clean_labels (int id)
 {
@@ -141,17 +149,17 @@ void clean_labels (int id)
   }
 }
 
-/*
-*  int create_label_lists ()
-*
-*  Usage: prepare atomic label(s) OpenGL rendering
+/*!
+  \fn int create_label_lists ()
+
+  \brief prepare atomic label(s) OpenGL rendering
 */
 int create_label_lists ()
 {
   int nshaders = 0;
   int i, j, k;
   float x, y, z;
-  struct atom ato;
+  atom ato;
 
 #ifdef DEBUG
   g_debug ("Label LIST");

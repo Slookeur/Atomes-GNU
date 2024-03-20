@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file open_p.c
+* @short Functions to start the reading of an atomes project file
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'open_p.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Subroutine to start reading atomes project file
+ - The functions to start the reading of an atomes project file
 
 *
-*  List of subroutines:
+* List of functions:
 
   int open_project (FILE * fp, int npi);
 
@@ -29,8 +37,8 @@ If not, see <https://www.gnu.org/licenses/> */
   gchar * read_this_string (FILE * fp);
 
   void initcnames (int w, int s);
-  void allocatoms (struct project * this_proj);
-  void alloc_proj_data (struct project * this_proj, int cid);
+  void allocatoms (project * this_proj);
+  void alloc_proj_data (project * this_proj, int cid);
 
   chemical_data * alloc_chem_data (int spec);
 
@@ -56,13 +64,13 @@ extern void initchn ();
 extern void initmsd ();
 extern void initsh (int s);
 
-/*
-*  char * read_string (int i, FILE * fp)
-*
-*  Usage: read a string from a file
-*
-*  int i     : the size of the string to read
-*  FILE * fp : the file pointer
+/*!
+  \fn char * read_string (int i, FILE * fp)
+
+  \brief read a string from a file
+
+  \param i the size of the string to read
+  \param fp the file pointer
 */
 char * read_string (int i, FILE * fp)
 {
@@ -77,12 +85,12 @@ char * read_string (int i, FILE * fp)
   return tmp;
 }
 
-/*
-*  gchar * read_this_string (FILE * fp)
-*
-*  Usage: is there a string to read in this file ? yes do it
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn gchar * read_this_string (FILE * fp)
+
+  \brief is there a string to read in this file ? yes do it
+
+  \param fp the file pointer
 */
 gchar * read_this_string (FILE * fp)
 {
@@ -97,13 +105,13 @@ gchar * read_this_string (FILE * fp)
 }
 
 
-/*
-*  void initcnames (int w, int s)
-*
-*  Usage: initialize curve namees
-*
-*  int w : calculation id
-*  int s : initialize spherical harmonics or not
+/*!
+  \fn void initcnames (int w, int s)
+
+  \brief initialize curve namees
+
+  \param w calculation id
+  \param s initialize spherical harmonics or not
 */
 void initcnames (int w, int s)
 {
@@ -142,14 +150,14 @@ void initcnames (int w, int s)
   }
 }
 
-/*
-*  void allocatoms (struct project * this_proj)
-*
-*  Usage: allocate project data
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn void allocatoms (project * this_proj)
+
+  \brief allocate project data
+
+  \param this_proj the target project
 */
-void allocatoms (struct project * this_proj)
+void allocatoms (project * this_proj)
 {
   int i, j;
   if (this_proj -> atoms != NULL)
@@ -168,12 +176,12 @@ void allocatoms (struct project * this_proj)
   }
 }
 
-/*
-*  chemical_data * alloc_chem_data (int spec)
-*
-*  Usage: allocate chemistry data
-*
-*  int spec : the number of chemical species
+/*!
+  \fn chemical_data * alloc_chem_data (int spec)
+
+  \brief allocate chemistry data
+
+  \param spec the number of chemical species
 */
 chemical_data * alloc_chem_data (int spec)
 {
@@ -187,27 +195,27 @@ chemical_data * alloc_chem_data (int spec)
   return chem;
 }
 
-/*
-*  void alloc_proj_data (struct project * this_proj, int cid)
-*
-*  Usage: allocate data
-*
-*  struct project * this_proj : the target project
-*  int cid                    : Allocate chemistry data (1/0)
+/*!
+  \fn void alloc_proj_data (project * this_proj, int cid)
+
+  \brief allocate data
+
+  \param this_proj the target project
+  \param cid Allocate chemistry data (1/0)
 */
-void alloc_proj_data (struct project * this_proj, int cid)
+void alloc_proj_data (project * this_proj, int cid)
 {
   if (cid) this_proj -> chemistry = alloc_chem_data (this_proj -> nspec);
   allocatoms (this_proj);
 }
 
-/*
-*  int open_project (FILE * fp, int npi)
-*
-*  Usage: open atomes project file
-*
-*  FILE * fp : the file pointer
-*  int npi   : the total number of projects in the workspace
+/*!
+  \fn int open_project (FILE * fp, int npi)
+
+  \brief open atomes project file
+
+  \param fp the file pointer
+  \param npi the total number of projects in the workspace
 */
 int open_project (FILE * fp, int npi)
 {
@@ -219,10 +227,16 @@ int open_project (FILE * fp, int npi)
   if (fread (ver, sizeof(char), i, fp) != i) return ERROR_PROJECT;
 
   gboolean labels_in_file = FALSE;
+  gboolean correct_x = TRUE;
   // test on ver for version
   if (g_strcmp0(ver, "%\n% project file v-2.6\n%\n") == 0)
   {
     labels_in_file = TRUE;
+  }
+  else if (g_strcmp0(ver, "%\n% project file v-2.7\n%\n") == 0)
+  {
+    labels_in_file = TRUE;
+    correct_x = FALSE;
   }
 
  #ifdef DEBUG
@@ -321,6 +335,13 @@ int open_project (FILE * fp, int npi)
     for (i=0; i<CHEM_PARAMS; i++)
     {
       if (fread (active_chem -> chem_prop[i], sizeof(double), active_project -> nspec, fp) != active_project -> nspec) return ERROR_PROJECT;
+    }
+    if (correct_x)
+    {
+      for (i=0; i<active_project -> nspec; i++)
+      {
+        active_chem -> chem_prop[CHEM_X][i] = active_chem -> chem_prop[CHEM_Z][i];
+      }
     }
     if (fread (& active_chem -> grtotcutoff, sizeof(double), 1, fp) != 1) return ERROR_PROJECT;
     for ( i = 0 ; i < active_project -> nspec ; i ++ )

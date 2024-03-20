@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_trj.c
+* @short Functions to read CPMD atomic coordinates
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_trj.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to read CPMD atomic coordinates
+ - The functions to read CPMD atomic coordinates
 
 *
-*  List of subroutines:
+* List of functions:
 
   int trj_get_atom_coordinates ();
   int open_trj_file (int linec);
@@ -36,10 +44,10 @@ If not, see <https://www.gnu.org/licenses/> */
 #include <omp.h>
 #include "readers.h"
 
-/*
-*  int trj_get_atom_coordinates ()
-*
-*  Usage: get the atomic coordinates from the CPMD file
+/*!
+  \fn int trj_get_atom_coordinates ()
+
+  \brief get the atomic coordinates from the CPMD file
 */
 int trj_get_atom_coordinates ()
 {
@@ -174,7 +182,7 @@ int trj_get_atom_coordinates ()
     }
   }
 #else
-  struct line_node * tmp_line;
+  line_node * tmp_line;
   tail = head;
   k = 0;
   for (i=0; i<active_project -> steps; i++)
@@ -231,12 +239,12 @@ int trj_get_atom_coordinates ()
   return 0;
 }
 
-/*
-*  int open_trj_file (int linec)
-*
-*  Usage: open CPMD file
-*
-*  int linec : Number of lines in the file
+/*!
+  \fn int open_trj_file (int linec)
+
+  \brief open CPMD file
+
+  \param linec Number of lines in the file
 */
 int open_trj_file (int linec)
 {

@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_field.c
+* @short Functions to read DLPOLY force field data in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_field.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines required to read a DLPOLY force field information from atomes project file
+ - The functions to read DLPOLY force field data in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
   int read_field_atom (FILE * fp);
   int read_field_shell (FILE * fp);
@@ -33,8 +41,8 @@ If not, see <https://www.gnu.org/licenses/> */
   int read_field_molecule (FILE * fp, int fid);
   int read_field_body (FILE * fp, int fid);
   int read_field_external (FILE * fp, int fid);
-  int read_dlp_field_data (FILE * fp, struct project * this_proj);
-  int read_lmp_field_data (FILE * fp, struct project * this_proj);
+  int read_dlp_field_data (FILE * fp, project * this_proj);
+  int read_lmp_field_data (FILE * fp, project * this_proj);
 
 */
 
@@ -42,12 +50,12 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "project.h"
 #include "dlp_field.h"
 
-/*
-*  int read_field_atom (FILE * fp)
-*
-*  Usage: read field atom properties from file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int read_field_atom (FILE * fp)
+
+  \brief read field atom properties from file
+
+  \param fp the file pointer
 */
 int read_field_atom (FILE * fp)
 {
@@ -72,12 +80,12 @@ int read_field_atom (FILE * fp)
   return OK;
 }
 
-/*
-*  int read_field_shell (FILE * fp)
-*
-*  Usage: read field core shell data from file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int read_field_shell (FILE * fp)
+
+  \brief read field core shell data from file
+
+  \param fp the file pointer
 */
 int read_field_shell (FILE * fp)
 {
@@ -93,12 +101,12 @@ int read_field_shell (FILE * fp)
   return OK;
 }
 
-/*
-*  int read_field_constraint (FILE * fp)
-*
-*  Usage: read field constraint data from file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int read_field_constraint (FILE * fp)
+
+  \brief read field constraint data from file
+
+  \param fp the file pointer
 */
 int read_field_constraint (FILE * fp)
 {
@@ -111,12 +119,12 @@ int read_field_constraint (FILE * fp)
   return OK;
 }
 
-/*
-*  int read_field_pmf (FILE * fp)
-*
-*  Usage: read field mean force potential data from file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int read_field_pmf (FILE * fp)
+
+  \brief read field mean force potential data from file
+
+  \param fp the file pointer
 */
 int read_field_pmf (FILE * fp)
 {
@@ -137,12 +145,12 @@ int read_field_pmf (FILE * fp)
   return OK;
 }
 
-/*
-*  int read_field_rigid (FILE * fp)
-*
-*  Usage: read field rigid constraints data from file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int read_field_rigid (FILE * fp)
+
+  \brief read field rigid constraints data from file
+
+  \param fp the file pointer
 */
 int read_field_rigid (FILE * fp)
 {
@@ -155,13 +163,13 @@ int read_field_rigid (FILE * fp)
   return OK;
 }
 
-/*
-*  int read_field_tethered (FILE * fp, int fid)
-*
-*  Usage: read field tethered data from file
-*
-*  FILE * fp : the file pointer
-*  int fid   : the field id
+/*!
+  \fn int read_field_tethered (FILE * fp, int fid)
+
+  \brief read field tethered data from file
+
+  \param fp the file pointer
+  \param fid the field id
 */
 int read_field_tethered (FILE * fp, int fid)
 {
@@ -176,14 +184,14 @@ int read_field_tethered (FILE * fp, int fid)
   return OK;
 }
 
-/*
-*  int read_field_prop (FILE * fp, int fid, int pid)
-*
-*  Usage: read field property from file
-*
-*  FILE * fp : the file pointer
-*  int fid   : the field id
-*  int pid   : the property id
+/*!
+  \fn int read_field_prop (FILE * fp, int fid, int pid)
+
+  \brief read field property from file
+
+  \param fp the file pointer
+  \param fid the field id
+  \param pid the property id
 */
 int read_field_prop (FILE * fp, int fid, int pid)
 {
@@ -201,13 +209,13 @@ int read_field_prop (FILE * fp, int fid, int pid)
   return OK;
 }
 
-/*
-*  int read_field_struct (FILE * fp, int fid)
-*
-*  Usage: read field structural properties from file
-*
-*  FILE * fp : the file pointer
-*  int fid   : the field id
+/*!
+  \fn int read_field_struct (FILE * fp, int fid)
+
+  \brief read field structural properties from file
+
+  \param fp the file pointer
+  \param fid the field id
 */
 int read_field_struct (FILE * fp, int fid)
 {
@@ -240,13 +248,13 @@ int read_field_struct (FILE * fp, int fid)
   return OK;
 }
 
-/*
-*  int read_field_molecule (FILE * fp, int fid)
-*
-*  Usage: read field molecule from file
-*
-*  FILE * fp : the file pointer
-*  int fid   : the field id
+/*!
+  \fn int read_field_molecule (FILE * fp, int fid)
+
+  \brief read field molecule from file
+
+  \param fp the file pointer
+  \param fid the field id
 */
 int read_field_molecule (FILE * fp, int fid)
 {
@@ -383,13 +391,13 @@ int read_field_molecule (FILE * fp, int fid)
   return OK;
 }
 
-/*
-*  int read_field_body (FILE * fp, int fid)
-*
-*  Usage: read field nth body data from file
-*
-*  FILE * fp : the file pointer
-*  int fid   : the field id
+/*!
+  \fn int read_field_body (FILE * fp, int fid)
+
+  \brief read field nth body data from file
+
+  \param fp the file pointer
+  \param fid the field id
 */
 int read_field_body (FILE * fp, int fid)
 {
@@ -422,13 +430,13 @@ int read_field_body (FILE * fp, int fid)
   return OK;
 }
 
-/*
-*  int read_field_external (FILE * fp, int fid)
-*
-*  Usage: read field external data from file
-*
-*  FILE * fp : the file pointer
-*  int fid   : the field id
+/*!
+  \fn int read_field_external (FILE * fp, int fid)
+
+  \brief read field external data from file
+
+  \param fp the file pointer
+  \param fid the field id
 */
 int read_field_external (FILE * fp, int fid)
 {
@@ -441,15 +449,15 @@ int read_field_external (FILE * fp, int fid)
   return OK;
 }
 
-/*
-*  int read_dlp_field_data (FILE * fp, struct project * this_proj)
-*
-*  Usage: read force field data from file
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
+/*!
+  \fn int read_dlp_field_data (FILE * fp, project * this_proj)
+
+  \brief read force field data from file
+
+  \param fp the file pointer
+  \param this_proj the target project
 */
-int read_dlp_field_data (FILE * fp, struct project * this_proj)
+int read_dlp_field_data (FILE * fp, project * this_proj)
 {
   int i, j, k, l, m, n;
   if (fread (& i, sizeof(int), 1, fp) != 1) return ERROR_RW;
@@ -560,15 +568,15 @@ int read_dlp_field_data (FILE * fp, struct project * this_proj)
   return OK;
 }
 
-/*
-*  int read_lmp_field_data (FILE * fp, struct project * this_proj)
-*
-*  Usage: read LAMMPS field data from file
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
+/*!
+  \fn int read_lmp_field_data (FILE * fp, project * this_proj)
+
+  \brief read LAMMPS field data from file
+
+  \param fp the file pointer
+  \param this_proj the target project
 */
-int read_lmp_field_data (FILE * fp, struct project * this_proj)
+int read_lmp_field_data (FILE * fp, project * this_proj)
 {
   int i;
   if (fread (& i, sizeof(int), 1, fp) != 1) return ERROR_RW;

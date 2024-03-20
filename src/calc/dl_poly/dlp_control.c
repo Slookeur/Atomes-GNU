@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file dlp_control.c
+* @short Functions to handle the creation of the DL-POLY CONTROL file
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'dlp_control.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to handle the creation of the DL-POLY CONTROL file
+ - The functions to handle the creation of the DL-POLY CONTROL file
 
 *
-*  List of subroutines:
+* List of functions:
 
   G_MODULE_EXPORT void set_order (GtkComboBox * box, gpointer data);
   G_MODULE_EXPORT void set_thermo_param (GtkEntry * res, gpointer data);
@@ -169,26 +177,26 @@ GtkWidget * ens_box;
 GtkWidget * bath_box;
 GtkWidget * thermo_option_box;
 
-/*
-*  G_MODULE_EXPORT void set_order (GtkComboBox * box, gpointer data)
-*
-*  Usage: CONTROL file change thermostat order
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_order (GtkComboBox * box, gpointer data)
+
+  \brief CONTROL file change thermostat order
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_order (GtkComboBox * box, gpointer data)
 {
   tmp_field -> thermo_opts[0] = gtk_combo_box_get_active (box);
 }
 
-/*
-*  G_MODULE_EXPORT void set_thermo_param (GtkEntry * res, gpointer data)
-*
-*  Usage: CONTROL file thermostat update parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_thermo_param (GtkEntry * res, gpointer data)
+
+  \brief CONTROL file thermostat update parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_thermo_param (GtkEntry * res, gpointer data)
 {
@@ -216,23 +224,23 @@ G_MODULE_EXPORT void set_thermo_param (GtkEntry * res, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void check_nvs (GtkCheckButton * but, gpointer data)
-*
-*  Usage: CONTROL file thermostat change parameter toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_nvs (GtkCheckButton * but, gpointer data)
+
+  \brief CONTROL file thermostat change parameter toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_nvs (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void check_nvs (GtkToggleButton * but, gpointer data)
-*
-*  Usage: CONTROL file thermostat change parameter toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_nvs (GtkToggleButton * but, gpointer data)
+
+  \brief CONTROL file thermostat change parameter toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_nvs (GtkToggleButton * but, gpointer data)
 #endif
@@ -273,23 +281,23 @@ G_MODULE_EXPORT void check_nvs (GtkToggleButton * but, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void check_semi (GtkCheckButton * but, gpointer data)
-*
-*  Usage: CONTROL file thermostat change parameter toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_semi (GtkCheckButton * but, gpointer data)
+
+  \brief CONTROL file thermostat change parameter toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_semi (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void check_semi (GtkToggleButton * but, gpointer data)
-*
-*  Usage: CONTROL file thermostat change parameter toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_semi (GtkToggleButton * but, gpointer data)
+
+  \brief CONTROL file thermostat change parameter toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_semi (GtkToggleButton * but, gpointer data)
 #endif
@@ -305,13 +313,13 @@ G_MODULE_EXPORT void check_semi (GtkToggleButton * but, gpointer data)
   if (i == 6) widget_set_sensitive (bath_box, j);
 }
 
-/*
-*  GtkWidget * create_thermo_options (int ensemble, int thermo)
-*
-*  Usage: CONTROL file create thermostat option box
-*
-*  int ensemble : the thermodynamic ensemble
-*  int thermo   : the type of thermostat
+/*!
+  \fn GtkWidget * create_thermo_options (int ensemble, int thermo)
+
+  \brief CONTROL file create thermostat option box
+
+  \param ensemble the thermodynamic ensemble
+  \param thermo the type of thermostat
 */
 GtkWidget * create_thermo_options (int ensemble, int thermo)
 {
@@ -417,13 +425,13 @@ GtkWidget * create_thermo_options (int ensemble, int thermo)
   return vbox;
 }
 
-/*
-*  G_MODULE_EXPORT void set_thermostat (GtkComboBox * box, gpointer data)
-*
-*  Usage: CONTROL file change thermostat option
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_thermostat (GtkComboBox * box, gpointer data)
+
+  \brief CONTROL file change thermostat option
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_thermostat (GtkComboBox * box, gpointer data)
 {
@@ -448,12 +456,12 @@ G_MODULE_EXPORT void set_thermostat (GtkComboBox * box, gpointer data)
   }
 }
 
-/*
-*  GtkWidget * create_thermo_box (int ensemble)
-*
-*  Usage: CONTROL file create thermostat box parameters
-*
-*  int ensemble : the target thermodynamic ensemble
+/*!
+  \fn GtkWidget * create_thermo_box (int ensemble)
+
+  \brief CONTROL file create thermostat box parameters
+
+  \param ensemble the target thermodynamic ensemble
 */
 GtkWidget * create_thermo_box (int ensemble)
 {
@@ -480,13 +488,13 @@ GtkWidget * create_thermo_box (int ensemble)
   return vbox;
 }
 
-/*
-*  G_MODULE_EXPORT void set_ensemble (GtkComboBox * box, gpointer data)
-*
-*  Usage: CONTROL file change thermodynamic ensemble parameter
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_ensemble (GtkComboBox * box, gpointer data)
+
+  \brief CONTROL file change thermodynamic ensemble parameter
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_ensemble (GtkComboBox * box, gpointer data)
 {
@@ -511,10 +519,10 @@ G_MODULE_EXPORT void set_ensemble (GtkComboBox * box, gpointer data)
   }
 }
 
-/*
-*  GtkWidget * create_ensemble_box ()
-*
-*  Usage: CONTROL file create thermodynamic ensemble parameter widgets
+/*!
+  \fn GtkWidget * create_ensemble_box ()
+
+  \brief CONTROL file create thermodynamic ensemble parameter widgets
 */
 GtkWidget * create_ensemble_box ()
 {
@@ -580,13 +588,13 @@ gchar * dt_data[3] = {"Maximum time step:", "Maximum distance allowed:", "Minimu
 gchar * dt_unit[3] = {"<b>ps</b>", "<b>&#xC5;</b>", "<b>&#xC5;</b>"};
 gchar * md_combo[2][2] = {{"Velocity", "Leapfrog"}, {"Fixed", "Variable"}};
 
-/*
-*  G_MODULE_EXPORT void set_md_param (GtkEntry * res, gpointer data)
-*
-*  Usage: CONTROL file update MD parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_md_param (GtkEntry * res, gpointer data)
+
+  \brief CONTROL file update MD parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_md_param (GtkEntry * res, gpointer data)
 {
@@ -615,13 +623,13 @@ G_MODULE_EXPORT void set_md_param (GtkEntry * res, gpointer data)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void show_advance_time_step (GtkButton * but, gpointer data)
-*
-*  Usage: CONTROL file advanced time step - creating the dialog
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void show_advance_time_step (GtkButton * but, gpointer data)
+
+  \brief CONTROL file advanced time step - creating the dialog
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void show_advance_time_step (GtkButton * but, gpointer data)
 {
@@ -644,13 +652,13 @@ G_MODULE_EXPORT void show_advance_time_step (GtkButton * but, gpointer data)
   run_this_gtk_dialog (dialog, G_CALLBACK(run_destroy_dialog), NULL);
 }
 
-/*
-*  G_MODULE_EXPORT void set_md_combo (GtkComboBox * box, gpointer data)
-*
-*  Usage: CONTROL file change MD parameter
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_md_combo (GtkComboBox * box, gpointer data)
+
+  \brief CONTROL file change MD parameter
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_md_combo (GtkComboBox * box, gpointer data)
 {
@@ -674,23 +682,23 @@ GtkWidget * impact_but;
 gchar * imp_dir[3] = {"on x:", "on y:", "on z:"};
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void check_impact (GtkCheckButton * but, gpointer data)
-*
-*  Usage: CONTROL file particle impact change parameter toggle callback GTK3
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_impact (GtkCheckButton * but, gpointer data)
+
+  \brief CONTROL file particle impact change parameter toggle callback GTK3
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_impact (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void check_impact (GtkToggleButton * but, gpointer data)
-*
-*  Usage: CONTROL file particle impact change parameter toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_impact (GtkToggleButton * but, gpointer data)
+
+  \brief CONTROL file particle impact change parameter toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_impact (GtkToggleButton * but, gpointer data)
 #endif
@@ -705,13 +713,13 @@ G_MODULE_EXPORT void check_impact (GtkToggleButton * but, gpointer data)
   widget_set_sensitive (impact_but, i);
 }
 
-/*
-*  G_MODULE_EXPORT void show_impact_dialog (GtkButton * but, gpointer data)
-*
-*  Usage: CONTROL file particle impact - creating the dialog
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void show_impact_dialog (GtkButton * but, gpointer data)
+
+  \brief CONTROL file particle impact - creating the dialog
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void show_impact_dialog (GtkButton * but, gpointer data)
 {
@@ -773,10 +781,10 @@ G_MODULE_EXPORT void show_impact_dialog (GtkButton * but, gpointer data)
   run_this_gtk_dialog (dialog, G_CALLBACK(run_destroy_dialog), NULL);
 }
 
-/*
-*  GtkWidget * create_md_box ()
-*
-*  Usage: CONTROL file create molecular dynamics parameter widgets
+/*!
+  \fn GtkWidget * create_md_box ()
+
+  \brief CONTROL file create molecular dynamics parameter widgets
 */
 GtkWidget * create_md_box ()
 {
@@ -900,13 +908,13 @@ gchar * equi_minu[3]= {"<b>k<sub><i>B</i></sub>T / &#xC5;</b>", "", "<b>&#xC5;</
 double equi_lim[2][3] = {{1.0, 0.0, 0.000001}, {1000.0, 0.01, 0.1}};
 float init_minop[3]={50.0, 0.005, 0.005};
 
-/*
-*  G_MODULE_EXPORT void set_equi_combo (GtkComboBox * box, gpointer data)
-*
-*  Usage: CONTROL file change equilibration parameter
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_equi_combo (GtkComboBox * box, gpointer data)
+
+  \brief CONTROL file change equilibration parameter
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_equi_combo (GtkComboBox * box, gpointer data)
 {
@@ -922,13 +930,13 @@ G_MODULE_EXPORT void set_equi_combo (GtkComboBox * box, gpointer data)
   gtk_label_set_use_markup (GTK_LABEL(equi_lab[4*k+1]), TRUE);
 }
 
-/*
-*  G_MODULE_EXPORT void set_equi_param (GtkEntry * res, gpointer data)
-*
-*  Usage: CONTROL file update equilibration parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_equi_param (GtkEntry * res, gpointer data)
+
+  \brief CONTROL file update equilibration parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_equi_param (GtkEntry * res, gpointer data)
 {
@@ -966,23 +974,23 @@ G_MODULE_EXPORT void set_equi_param (GtkEntry * res, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void check_equi (GtkCheckButton * but, gpointer data)
-*
-*  Usage: CONTROL file change equilibration parameter toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_equi (GtkCheckButton * but, gpointer data)
+
+  \brief CONTROL file change equilibration parameter toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_equi (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void check_equi (GtkToggleButton * but, gpointer data)
-*
-*  Usage: CONTROL file change equilibration parameter toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_equi (GtkToggleButton * but, gpointer data)
+
+  \brief CONTROL file change equilibration parameter toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_equi (GtkToggleButton * but, gpointer data)
 #endif
@@ -1000,10 +1008,10 @@ G_MODULE_EXPORT void check_equi (GtkToggleButton * but, gpointer data)
   if (i < 6) widget_set_sensitive (equi_box[i], j);
 }
 
-/*
-*  GtkWidget * create_equi_box ()
-*
-*  Usage: CONTROL file create equilibration parameter widgets
+/*!
+  \fn GtkWidget * create_equi_box ()
+
+  \brief CONTROL file create equilibration parameter widgets
 */
 GtkWidget * create_equi_box ()
 {
@@ -1119,13 +1127,13 @@ gchar * out_print[3]={"Radial distribution functions (RDFs):",
 GtkWidget * out_hbox[11];
 GtkWidget * out_entry[3];
 
-/*
-*  G_MODULE_EXPORT void set_out_param (GtkEntry * res, gpointer data)
-*
-*  Usage: CONTROL file update output information parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_out_param (GtkEntry * res, gpointer data)
+
+  \brief CONTROL file update output information parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_out_param (GtkEntry * res, gpointer data)
 {
@@ -1157,23 +1165,23 @@ G_MODULE_EXPORT void set_out_param (GtkEntry * res, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void check_out (GtkCheckButton * but, gpointer data)
-*
-*  Usage: CONTROL file change output information parameter toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_out (GtkCheckButton * but, gpointer data)
+
+  \brief CONTROL file change output information parameter toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_out (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void check_out (GtkToggleButton * but, gpointer data)
-*
-*  Usage: CONTROL file change output information parameter toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_out (GtkToggleButton * but, gpointer data)
+
+  \brief CONTROL file change output information parameter toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_out (GtkToggleButton * but, gpointer data)
 #endif
@@ -1204,23 +1212,23 @@ G_MODULE_EXPORT void check_out (GtkToggleButton * but, gpointer data)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void set_print_level (GtkComboBox * box, gpointer data)
-*
-*  Usage: CONTROL file change print level
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_print_level (GtkComboBox * box, gpointer data)
+
+  \brief CONTROL file change print level
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_print_level (GtkComboBox * box, gpointer data)
 {
   tmp_field -> out_opts[12] =  gtk_combo_box_get_active (box);
 }
 
-/*
-*  GtkWidget * create_traj_box ()
-*
-*  Usage: CONTROL file create MD trajectory parameter widgets
+/*!
+  \fn GtkWidget * create_traj_box ()
+
+  \brief CONTROL file create MD trajectory parameter widgets
 */
 GtkWidget * create_traj_box ()
 {
@@ -1274,10 +1282,10 @@ GtkWidget * create_traj_box ()
   return vbox;
 }
 
-/*
-*  GtkWidget * create_dump_box ()
-*
-*  Usage: CONTROL file create dump parameter widgets
+/*!
+  \fn GtkWidget * create_dump_box ()
+
+  \brief CONTROL file create dump parameter widgets
 */
 GtkWidget * create_dump_box ()
 {
@@ -1302,10 +1310,10 @@ gchar * out_data[3] = {"Print system data:",
 
 gchar * out_info[3] = {"Every:", "Every:", " "};
 
-/*
-*  GtkWidget * create_out_box ()
-*
-*  Usage: CONTROL file create output information widgets
+/*!
+  \fn GtkWidget * create_out_box ()
+
+  \brief CONTROL file create output information widgets
 */
 GtkWidget * create_out_box ()
 {
@@ -1333,10 +1341,10 @@ GtkWidget * create_out_box ()
   return vbox;
 }
 
-/*
-*  GtkWidget * create_overall_box ()
-*
-*  Usage: CONTROL file create overall parameter widgets
+/*!
+  \fn GtkWidget * create_overall_box ()
+
+  \brief CONTROL file create overall parameter widgets
 */
 GtkWidget * create_overall_box ()
 {
@@ -1400,13 +1408,13 @@ GtkWidget * ana_box[5];
 gchar * ana_info[5]={"All:", "Bonds:", "Angles:", "Dihedrals:", "Inversions:"};
 gchar * ana_param[3]={"Every:", "Num. δ", "Cutoff = "};
 
-/*
-*  G_MODULE_EXPORT void set_ana_param (GtkEntry * res, gpointer data)
-*
-*  Usage:  CONTROL file update analysis parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_ana_param (GtkEntry * res, gpointer data)
+
+  \brief  CONTROL file update analysis parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_ana_param (GtkEntry * res, gpointer data)
 {
@@ -1429,23 +1437,23 @@ G_MODULE_EXPORT void set_ana_param (GtkEntry * res, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void check_ana (GtkCheckButton * but, gpointer data)
-*
-*  Usage: CONTROL file change analysis parameter toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_ana (GtkCheckButton * but, gpointer data)
+
+  \brief CONTROL file change analysis parameter toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_ana (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void check_ana (GtkToggleButton * but, gpointer data)
-*
-*  Usage: CONTROL file change analysis parameter toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_ana (GtkToggleButton * but, gpointer data)
+
+  \brief CONTROL file change analysis parameter toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_ana (GtkToggleButton * but, gpointer data)
 #endif
@@ -1474,10 +1482,10 @@ G_MODULE_EXPORT void check_ana (GtkToggleButton * but, gpointer data)
   widget_set_sensitive (ana_box[k], j);
 }
 
-/*
-*  GtkWidget * create_analyze_box ()
-*
-*  Usage: CONTROL file create analysis parameter widgets
+/*!
+  \fn GtkWidget * create_analyze_box ()
+
+  \brief CONTROL file create analysis parameter widgets
 */
 GtkWidget * create_analyze_box ()
 {
@@ -1560,13 +1568,13 @@ gchar * io_type[2] = {"Sorted", "Unsorted"};
 GtkWidget * io_hp[2][4];
 GtkWidget * check_e[2];
 
-/*
-*  G_MODULE_EXPORT void set_io_param (GtkEntry * res, gpointer data)
-*
-*  Usage: CONTROL file update I/O parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_io_param (GtkEntry * res, gpointer data)
+
+  \brief CONTROL file update I/O parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_io_param (GtkEntry * res, gpointer data)
 {
@@ -1630,23 +1638,23 @@ G_MODULE_EXPORT void set_io_param (GtkEntry * res, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void check_io (GtkCheckButton * but, gpointer data)
-*
-*  Usage: CONTROL file change I/O parameter toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_io (GtkCheckButton * but, gpointer data)
+
+  \brief CONTROL file change I/O parameter toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_io (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void check_io (GtkToggleButton * but, gpointer data)
-*
-*  Usage: CONTROL file change I/O parameter toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_io (GtkToggleButton * but, gpointer data)
+
+  \brief CONTROL file change I/O parameter toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_io (GtkToggleButton * but, gpointer data)
 #endif
@@ -1679,13 +1687,13 @@ G_MODULE_EXPORT void check_io (GtkToggleButton * but, gpointer data)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void set_io_method (GtkComboBox * box, gpointer data)
-*
-*  Usage: CONTROL file change I/O method
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_io_method (GtkComboBox * box, gpointer data)
+
+  \brief CONTROL file change I/O method
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_io_method (GtkComboBox * box, gpointer data)
 {
@@ -1709,10 +1717,10 @@ G_MODULE_EXPORT void set_io_method (GtkComboBox * box, gpointer data)
   }
 }
 
-/*
-*  GtkWidget * create_job_box ()
-*
-*  Usage: CONTROL file create job parameter vidgets
+/*!
+  \fn GtkWidget * create_job_box ()
+
+  \brief CONTROL file create job parameter vidgets
 */
 GtkWidget * create_job_box ()
 {
@@ -1738,10 +1746,10 @@ GtkWidget * create_job_box ()
   return vbox;
 }
 
-/*
-*  GtkWidget * create_io_box ()
-*
-*  Usage: CONTROL file create I/O parameter vidgets
+/*!
+  \fn GtkWidget * create_io_box ()
+
+  \brief CONTROL file create I/O parameter vidgets
 */
 GtkWidget * create_io_box ()
 {
@@ -1818,10 +1826,10 @@ GtkWidget * create_io_box ()
   return vbox;
 }
 
-/*
-*  GtkWidget * create_misc_box ()
-*
-*  Usage: CONTROL file create miscalleanous parameter vidgets
+/*!
+  \fn GtkWidget * create_misc_box ()
+
+  \brief CONTROL file create miscalleanous parameter vidgets
 */
 GtkWidget * create_misc_box ()
 {
@@ -1864,13 +1872,13 @@ gchar * eval_m[10] = {"Direct Coulomb sum", "Distance dependent dielectric Coulo
                       "Force-shifted Coulomb sum", "Force-shifted Coulomb sum with Fennel damping",
                       "Force-shifted Coulomb sum with Fennel damping (auto)"};
 
-/*
-*  G_MODULE_EXPORT void set_elec_param (GtkEntry * res, gpointer data)
-*
-*  Usage:  CONTROL file update electrostatic interactions parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_elec_param (GtkEntry * res, gpointer data)
+
+  \brief  CONTROL file update electrostatic interactions parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_elec_param (GtkEntry * res, gpointer data)
 {
@@ -1959,13 +1967,13 @@ G_MODULE_EXPORT void set_elec_param (GtkEntry * res, gpointer data)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void adjust_precision (GtkSpinButton * res, gpointer data)
-*
-*  Usage: CONTROL file update electrostatic interactions precision spin callback
-*
-*  GtkSpinButton * res : the GtkSpinButton sending the signal
-*  gpointer data       : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void adjust_precision (GtkSpinButton * res, gpointer data)
+
+  \brief CONTROL file update electrostatic interactions precision spin callback
+
+  \param res the GtkSpinButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void adjust_precision (GtkSpinButton * res, gpointer data)
 {
@@ -1979,10 +1987,10 @@ G_MODULE_EXPORT void adjust_precision (GtkSpinButton * res, gpointer data)
   tmp_field -> elec_opts[6] = v * pow(10, powa);
 }
 
-/*
-*  GtkWidget * create_elec_param_box ()
-*
-*  Usage: CONTROL file create electrostatic interactions parameter box
+/*!
+  \fn GtkWidget * create_elec_param_box ()
+
+  \brief CONTROL file create electrostatic interactions parameter box
 */
 GtkWidget * create_elec_param_box ()
 {
@@ -2065,13 +2073,13 @@ GtkWidget * create_elec_param_box ()
   return vvbox;
 }
 
-/*
-*  G_MODULE_EXPORT void set_elec_eval (GtkComboBox * box, gpointer data)
-*
-*  Usage: CONTROL file change electrostatics evaluation method
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_elec_eval (GtkComboBox * box, gpointer data)
+
+  \brief CONTROL file change electrostatics evaluation method
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_elec_eval (GtkComboBox * box, gpointer data)
 {
@@ -2083,23 +2091,23 @@ G_MODULE_EXPORT void set_elec_eval (GtkComboBox * box, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void check_elec (GtkCheckButton * but, gpointer data)
-*
-*  Usage: change CONTROL file electrostatics option toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_elec (GtkCheckButton * but, gpointer data)
+
+  \brief change CONTROL file electrostatics option toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_elec (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void check_elec (GtkToggleButton * but, gpointer data)
-*
-*  Usage: change CONTROL file electrostatics option toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_elec (GtkToggleButton * but, gpointer data)
+
+  \brief change CONTROL file electrostatics option toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_elec (GtkToggleButton * but, gpointer data)
 #endif
@@ -2116,10 +2124,10 @@ G_MODULE_EXPORT void check_elec (GtkToggleButton * but, gpointer data)
   if (i == 2) widget_set_sensitive (elec_box[1], j);
 }
 
-/*
-*  GtkWidget * create_electro_box ()
-*
-*  Usage: CONTROL file create electrostatic interactions parameter vidgets
+/*!
+  \fn GtkWidget * create_electro_box ()
+
+  \brief CONTROL file create electrostatic interactions parameter vidgets
 */
 GtkWidget * create_electro_box ()
 {
@@ -2173,13 +2181,13 @@ GtkWidget * vdw_box[2];
 gchar * eval_vdw[6] = {"Lorentz-Berthelot", "Fender-Halsey", "Hogervorst",
                        "Halgren HHG", "Tang-Toennies", "Functional"};
 
-/*
-*  G_MODULE_EXPORT void set_vdw_param (GtkEntry * res, gpointer data)
-*
-*  Usage: CONTROL file udpate VdW parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_vdw_param (GtkEntry * res, gpointer data)
+
+  \brief CONTROL file udpate VdW parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_vdw_param (GtkEntry * res, gpointer data)
 {
@@ -2201,13 +2209,13 @@ G_MODULE_EXPORT void set_vdw_param (GtkEntry * res, gpointer data)
   update_entry_double (GTK_ENTRY(res), tmp_field -> vdw_opts[i]);
 }
 
-/*
-*  G_MODULE_EXPORT void set_vdw_mix (GtkComboBox * box, gpointer data)
-*
-*  Usage: CONTROL file change VdW mixing rule
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_vdw_mix (GtkComboBox * box, gpointer data)
+
+  \brief CONTROL file change VdW mixing rule
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_vdw_mix (GtkComboBox * box, gpointer data)
 {
@@ -2215,23 +2223,23 @@ G_MODULE_EXPORT void set_vdw_mix (GtkComboBox * box, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void check_vdw (GtkCheckButton * but, gpointer data)
-*
-*  Usage: change CONTROL file VdW option toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_vdw (GtkCheckButton * but, gpointer data)
+
+  \brief change CONTROL file VdW option toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_vdw (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void check_vdw (GtkToggleButton * but, gpointer data)
-*
-*  Usage: change CONTROL file VdW option toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_vdw (GtkToggleButton * but, gpointer data)
+
+  \brief change CONTROL file VdW option toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_vdw (GtkToggleButton * but, gpointer data)
 #endif
@@ -2248,10 +2256,10 @@ G_MODULE_EXPORT void check_vdw (GtkToggleButton * but, gpointer data)
   if (j == 4) widget_set_sensitive (vdw_box[1], i);
 }
 
-/*
-*  GtkWidget * create_vdws_box ()
-*
-*  Usage: CONTROL file create VdW parameter vidgets
+/*!
+  \fn GtkWidget * create_vdws_box ()
+
+  \brief CONTROL file create VdW parameter vidgets
 */
 GtkWidget * create_vdws_box ()
 {
@@ -2305,23 +2313,23 @@ GtkWidget * create_vdws_box ()
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void check_met (GtkCheckButton * but, gpointer data)
-*
-*  Usage: change CONTROL file metal interactions toggle callback GTK3
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_met (GtkCheckButton * but, gpointer data)
+
+  \brief change CONTROL file metal interactions toggle callback GTK3
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_met (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void check_met (GtkToggleButton * but, gpointer data)
-*
-*  Usage: change CONTROL file metal interactions toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_met (GtkToggleButton * but, gpointer data)
+
+  \brief change CONTROL file metal interactions toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_met (GtkToggleButton * but, gpointer data)
 #endif
@@ -2336,10 +2344,10 @@ G_MODULE_EXPORT void check_met (GtkToggleButton * but, gpointer data)
   tmp_field -> met_opts[j] = (double)i;
 }
 
-/*
-*  GtkWidget * create_metal_box ()
-*
-*  Usage: create CONTROL file metal interaction widgets
+/*!
+  \fn GtkWidget * create_metal_box ()
+
+  \brief create CONTROL file metal interaction widgets
 */
 GtkWidget * create_metal_box ()
 {
@@ -2359,13 +2367,13 @@ GtkWidget * create_metal_box ()
   return vbox;
 }
 
-/*
-*  G_MODULE_EXPORT void set_sys_param (GtkEntry * res, gpointer data)
-*
-*  Usage: update CONTROL file system option parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_sys_param (GtkEntry * res, gpointer data)
+
+  \brief update CONTROL file system option parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_sys_param (GtkEntry * res, gpointer data)
 {
@@ -2410,13 +2418,13 @@ gchar * sys_opts[10] = {"Relative dielectric constant &#949;<sub>r</sub>",
                         "Create an expanded version of the current model:",
                         "Restart calculation:"};
 
-/*
-*  G_MODULE_EXPORT void set_sys_restart (GtkComboBox * box, gpointer data)
-*
-*  Usage: change CONTROL file system option
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_sys_restart (GtkComboBox * box, gpointer data)
+
+  \brief change CONTROL file system option
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_sys_restart (GtkComboBox * box, gpointer data)
 {
@@ -2424,23 +2432,23 @@ G_MODULE_EXPORT void set_sys_restart (GtkComboBox * box, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void check_sys (GtkCheckButton * but, gpointer data)
-*
-*  Usage: change CONTROL file system option toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_sys (GtkCheckButton * but, gpointer data)
+
+  \brief change CONTROL file system option toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_sys (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void check_sys (GtkToggleButton * but, gpointer data)
-*
-*  Usage: change CONTROL file system option toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void check_sys (GtkToggleButton * but, gpointer data)
+
+  \brief change CONTROL file system option toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void check_sys (GtkToggleButton * but, gpointer data)
 #endif
@@ -2462,10 +2470,10 @@ G_MODULE_EXPORT void check_sys (GtkToggleButton * but, gpointer data)
   }
 }
 
-/*
-*  GtkWidget * create_sys_box ()
-*
-*  Usage: prepare the DL-POLY CONTROL file system options widgets
+/*!
+  \fn GtkWidget * create_sys_box ()
+
+  \brief prepare the DL-POLY CONTROL file system options widgets
 */
 GtkWidget * create_sys_box ()
 {
@@ -2524,10 +2532,10 @@ GtkWidget * create_sys_box ()
   return hhbox;
 }
 
-/*
-*  GtkWidget * create_restart_box ()
-*
-*  Usage: prepare the DL-POLY CONTROL file restart widgets
+/*!
+  \fn GtkWidget * create_restart_box ()
+
+  \brief prepare the DL-POLY CONTROL file restart widgets
 */
 GtkWidget * create_restart_box ()
 {
@@ -2552,12 +2560,12 @@ GtkWidget * create_restart_box ()
 }
 
 
-/*
-*  GtkWidget * vbox_control (int f)
-*
-*  Usage: crerate DL-POLY option widgets
-*
-*  int f : the page number in the CONTROL file section of the DL-POLY input file(s) creation assistant
+/*!
+  \fn GtkWidget * vbox_control (int f)
+
+  \brief crerate DL-POLY option widgets
+
+  \param f the page number in the CONTROL file section of the DL-POLY input file(s) creation assistant
 */
 GtkWidget * vbox_control (int f)
 {

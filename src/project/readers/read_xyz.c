@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_xyz.c
+* @short Functions to read XYZ atomic coordinates
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_xyz.c'
 *
-*  Contains:
+* Contains:
 *
 
- -  - The subroutines to read XYZ atomic coordinates
+ - The functions to read XYZ atomic coordinates
 
 *
-*  List of subroutines:
+* List of functions:
 
   int xyz_get_atom_coordinates ();
   int open_xyz_file (int linec);
@@ -36,15 +44,14 @@ If not, see <https://www.gnu.org/licenses/> */
 #include <omp.h>
 #include "readers.h"
 
-/*
-*  int xyz_get_atom_coordinates ()
-*
-*  Usage: get the atomic coordinates from the XYZ file
+/*!
+  \fn int xyz_get_atom_coordinates ()
+
+  \brief get the atomic coordinates from the XYZ file
 */
 int xyz_get_atom_coordinates ()
 {
   int i, j, k;
-  int v_dummy;
   double v;
   gchar * lia[4] = {"a", "b", "c", "d"};
   this_reader -> nspec = 0;
@@ -54,6 +61,7 @@ int xyz_get_atom_coordinates ()
   this_reader -> z = allocdouble (1);
   this_reader -> nsps = allocint (1);
 #ifdef OPENMP
+  int v_dummy;
   int res;
   int numth = omp_get_max_threads ();
   gboolean doatoms =  FALSE;
@@ -214,7 +222,7 @@ int xyz_get_atom_coordinates ()
   g_free (coord_line);
   if (res == 2) return 2;
 #else
-  struct line_node * tmp_line;
+  line_node * tmp_line;
   tail = head;
   k = 0;
   for (i=0; i<active_project -> steps; i++)
@@ -236,7 +244,6 @@ int xyz_get_atom_coordinates ()
         return 2;
       }
       v = get_z_from_periodic_table (this_word);
-      if ()
       if (v)
       {
         if (! i) check_for_species (v, j);
@@ -284,12 +291,12 @@ int xyz_get_atom_coordinates ()
   return 0;
 }
 
-/*
-*  int open_xyz_file (int linec)
-*
-*  Usage: open XYZ file
-*
-*  int linec : Number of lines in the file
+/*!
+  \fn int open_xyz_file (int linec)
+
+  \brief open XYZ file
+
+  \param linec Number of lines in the file
 */
 int open_xyz_file (int linec)
 {

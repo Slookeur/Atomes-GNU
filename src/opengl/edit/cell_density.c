@@ -1,47 +1,55 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file cell_density.c
+* @short Functions to create the 'density adjustment' tab in the cell edition window
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'cell_density.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the density adjustement tab in the cell edition window
+ - The functions to create the 'density adjustment' tab in the cell edition window
 
 *
-*  List of subroutines:
+* List of functions:
 
   void display_density (cell_edition * cell, double vol, double dens, double adens);
 
   G_MODULE_EXPORT void set_rescaling (GtkCheckButton * but, gpointer data);
   G_MODULE_EXPORT void set_rescaling (GtkToggleButton * but, gpointer data);
 
-  GtkWidget * adjust_density_tab (struct project * this_proj);
+  GtkWidget * adjust_density_tab (project * this_proj);
 
 */
 
 #include "cell_edit.h"
 
-/*
-*  void display_density (cell_edition * cell, double vol, double dens, double adens)
-*
-*  Usage: create density information widgets
-*
-*  cell_edition * cell : the target cell edition
-*  double vol          : the volume
-*  double dens         : the density
-*  double adens        : the atomic density
+/*!
+  \fn void display_density (cell_edition * cell, double vol, double dens, double adens)
+
+  \brief create density information widgets
+
+  \param cell the target cell edition
+  \param vol the volume
+  \param dens the density
+  \param adens the atomic density
 */
 void display_density (cell_edition * cell, double vol, double dens, double adens)
 {
@@ -71,23 +79,23 @@ void display_density (cell_edition * cell, double vol, double dens, double adens
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void set_rescaling (GtkCheckButton * but, gpointer data)
-*
-*  Usage: homogeneous rescaling toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_rescaling (GtkCheckButton * but, gpointer data)
+
+  \brief homogeneous rescaling toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_rescaling (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void set_rescaling (GtkToggleButton * but, gpointer data)
-*
-*  Usage: homogeneous rescaling toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_rescaling (GtkToggleButton * but, gpointer data)
+
+  \brief homogeneous rescaling toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_rescaling (GtkToggleButton * but, gpointer data)
 #endif
@@ -101,14 +109,14 @@ G_MODULE_EXPORT void set_rescaling (GtkToggleButton * but, gpointer data)
   widget_set_sensitive (view -> cell_win -> shift_box[1], view -> cell_win -> homo_density);
 }
 
-/*
-*  GtkWidget * adjust_density_tab (struct project * this_proj)
-*
-*  Usage: create the density tab
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn GtkWidget * adjust_density_tab (project * this_proj)
+
+  \brief create the density tab
+
+  \param this_proj the target project
 */
-GtkWidget * adjust_density_tab (struct project * this_proj)
+GtkWidget * adjust_density_tab (project * this_proj)
 {
   GtkWidget * layout = create_layout (350, 400);
   GtkWidget * vbox = create_vbox (BSEP);

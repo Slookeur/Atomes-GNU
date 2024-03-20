@@ -1,45 +1,53 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file atom_geo.c
+* @short Functions to check for the appropriate atomic coordinations
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'atom_geo.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to insert a new atom coordination type during model edition
+ - The functions to check for the appropriate atomic coordinations
 
 *
-*  List of subroutines:
+* List of functions:
 
   int is_this_a_new_geo (int id, coord_info * obj, int * old_z, int old_geo, int old_sp, int new_sp, coord_info * coord, double * new_z);
 
-  gboolean is_in_atom_list (int aid, struct atom * new_list);
+  gboolean is_in_atom_list (int aid, atom * new_list);
 
   void sort_partial_geo (int ** geom, int num_a);
-  void check_coord_modification (struct project * this_proj, int * old_id, struct atom * new_list,
-                                 struct insert_object * this_object, gboolean movtion, gboolean passivating);
+  void check_coord_modification (project * this_proj, int * old_id, atom * new_list,
+                                 atomic_object * this_object, gboolean movtion, gboolean passivating);
 */
 
 #include "atom_edit.h"
 
-/*
-*  void sort_partial_geo (int ** geom, int num_a)
-*
-*  Usage: sort partial geometries
-*
-*  int ** geom : the data to sort
-*  int num_a   : the number of data point
+/*!
+  \fn void sort_partial_geo (int ** geom, int num_a)
+
+  \brief sort partial geometries
+
+  \param geom the data to sort
+  \param num_a the number of data point
 */
 void sort_partial_geo (int ** geom, int num_a)
 {
@@ -62,19 +70,19 @@ void sort_partial_geo (int ** geom, int num_a)
   }
 }
 
-/*
-*  int is_this_a_new_geo (int gid, coord_info * obj, int * old_z, int old_geo, int old_sp, int new_sp, coord_info * coord, double * new_z)
-*
-*  Usage: if required create a new geometry, stored in coord, for coordination type 'gid' and chemical species 'new_sp', return geometry id
-*
-*  int gid            : the new coordination type (0 = total, 1 = partial)
-*  coord_info * obj   : the new coordination info to update
-*  int * old_z        : old Z list
-*  int old_geo        : the old coordination id
-*  int old_sp         : the old chemical species id
-*  int new_sp         : the new chemical species id
-*  coord_info * coord : the old coordination info
-*  double * new_z     : new Z list
+/*!
+  \fn int is_this_a_new_geo (int gid, coord_info * obj, int * old_z, int old_geo, int old_sp, int new_sp, coord_info * coord, double * new_z)
+
+  \brief if required create a new geometry, stored in coord, for coordination type 'gid' and chemical species 'new_sp', return geometry id
+
+  \param gid the new coordination type (0 = total, 1 = partial)
+  \param obj the new coordination info to update
+  \param old_z old Z list
+  \param old_geo the old coordination id
+  \param old_sp the old chemical species id
+  \param new_sp the new chemical species id
+  \param coord the old coordination info
+  \param new_z new Z list
 */
 int is_this_a_new_geo (int gid, coord_info * obj, int * old_z, int old_geo, int old_sp, int new_sp, coord_info * coord, double * new_z)
 {
@@ -160,34 +168,15 @@ int is_this_a_new_geo (int gid, coord_info * obj, int * old_z, int old_geo, int 
   }
 
   // If we keep going then this is a new type of coordination sphere
-  int * tmpgeol = NULL;
+  j = coord -> ntg[gid][new_sp];
   if (! gid)
   {
-    tmpgeol = allocint (coord -> ntg[gid][new_sp]+1);
-    for (j=0; j<coord -> ntg[gid][new_sp]; j++)
-    {
-      tmpgeol[j] = coord -> geolist[gid][new_sp][j];
-    }
-    tmpgeol[j] = obj -> geolist[gid][old_sp][old_geo];
+    coord -> geolist[gid][new_sp] = g_realloc (coord -> geolist[gid][new_sp], (j+1)*sizeof*coord -> geolist[gid][new_sp]);
+    coord -> geolist[gid][new_sp][coord -> ntg[gid][new_sp]] = obj -> geolist[gid][old_sp][old_geo];
   }
   else
   {
-    int ** tmp_part = NULL;
-    tmp_part = g_malloc0 (coord -> ntg[1][new_sp]*sizeof*tmp_part);
-    for (j=0; j<coord -> ntg[1][new_sp]; j++)
-    {
-      tmp_part[j] = duplicate_int (coord -> species, coord -> partial_geo[new_sp][j]);
-    }
-    g_free (coord -> partial_geo[new_sp]);
-    coord -> partial_geo[new_sp] = g_malloc0 ((coord -> ntg[1][new_sp]+1)*sizeof*coord -> partial_geo[new_sp]);
-    if (tmp_part)
-    {
-      for (j=0; j<coord -> ntg[1][new_sp]; j++)
-      {
-        coord -> partial_geo[new_sp][j] = duplicate_int (coord -> species, tmp_part[j]);
-      }
-      g_free (tmp_part);
-    }
+    coord -> partial_geo[new_sp] = g_realloc (coord -> partial_geo[new_sp], (j+1)*sizeof*coord -> partial_geo[new_sp]);
     coord -> partial_geo[new_sp][j] = allocint (coord -> species);
     for (k=0; k<obj -> species; k++)
     {
@@ -200,28 +189,22 @@ int is_this_a_new_geo (int gid, coord_info * obj, int * old_z, int old_geo, int 
   }
   coord -> ntg[gid][new_sp] ++;
   coord -> totcoord[gid] ++;
-  if (! gid)
-  {
-    if (coord -> geolist[gid][new_sp] != NULL) g_free (coord -> geolist[gid][new_sp]);
-    coord -> geolist[gid][new_sp] = duplicate_int (coord -> ntg[gid][new_sp], tmpgeol);
-    g_free (tmpgeol);
-  }
   return i;
 }
 
-/*
-*  int find_this_geo_id (int id, coord_info * obj, int * old_z, int old_geo, int old_sp, int new_sp, coord_info * coord, double * new_z)
-*
-*  Usage: if required create a new geometry, stored in coord, for coordination type 'id' and chemical species 'new_sp', return geometry id
-*
-*  int id             : the new coordination type (0 = total, 1 = partial)
-*  coord_info * obj   : the new coordination info to update
-*  int * old_z        : old Z list
-*  int old_geo        : the old coordination id for this coordination type
-*  int old_sp         : the old chemical species id
-*  int new_sp         : the new chemical species id
-*  coord_info * coord : the old coordination info
-*  double * new_z     : new Z list
+/*!
+  \fn int find_this_geo_id (int gid, coord_info * obj, int * old_z, int old_geo, int old_sp, int new_sp, coord_info * coord, double * new_z)
+
+  \brief if required create a new geometry, stored in coord, for coordination type 'gid' and chemical species 'new_sp', return geometry id
+
+  \param gid the new coordination type (0 = total, 1 = partial)
+  \param obj the new coordination info to update
+  \param old_z old Z list
+  \param old_geo the old coordination id for this coordination type
+  \param old_sp the old chemical species id
+  \param new_sp the new chemical species id
+  \param coord the old coordination info
+  \param new_z new Z list
 */
 int find_this_geo_id (int gid, coord_info * obj, int * old_z, int old_geo, int old_sp, int new_sp, coord_info * coord, double * new_z)
 {
@@ -311,32 +294,12 @@ int find_this_geo_id (int gid, coord_info * obj, int * old_z, int old_geo, int o
   }
 
   // If we keep going then this is a new type of coordination sphere
-  int * tmpgeol = NULL;
-  tmpgeol = allocint (coord -> ntg[gid][new_sp]+1);
-  for (j=0; j<coord -> ntg[gid][new_sp]; j++)
-  {
-    tmpgeol[j] = coord -> geolist[gid][new_sp][j];
-  }
-  tmpgeol[j] = obj -> geolist[gid][old_sp][old_geo];
-
+  j = coord -> ntg[gid][new_sp];
+  coord -> geolist[gid][new_sp] = g_realloc (coord -> geolist[gid][new_sp], (j+1)*sizeof*coord -> geolist[gid][new_sp]);
+  coord -> geolist[gid][new_sp][j] = obj -> geolist[gid][old_sp][old_geo];
   if (gid)
   {
-    int ** tmp_part = NULL;
-    tmp_part = g_malloc0 (coord -> ntg[1][new_sp]*sizeof*tmp_part);
-    for (j=0; j<coord -> ntg[1][new_sp]; j++)
-    {
-      tmp_part[j] = duplicate_int (coord -> species, coord -> partial_geo[new_sp][j]);
-    }
-    g_free (coord -> partial_geo[new_sp]);
-    coord -> partial_geo[new_sp] = g_malloc0 ((coord -> ntg[1][new_sp]+1)*sizeof*coord -> partial_geo[new_sp]);
-    if (tmp_part)
-    {
-      for (j=0; j<coord -> ntg[1][new_sp]; j++)
-      {
-        coord -> partial_geo[new_sp][j] = duplicate_int (coord -> species, tmp_part[j]);
-      }
-      g_free (tmp_part);
-    }
+    coord -> partial_geo[new_sp] = g_realloc (coord -> partial_geo[new_sp], (j+1)*sizeof*coord -> partial_geo[new_sp]);
     coord -> partial_geo[new_sp][j] = allocint (coord -> species);
     for (k=0; k<obj -> species; k++)
     {
@@ -349,29 +312,26 @@ int find_this_geo_id (int gid, coord_info * obj, int * old_z, int old_geo, int o
   }
   coord -> ntg[gid][new_sp] ++;
   coord -> totcoord[gid] ++;
-  if (coord -> geolist[gid][new_sp] != NULL) g_free (coord -> geolist[gid][new_sp]);
-  coord -> geolist[gid][new_sp] = duplicate_int (coord -> ntg[gid][new_sp], tmpgeol);
-  g_free (tmpgeol);
   return i;
 }
 
-/*
-*  void check_coord_modification (struct project * this_proj, int * old_id, struct atom * new_list,
-*                                 struct insert_object * this_object, gboolean movtion, gboolean passivating)
-*
-*  Usage: check atom coordination modification on edition
-*
-*  struct project * this_proj         : the target project
-*  int * old_id                       : the old atom id list, if any
-*  struct atom * new_list             : the new atom(s) list
-*  struct insert_object * this_object : the object to insert, if any
-*  gboolean movtion                   : move or remove = 1, else : 0
-*  gboolean passivating               : passivate
+/*!
+  \fn void check_coord_modification (project * this_proj, int * old_id, atom * new_list,
+*                                    atomic_object * this_object, gboolean movtion, gboolean passivating)
+
+  \brief check atom coordination modification on edition
+
+  \param this_proj the target project
+  \param old_id the old atom id list, if any
+  \param new_list the new atom(s) list
+  \param this_object the object to insert, if any
+  \param movtion motion (1) or removal (2)
+  \param passivating passivate
 */
-void check_coord_modification (struct project * this_proj, int * old_id, struct atom * new_list,
-                               struct insert_object * this_object, gboolean movtion, gboolean passivating)
+void check_coord_modification (project * this_proj, int * old_id, atom * new_list,
+                               atomic_object * this_object, gboolean movtion, gboolean passivating)
 {
-  struct atom * tmp_new;
+  atom * tmp_new;
   int g, h, i, j, k, l, m, n;
   gboolean correct_it;
   int * new_z = allocint (this_proj -> nspec);
@@ -475,7 +435,7 @@ void check_coord_modification (struct project * this_proj, int * old_id, struct 
                 l = tmp_new -> coord[this_proj -> modelgl -> search_widg[8] -> filter-1];
                 break;
             }
-            if (get_insert_object_by_origin (this_proj -> modelgl -> atom_win -> to_be_inserted[3], l, 0))  new_old_id[j] = abs(old_id[j]);
+            if (get_atomic_object_by_origin (this_proj -> modelgl -> atom_win -> to_be_inserted[3], l, 0))  new_old_id[j] = abs(old_id[j]);
           }
         }
         else
@@ -498,7 +458,7 @@ void check_coord_modification (struct project * this_proj, int * old_id, struct 
     }
     if (passivating && ! h)
     {
-      for (i=0; i<this_proj -> natomes; i++) old_id[i]= new_old_id[i];
+      for (i=0; i<this_proj -> natomes; i++) old_id[i] = new_old_id[i];
       g_free (new_old_id);
     }
   }

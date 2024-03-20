@@ -1,31 +1,39 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file project.c
+* @short Project management functions
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'project.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Project management miscellaneous subroutines
+ - Project management functions
 
 *
-*  List of subroutines:
+* List of functions:
 
   void save_pos_ (int * nat, int lot[* nat], int * num, double xpos[* num], double ypos[* num], double zpos[* num]);
   void send_steps_ (int * steps);
 
-  struct project * get_project_by_id (int p);
+  project * get_project_by_id (int p);
 
 */
 
@@ -36,26 +44,26 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "bind.h"
 
 workspace workzone;
-struct project * active_project = NULL;
+project * active_project = NULL;
 chemical_data * active_chem = NULL;
 coord_info * active_coord = NULL;
 cell_info * active_cell = NULL;
 box_info * active_box = NULL;
 image * active_image = NULL;
 glwin * active_glwin = NULL;
-struct project * opengl_project = NULL;
+project * opengl_project = NULL;
 
-/*
-*  void save_pos_ (int * nat, int lot[* nat], int * num, double xpos[* num], double ypos[* num], double zpos[* num])
-*
-*  Usage: retrieve atomic coordinates from Fortran90
-*
-*  int * nat          : Number of atoms
-*  int lot[* nat]     : List of chemical species by atoms
-*  int * num          : Number of coordinates (NA x NS)
-*  double xpos[* num] : x coordinates
-*  double ypos[* num] : y coordinates
-*  double zpos[* num] : z coordinates
+/*!
+  \fn void save_pos_ (int * nat, int lot[*nat], int * num, double xpos[*num], double ypos[*num], double zpos[*num])
+
+  \brief retrieve atomic coordinates from Fortran90
+
+  \param nat Number of atoms
+  \param lot List of chemical species by atoms
+  \param num Number of coordinates (NA x NS)
+  \param xpos x coordinates
+  \param ypos y coordinates
+  \param zpos z coordinates
 */
 void save_pos_ (int * nat, int lot[* nat], int * num, double xpos[* num], double ypos[* num], double zpos[* num])
 {
@@ -90,28 +98,28 @@ void save_pos_ (int * nat, int lot[* nat], int * num, double xpos[* num], double
   }
 }
 
-/*
-*  void send_steps_ (int * steps)
-*
-*  Usage: retrieve the number of MD steps from Fortran90
-*
-*  int * steps : the number of MD steps
+/*!
+  \fn void send_steps_ (int * steps)
+
+  \brief retrieve the number of MD steps from Fortran90
+
+  \param steps the number of MD steps
 */
 void send_steps_ (int * steps)
 {
   active_project -> steps = * steps;
 }
 
-/*
-*  struct project * get_project_by_id (int p)
-*
-*  Usage: get project pointer using id number
-*
-*  int p : the id number
+/*!
+  \fn project * get_project_by_id (int p)
+
+  \brief get project pointer using id number
+
+  \param p the id number
 */
-struct project * get_project_by_id (int p)
+project * get_project_by_id (int p)
 {
-  struct project * tmp = workzone.first;
+  project * tmp = workzone.first;
   int i;
   for (i=0; i<nprojects; i++)
   {

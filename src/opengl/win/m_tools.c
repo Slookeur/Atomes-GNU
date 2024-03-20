@@ -1,29 +1,37 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file m_tools.c
+* @short Functions to create the 'Tools' submenu
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'm_tools.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the 'Tools' submenu
+ - The functions to create the 'Tools' submenu
 
 *
-*  List of subroutines:
+* List of functions:
 
   void set_motion_sensitive (glwin * view, int status);
-  void invert_visible (struct project * this_proj);
+  void invert_visible (project * this_proj);
 
   G_MODULE_EXPORT void set_selection_mode (GtkWidget * widg, gpointer data);
   G_MODULE_EXPORT void set_mode (GtkWidget * widg, gpointer data);
@@ -58,7 +66,7 @@ extern G_MODULE_EXPORT void window_measures (GtkWidget * widg, gpointer data);
 extern G_MODULE_EXPORT void window_volumes (GtkWidget * widg, gpointer data);
 extern G_MODULE_EXPORT void create_field (GtkWidget * widg, gpointer data);
 extern gboolean spin (gpointer data);
-extern void check_hidden_visible (struct project * this_proj);
+extern void check_hidden_visible (project * this_proj);
 
 char * input_types[NINPUTS] = {"Classical: DL-POLY",
                                "Classical: LAMMPS",
@@ -71,13 +79,13 @@ gchar * modes[3]={"Analysis", "Edition", "Input(s)"};
 gchar * smodes[NSELECTION]={"Atom/Bond", "Coordination Sphere", "Fragment", "Molecule", "Single Fragment", "Single Molecule", "Measures (Edition Mode Only)"};
 gchar * invl[2]={"Selection", "Visible/Hidden"};
 
-/*
-*  void set_motion_sensitive (glwin * view, int status)
-*
-*  Usage: change motion parameters following a change in the mouse mode
-*
-*  glwin * view : the target glwin
-*  int status   : initialize or restore spin
+/*!
+  \fn void set_motion_sensitive (glwin * view, int status)
+
+  \brief change motion parameters following a change in the mouse mode
+
+  \param view the target glwin
+  \param status initialize or restore spin
 */
 void set_motion_sensitive (glwin * view, int status)
 {
@@ -114,18 +122,18 @@ void set_motion_sensitive (glwin * view, int status)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void set_selection_mode (GtkWidget * widg, gpointer data)
-*
-*  Usage: set selection mode callback
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_selection_mode (GtkWidget * widg, gpointer data)
+
+  \brief set selection mode callback
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_selection_mode (GtkWidget * widg, gpointer data)
 {
   tint * the_data = (tint *)data;
-  struct project * this_proj = get_project_by_id(the_data -> a);
+  project * this_proj = get_project_by_id(the_data -> a);
   int i = this_proj -> modelgl -> selection_mode;
   int j = the_data -> b;
 #ifdef GTK4
@@ -153,18 +161,18 @@ G_MODULE_EXPORT void set_selection_mode (GtkWidget * widg, gpointer data)
 #endif
 }
 
-/*
-*  G_MODULE_EXPORT void set_mode (GtkWidget * widg, gpointer data)
-*
-*  Usage: set mouse mode callback
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_mode (GtkWidget * widg, gpointer data)
+
+  \brief set mouse mode callback
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_mode (GtkWidget * widg, gpointer data)
 {
   tint * the_data = (tint *)data;
-  struct project * this_proj = get_project_by_id(the_data -> a);
+  project * this_proj = get_project_by_id(the_data -> a);
   int i = this_proj -> modelgl -> mode;
   int j = the_data -> b;
 
@@ -238,14 +246,14 @@ G_MODULE_EXPORT void set_mode (GtkWidget * widg, gpointer data)
   }
 }
 
-/*
-*  void invert_visible (struct project * this_proj)
-*
-*  Usage: invert visible atom(s)
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn void invert_visible (project * this_proj)
+
+  \brief invert visible atom(s)
+
+  \param this_proj the target project
 */
-void invert_visible (struct project * this_proj)
+void invert_visible (project * this_proj)
 {
   int i, j, k;
   for (i=0; i<this_proj -> steps; i++)
@@ -259,18 +267,18 @@ void invert_visible (struct project * this_proj)
   init_default_shaders (this_proj -> modelgl);
 }
 
-/*
-*  G_MODULE_EXPORT void invert_this (GtkWidget * widg, gpointer data)
-*
-*  Usage: invert selection or visible callback
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void invert_this (GtkWidget * widg, gpointer data)
+
+  \brief invert selection or visible callback
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void invert_this (GtkWidget * widg, gpointer data)
 {
   tint * the_data = (tint *)data;
-  struct project * this_proj = get_project_by_id(the_data -> a);
+  project * this_proj = get_project_by_id(the_data -> a);
   switch (the_data -> b)
   {
     case 0:
@@ -285,13 +293,13 @@ G_MODULE_EXPORT void invert_this (GtkWidget * widg, gpointer data)
 
 #ifdef GTK3
 extern G_MODULE_EXPORT void window_volumes (GtkWidget * widg, gpointer data);
-/*
-*  GtkWidget * menu_tools (glwin * view, int id)
-*
-*  Usage: create the 'Tools' submenu - GTK3
-*
-*  glwin * view : the target glwin
-*  int id       : main app (0) or popup (1)
+/*!
+  \fn GtkWidget * menu_tools (glwin * view, int id)
+
+  \brief create the 'Tools' submenu - GTK3
+
+  \param view the target glwin
+  \param id main app (0) or popup (1)
 */
 GtkWidget * menu_tools (glwin * view, int id)
 {
@@ -437,27 +445,27 @@ GtkWidget * menu_tools (glwin * view, int id)
   return menut;
 }
 #else
-/*
-*  G_MODULE_EXPORT void to_window_measures (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: open the measurement window callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void to_window_measures (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief open the measurement window callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void to_window_measures (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   window_measures (NULL, data);
 }
 
-/*
-*  GMenu * measure_section (glwin * view, int popm)
-*
-*  Usage: create the 'Tools -> Measures' menu item GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * measure_section (glwin * view, int popm)
+
+  \brief create the 'Tools -> Measures' menu item GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * measure_section (glwin * view, int popm)
 {
@@ -466,27 +474,27 @@ GMenu * measure_section (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  G_MODULE_EXPORT void to_window_volumes (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: open the volumes window callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void to_window_volumes (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief open the volumes window callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void to_window_volumes (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   window_volumes (NULL, data);
 }
 
-/*
-*  GMenu * volume_section (glwin * view, int popm)
-*
-*  Usage: create the 'Tools -> Volumes' menu item GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * volume_section (glwin * view, int popm)
+
+  \brief create the 'Tools -> Volumes' menu item GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * volume_section (glwin * view, int popm)
 {
@@ -495,13 +503,13 @@ GMenu * volume_section (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  GMenu * edit_section (glwin * view, int popm)
-*
-*  Usage: create the 'Tools -> Edit' submenu GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * edit_section (glwin * view, int popm)
+
+  \brief create the 'Tools -> Edit' submenu GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * edit_section (glwin * view, int popm)
 {
@@ -510,14 +518,14 @@ GMenu * edit_section (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  G_MODULE_EXPORT void change_mouse_mode_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: change mouse radio menu item callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void change_mouse_mode_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief change mouse radio menu item callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void change_mouse_mode_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
@@ -554,13 +562,13 @@ G_MODULE_EXPORT void change_mouse_mode_radio (GSimpleAction * action, GVariant *
   }
 }
 
-/*
-*  GMenu * mouse_mode_menu (glwin * view, int popm)
-*
-*  Usage: create the 'Tools -> Mouse Mode' submenu GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * mouse_mode_menu (glwin * view, int popm)
+
+  \brief create the 'Tools -> Mouse Mode' submenu GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * mouse_mode_menu (glwin * view, int popm)
 {
@@ -576,14 +584,14 @@ GMenu * mouse_mode_menu (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  G_MODULE_EXPORT void change_sel_mode_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: change selection mode callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void change_sel_mode_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief change selection mode callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void change_sel_mode_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
@@ -619,13 +627,13 @@ G_MODULE_EXPORT void change_sel_mode_radio (GSimpleAction * action, GVariant * p
   }
 }
 
-/*
-*  GMenu * selection_mode_menu (glwin * view, int popm)
-*
-*  Usage: create the 'Tools -> Selection Mode' submenu GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * selection_mode_menu (glwin * view, int popm)
+
+  \brief create the 'Tools -> Selection Mode' submenu GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * selection_mode_menu (glwin * view, int popm)
 {
@@ -652,13 +660,13 @@ GMenu * selection_mode_menu (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  GMenu * modes_section (glwin * view, int popm)
-*
-*  Usage: create the 'Tools -> * Modes' submenus GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * modes_section (glwin * view, int popm)
+
+  \brief create the 'Tools -> * Modes' submenus GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * modes_section (glwin * view, int popm)
 {
@@ -668,27 +676,27 @@ GMenu * modes_section (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  G_MODULE_EXPORT void to_create_field (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: run MD input assistant callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void to_create_field (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief run MD input assistant callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void to_create_field (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   create_field (NULL, data);
 }
 
-/*
-*  GMenu * md_menu (glwin * view, int popm)
-*
-*  Usage: create the 'Molecular Dynamics' submenu GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * md_menu (glwin * view, int popm)
+
+  \brief create the 'Molecular Dynamics' submenu GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * md_menu (glwin * view, int popm)
 {
@@ -702,27 +710,27 @@ GMenu * md_menu (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  G_MODULE_EXPORT void to_invert_this (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: invert this callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void to_invert_this (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief invert this callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void to_invert_this (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   invert_this (NULL, data);
 }
 
-/*
-*  GMenu * inv_menu (glwin * view, int popm)
-*
-*  Usage: create the 'Tools -> Invert' submenu GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * inv_menu (glwin * view, int popm)
+
+  \brief create the 'Tools -> Invert' submenu GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * inv_menu (glwin * view, int popm)
 {
@@ -735,14 +743,14 @@ GMenu * inv_menu (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  GMenu * add_section_item_with_menu (glwin * view, gchar * item_name, GMenu * men)
-*
-*  Usage: append a new menu item with a new submenu
-*
-*  glwin * view      : the target glwin
-*  gchar * item_name : the new menu item label
-*  GMenu * men       : the menu item new submenu
+/*!
+  \fn GMenu * add_section_item_with_menu (glwin * view, gchar * item_name, GMenu * men)
+
+  \brief append a new menu item with a new submenu
+
+  \param view the target glwin
+  \param item_name the new menu item label
+  \param men the menu item new submenu
 */
 GMenu * add_section_item_with_menu (glwin * view, gchar * item_name, GMenu * men)
 {
@@ -751,13 +759,13 @@ GMenu * add_section_item_with_menu (glwin * view, gchar * item_name, GMenu * men
   return menu;
 }
 
-/*
-*  GMenu * menu_tools (glwin * view, int popm)
-*
-*  Usage: create the 'Tools' submenu - GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * menu_tools (glwin * view, int popm)
+
+  \brief create the 'Tools' submenu - GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * menu_tools (glwin * view, int popm)
 {

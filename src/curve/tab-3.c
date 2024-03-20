@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file tab-3.c
+* @short 3rd tab of the curve layout edition dialog
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'tab-3.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The 3rd tab of the curve edition dialog
+ - The 3rd tab of the curve layout edition dialog
 
 *
-*  List of subroutines:
+* List of functions:
 
   void set_legend_box_style (gpointer data);
 
@@ -66,21 +74,21 @@ extern char * ctext[2];
 extern qint dataxe[2];
 extern int a, b, c, d;
 
-/*
-*  cairo_surface_t * draw_legend_surface (int da, double ti, ColRGBA dcol, ColRGBA bcol)
-*
-*  Usage: draw legend preview
-*
-*  int da       : the dash type
-*  double ti    : the thickness
-*  ColRGBA dcol : the legend color
-*  ColRGBA bcol : the background color
+/*!
+  \fn cairo_surface_t * draw_legend_surface (int da, double ti, ColRGBA dcol, ColRGBA bcol)
+
+  \brief draw legend preview
+
+  \param da the dash type
+  \param ti the thickness
+  \param dcol the legend color
+  \param bcol the background color
 */
 cairo_surface_t * draw_legend_surface (int da, double ti, ColRGBA dcol, ColRGBA bcol)
 {
   cairo_surface_t * cst;
   cairo_t * tcst;
-  thedash * tdash;
+  curve_dash * tdash;
   cst = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 80, 80);
   tcst = cairo_create (cst);
   tdash = selectdash (da);
@@ -101,23 +109,23 @@ cairo_surface_t * draw_legend_surface (int da, double ti, ColRGBA dcol, ColRGBA 
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void show_data_legend (GtkCheckButton * leg, gpointer data)
-*
-*  Usage: show / hide legend toggle callback GTK4
-*
-*  GtkCheckButton * leg : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void show_data_legend (GtkCheckButton * leg, gpointer data)
+
+  \brief show / hide legend toggle callback GTK4
+
+  \param leg the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void show_data_legend (GtkCheckButton * leg, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void show_data_legend (GtkToggleButton * leg, gpointer data)
-*
-*  Usage: show / hide legend toggle callback GTK3
-*
-*  GtkToggleButton * leg : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void show_data_legend (GtkToggleButton * leg, gpointer data)
+
+  \brief show / hide legend toggle callback GTK3
+
+  \param leg the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void show_data_legend (GtkToggleButton * leg, gpointer data)
 #endif
@@ -126,7 +134,7 @@ G_MODULE_EXPORT void show_data_legend (GtkToggleButton * leg, gpointer data)
   a = cd -> a;
   b = cd -> b;
   c = cd -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
 #ifdef GTK4
   this_proj -> curves[b][c] -> show_legend = gtk_check_button_get_active (leg);
 #else
@@ -144,12 +152,12 @@ G_MODULE_EXPORT void show_data_legend (GtkToggleButton * leg, gpointer data)
   update_curve (data);
 }
 
-/*
-*  void set_legend_box_style (gpointer data)
-*
-*  Usage: update legend style widgets
-*
-*  gpointer data : the associated data pointer
+/*!
+  \fn void set_legend_box_style (gpointer data)
+
+  \brief update legend style widgets
+
+  \param data the associated data pointer
 */
 void set_legend_box_style (gpointer data)
 {
@@ -158,7 +166,7 @@ void set_legend_box_style (gpointer data)
   a = cd -> a;
   b = cd -> b;
   c = cd -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   pix = draw_legend_surface (this_proj -> curves[b][c] -> legend_box_dash,
                              this_proj -> curves[b][c] -> legend_box_thickness,
                              this_proj -> curves[b][c] -> legend_box_color,
@@ -176,23 +184,23 @@ void set_legend_box_style (gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void show_data_legend_box (GtkCheckButton * bleg, gpointer data)
-*
-*  Usage: show / hide legend box toggle callback GTK4
-*
-*  GtkCheckButton * bleg : the GtkCheckButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void show_data_legend_box (GtkCheckButton * bleg, gpointer data)
+
+  \brief show / hide legend box toggle callback GTK4
+
+  \param bleg the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void show_data_legend_box (GtkCheckButton * bleg, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void show_data_legend_box (GtkToggleButton * bleg, gpointer data)
-*
-*  Usage: show / hide legend box toggle callback GTK3
-*
-*  GtkToggleButton * bleg : the GtkToggleButton sending the signal
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void show_data_legend_box (GtkToggleButton * bleg, gpointer data)
+
+  \brief show / hide legend box toggle callback GTK3
+
+  \param bleg the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void show_data_legend_box (GtkToggleButton * bleg, gpointer data)
 #endif
@@ -201,7 +209,7 @@ G_MODULE_EXPORT void show_data_legend_box (GtkToggleButton * bleg, gpointer data
   a = cd -> a;
   b = cd -> b;
   c = cd -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
 #ifdef GTK4
   this_proj -> curves[b][c] -> show_legend_box = gtk_check_button_get_active (bleg);
 #else
@@ -211,13 +219,13 @@ G_MODULE_EXPORT void show_data_legend_box (GtkToggleButton * bleg, gpointer data
   update_curve (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_legend_font (GtkFontButton * fontb, gpointer data)
-*
-*  Usage: change legend font
-*
-*  GtkFontButton * fontb : the GtkFontButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_legend_font (GtkFontButton * fontb, gpointer data)
+
+  \brief change legend font
+
+  \param fontb the GtkFontButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_legend_font (GtkFontButton * fontb, gpointer data)
 {
@@ -225,19 +233,19 @@ G_MODULE_EXPORT void set_legend_font (GtkFontButton * fontb, gpointer data)
   a = cd -> a;
   b = cd -> b;
   c = cd -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   g_free (this_proj -> curves[b][c] -> legend_font);
   this_proj -> curves[b][c] -> legend_font = g_strdup_printf ("%s", gtk_font_chooser_get_font (GTK_FONT_CHOOSER(fontb)));
   update_curve (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_legend_color (GtkColorChooser * colob, gpointer data)
-*
-*  Usage: change legend color
-*
-*  GtkColorChooser * colob : the GtkColorChooser sending the signal
-*  gpointer data           : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_legend_color (GtkColorChooser * colob, gpointer data)
+
+  \brief change legend color
+
+  \param colob the GtkColorChooser sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_legend_color (GtkColorChooser * colob, gpointer data)
 {
@@ -245,18 +253,18 @@ G_MODULE_EXPORT void set_legend_color (GtkColorChooser * colob, gpointer data)
   a = ad -> a;
   b = ad -> b;
   c = ad -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   this_proj -> curves[b][c] -> legend_color = get_button_color (colob);
   set_legend_box_style (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_legend_pos (GtkEntry * entry, gpointer data)
-*
-*  Usage: set the legend position entry callback
-*
-*  GtkEntry * entry  : the GtkEntry sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_legend_pos (GtkEntry * entry, gpointer data)
+
+  \brief set the legend position entry callback
+
+  \param entry the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_legend_pos (GtkEntry * entry, gpointer data)
 {
@@ -271,7 +279,7 @@ G_MODULE_EXPORT void set_legend_pos (GtkEntry * entry, gpointer data)
   d = ad -> d;
   f = entry_get_text (entry);
   z = atof(f);
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   if (z >= 0.0 && z <= 1.0)
   {
     this_proj -> curves[b][c] -> legend_pos[d] = z;
@@ -287,13 +295,13 @@ G_MODULE_EXPORT void set_legend_pos (GtkEntry * entry, gpointer data)
   update_curve (& cd);
 }
 
-/*
-*  G_MODULE_EXPORT void set_legend_box_line (GtkComboBox * fbox, gpointer data)
-*
-*  Usage: change the legend box line type
-*
-*  GtkComboBox * fbox : the GtkComboBox sending the signal
-*  gpointer data      : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_legend_box_line (GtkComboBox * fbox, gpointer data)
+
+  \brief change the legend box line type
+
+  \param fbox the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_legend_box_line (GtkComboBox * fbox, gpointer data)
 {
@@ -306,13 +314,13 @@ G_MODULE_EXPORT void set_legend_box_line (GtkComboBox * fbox, gpointer data)
   set_legend_box_style (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_legend_box_thickness (GtkEntry * entry, gpointer data)
-*
-*  Usage: set legend box thickness entry callback
-*
-*  GtkEntry * entry : the GtkEntry sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_legend_box_thickness (GtkEntry * entry, gpointer data)
+
+  \brief set legend box thickness entry callback
+
+  \param entry the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_legend_box_thickness (GtkEntry * entry, gpointer data)
 {
@@ -323,19 +331,19 @@ G_MODULE_EXPORT void set_legend_box_thickness (GtkEntry * entry, gpointer data)
   b = cd -> b;
   c = cd -> c;
   str = entry_get_text (entry);
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   this_proj -> curves[b][c] -> legend_box_thickness = atof(str);
   update_entry_double (entry, this_proj -> curves[b][c] -> legend_box_thickness);
   set_legend_box_style (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_legend_box_color (GtkColorChooser * colob, gpointer data)
-*
-*  Usage: set legend color
-*
-*  GtkColorChooser * colob : the GtkColorChooser sending the signal
-*  gpointer data           : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_legend_box_color (GtkColorChooser * colob, gpointer data)
+
+  \brief set legend color
+
+  \param colob the GtkColorChooser sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_legend_box_color (GtkColorChooser * colob, gpointer data)
 {
@@ -347,12 +355,12 @@ G_MODULE_EXPORT void set_legend_box_color (GtkColorChooser * colob, gpointer dat
   set_legend_box_style (data);
 }
 
-/*
-*  GtkWidget * create_tab_3 (gpointer data)
-*
-*  Usage: handle the creation of the 3rd tab of the curve edition dialog
-*
-*  gpointer data : the associated data pointer
+/*!
+  \fn GtkWidget * create_tab_3 (gpointer data)
+
+  \brief handle the creation of the 3rd tab of the curve edition dialog
+
+  \param data the associated data pointer
 */
 GtkWidget * create_tab_3 (gpointer data)
 {
@@ -368,7 +376,7 @@ GtkWidget * create_tab_3 (gpointer data)
   a = cd -> a;
   b = cd -> b;
   c = cd -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
 
   GtkWidget * legendbox = create_vbox (BSEP);
   GtkWidget * leghbox = create_hbox (0);

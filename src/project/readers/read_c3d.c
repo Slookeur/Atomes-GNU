@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_c3d.c
+* @short Functions to read Chem3d atomic coordinates
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_c3d.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to read Chem3d atomic coordinates
+ - The functions to read Chem3d atomic coordinates
 
 *
-*  List of subroutines:
+* List of functions:
 
   int c3d_get_atom_coordinates ();
   int open_c3d_file (int linec);
@@ -38,15 +46,14 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern void check_for_species (double v, int ato);
 
-/*
-*  int c3d_get_atom_coordinates ()
-*
-*  Usage: get the atomic coordinates from the C3D file
+/*!
+  \fn int c3d_get_atom_coordinates ()
+
+  \brief get the atomic coordinates from the C3D file
 */
 int c3d_get_atom_coordinates ()
 {
   int i, j, k;
-  int v_dummy;
   double v;
   gchar * lia[5] = {"a", "b", "c", "d", "e"};
   this_reader -> nspec = 0;
@@ -56,6 +63,7 @@ int c3d_get_atom_coordinates ()
   this_reader -> z = allocdouble (1);
   this_reader -> nsps = allocint (1);
 #ifdef OPENMP
+  int v_dummy;
   int res;
   int numth = omp_get_max_threads ();
   gboolean doatoms =  FALSE;
@@ -230,7 +238,7 @@ int c3d_get_atom_coordinates ()
   g_free (coord_line);
   if (res == 2) return 2;
 #else
-  struct line_node * tmp_line;
+  line_node * tmp_line;
   tail = head;
   k = 0;
   for (i=0; i<active_project -> steps; i++)
@@ -302,12 +310,12 @@ int c3d_get_atom_coordinates ()
   return 0;
 }
 
-/*
-*  int open_c3d_file (int linec)
-*
-*  Usage: open C3D file
-*
-*  int linec : Number of lines in the file
+/*!
+  \fn int open_c3d_file (int linec)
+
+  \brief open C3D file
+
+  \param linec Number of lines in the file
 */
 int open_c3d_file (int linec)
 {

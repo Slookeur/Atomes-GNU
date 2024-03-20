@@ -1,31 +1,39 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_opengl.c
+* @short Functions to read the OpenGL window data in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_opengl.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Subroutines to read the OpenGL window configuration from atomes project file
+ - The functions to read the OpenGL window data in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int read_atom_a (FILE * fp, struct project * this_proj, int s, int a);
-  int read_atom_b (FILE * fp, struct project * this_proj, int s, int a);
+  int read_atom_a (FILE * fp, project * this_proj, int s, int a);
+  int read_atom_b (FILE * fp, project * this_proj, int s, int a);
   int read_rings_chains_data (FILE * fp, glwin * view, int type, int rid, int size, int steps);
-  int read_opengl_image (FILE * fp, struct project * this_proj, image * img, int sid);
+  int read_opengl_image (FILE * fp, project * this_proj, image * img, int sid);
 
 */
 
@@ -34,17 +42,17 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "glview.h"
 #include "initcoord.h"
 
-/*
-*  int read_atom_a (FILE * fp, struct project * this_proj, int s, int a)
-*
-*  Usage: read atom properties from file (a)
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
-*  int s                      : the MD step
-*  int a                      : the atom number
+/*!
+  \fn int read_atom_a (FILE * fp, project * this_proj, int s, int a)
+
+  \brief read atom properties from file (a)
+
+  \param fp the file pointer
+  \param this_proj the target project
+  \param s the MD step
+  \param a the atom number
 */
-int read_atom_a (FILE * fp, struct project * this_proj, int s, int a)
+int read_atom_a (FILE * fp, project * this_proj, int s, int a)
 {
   if (fread (& this_proj -> atoms[s][a].id, sizeof(int), 1, fp) != 1) return ERROR_RW;
   if (fread (& this_proj -> atoms[s][a].sp, sizeof(int), 1, fp) != 1) return ERROR_RW;
@@ -56,17 +64,17 @@ int read_atom_a (FILE * fp, struct project * this_proj, int s, int a)
   return OK;
 }
 
-/*
-*  int read_atom_b (FILE * fp, struct project * this_proj, int s, int a)
-*
-*  Usage: read atom properties from file (b)
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
-*  int s                      : the MD step
-*  int a                      : the atom number
+/*!
+  \fn int read_atom_b (FILE * fp, project * this_proj, int s, int a)
+
+  \brief read atom properties from file (b)
+
+  \param fp the file pointer
+  \param this_proj the target project
+  \param s the MD step
+  \param a the atom number
 */
-int read_atom_b (FILE * fp, struct project * this_proj, int s, int a)
+int read_atom_b (FILE * fp, project * this_proj, int s, int a)
 {
   if (fread (this_proj -> atoms[s][a].show, sizeof(gboolean), 2, fp) != 2) return ERROR_RW;
   if (fread (this_proj -> atoms[s][a].label, sizeof(gboolean), 2, fp) != 2) return ERROR_RW;
@@ -137,17 +145,17 @@ int read_atom_b (FILE * fp, struct project * this_proj, int s, int a)
   return OK;
 }
 
-/*
-*  int read_rings_chains_data (FILE * fp, glwin * view, int type, int rid, int size, int steps)
-*
-*  Usage: read rings and chains statistics data from file
-*
-*  FILE * fp    : the file pointer
-*  glwin * view : the glwin to store the data
-*  int type     : Rings (0) or chains (1)
-*  int rid      : the ring id or 0
-*  int size     : the size of the ring or chain
-*  int steps    : the number of MD steps
+/*!
+  \fn int read_rings_chains_data (FILE * fp, glwin * view, int type, int rid, int size, int steps)
+
+  \brief read rings and chains statistics data from file
+
+  \param fp the file pointer
+  \param view the glwin to store the data
+  \param type Rings (0) or chains (1)
+  \param rid the ring id or 0
+  \param size the size of the ring or chain
+  \param steps the number of MD steps
 */
 int read_rings_chains_data (FILE * fp, glwin * view, int type, int rid, int size, int steps)
 {
@@ -263,17 +271,17 @@ int read_rings_chains_data (FILE * fp, glwin * view, int type, int rid, int size
   return OK;
 }
 
-/*
-*  int read_opengl_image (FILE * fp, struct project * this_proj, image * img, int sid)
-*
-*  Usage: read OpenGL image properties from file
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
-*  image * img                : the latest image to store the data
-*  int sid                    : the number of chemical species
+/*!
+  \fn int read_opengl_image (FILE * fp, project * this_proj, image * img, int sid)
+
+  \brief read OpenGL image properties from file
+
+  \param fp the file pointer
+  \param this_proj the target project
+  \param img the latest image to store the data
+  \param sid the number of chemical species
 */
-int read_opengl_image (FILE * fp, struct project * this_proj, image * img, int sid)
+int read_opengl_image (FILE * fp, project * this_proj, image * img, int sid)
 {
   int i, j, k, l, m, n;
   gboolean val;

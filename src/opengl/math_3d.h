@@ -1,27 +1,40 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file math_3d.h
+* @short Functions for OpenGL math
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+* @author Stephan Soller <stephan.soller@helionweb.de>
+* @author Tobias Malmsheimer
+*/
 
 /*
 * This header file: 'math_3d.h'
 *
-*  Contains: 
+* Contains:
+
+ - Functions for OpenGL math
 
 */
 
 /* The following was adapted from the file Math 3D v1.0
 By Stephan Soller <stephan.soller@helionweb.de> and Tobias Malmsheimer
-The original file was modified and completed to match Atomes needs.
+The original file was modified and completed to match 'atomes' needs. */
 
+/*
 Math 3D is a compact C99 library meant to be used with OpenGL. It provides basic
 3D vector and 4x4 matrix operations as well as functions to create transformation
 and projection matrices. The OpenGL binary layout is used so you can just upload
@@ -657,8 +670,8 @@ static inline mat4_t m4_frustum (float left, float right, float bottom, float to
  *
  * x, y and z are the right-handed base vectors of the cameras subspace.
  * x has to be normalized because the cross product only produces a normalized
- *   output vector if both input vectors are orthogonal to each other. And up
- *   probably isn't orthogonal to z.
+ * output vector if both input vectors are orthogonal to each other. And up
+ * probably isn't orthogonal to z.
  *
  * These vectors are then used to build a 3x3 rotation matrix. This matrix
  * rotates a vector by the same amount the camera is rotated. But instead we
@@ -674,7 +687,7 @@ static inline mat4_t m4_frustum (float left, float right, float bottom, float to
  * is then this translation followed by the rotation. Written as matrix
  * multiplication:
  *
- *   lookat = rotation * translation
+ * lookat = rotation * translation
  *
  * Since we're right-handed this equals to first doing the translation and after
  * that doing the rotation. During that multiplication the rotation 3x3 part
@@ -704,16 +717,16 @@ static inline mat4_t m4_look_at(vec3_t from, vec3_t to, vec3_t up) {
  * Implementation details:
  *
  * - Invert the 3x3 part of the 4x4 matrix to handle rotation, scaling, etc.
- *   correctly (see source).
+ * correctly (see source).
  * - Invert the translation part of the 4x4 matrix by multiplying it with the
- *   inverted rotation matrix and negating it.
+ * inverted rotation matrix and negating it.
  *
  * When a 3D point is multiplied with a transformation matrix it is first
  * rotated and then translated. The inverted transformation matrix is the
  * inverse translation followed by the inverse rotation. Written as a matrix
  * multiplication (remember, the effect applies right to left):
  *
- *   inv(matrix) = inv(rotation) * inv(translation)
+ * inv(matrix) = inv(rotation) * inv(translation)
  *
  * The inverse translation is a translation into the opposite direction, just
  * the negative translation. The rotation part isn't changed by that

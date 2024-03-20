@@ -1,30 +1,38 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file ringscall.c
+* @short Callbacks for the ring statistics calculation dialog
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'ringscall.c'
 *
-*  Contains:
+* Contains:
 *
 
  - The callbacks for the ring statistics calculation dialog
 
 *
-*  List of subroutines:
+* List of functions:
 
   void initrng ();
   void update_rings_menus (glwin * view);
-  void update_rings_view (struct project * this_proj, int c);
+  void update_rings_view (project * this_proj, int c);
   void clean_rings_data (int rid, glwin * view);
   void save_rings_data_ (int * taille,
                          double ectrc[* taille],
@@ -57,7 +65,7 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern GtkWidget * prep_rings_menu (glwin * view, int id);
 extern gboolean run_distance_matrix (GtkWidget * widg, int calc, int up_ngb);
-extern void clean_coord_window (struct project * this_proj);
+extern void clean_coord_window (project * this_proj);
 #ifdef GTK3
 extern G_MODULE_EXPORT void show_hide_poly (GtkWidget * widg, gpointer data);
 #else
@@ -65,10 +73,10 @@ extern G_MODULE_EXPORT void show_hide_poly (GSimpleAction * action, GVariant * p
 #endif
 gboolean toggled_rings;
 
-/*
-*  void initrng ()
-*
-*  Usage: initialize the curve widgets for the ring statistics
+/*!
+  \fn void initrng ()
+
+  \brief initialize the curve widgets for the ring statistics
 */
 void initrng ()
 {
@@ -98,12 +106,12 @@ void initrng ()
 }
 
 #ifdef GTK3
-/*
-*  void update_rings_menus (glwin * view)
-*
-*  Usage: update the ring(s) menu for the glview
-*
-*  glwin * view : the glview
+/*!
+  \fn void update_rings_menus (glwin * view)
+
+  \brief update the ring(s) menu for the glview
+
+  \param view the glview
 */
 void update_rings_menus (glwin * view)
 {
@@ -130,15 +138,15 @@ void update_rings_menus (glwin * view)
 }
 #endif
 
-/*
-*  void update_rings_view (struct project * this_proj, int c)
-*
-*  Usage: update the text view for ring statistics
-*
-*  struct project * this_proj : the target project
-*  int c                      : the ring type
+/*!
+  \fn void update_rings_view (project * this_proj, int c)
+
+  \brief update the text view for ring statistics
+
+  \param this_proj the target project
+  \param c the ring type
 */
-void update_rings_view (struct project * this_proj, int c)
+void update_rings_view (project * this_proj, int c)
 {
   int i, j, k;
   gchar * nelt;
@@ -355,17 +363,17 @@ void update_rings_view (struct project * this_proj, int c)
   }
 }
 
-/*
-*  void clean_rings_data (int rid, glwin * view)
-*
-*  Usage: clean a ring type data for a glview
-*
-*  int rid      : Rings type
-*  glwin * view : the glview
+/*!
+  \fn void clean_rings_data (int rid, glwin * view)
+
+  \brief clean a ring type data for a glview
+
+  \param rid Rings type
+  \param view the glview
 */
 void clean_rings_data (int rid, glwin * view)
 {
-  struct project * this_proj = get_project_by_id(view -> proj);
+  project * this_proj = get_project_by_id(view -> proj);
   view -> ring_max[rid] = 0;
   int i, j;
 #ifdef GTK3
@@ -420,13 +428,13 @@ void clean_rings_data (int rid, glwin * view)
 #endif
 }
 
-/*
-*  G_MODULE_EXPORT void on_calc_rings_released (GtkWidget * widg, gpointer data)
-*
-*  Usage: compute ring statistics
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void on_calc_rings_released (GtkWidget * widg, gpointer data)
+
+  \brief compute ring statistics
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void on_calc_rings_released (GtkWidget * widg, gpointer data)
 {
@@ -544,26 +552,26 @@ G_MODULE_EXPORT void on_calc_rings_released (GtkWidget * widg, gpointer data)
   if (search > 2 && active_cell -> pbc) active_project -> dmtx = FALSE;
 }
 
-/*
-*  void save_rings_data_ (int * taille,
-                          double ectrc[* taille],
-                          double ectpna[* taille],
-                          double ectmax[* taille],
-                          double ectmin[* taille],
+/*!
+  \fn void save_rings_data_ (int * taille,
+                          double ectrc[*taille],
+                          double ectpna[*taille],
+                          double ectmax[*taille],
+                          double ectmin[*taille],
                           double * rpstep, double * ectrpst,
                           double * nampat, double * ectampat)
-*
-*  Usage : get rings statistics results form Fortran90
-*
-*  int * taille            : Number of data points
-*  double ectrc[* taille]  : RC
-*  double ectpna[* taille] : PN
-*  double ectmax[* taille] : PMAX
-*  double ectmin[* taille] : PMIN
-*  double * rpstep         : Ring(s) per MD step
-*  double * ectrpst        : Standard deviation
-*  double * nampat         : Rings not found
-*  double * ectampat       : Standard deviation
+
+  \brief get rings statistics results form Fortran90
+
+  \param taille number of data points
+  \param ectrc Rc (RINGS method)
+  \param ectpna Pn (RINGS method)
+  \param ectmax Pmax (RINGS method)
+  \param ectmin Pmin (RINGS method)
+  \param rpstep ring(s) per MD step
+  \param ectrpst Standard deviation
+  \param nampat rings not found
+  \param ectampat standard deviation
 */
 void save_rings_data_ (int * taille,
                        double ectrc[* taille],

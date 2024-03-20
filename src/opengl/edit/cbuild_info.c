@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file cbuild_info.c
+* @short Functions to create the space group information dialog
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'cbuild_info.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the space group information dialog
+ - The functions to create the space group information dialog
 
 *
-*  List of subroutines:
+* List of functions:
 
   gchar * get_bravais (int spg);
   gchar * get_frac (float val);
@@ -46,9 +54,7 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "glview.h"
 #include "cbuild_edit.h"
 
-extern double get_value_from_pos (gchar * pos);
-extern double get_val_from_wyckoff (gchar * pos, gchar * wval);
-extern int get_bravais_id (int spg);
+extern int get_crystal_id (int spg);
 extern int get_bravais_img_id (int spg);
 extern gchar * frac_string (gchar * init);
 extern gchar * get_num_string (gchar * str);
@@ -67,12 +73,12 @@ GtkWidget * info_wyck_tree;
 
 gchar * wnpos[3] = {NULL, NULL, NULL};
 
-/*
-*  gchar * get_bravais (int spg)
-*
-*  Usage: retrieve the space group bravais lattice
-*
-*  int spg : the target space group id
+/*!
+  \fn gchar * get_bravais (int spg)
+
+  \brief retrieve the space group bravais lattice
+
+  \param spg the target space group id
 */
 gchar * get_bravais (int spg)
 {
@@ -102,12 +108,12 @@ gchar * get_bravais (int spg)
   }
 }
 
-/*
-*  gchar * get_frac (float val)
-*
-*  Usage: get string for value
-*
-*  float val : the target value
+/*!
+  \fn gchar * get_frac (float val)
+
+  \brief get string for value
+
+  \param val the target value
 */
 gchar * get_frac (float val)
 {
@@ -121,14 +127,14 @@ gchar * get_frac (float val)
   return NULL;
 }
 
-/*
-*  void get_wyck_char (float val, int ax, int bx)
-*
-*  Usage: convert wyckoff value to string
-*
-*  float val : the target value
-*  int ax    : axis id, x = 0, y = 1, z = 2
-*  int bx    : axis label 0 = "x", 1 = "y", 2 = "z"
+/*!
+  \fn void get_wyck_char (float val, int ax, int bx)
+
+  \brief convert wyckoff value to string
+
+  \param val the target value
+  \param ax axis id, x = 0, y = 1, z = 2
+  \param bx axis label 0 = "x", 1 = "y", 2 = "z"
 */
 void get_wyck_char (float val, int ax, int bx)
 {
@@ -184,13 +190,13 @@ void get_wyck_char (float val, int ax, int bx)
   }
 }
 
-/*
-*  void get_extra_val (float val, int ax)
-*
-*  Usage: convert wyckoff extra value to string
-*
-*  float val : the target value
-*  int ax    : axis id, x = 0, y = 1, z = 2
+/*!
+  \fn void get_extra_val (float val, int ax)
+
+  \brief convert wyckoff extra value to string
+
+  \param val the target value
+  \param ax axis id, x = 0, y = 1, z = 2
 */
 void get_extra_val (float val, int ax)
 {
@@ -216,14 +222,14 @@ void get_extra_val (float val, int ax)
   }
 }
 
-/*
-*  void get_wyck_names (space_group * spg, int i, int j)
-*
-*  Usage: get the name of this wyckoff position
-*
-*  space_group * spg : the target space group
-*  int i             : the wyckoff position id
-*  int j             : the multiplicity for this wyckoff position
+/*!
+  \fn void get_wyck_names (space_group * spg, int i, int j)
+
+  \brief get the name of this wyckoff position
+
+  \param spg the target space group
+  \param i the wyckoff position id
+  \param j the multiplicity for this wyckoff position
 */
 void get_wyck_names (space_group * spg, int i, int j)
 {
@@ -282,13 +288,13 @@ void get_wyck_names (space_group * spg, int i, int j)
   for (k=0; k<3; k++) if (! wnpos[k]) wnpos[k] = g_strdup_printf ("0");
 }
 
-/*
-*  static void fill_wyckoff_model (GtkTreeStore * store, space_group * spg)
-*
-*  Usage: fill wyckoff position tree store
-*
-*  GtkTreeStore * store : the tree store to fill
-*  space_group * spg    : the target space group
+/*!
+  \fn static void fill_wyckoff_model (GtkTreeStore * store, space_group * spg)
+
+  \brief fill wyckoff position tree store
+
+  \param store the tree store to fill
+  \param spg the target space group
 */
 static void fill_wyckoff_model (GtkTreeStore * store, space_group * spg)
 {
@@ -323,16 +329,16 @@ static void fill_wyckoff_model (GtkTreeStore * store, space_group * spg)
   }
 }
 
-/*
-*  void set_wisible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
-*
-*  Usage: show / hide cell renderer, if visible then add or not pango markup
-*
-*  GtkTreeViewColumn * col    : the tree view column
-*  GtkCellRenderer * renderer : the cell renderer
-*  GtkTreeModel * mod         : the tree model
-*  GtkTreeIter * iter         : the tree iter
-*  gpointer data              : the associated data pointer
+/*!
+  \fn void set_wisible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
+
+  \brief show / hide cell renderer, if visible then add or not pango markup
+
+  \param col the tree view column
+  \param renderer the cell renderer
+  \param mod the tree model
+  \param iter the tree iter
+  \param data the associated data pointer
 */
 void set_wisible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
 {
@@ -349,12 +355,12 @@ void set_wisible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeMo
   gtk_cell_renderer_set_visible (renderer, (i<5) ? j : ! j);
 }
 
-/*
-*  GtkWidget * create_wyckoff_tree (space_group * spg)
-*
-*  Usage: create wyckoff position tree
-*
-*  space_group * spg : the target space group
+/*!
+  \fn GtkWidget * create_wyckoff_tree (space_group * spg)
+
+  \brief create wyckoff position tree
+
+  \param spg the target space group
 */
 GtkWidget * create_wyckoff_tree (space_group * spg)
 {
@@ -379,13 +385,13 @@ GtkWidget * create_wyckoff_tree (space_group * spg)
   return wtree;
 }
 
-/*
-*  GtkWidget * create_setting_info (space_group * spg, int sid)
-*
-*  Usage: create setting information label
-*
-*  space_group * spg : the target space group
-*  int sid           : the setting id
+/*!
+  \fn GtkWidget * create_setting_info (space_group * spg, int sid)
+
+  \brief create setting information label
+
+  \param spg the target space group
+  \param sid the setting id
 */
 GtkWidget * create_setting_info (space_group * spg, int sid)
 {
@@ -404,13 +410,13 @@ GtkWidget * create_setting_info (space_group * spg, int sid)
   return label;
 }
 
-/*
-*  GtkWidget * create_wyck_pts_info (space_group * spg, int sid)
-*
-*  Usage: create wyckoff label
-*
-*  space_group * spg : the target space group
-*  int sid           : the setting id
+/*!
+  \fn GtkWidget * create_wyck_pts_info (space_group * spg, int sid)
+
+  \brief create wyckoff label
+
+  \param spg the target space group
+  \param sid the setting id
 */
 GtkWidget * create_wyck_pts_info (space_group * spg, int sid)
 {
@@ -445,13 +451,13 @@ GtkWidget * create_wyck_pts_info (space_group * spg, int sid)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void set_so_info (GtkComboBox * box, gpointer data)
-*
-*  Usage: change space group origin
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_so_info (GtkComboBox * box, gpointer data)
+
+  \brief change space group origin
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_so_info (GtkComboBox * box, gpointer data)
 {
@@ -481,13 +487,13 @@ G_MODULE_EXPORT void set_so_info (GtkComboBox * box, gpointer data)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void show_sg_info (GtkWidget * but, gpointer data)
-*
-*  Usage: show space group information dialog callback
-*
-*  GtkWidget * but : the GtkWidget sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void show_sg_info (GtkWidget * but, gpointer data)
+
+  \brief show space group information dialog callback
+
+  \param but the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void show_sg_info (GtkWidget * but, gpointer data)
 {
@@ -551,7 +557,7 @@ G_MODULE_EXPORT void show_sg_info (GtkWidget * but, gpointer data)
 
   hbox = create_hbox (0);
   add_box_child_start (GTK_ORIENTATION_HORIZONTAL, hbox, markup_label("Lattice constraints: ", xsize, -1, 0.0, 0.5), FALSE, FALSE, 5);
-  str = g_strdup_printf ("<b>%s</b>", latt_info[get_bravais_id (spg -> id)]);
+  str = g_strdup_printf ("<b>%s</b>", latt_info[get_crystal_id (spg -> id)]);
   add_box_child_start (GTK_ORIENTATION_HORIZONTAL, hbox, markup_label(str, 150, -1, 0.0, 0.5), FALSE, FALSE, 5);
   g_free (str);
   add_box_child_start (GTK_ORIENTATION_VERTICAL, ivbox[0], hbox, FALSE, FALSE, 5);

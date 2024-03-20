@@ -1,47 +1,55 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_qm.c
+* @short Functions to read ab-intio (CPMD/CP2K) calculation parameters in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_qm.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Subroutines to read ab-intio calculation (CPMD/CP2K) parameters from atomes project file
+ - Functions to read ab-intio (CPMD/CP2K) calculation parameters in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int read_thermo (FILE * fp, struct thermostat * thermo);
+  int read_thermo (FILE * fp, thermostat * thermo);
   int read_fixed_atoms_cpmd (FILE * fp, cpmd * cpmd_input);
   int read_fixed_atoms_cp2k (FILE * fp, cp2k * cp2k_input, int idf);
-  int read_cpmd_data (FILE * fp, int cid, struct project * this_proj);
-  int read_cp2k_data (FILE * fp, int cid, struct project * this_proj);
+  int read_cpmd_data (FILE * fp, int cid, project * this_proj);
+  int read_cp2k_data (FILE * fp, int cid, project * this_proj);
 
 */
 
 #include "global.h"
 #include "project.h"
 
-/*
-*  int read_thermo (FILE * fp, struct thermostat * thermo)
-*
-*  Usage: read thermostat information from file
-*
-*  FILE * fp                  : the file pointer
-*  struct thermostat * thermo : the thermostat to store the data
+/*!
+  \fn int read_thermo (FILE * fp, thermostat * thermo)
+
+  \brief read thermostat information from file
+
+  \param fp the file pointer
+  \param thermo the thermostat to store the data
 */
-int read_thermo (FILE * fp, struct thermostat * thermo)
+int read_thermo (FILE * fp, thermostat * thermo)
 {
   if (fread (& thermo -> id, sizeof(int), 1, fp) != 1) return ERROR_RW;
   if (fread (& thermo -> type, sizeof(int), 1, fp) != 1) return ERROR_RW;
@@ -52,13 +60,13 @@ int read_thermo (FILE * fp, struct thermostat * thermo)
   return OK;
 }
 
-/*
-*  int read_fixed_atoms_cpmd (FILE * fp, cpmd * cpmd_input)
-*
-*  Usage: read fixed CPMD atom(s) from file
-*
-*  FILE * fp         : the file pointer
-*  cpmd * cpmd_input : the CPMD input structure to store the data
+/*!
+  \fn int read_fixed_atoms_cpmd (FILE * fp, cpmd * cpmd_input)
+
+  \brief read fixed CPMD atom(s) from file
+
+  \param fp the file pointer
+  \param cpmd_input the CPMD input structure to store the data
 */
 int read_fixed_atoms_cpmd (FILE * fp, cpmd * cpmd_input)
 {
@@ -82,14 +90,14 @@ int read_fixed_atoms_cpmd (FILE * fp, cpmd * cpmd_input)
   return OK;
 }
 
-/*
-*  int read_fixed_atoms_cp2k (FILE * fp, cp2k * cp2k_input, int idf)
-*
-*  Usage: read fixed CP2K from file
-*
-*  FILE * fp         : the file pointer
-*  cp2k * cp2k_input : the CP2K input structure to store the data
-*  int idf           : the fixed atom(s) format
+/*!
+  \fn int read_fixed_atoms_cp2k (FILE * fp, cp2k * cp2k_input, int idf)
+
+  \brief read fixed CP2K from file
+
+  \param fp the file pointer
+  \param cp2k_input the CP2K input structure to store the data
+  \param idf the fixed atom(s) format
 */
 int read_fixed_atoms_cp2k (FILE * fp, cp2k * cp2k_input, int idf)
 {
@@ -113,16 +121,16 @@ int read_fixed_atoms_cp2k (FILE * fp, cp2k * cp2k_input, int idf)
   return OK;
 }
 
-/*
-*  int read_cpmd_data (FILE * fp, int cid, struct project * this_proj)
-*
-*  Usage: read CPMD data from file
-*
-*  FILE * fp                  : the file pointer
-*  int cid                    : CPMD id (0 = ab-initio, 1 = QM-MM)
-*  struct project * this_proj : the target project
+/*!
+  \fn int read_cpmd_data (FILE * fp, int cid, project * this_proj)
+
+  \brief read CPMD data from file
+
+  \param fp the file pointer
+  \param cid CPMD id (0 = ab-initio, 1 = QM-MM)
+  \param this_proj the target project
 */
-int read_cpmd_data (FILE * fp, int cid, struct project * this_proj)
+int read_cpmd_data (FILE * fp, int cid, project * this_proj)
 {
   int i;
   if (fread (& i, sizeof(int), 1, fp) != 1) return ERROR_RW;
@@ -135,7 +143,7 @@ int read_cpmd_data (FILE * fp, int cid, struct project * this_proj)
   if (this_proj -> cpmd_input[cid] -> thermostats)
   {
     this_proj -> cpmd_input[cid] -> ions_thermostat = g_malloc0 (sizeof*this_proj -> cpmd_input[cid] -> ions_thermostat);
-    struct thermostat * thermo = this_proj -> cpmd_input[cid] -> ions_thermostat;
+    thermostat * thermo = this_proj -> cpmd_input[cid] -> ions_thermostat;
     for (i=0; i<this_proj -> cpmd_input[cid] -> thermostats; i++)
     {
       if (read_thermo (fp, thermo) != OK) return ERROR_RW;
@@ -161,7 +169,7 @@ int read_cpmd_data (FILE * fp, int cid, struct project * this_proj)
   if (this_proj -> cpmd_input[cid] -> dummies)
   {
     this_proj -> cpmd_input[cid] -> dummy = g_malloc0 (sizeof*this_proj -> cpmd_input[cid] -> dummy);
-    struct dummy_atom * dummy = this_proj -> cpmd_input[cid] -> dummy;
+    dummy_atom * dummy = this_proj -> cpmd_input[cid] -> dummy;
     for (i=0; i < this_proj -> cpmd_input[cid] -> dummies; i ++)
     {
       if (fread (& dummy -> id, sizeof(int), 1, fp) != 1) return ERROR_RW;
@@ -196,16 +204,16 @@ int read_cpmd_data (FILE * fp, int cid, struct project * this_proj)
   return OK;
 }
 
-/*
-*  int read_cp2k_data (FILE * fp, int cid, struct project * this_proj)
-*
-*  Usage: read CP2K data from file
-*
-*  FILE * fp                  : the file pointer
-*  int cid                    : CP2K id (0 = ab-initio, 1 = QM-MM)
-*  struct project * this_proj : the target project
+/*!
+  \fn int read_cp2k_data (FILE * fp, int cid, project * this_proj)
+
+  \brief read CP2K data from file
+
+  \param fp the file pointer
+  \param cid CP2K id (0 = ab-initio, 1 = QM-MM)
+  \param this_proj the target project
 */
-int read_cp2k_data (FILE * fp, int cid, struct project * this_proj)
+int read_cp2k_data (FILE * fp, int cid, project * this_proj)
 {
   int i, j;
   if (fread (& i, sizeof(int), 1, fp) != 1) return ERROR_RW;
@@ -221,7 +229,7 @@ int read_cp2k_data (FILE * fp, int cid, struct project * this_proj)
   if (this_proj -> cp2k_input[cid] -> thermostats)
   {
     this_proj -> cp2k_input[cid] -> ions_thermostat = g_malloc0 (sizeof*this_proj -> cp2k_input[cid] -> ions_thermostat);
-    struct thermostat * thermo = this_proj -> cp2k_input[cid] -> ions_thermostat;
+    thermostat * thermo = this_proj -> cp2k_input[cid] -> ions_thermostat;
     for (i=0; i<this_proj -> cp2k_input[cid] -> thermostats; i++)
     {
       if (read_thermo (fp, thermo) != OK) return ERROR_RW;

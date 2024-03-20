@@ -1,28 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file legend.c
+* @short Function to draw the legend
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'legend.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Curve legend drawing subroutines
+ - The function to draw the legend
 
 *
-*  List of subroutines:
+* List of functions:
 
-  void show_legend (cairo_t * cr, struct project * this_proj, int rid, int cid);
+  void show_legend (cairo_t * cr, project * this_proj, int rid, int cid);
 
 */
 
@@ -35,17 +43,17 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern DataLayout * get_extra_layout (int i);
 
-/*
-*  void show_legend (cairo_t * cr, struct project * this_proj, int rid, int cid)
-*
-*  Usage: draw legend
-*
-*  cairo_t * cr               : the cairo drawing context to use for the draw
-*  struct project * this_proj : the target project
-*  int rid                    : the calculation id
-*  int cid                    : the curve id
+/*!
+  \fn void show_legend (cairo_t * cr, project * this_proj, int rid, int cid)
+
+  \brief draw legend
+
+  \param cr the cairo drawing context to use for the draw
+  \param this_proj the target project
+  \param rid the calculation id
+  \param cid the curve id
 */
-void show_legend (cairo_t * cr, struct project * this_proj, int rid, int cid)
+void show_legend (cairo_t * cr, project * this_proj, int rid, int cid)
 {
   double x, y, z;
   double ih, fh;
@@ -53,13 +61,13 @@ void show_legend (cairo_t * cr, struct project * this_proj, int rid, int cid)
   int w, h;
   int j, k, l, m;
   gchar * str;
-  thedash * dasht;
+  curve_dash * dasht;
 
   x = this_proj -> curves[rid][cid] -> legend_pos[0] * resol[0];
   y = this_proj -> curves[rid][cid] -> legend_pos[1] * resol[1];
 
   pango_layout_set_font_description (layout, pango_font_description_from_string (this_proj -> curves[rid][cid] -> legend_font));
-  struct cextra * ctmp;
+  CurveExtra * ctmp;
   ctmp = this_proj -> curves[rid][cid] -> extrac -> first;
   for ( j=this_proj -> curves[rid][cid] -> extrac -> extras ; j >= 0 ; j-- )
   {

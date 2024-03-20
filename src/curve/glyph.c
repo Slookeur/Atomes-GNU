@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file glyph.c
+* @short Functions to draw the glyphs
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'glyph.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Curve glyph drawing subroutines
+ - Functions to draw the glyphs
 
 *
-*  List of subroutines:
+* List of functions:
 
   void draw_poly (cairo_t * to, double x, double y, double size, double step, double initp);
   void draw_glyph (cairo_t * in, int theglyph, double x, double y, ColRGBA gcolor, double size);
@@ -33,17 +41,17 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "global.h"
 #include "curve.h"
 
-/*
-*  void draw_poly (cairo_t * to, double x, double y, double size, double step, double initp)
-*
-*  Usage: draw polyhedra glyph
-*
-*  cairo_t * to : the cairo drawing context to use for the draw
-*  double x     : x position
-*  double y     : y position
-*  double size  : glyph size
-*  double step  : number of points
-*  double initp : starting position
+/*!
+  \fn void draw_poly (cairo_t * to, double x, double y, double size, double step, double initp)
+
+  \brief draw polyhedra glyph
+
+  \param to the cairo drawing context to use for the draw
+  \param x x position
+  \param y y position
+  \param size glyph size
+  \param step number of points
+  \param initp starting position
 */
 void draw_poly (cairo_t * to, double x, double y, double size, double step, double initp)
 {
@@ -65,17 +73,17 @@ void draw_poly (cairo_t * to, double x, double y, double size, double step, doub
   }
 }
 
-/*
-*  void draw_glyph (cairo_t * in, int theglyph, double x, double y, ColRGBA gcolor, double size)
-*
-*  Usage: draw glyph at (x,y)
-*
-*  cairo_t * in   : the cairo drawing context to use for the draw
-*  int theglyph   : the type of glyph
-*  double x       : x position
-*  double y       : y position
-*  ColRGBA gcolor : the glyph color
-*  double size    : the glyph size
+/*!
+  \fn void draw_glyph (cairo_t * in, int theglyph, double x, double y, ColRGBA gcolor, double size)
+
+  \brief draw glyph at (x,y)
+
+  \param in the cairo drawing context to use for the draw
+  \param theglyph the type of glyph
+  \param x x position
+  \param y y position
+  \param gcolor the glyph color
+  \param size the glyph size
 */
 void draw_glyph (cairo_t * in, int theglyph, double x, double y, ColRGBA gcolor, double size)
 {

@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file tab-1.c
+* @short 1st tab of the curve layout edition dialog
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'tab-1.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The 1st tab of the curve edition dialog
+ - The 1st tab of the curve layout edition dialog
 
 *
-*  List of subroutines:
+* List of functions:
 
   void set_frame_style (gpointer data);
 
@@ -86,13 +94,13 @@ qint framxe[4];
 GtkWidget * custom_title = NULL;
 int a, b, c, d;
 
-/*
-*  G_MODULE_EXPORT void set_window_size (GtkEntry * maj, gpointer data)
-*
-*  Usage: change window size entry callback
-*
-*  GtkEntry * maj : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_window_size (GtkEntry * maj, gpointer data)
+
+  \brief change window size entry callback
+
+  \param maj the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_window_size (GtkEntry * maj, gpointer data)
 {
@@ -105,7 +113,7 @@ G_MODULE_EXPORT void set_window_size (GtkEntry * maj, gpointer data)
   b = ad -> b;
   c = ad -> c;
   d = ad -> d;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   int shift = get_curve_shift (this_proj, b, c);
   text[0] = "X size must be > 0";
   text[1] = "Y size must be > 0";
@@ -132,24 +140,24 @@ G_MODULE_EXPORT void set_window_size (GtkEntry * maj, gpointer data)
   update_entry_int (maj, this_proj -> curves[b][c] -> wsize[d]);
 }
 
-/*
-*  cairo_surface_t * draw_frame_surface (int tf,
+/*!
+  \fn cairo_surface_t * draw_frame_surface (int tf,
                                          int da,
                                          double ti,
                                          double x[2],
                                          double y[2],
                                          ColRGBA dcol,
                                          ColRGBA bcol)
-*
-*  Usage: draw frame preview
-*
-*  int tf       : frame type
-*  int da       : frame dash
-*  double ti    : frame thickness
-*  double x[2]  : x positions (min / max)
-*  double y[2]  : y positions (min / max)
-*  ColRGBA dcol : frame color
-*  ColRGBA bcol : background color
+
+  \brief draw frame preview
+
+  \param tf frame type
+  \param da frame dash
+  \param ti frame thickness
+  \param x x positions (min / max)
+  \param y y positions (min / max)
+  \param dcol frame color
+  \param bcol background color
 */
 cairo_surface_t * draw_frame_surface (int tf,
                                       int da,
@@ -174,23 +182,23 @@ cairo_surface_t * draw_frame_surface (int tf,
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void set_title (GtkCheckButton * but, gpointer data)
-*
-*  Usage: show / hide title toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_title (GtkCheckButton * but, gpointer data)
+
+  \brief show / hide title toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_title (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void set_title (GtkToggleButton * but, gpointer data)
-*
-*  Usage: show / hide title toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_title (GtkToggleButton * but, gpointer data)
+
+  \brief show / hide title toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_title (GtkToggleButton * but, gpointer data)
 #endif
@@ -199,7 +207,7 @@ G_MODULE_EXPORT void set_title (GtkToggleButton * but, gpointer data)
   a = ad -> a;
   b = ad -> b;
   c = ad -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
 #ifdef GTK4
   this_proj -> curves[b][c] -> show_title = gtk_check_button_get_active (but);
 #else
@@ -210,23 +218,23 @@ G_MODULE_EXPORT void set_title (GtkToggleButton * but, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void set_title_default (GtkCheckButton * but, gpointer data)
-*
-*  Usage: use / not default title toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_title_default (GtkCheckButton * but, gpointer data)
+
+  \brief use / not default title toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_title_default (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void set_title_default (GtkToggleButton * but, gpointer data)
-*
-*  Usage: use / not default title toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_title_default (GtkToggleButton * but, gpointer data)
+
+  \brief use / not default title toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_title_default (GtkToggleButton * but, gpointer data)
 #endif
@@ -235,7 +243,7 @@ G_MODULE_EXPORT void set_title_default (GtkToggleButton * but, gpointer data)
   a = ad -> a;
   b = ad -> b;
   c = ad -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
 #ifdef GTK4
   this_proj -> curves[b][c] -> default_title = gtk_check_button_get_active (but);
 #else
@@ -251,13 +259,13 @@ G_MODULE_EXPORT void set_title_default (GtkToggleButton * but, gpointer data)
   update_curve (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_title_custom (GtkEntry * tit, gpointer data)
-*
-*  Usage: set custom title entry callback
-*
-*  GtkEntry * tit : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_title_custom (GtkEntry * tit, gpointer data)
+
+  \brief set custom title entry callback
+
+  \param tit the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_title_custom (GtkEntry * tit, gpointer data)
 {
@@ -265,20 +273,20 @@ G_MODULE_EXPORT void set_title_custom (GtkEntry * tit, gpointer data)
   a = ad -> a;
   b = ad -> b;
   c = ad -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   g_free (this_proj -> curves[b][c] -> title);
   this_proj -> curves[b][c] -> title = g_strdup_printf ("%s", entry_get_text (tit));
   update_entry_text (tit, this_proj -> curves[b][c] -> title);
   update_curve (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_title_font (GtkFontButton * fontb, gpointer data)
-*
-*  Usage: set title font
-*
-*  GtkFontButton * fontb : the GtkFontButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_title_font (GtkFontButton * fontb, gpointer data)
+
+  \brief set title font
+
+  \param fontb the GtkFontButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_title_font (GtkFontButton * fontb, gpointer data)
 {
@@ -286,19 +294,19 @@ G_MODULE_EXPORT void set_title_font (GtkFontButton * fontb, gpointer data)
   a = ad -> a;
   b = ad -> b;
   c = ad -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   g_free (this_proj -> curves[b][c] -> title_font);
   this_proj -> curves[b][c] -> title_font = g_strdup_printf ("%s", gtk_font_chooser_get_font (GTK_FONT_CHOOSER(fontb)));
   update_curve (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_title_color (GtkColorChooser * colob, gpointer data)
-*
-*  Usage: set title color
-*
-*  GtkColorChooser * colob : the GtkColorChooser sending the signal
-*  gpointer data           : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_title_color (GtkColorChooser * colob, gpointer data)
+
+  \brief set title color
+
+  \param colob the GtkColorChooser sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_title_color (GtkColorChooser * colob, gpointer data)
 {
@@ -306,18 +314,18 @@ G_MODULE_EXPORT void set_title_color (GtkColorChooser * colob, gpointer data)
   a = ad -> a;
   b = ad -> b;
   c = ad -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   this_proj -> curves[b][c] -> title_color = get_button_color (colob);
   update_curve (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_title_pos (GtkEntry * entry, gpointer data)
-*
-*  Usage: set axis title position entry callback
-*
-*  GtkEntry * entry : the GtkEntry sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_title_pos (GtkEntry * entry, gpointer data)
+
+  \brief set axis title position entry callback
+
+  \param entry the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_title_pos (GtkEntry * entry, gpointer data)
 {
@@ -329,7 +337,7 @@ G_MODULE_EXPORT void set_title_pos (GtkEntry * entry, gpointer data)
   b = ad -> b;
   c = ad -> c;
   d = ad -> d;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   p = entry_get_text (entry);
   v = atof(p);
   if (v >= 0.0 && v <= 1.0)
@@ -347,12 +355,12 @@ G_MODULE_EXPORT void set_title_pos (GtkEntry * entry, gpointer data)
   update_curve ((gpointer)& cd);
 }
 
-/*
-*  void set_frame_style (gpointer data)
-*
-*  Usage: create frame preview
-*
-*  gpointer data : the associated data pointer
+/*!
+  \fn void set_frame_style (gpointer data)
+
+  \brief create frame preview
+
+  \param data the associated data pointer
 */
 void set_frame_style (gpointer data)
 {
@@ -361,7 +369,7 @@ void set_frame_style (gpointer data)
   a = ad -> a;
   b = ad -> b;
   c = ad -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   surf = draw_frame_surface (this_proj -> curves[b][c] -> frame_type,
                              this_proj -> curves[b][c] -> frame_dash,
                              this_proj -> curves[b][c] -> frame_thickness,
@@ -382,23 +390,23 @@ void set_frame_style (gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void set_show_frame (GtkCheckButton * but, gpointer data)
-*
-*  Usage: show / hide frame toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_show_frame (GtkCheckButton * but, gpointer data)
+
+  \brief show / hide frame toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_show_frame (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void set_show_frame (GtkToggleButton * but, gpointer data)
-*
-*  Usage: show / hide frame toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_show_frame (GtkToggleButton * but, gpointer data)
+
+  \brief show / hide frame toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_show_frame (GtkToggleButton * but, gpointer data)
 #endif
@@ -407,7 +415,7 @@ G_MODULE_EXPORT void set_show_frame (GtkToggleButton * but, gpointer data)
   a = ad -> a;
   b = ad -> b;
   c = ad -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
 #ifdef GTK4
   this_proj -> curves[b][c] -> show_frame = gtk_check_button_get_active (but);
 #else
@@ -417,13 +425,13 @@ G_MODULE_EXPORT void set_show_frame (GtkToggleButton * but, gpointer data)
   update_curve (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_background_color (GtkColorChooser * colob, gpointer data)
-*
-*  Usage: change background color
-*
-*  GtkColorChooser * colob : the GtkColorChooser sending the signal
-*  gpointer data           : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_background_color (GtkColorChooser * colob, gpointer data)
+
+  \brief change background color
+
+  \param colob the GtkColorChooser sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_background_color (GtkColorChooser * colob, gpointer data)
 {
@@ -431,18 +439,18 @@ G_MODULE_EXPORT void set_background_color (GtkColorChooser * colob, gpointer dat
   a = ad -> a;
   b = ad -> b;
   c = ad -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   this_proj -> curves[b][c] -> backcolor = get_button_color (colob);
   set_data_style (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_frame_type (GtkComboBox * fbox, gpointer data)
-*
-*  Usage: change frame type
-*
-*  GtkComboBox * fbox : the GtkComboBox sending the signal
-*  gpointer data      : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_frame_type (GtkComboBox * fbox, gpointer data)
+
+  \brief change frame type
+
+  \param fbox the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_frame_type (GtkComboBox * fbox, gpointer data)
 {
@@ -454,13 +462,13 @@ G_MODULE_EXPORT void set_frame_type (GtkComboBox * fbox, gpointer data)
   set_frame_style (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_frame_line (GtkComboBox * fbox, gpointer data)
-*
-*  Usage: change frame line type
-*
-*  GtkComboBox * fbox : the GtkComboBox sending the signal
-*  gpointer data      : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_frame_line (GtkComboBox * fbox, gpointer data)
+
+  \brief change frame line type
+
+  \param fbox the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_frame_line (GtkComboBox * fbox, gpointer data)
 {
@@ -472,13 +480,13 @@ G_MODULE_EXPORT void set_frame_line (GtkComboBox * fbox, gpointer data)
   set_frame_style (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_frame_thickness (GtkEntry * entry, gpointer data)
-*
-*  Usage: set frame thickness entry callback
-*
-*  GtkEntry * entry : the GtkEntry sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_frame_thickness (GtkEntry * entry, gpointer data)
+
+  \brief set frame thickness entry callback
+
+  \param entry the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_frame_thickness (GtkEntry * entry, gpointer data)
 {
@@ -488,19 +496,19 @@ G_MODULE_EXPORT void set_frame_thickness (GtkEntry * entry, gpointer data)
   b = ad -> b;
   c = ad -> c;
   str = entry_get_text (entry);
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   this_proj -> curves[b][c] -> frame_thickness = atof(str);
   update_entry_double (entry, this_proj -> curves[b][c] -> frame_thickness);
   set_frame_style (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_frame_color (GtkColorChooser * colob, gpointer data)
-*
-*  Usage: set frame color
-*
-*  GtkColorChooser * colob : the GtkColorChooser sending the signal
-*  gpointer data           : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_frame_color (GtkColorChooser * colob, gpointer data)
+
+  \brief set frame color
+
+  \param colob the GtkColorChooser sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_frame_color (GtkColorChooser * colob, gpointer data)
 {
@@ -508,18 +516,18 @@ G_MODULE_EXPORT void set_frame_color (GtkColorChooser * colob, gpointer data)
   a = ad -> a;
   b = ad -> b;
   c = ad -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   this_proj -> curves[b][c] -> frame_color = get_button_color (colob);
   set_frame_style (data);
 }
 
-/*
-*  G_MODULE_EXPORT void set_frame_pos (GtkEntry * fen, gpointer data)
-*
-*  Usage: set frame position entry callback
-*
-*  GtkEntry * fen : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_frame_pos (GtkEntry * fen, gpointer data)
+
+  \brief set frame position entry callback
+
+  \param fen the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_frame_pos (GtkEntry * fen, gpointer data)
 {
@@ -531,7 +539,7 @@ G_MODULE_EXPORT void set_frame_pos (GtkEntry * fen, gpointer data)
   b = cd -> b;
   c = cd -> c;
   d = cd -> d;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   m = entry_get_text (fen);
   z= atof(m);
   if (d < 2)
@@ -593,12 +601,12 @@ G_MODULE_EXPORT void set_frame_pos (GtkEntry * fen, gpointer data)
   set_frame_style (data);
 }
 
-/*
-*  GtkWidget * create_tab_1 (gpointer data)
-*
-*  Usage: handle the creation of the 1st tab of the curve edition dialog
-*
-*  gpointer data : the associated data pointer
+/*!
+  \fn GtkWidget * create_tab_1 (gpointer data)
+
+  \brief handle the creation of the 1st tab of the curve edition dialog
+
+  \param data the associated data pointer
 */
 GtkWidget * create_tab_1 (gpointer data)
 {
@@ -629,7 +637,7 @@ GtkWidget * create_tab_1 (gpointer data)
   a = cd -> a;
   b = cd -> b;
   c = cd -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   // Axis related signals
   for ( i=0 ; i < 2 ; i++ )
   {

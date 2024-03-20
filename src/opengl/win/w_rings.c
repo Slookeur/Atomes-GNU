@@ -1,39 +1,47 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file w_rings.c
+* @short Functions to create the ring(s) tab for the advanced environments window
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'w_rings.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the ring(s) tab for the advanced environments window
+ - The functions to create the ring(s) tab for the advanced environments window
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int get_rmin (struct project * this_proj, int rid, int step);
-  int get_rmax (struct project * this_proj, int rid, int step);
+  int get_rmin (project * this_proj, int rid, int step);
+  int get_rmax (project * this_proj, int rid, int step);
 
   void rings_set_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data);
-  void fill_rings_model (GtkTreeStore * store, struct project * this_proj, int rid);
-  void add_this_ring_to_search_tree (struct project * this_proj, int rid);
+  void fill_rings_model (GtkTreeStore * store, project * this_proj, int rid);
+  void add_this_ring_to_search_tree (project * this_proj, int rid);
 
   G_MODULE_EXPORT void on_select_rings (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data);
   G_MODULE_EXPORT void update_rings_search (GtkEntry * res, gpointer data);
 
-  GtkWidget * create_rings_tree (struct project * this_proj, int rid, gboolean fill_this);
-  GtkWidget * create_rings_search (struct project * this_proj, int rid);
+  GtkWidget * create_rings_tree (project * this_proj, int rid, gboolean fill_this);
+  GtkWidget * create_rings_search (project * this_proj, int rid);
   GtkWidget * rings_tab (glwin * view, int rid);
 
 */
@@ -43,14 +51,14 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "glview.h"
 #include "glwindow.h"
 
-/*
-*  G_MODULE_EXPORT void on_select_rings (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
-*
-*  Usage: on select ring toggle callback
-*
-*  GtkCellRendererToggle * cell_renderer : the GtkCellRendererToggle sending the signal
-*  gchar * string_path                   : the path in the tree store
-*  gpointer data                         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void on_select_rings (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
+
+  \brief on select ring toggle callback
+
+  \param cell_renderer the GtkCellRendererToggle sending the signal
+  \param string_path the path in the tree store
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void on_select_rings (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
 {
@@ -143,22 +151,22 @@ G_MODULE_EXPORT void on_select_rings (GtkCellRendererToggle * cell_renderer, gch
   update (opengl_project -> modelgl);
 }
 
-/*
-*  void rings_set_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
-*
-*  Usage: show / hide cell renderer in the ring search tree store
-*
-*  GtkTreeViewColumn * col    : the tree view column
-*  GtkCellRenderer * renderer : the column renderer
-*  GtkTreeModel * mod         : the tree model
-*  GtkTreeIter * iter         : the tree it
-*  gpointer data              : the associated data pointer
+/*!
+  \fn void rings_set_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
+
+  \brief show / hide cell renderer in the ring search tree store
+
+  \param col the tree view column
+  \param renderer the column renderer
+  \param mod the tree model
+  \param iter the tree it
+  \param data the associated data pointer
 */
 void rings_set_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
 {
   tint * id = (tint *)data;
   int i, j, k;
-  struct project * this_proj = get_project_by_id(id -> a);
+  project * this_proj = get_project_by_id(id -> a);
   i = id -> b;
   j = (this_proj -> steps > 1) ? 1: 0;
   gtk_tree_model_get (mod, iter, j, & k, -1);
@@ -234,16 +242,16 @@ void rings_set_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, Gtk
   }
 }
 
-/*
-*  void fill_rings_model (GtkTreeStore * store, struct project * this_proj, int rid)
-*
-*  Usage: fill the entire ring(s) tree store
-*
-*  GtkTreeStore * store       : the GtkTreeStore to fill
-*  struct project * this_proj : the target project
-*  int rid                    : the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
+/*!
+  \fn void fill_rings_model (GtkTreeStore * store, project * this_proj, int rid)
+
+  \brief fill the entire ring(s) tree store
+
+  \param store the GtkTreeStore to fill
+  \param this_proj the target project
+  \param rid the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
 */
-void fill_rings_model (GtkTreeStore * store, struct project * this_proj, int rid)
+void fill_rings_model (GtkTreeStore * store, project * this_proj, int rid)
 {
   GtkTreeIter step_level, size_level, ring_level;
   int h, i, j, k, l;
@@ -315,16 +323,16 @@ void fill_rings_model (GtkTreeStore * store, struct project * this_proj, int rid
   }
 }
 
-/*
-*  GtkWidget * create_rings_tree (struct project * this_proj, int rid, gboolean fill_this)
-*
-*  Usage: create the ring(s) search tree store
-*
-*  struct project * this_proj : the target project
-*  int rid                    : the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
-*  gboolean fill_this         : 1 = yes, 0 = no
+/*!
+  \fn GtkWidget * create_rings_tree (project * this_proj, int rid, gboolean fill_this)
+
+  \brief create the ring(s) search tree store
+
+  \param this_proj the target project
+  \param rid the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
+  \param fill_this 1 = yes, 0 = no
 */
-GtkWidget * create_rings_tree (struct project * this_proj, int rid, gboolean fill_this)
+GtkWidget * create_rings_tree (project * this_proj, int rid, gboolean fill_this)
 {
   int i, j, k;
   GtkTreeViewColumn * rings_col[7];
@@ -358,15 +366,15 @@ GtkWidget * create_rings_tree (struct project * this_proj, int rid, gboolean fil
   return rings_tree;
 }
 
-/*
-*  void add_this_ring_to_search_tree (struct project * this_proj, int rid)
-*
-*  Usage: add ring in the search tree based on ring size and id
-*
-*  struct project * this_proj : the target project
-*  int rid                    : the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
+/*!
+  \fn void add_this_ring_to_search_tree (project * this_proj, int rid)
+
+  \brief add ring in the search tree based on ring size and id
+
+  \param this_proj the target project
+  \param rid the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
 */
-void add_this_ring_to_search_tree (struct project * this_proj, int rid)
+void add_this_ring_to_search_tree (project * this_proj, int rid)
 {
   GtkTreeIter step_level, size_level, ring_level;
   GtkTreeIter new_level;
@@ -669,16 +677,16 @@ void add_this_ring_to_search_tree (struct project * this_proj, int rid)
   }
 }
 
-/*
-*  int get_rmin (struct project * this_proj, int rid, int step)
-*
-*  Usage: get ring(s) max size for the MD step
-*
-*  struct project * this_proj : the target project
-*  int rid                    : the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
-*  int step                   : the MD step
+/*!
+  \fn int get_rmin (project * this_proj, int rid, int step)
+
+  \brief get ring(s) max size for the MD step
+
+  \param this_proj the target project
+  \param rid the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
+  \param step the MD step
 */
-int get_rmin (struct project * this_proj, int rid, int step)
+int get_rmin (project * this_proj, int rid, int step)
 {
   int i, j;
   for (i=0; i<this_proj -> coord -> totcoord[rid+4]; i++)
@@ -689,16 +697,16 @@ int get_rmin (struct project * this_proj, int rid, int step)
   return j;
 }
 
-/*
-*  int get_rmax (struct project * this_proj, int g, int step)
-*
-*  Usage: get ring(s) min size for the MD step
-*
-*  struct project * this_proj : the target project
-*  int rid                    : the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
-*  int step                   : the MD step
+/*!
+  \fn int get_rmax (project * this_proj, int rid, int step)
+
+  \brief get ring(s) min size for the MD step
+
+  \param this_proj the target project
+  \param rid the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
+  \param step the MD step
 */
-int get_rmax (struct project * this_proj, int rid, int step)
+int get_rmax (project * this_proj, int rid, int step)
 {
   int i, j;
   for (i=this_proj -> coord -> totcoord[rid+4]-1; i>-1; i--)
@@ -709,13 +717,13 @@ int get_rmax (struct project * this_proj, int rid, int step)
   return j;
 }
 
-/*
-*  G_MODULE_EXPORT void update_rings_search (GtkEntry * res, gpointer data)
-*
-*  Usage: update the ring(s) search widget
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void update_rings_search (GtkEntry * res, gpointer data)
+
+  \brief update the ring(s) search widget
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void update_rings_search (GtkEntry * res, gpointer data)
 {
@@ -725,7 +733,7 @@ G_MODULE_EXPORT void update_rings_search (GtkEntry * res, gpointer data)
   int rid;
   const gchar * m = entry_get_text (res);
   v = (int)atof(m);
-  struct project * this_proj = get_project_by_id(dat -> a);
+  project * this_proj = get_project_by_id(dat -> a);
   coord_edition * coord = this_proj -> modelgl -> coord_win;
   for (i=0; i<5; i++)
   {
@@ -834,15 +842,15 @@ G_MODULE_EXPORT void update_rings_search (GtkEntry * res, gpointer data)
   }
 }
 
-/*
-*  GtkWidget * create_rings_search (struct project * this_proj, int rid)
-*
-*  Usage: create the ring(s) search widget
-*
-*  struct project * this_proj : the target project
-*  int rid                    : the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
+/*!
+  \fn GtkWidget * create_rings_search (project * this_proj, int rid)
+
+  \brief create the ring(s) search widget
+
+  \param this_proj the target project
+  \param rid the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
 */
-GtkWidget * create_rings_search (struct project * this_proj, int rid)
+GtkWidget * create_rings_search (project * this_proj, int rid)
 {
   GtkWidget * rings_search = create_vbox (BSEP);
   gchar * str = g_strdup_printf ("Too many <b>%s</b> rings in your model !\n"
@@ -887,13 +895,13 @@ GtkWidget * create_rings_search (struct project * this_proj, int rid)
   return rings_search;
 }
 
-/*
-*  GtkWidget * rings_tab (glwin * view, int rid)
-*
-*  Usage: create the ring(s) tab for the advanced environments window
-*
-*  glwin * view : the target glwin
-*  int rid      : the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
+/*!
+  \fn GtkWidget * rings_tab (glwin * view, int rid)
+
+  \brief create the ring(s) tab for the advanced environments window
+
+  \param view the target glwin
+  \param rid the type of ring(s), 0 = All, 1 = King, 2 = Guttman, 3 = Primtive, 4 = Strong
 */
 GtkWidget * rings_tab (glwin * view, int rid)
 {
@@ -901,7 +909,7 @@ GtkWidget * rings_tab (glwin * view, int rid)
   gtk_widget_set_hexpand (rings, TRUE);
   gtk_widget_set_vexpand (rings, TRUE);
   int h, i, j, k;
-  struct project * this_proj = get_project_by_id(view -> proj);
+  project * this_proj = get_project_by_id(view -> proj);
   k = 0;
   for (h=0; h < this_proj -> steps; h++)
   {

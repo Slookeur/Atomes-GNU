@@ -1,28 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file m_style.c
+* @short Functions to create the 'OpenGL -> Style' submenu
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'm_style.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the 'OpenGL -> Style' submenu
+ - The functions to create the 'OpenGL -> Style' submenu
 
 *
-*  List of subroutines:
+* List of functions:
 
-  void clean_atom_style (struct project * this_proj);
+  void clean_atom_style (project * this_proj);
   void update_menus (glwin * view);
 
   G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data);
@@ -41,16 +49,28 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "glview.h"
 #include "glwindow.h"
 
-extern gchar * label_atpts (struct project * this_proj, glwin * view, int id);
+extern gchar * label_atpts (project * this_proj, glwin * view, int id);
 
-/*
-*  void clean_atom_style (struct project * this_proj)
-*
-*  Usage: clean all atom(s) possible alternative rendering styles
-*
-*  struct project * this_proj : the target project
+char * text_styles[OGL_STYLES] = {"Ball and stick",
+                                  "Wireframe",
+                                  "Spacefilled",
+                                  "Spheres",
+                                  "Cylinders",
+                                  "Dots"};
+
+char * text_filled[FILLED_STYLES] = {"Covalent radius",
+                                     "Ionic radius",
+                                     "van Der Waals radius",
+                                     "In crystal radius"};
+
+/*!
+  \fn void clean_atom_style (project * this_proj)
+
+  \brief clean all atom(s) possible alternative rendering styles
+
+  \param this_proj the target project
 */
-void clean_atom_style (struct project * this_proj)
+void clean_atom_style (project * this_proj)
 {
   int i, j;
   for (i=0; i<this_proj -> steps; i++)
@@ -64,12 +84,12 @@ void clean_atom_style (struct project * this_proj)
 
 #ifdef GTK3
 // GTK3 Menu Action To Check
-/*
-*  void update_menus (glwin * view)
-*
-*  Usage: update GTK3 menus of style has changed
-*
-*  glwin * view : the target glwin
+/*!
+  \fn void update_menus (glwin * view)
+
+  \brief update GTK3 menus of style has changed
+
+  \param view the target glwin
 */
 void update_menus (glwin * view)
 {
@@ -140,18 +160,18 @@ void update_menus (glwin * view)
 }
 #endif
 
-/*
-*  G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data)
-*
-*  Usage: set style callback
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data)
+
+  \brief set style callback
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data)
 {
   tint * the_data = (tint *)data;
-  struct project * this_proj = get_project_by_id(the_data -> a);
+  project * this_proj = get_project_by_id(the_data -> a);
   int s = the_data -> b;
   int st = (s >= OGL_STYLES) ? SPACEFILL : s;
   int ft = (s >= OGL_STYLES) ? s - OGL_STYLES * (s/OGL_STYLES) : NONE;
@@ -236,19 +256,19 @@ G_MODULE_EXPORT void set_style (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK3
-/*
-*  GtkWidget * create_style_menu (char * name, int val, int style, int vbl, int filled, guint accel, GtkWidget * menu, tint * data)
-*
-*  Usage: create style menu item GTK3
-*
-*  char * name      : the menu item label
-*  int val          : active style
-*  int style        : style value for this menu item
-*  int vbl          : active filled style if any
-*  int filled       : filled value for this menu item
-*  guint accel      : keyboard accelerator
-*  GtkWidget * menu : the menu to attach the new menu item to
-*  tint * data      : the associated data pointer
+/*!
+  \fn GtkWidget * create_style_menu (char * name, int val, int style, int vbl, int filled, guint accel, GtkWidget * menu, tint * data)
+
+  \brief create style menu item GTK3
+
+  \param name the menu item label
+  \param val active style
+  \param style style value for this menu item
+  \param vbl active filled style if any
+  \param filled filled value for this menu item
+  \param accel keyboard accelerator
+  \param menu the menu to attach the new menu item to
+  \param data the associated data pointer
 */
 GtkWidget * create_style_menu (char * name, int val, int style, int vbl, int filled, guint accel, GtkWidget * menu, tint * data)
 {
@@ -257,13 +277,13 @@ GtkWidget * create_style_menu (char * name, int val, int style, int vbl, int fil
   return style_widget;
 }
 
-/*
-*  GtkWidget * menu_style (glwin * view, int id)
-*
-*  Usage: create the 'OpenGL -> Style' submenu - GTK3
-*
-*  glwin * view : the target glwin
-*  int id       : main app (0) or popup (1)
+/*!
+  \fn GtkWidget * menu_style (glwin * view, int id)
+
+  \brief create the 'OpenGL -> Style' submenu - GTK3
+
+  \param view the target glwin
+  \param id main app (0) or popup (1)
 */
 GtkWidget * menu_style (glwin * view, int id)
 {
@@ -346,14 +366,14 @@ GtkWidget * menu_style (glwin * view, int id)
   return menus;
 }
 #else
-/*
-*  G_MODULE_EXPORT void change_style_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: change style callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void change_style_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief change style callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void change_style_radio (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
@@ -402,13 +422,13 @@ G_MODULE_EXPORT void change_style_radio (GSimpleAction * action, GVariant * para
   }
 }
 
-/*
-*  GMenu * menu_style (glwin * view, int popm)
-*
-*  Usage: create the 'OpenGL -> Style' submenu - GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * menu_style (glwin * view, int popm)
+
+  \brief create the 'OpenGL -> Style' submenu - GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * menu_style (glwin * view, int popm)
 {

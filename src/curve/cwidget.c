@@ -1,32 +1,40 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file cwidget.c
+* @short Initialization of the curve widget
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'cwidget.c'
 *
-*  Contains:
+* Contains:
 *
 
  - The initialization of the curve widget
 
 *
-*  List of subroutines:
+* List of functions:
 
   void curve_default_scale (int rid, int cid);
-  void initcurve (struct project * pid, int rid, int cid);
+  void initcurve (project * pid, int rid, int cid);
   void addcurwidgets (int pid, int rid, int str);
 
-  DataLayout * curve_default_layout (struct project * pid, int rid, int cid);
+  DataLayout * curve_default_layout (project * pid, int rid, int cid);
 
 */
 
@@ -37,16 +45,16 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "interface.h"
 #include "curve.h"
 
-/*
-*  DataLayout * curve_default_layout (struct project * pid, int rid, int cid)
-*
-*  Usage: prepare the default layout for a curve
-*
-*  struct project * pid : the project id
-*  int rid              : the analysis id
-*  int cid              : the curve id
+/*!
+  \fn DataLayout * curve_default_layout (project * pid, int rid, int cid)
+
+  \brief prepare the default layout for a curve
+
+  \param pid the project id
+  \param rid the analysis id
+  \param cid the curve id
 */
-DataLayout * curve_default_layout (struct project * pid, int rid, int cid)
+DataLayout * curve_default_layout (project * pid, int rid, int cid)
 {
   DataLayout * layout = g_malloc0 (sizeof*layout);
   layout -> datacolor.red = RED;
@@ -95,13 +103,13 @@ DataLayout * curve_default_layout (struct project * pid, int rid, int cid)
   return layout;
 }
 
-/*
-*  void curve_default_scale (int rid, int cid)
-*
-*  Usage: pick appropriate scale based on the type of analysis
-*
-*  int rid : analysis id
-*  int cid : curve id
+/*!
+  \fn void curve_default_scale (int rid, int cid)
+
+  \brief pick appropriate scale based on the type of analysis
+
+  \param rid analysis id
+  \param cid curve id
 */
 void curve_default_scale (int rid, int cid)
 {
@@ -136,16 +144,16 @@ void curve_default_scale (int rid, int cid)
   }
 }
 
-/*
-*  void initcurve (struct project * pid, int rid, int cid)
-*
-*  Usage: initialize curve widget
-*
-*  struct project * pid : the project id
-*  int rid              : the analysis id
-*  int cid              : the curve id
+/*!
+  \fn void initcurve (project * pid, int rid, int cid)
+
+  \brief initialize curve widget
+
+  \param pid the project id
+  \param rid the analysis id
+  \param cid the curve id
 */
-void initcurve (struct project * pid, int rid, int cid)
+void initcurve (project * pid, int rid, int cid)
 {
   int k;
 
@@ -239,21 +247,21 @@ void initcurve (struct project * pid, int rid, int cid)
   activer = rid;
 }
 
-/*
-*  void addcurwidgets (int pid, int rid, int str)
-*
-*  Usage: add curve widgets to the project
-*
-*  int pid : the project id
-*  int rid : the analysis id
-*  int str : at the project creation stage (1) or latter on (0)
+/*!
+  \fn void addcurwidgets (int pid, int rid, int str)
+
+  \brief add curve widgets to the project
+
+  \param pid the project id
+  \param rid the analysis id
+  \param str at the project creation stage (1) or latter on (0)
 */
 void addcurwidgets (int pid, int rid, int str)
 {
   int j, k, l;
   l = 0;
   activer = rid;
-  struct project * tmp_proj = get_project_by_id(pid);
+  project * tmp_proj = get_project_by_id(pid);
   for (j=0; j<rid; j++)
   {
     l += tmp_proj -> numc[j];

@@ -1,26 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file update_p.c
+* @short Functions to update a project \n
+         Functions to activate a project
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'update_p.c'
 *
-*  Contains:
+* Contains:
 *
 
- -
+ - The functions to update a project
+ - The functions to activate a project
 
 *
-*  List of subroutines:
+* List of functions:
 
   int update_project ();
 
@@ -40,10 +50,10 @@ If not, see <https://www.gnu.org/licenses/> */
 extern GtkWidget * work_menu (int p, int c);
 extern GtkTreeStore * tool_model;
 
-/*
-*  void prep_calc_actions ()
-*
-*  Usage:
+/*!
+  \fn void prep_calc_actions ()
+
+  \brief prepare analysis widgets
 */
 void prep_calc_actions ()
 {
@@ -76,10 +86,10 @@ void prep_calc_actions ()
   }
 }
 
-/*
-*  int update_project ()
-*
-*  Usage: update project: send data to Fortran90, and update calculation interactors
+/*!
+  \fn int update_project ()
+
+  \brief update project: send data to Fortran90, and update calculation interactors
 */
 int update_project ()
 {
@@ -155,12 +165,12 @@ int update_project ()
   return 1;
 }
 
-/*
-*  void active_project_changed (int id)
-*
-*  Usage: change the active project
-*
-*  int id : the id of the new active project
+/*!
+  \fn void active_project_changed (int id)
+
+  \brief change the active project
+
+  \param id the id of the new active project
 */
 void active_project_changed (int id)
 {
@@ -225,12 +235,12 @@ void active_project_changed (int id)
   activew = activep;
 }
 
-/*
-*  void opengl_project_changed (int id)
-*
-*  Usage: change the OpenGL project
-*
-*  int id : the id of the new OpenGL project
+/*!
+  \fn void opengl_project_changed (int id)
+
+  \brief change the OpenGL project
+
+  \param id the id of the new OpenGL project
 */
 void opengl_project_changed (int id)
 {

@@ -1,109 +1,54 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file save_qm.c
+* @short Functions to save ab-initio (CPMD/CP2K) calculation parameters in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'save_qm.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Subroutines to save ab-initio calculation (CPMD/CP2K) to atomes project file
+ - The functions to save ab-initio (CPMD/CP2K) calculation parameters in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int save_thermo (FILE * fp, struct thermostat * thermo);
+  int save_thermo (FILE * fp, thermostat * thermo);
   int save_fixed_atoms (FILE * fp, int fixatoms, int * fixlist, int ** fixcoord);
-  int save_cpmd_data (FILE * fp, int cid, struct project * this_proj);
-  int save_cp2k_data (FILE * fp, int cid, struct project * this_proj);
+  int save_cpmd_data (FILE * fp, int cid, project * this_proj);
+  int save_cp2k_data (FILE * fp, int cid, project * this_proj);
 
 */
 
 #include "global.h"
 #include "project.h"
 
-/*
-struct thermostat {
-  int id;
-  // For CPMD: 0 = none, 2 = controlled, 3 = nose
-  // For CP2K: 0 = none, 2 = langevin, 3 = csvr, 4 = gle, 5 = nose
-  int type;
-  // For CPMD: 0 = global, 1 = local
-  // For CP2K: 0 = global, 1 = local, 2 = molecule
-  int sys;
-  gboolean show;
-  double params[4];
-  int natoms;
-  int * list;
-  struct thermostat * next;
-  struct thermostat * prev;
-};
+/*!
+  \fn int save_thermo (FILE * fp, thermostat * thermo)
 
-struct dummy_atom {
-  // 0 = type1, 1 = type2, ...
-  int id;
-  int type;
-  gboolean show;
-  double xyz[3];
-  int coord[4];
-  int natoms;
-  int * list;
-  struct dummy_atom * next;
-  struct dummy_atom * prev;
-};
+  \brief save thermostat to file
 
-typedef struct {
-  int calc_type;
-  int restart[10];
-  int thermostats;
-  struct thermostat * ions_thermostat;
-  struct thermostat * elec_thermostat;
-  int fixat;
-  int * fixlist;
-  int ** fixcoord;
-  int dummies;
-  struct dummy_atom * dummy;
-  double default_opts[17];
-  double calc_opts[24];
-  int ** pp;
-  gchar * info;
-} cpmd;
-
-typedef struct {
-  int input_type;
-  double opts[42];
-  double extra_opts[3][4];
-  int thermostats;
-  struct thermostat * ions_thermostat;
-  int fixat[2];
-  int * fixlist[2];
-  int ** fixcoord[2];
-  gchar * files[5];
-  gchar *** spec_files;
-  int ** spec_data;
-  gchar * info;
-} cp2k;
+  \param fp the file pointer
+  \param thermo the thermostat to save
 */
-
-/*
-*  int save_thermo (FILE * fp, struct thermostat * thermo)
-*
-*  Usage: save thermostat to file
-*
-*  FILE * fp                  : the file pointer
-*  struct thermostat * thermo : the thermostat to save
-*/
-int save_thermo (FILE * fp, struct thermostat * thermo)
+int save_thermo (FILE * fp, thermostat * thermo)
 {
   if (fwrite (& thermo -> id, sizeof(int), 1, fp) != 1) return ERROR_RW;
   if (fwrite (& thermo -> type, sizeof(int), 1, fp) != 1) return ERROR_RW;
@@ -114,15 +59,15 @@ int save_thermo (FILE * fp, struct thermostat * thermo)
   return OK;
 }
 
-/*
-*  int save_fixed_atoms (FILE * fp, int fixatoms, int * fixlist, int ** fixcoord)
-*
-*  Usage: save fixed atom(s) to file
-*
-*  FILE * fp       : the file pointer
-*  int fixatoms    : the number of fixed atom(s)
-*  int * fixlist   : the list of fixed atom(s)
-*  int ** fixcoord : the list of fixed coordinate(s) for the fix atom(s)
+/*!
+  \fn int save_fixed_atoms (FILE * fp, int fixatoms, int * fixlist, int ** fixcoord)
+
+  \brief save fixed atom(s) to file
+
+  \param fp the file pointer
+  \param fixatoms the number of fixed atom(s)
+  \param fixlist the list of fixed atom(s)
+  \param fixcoord the list of fixed coordinate(s) for the fix atom(s)
 */
 int save_fixed_atoms (FILE * fp, int fixatoms, int * fixlist, int ** fixcoord)
 {
@@ -152,16 +97,16 @@ int save_fixed_atoms (FILE * fp, int fixatoms, int * fixlist, int ** fixcoord)
   return OK;
 }
 
-/*
-*  int save_cpmd_data (FILE * fp, int cid, struct project * this_proj)
-*
-*  Usage: save CPMD data to file
-*
-*  FILE * fp                  : the file pointer
-*  int cid                    : the CPMD id (0 = ab-initio, 1 = QM-MM)
-*  struct project * this_proj : the target project
+/*!
+  \fn int save_cpmd_data (FILE * fp, int cid, project * this_proj)
+
+  \brief save CPMD data to file
+
+  \param fp the file pointer
+  \param cid the CPMD id (0 = ab-initio, 1 = QM-MM)
+  \param this_proj the target project
 */
-int save_cpmd_data (FILE * fp, int cid, struct project * this_proj)
+int save_cpmd_data (FILE * fp, int cid, project * this_proj)
 {
   int i;
   if (this_proj -> cpmd_input[cid] == NULL)
@@ -178,7 +123,7 @@ int save_cpmd_data (FILE * fp, int cid, struct project * this_proj)
   if (fwrite (& this_proj -> cpmd_input[cid] -> thermostats, sizeof(int), 1, fp) != 1) return ERROR_RW;
   if (this_proj -> cpmd_input[cid] -> thermostats)
   {
-    struct thermostat * thermo = this_proj -> cpmd_input[cid] -> ions_thermostat;
+    thermostat * thermo = this_proj -> cpmd_input[cid] -> ions_thermostat;
     i = 0;
     while (thermo)
     {
@@ -200,7 +145,7 @@ int save_cpmd_data (FILE * fp, int cid, struct project * this_proj)
   if (fwrite (& this_proj -> cpmd_input[cid] -> dummies, sizeof(int), 1, fp) != 1) return ERROR_RW;
   if (this_proj -> cpmd_input[cid] -> dummies)
   {
-    struct dummy_atom * dummy = this_proj -> cpmd_input[cid] -> dummy;
+    dummy_atom * dummy = this_proj -> cpmd_input[cid] -> dummy;
     while (dummy)
     {
       if (fwrite (& dummy -> id, sizeof(int), 1, fp) != 1) return ERROR_RW;
@@ -223,16 +168,16 @@ int save_cpmd_data (FILE * fp, int cid, struct project * this_proj)
   return save_this_string (fp, this_proj -> cpmd_input[cid] -> info);
 }
 
-/*
-*  int save_cp2k_data (FILE * fp, int cid, struct project * this_proj)
-*
-*  Usage: save CP2K data to file
-*
-*  FILE * fp                  : the file pointer
-*  int cid                    : the CP2K id (0 = ab-initio, 1 = QM-MM)
-*  struct project * this_proj : the target project
+/*!
+  \fn int save_cp2k_data (FILE * fp, int cid, project * this_proj)
+
+  \brief save CP2K data to file
+
+  \param fp the file pointer
+  \param cid the CP2K id (0 = ab-initio, 1 = QM-MM)
+  \param this_proj the target project
 */
-int save_cp2k_data (FILE * fp, int cid, struct project * this_proj)
+int save_cp2k_data (FILE * fp, int cid, project * this_proj)
 {
   int i, j;
   if (this_proj -> cp2k_input[cid] == NULL)
@@ -252,7 +197,7 @@ int save_cp2k_data (FILE * fp, int cid, struct project * this_proj)
   if (fwrite (& this_proj -> cp2k_input[cid] -> thermostats, sizeof(int), 1, fp) != 1) return ERROR_RW;
   if (this_proj -> cp2k_input[cid] -> thermostats)
   {
-    struct thermostat * thermo = this_proj -> cp2k_input[cid] -> ions_thermostat;
+    thermostat * thermo = this_proj -> cp2k_input[cid] -> ions_thermostat;
     while (thermo)
     {
       if (save_thermo (fp, thermo) != OK) return ERROR_RW;

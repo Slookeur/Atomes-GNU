@@ -1,28 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file save_curve.c
+* @short Functions to save curves information in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'save_curve.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to write curves information in the atomes project file format
+ - The functions to save curves information in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int save_project_curve (FILE * fp, int wid, struct project * this_proj, int rid, int cid);
+  int save_project_curve (FILE * fp, int wid, project * this_proj, int rid, int cid);
 
   gboolean write_data_layout (FILE * fp, DataLayout * layout);
 
@@ -31,13 +39,13 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "global.h"
 #include "project.h"
 
-/*
-*  gboolean write_data_layout (FILE * fp, DataLayout * layout)
-*
-*  Usage: save curve data layout to file
-*
-*  FILE * fp           : the file pointer
-*  DataLayout * layout : the data layout to save
+/*!
+  \fn gboolean write_data_layout (FILE * fp, DataLayout * layout)
+
+  \brief save curve data layout to file
+
+  \param fp the file pointer
+  \param layout the data layout to save
 */
 gboolean write_data_layout (FILE * fp, DataLayout * layout)
 {
@@ -54,18 +62,18 @@ gboolean write_data_layout (FILE * fp, DataLayout * layout)
   return TRUE;
 }
 
-/*
-*  int save_project_curve (FILE * fp, int wid, struct project * this_proj, int rid, int cid)
-*
-*  Usage: save project curve to file
-*
-*  FILE * fp                  : the file pointer
-*  int wid                    : the total number of project file in the workspace
-*  struct project * this_proj : the target project
-*  int rid                    : the calculation to save
-*  int cid                    : the curve id to save
+/*!
+  \fn int save_project_curve (FILE * fp, int wid, project * this_proj, int rid, int cid)
+
+  \brief save project curve to file
+
+  \param fp the file pointer
+  \param wid the total number of project file in the workspace
+  \param this_proj the target project
+  \param rid the calculation to save
+  \param cid the curve id to save
 */
-int save_project_curve (FILE * fp, int wid, struct project * this_proj, int rid, int cid)
+int save_project_curve (FILE * fp, int wid, project * this_proj, int rid, int cid)
 {
   int i, j;
   if (wid > 0)
@@ -158,7 +166,7 @@ int save_project_curve (FILE * fp, int wid, struct project * this_proj, int rid,
     if (fwrite (& this_proj -> curves[rid][cid] -> extrac -> extras, sizeof(int), 1, fp) != 1) return ERROR_RW;
     if (this_proj -> curves[rid][cid] -> extrac -> extras > 0)
     {
-      struct cextra * ctmp = this_proj -> curves[rid][cid] -> extrac -> first;
+      CurveExtra * ctmp = this_proj -> curves[rid][cid] -> extrac -> first;
       for (i=0; i<this_proj -> curves[rid][cid] -> extrac -> extras; i++)
       {
         if (fwrite (& ctmp -> id.a, sizeof(int), 1, fp) != 1) return ERROR_RW;

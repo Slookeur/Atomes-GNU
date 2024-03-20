@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_hist.c
+* @short Functions to read DL-POLY history file
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_hist.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to read DL-POLY history file
+ - The functions to read DL-POLY history file
 
 *
-*  List of subroutines:
+* List of functions:
 
   int hist_get_data (int linec);
   int hist_get_content ();
@@ -39,12 +47,12 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern void check_for_species (double v, int ato);
 
-/*
-*  int hist_get_data (int linec)
-*
-*  Usage: read data from the DL-POLY history file
-*
-*  int linec : Total number of lines
+/*!
+  \fn int hist_get_data (int linec)
+
+  \brief read data from the DL-POLY history file
+
+  \param linec Total number of lines
 */
 int hist_get_data (int linec)
 {
@@ -53,7 +61,7 @@ int hist_get_data (int linec)
 #ifdef OPENMP
   this_line = g_strdup_printf ("%s", coord_line[1]);
 #else
-  struct line_node * tmp_line;
+  line_node * tmp_line;
   tail = head;
   tmp_line = tail;
   tail = tail -> next;
@@ -82,10 +90,10 @@ int hist_get_data (int linec)
   return 1;
 }
 
-/*
-*  int hist_get_content ()
-*
-*  Usage: read the content of the DL-POLY history file
+/*!
+  \fn int hist_get_content ()
+
+  \brief read the content of the DL-POLY history file
 */
 int hist_get_content ()
 {
@@ -288,7 +296,7 @@ int hist_get_content ()
     }
   }
 #else
-  struct line_node * tmp_line;
+  line_node * tmp_line;
   tmp_line = tail;
   tail = tail -> next;
   g_free (tmp_line);
@@ -420,12 +428,12 @@ int hist_get_content ()
   return 1;
 }
 
-/*
-*  int open_hist_file (int linec)
-*
-*  Usage: open DL-POLY history file
-*
-*  int linec : Number of lines in the file
+/*!
+  \fn int open_hist_file (int linec)
+
+  \brief open DL-POLY history file
+
+  \param linec Number of lines in the file
 */
 int open_hist_file (int linec)
 {

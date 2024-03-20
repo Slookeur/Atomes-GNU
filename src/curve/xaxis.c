@@ -1,29 +1,37 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file xaxis.c
+* @short Functions to draw the x axis
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'xaxis.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to draw the x axis
+ - The functions to draw the x axis
 
 *
-*  List of subroutines:
+* List of functions:
 
-  void setup_xaxis_linear (cairo_t * cr, struct project * this_proj, int rid, int cid);
-  void setup_xaxis_log (cairo_t * cr, struct project * this_proj, int rid, int cid, gboolean draw_it);
+  void setup_xaxis_linear (cairo_t * cr, project * this_proj, int rid, int cid);
+  void setup_xaxis_log (cairo_t * cr, project * this_proj, int rid, int cid, gboolean draw_it);
 
 */
 
@@ -33,17 +41,17 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "global.h"
 #include "curve.h"
 
-/*
-*  void setup_xaxis_linear (cairo_t * cr, struct project * this_proj, int rid, int cid)
-*
-*  Usage: setup x axis using a linear scale
-*
-*  cairo_t * cr               : the cairo drawing context
-*  struct project * this_proj : the target project
-*  int rid                    : the analysis id
-*  int cid                    : the curve id
+/*!
+  \fn void setup_xaxis_linear (cairo_t * cr, project * this_proj, int rid, int cid)
+
+  \brief setup x axis using a linear scale
+
+  \param cr the cairo drawing context
+  \param this_proj the target project
+  \param rid the analysis id
+  \param cid the curve id
 */
-void setup_xaxis_linear (cairo_t * cr, struct project * this_proj, int rid, int cid)
+void setup_xaxis_linear (cairo_t * cr, project * this_proj, int rid, int cid)
 {
   int k;
   double u, v;
@@ -141,18 +149,18 @@ void setup_xaxis_linear (cairo_t * cr, struct project * this_proj, int rid, int 
   }
 }
 
-/*
-*  void setup_xaxis_log (cairo_t * cr, struct project * this_proj, int rid, int cid, gboolean draw_it)
-*
-*  Usage: setup x axis using a log scale
-*
-*  cairo_t * cr               : the cairo drawing context
-*  struct project * this_proj : the target project
-*  int rid                    : the analysis id
-*  int cid                    : the curve id
-*  gboolean draw_it           : 1/0 draw or not
+/*!
+  \fn void setup_xaxis_log (cairo_t * cr, project * this_proj, int rid, int cid, gboolean draw_it)
+
+  \brief setup x axis using a log scale
+
+  \param cr the cairo drawing context
+  \param this_proj the target project
+  \param rid the analysis id
+  \param cid the curve id
+  \param draw_it 1/0 draw or not
 */
-void setup_xaxis_log (cairo_t * cr, struct project * this_proj, int rid, int cid, gboolean draw_it)
+void setup_xaxis_log (cairo_t * cr, project * this_proj, int rid, int cid, gboolean draw_it)
 {
   int i, k, l;
   gboolean istrue;

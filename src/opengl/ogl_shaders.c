@@ -1,20 +1,28 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file ogl_shaders.c
+* @short OpenGL shaders for the atomes program
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'ogl_shaders.c'
 *
-*  Contains:
+* Contains:
 *
 
  - The OpenGL shaders for the atomes program
@@ -267,8 +275,8 @@ const GLchar * angle_stipple = GLSL(
     vec2 bpos;
     v_color = vert_color[0];
 
-    vec4 pos_s =  mvp * gl_in[0].gl_Position;
-    vec4 pos_e =  mvp * gl_in[1].gl_Position;
+    vec4 pos_s = mvp * gl_in[0].gl_Position;
+    vec4 pos_e = mvp * gl_in[1].gl_Position;
     line_pos = 0.0;
     gl_Position = pos_s;
     EmitVertex();
@@ -696,7 +704,7 @@ const GLchar * sphere_vertex = GLSL(
     surfaceNormal   = mat3(m_view) * vert;
     surfaceToCamera = normalize (- surfacePosition);
     gl_PointSize = 1.0;
-    gl_Position = mvp *  pos;
+    gl_Position = mvp * pos;
   }
 );
 
@@ -720,7 +728,7 @@ const GLchar * axis_sphere_vertex = GLSL(
     surfaceNormal   = mat3(m_view) * vertNormal;
     surfaceToCamera = normalize (- surfacePosition);
     gl_PointSize = 1.0;
-    gl_Position = mvp *  pos;
+    gl_Position = mvp * pos;
   }
 );
 
@@ -911,13 +919,13 @@ const GLchar * gs_cylinder_geom = GLSL(
       surfaceNormal =  mat3(m_view) * normal;
       gl_Position = mvp * vec4(p1, 1.0);
 
-      surfacePosition = vec3(m_view *  vec4(p1, 1.0));
+      surfacePosition = vec3(m_view * vec4(p1, 1.0));
       surfaceToCamera = normalize (- surfacePosition);
       surfaceColor = vertCol[0];
       EmitVertex();
 
       gl_Position = mvp * vec4 (p2, 1.0);
-      surfacePosition = vec3(m_view *  vec4(p2, 1.0));
+      surfacePosition = vec3(m_view * vec4(p2, 1.0));
       surfaceToCamera = normalize (- surfacePosition);
       surfaceColor = vertCol[1];
       EmitVertex();
@@ -979,12 +987,12 @@ const GLchar * axis_cylinder_geom = GLSL(
       surfaceNormal =  mat3(m_view) * normal;
       gl_Position = mvp * vec4(p1, 1.0);
 
-      surfacePosition = vec3(m_view *  vec4(p1, 1.0));
+      surfacePosition = vec3(m_view * vec4(p1, 1.0));
       surfaceToCamera = normalize (- surfacePosition);
       EmitVertex();
 
       gl_Position = mvp * vec4 (p2, 1.0);
-      surfacePosition = vec3(m_view *  vec4(p2, 1.0));
+      surfacePosition = vec3(m_view * vec4(p2, 1.0));
       surfaceToCamera = normalize (- surfacePosition);
       EmitVertex();
     }
@@ -1040,8 +1048,8 @@ const GLchar * polyedron_geom = GLSL(
     surfaceNormal = mat3(m_view) * normal;
     for (i=0; i<3; i++)
     {
-      gl_Position = mvp *  vec4(v[i], 1.0);
-      surfacePosition = vec3(m_view *  vec4(v[i], 1.0));
+      gl_Position = mvp * vec4(v[i], 1.0);
+      surfacePosition = vec3(m_view * vec4(v[i], 1.0));
       surfaceToCamera = normalize (- surfacePosition);
       EmitVertex();
     }

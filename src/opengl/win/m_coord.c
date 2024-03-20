@@ -1,28 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file m_coord.c
+* @short Functions to create the 'Chemistry -> Coordination' submenu
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'm_coord.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the 'Chemistry -> Coordination' submenu
+ - The functions to create the 'Chemistry -> Coordination' submenu
 
 *
-*  List of subroutines:
+* List of functions:
 
-  gboolean is_coord_in_menu (int id, struct project * this_proj);
+  gboolean is_coord_in_menu (int id, project * this_proj);
 
   void detach_frag_mol_menu (glwin * view, int id, int jd);
 
@@ -55,15 +63,15 @@ extern G_MODULE_EXPORT void window_color_coord (GSimpleAction * action, GVariant
 extern GtkWidget * color_palette (glwin * view, int ideo, int spec, int geo);
 #endif
 
-/*
-*  gboolean is_coord_in_menu (int id, struct project * this_proj)
-*
-*  Usage: is this coordination in a menu ?
-*
-*  int id                     : the coordination type
-*  struct project * this_proj : the target project
+/*!
+  \fn gboolean is_coord_in_menu (int id, project * this_proj)
+
+  \brief is this coordination in a menu ?
+
+  \param id the coordination type
+  \param this_proj the target project
 */
-gboolean is_coord_in_menu (int id, struct project * this_proj)
+gboolean is_coord_in_menu (int id, project * this_proj)
 {
   if (((id == 2 || id == 3) && this_proj -> coord -> totcoord[id] <= COORD_MAX_MENU) || id < 2 || id > 3)
   {
@@ -76,24 +84,24 @@ gboolean is_coord_in_menu (int id, struct project * this_proj)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void show_hide_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: show/hide coordination callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void show_hide_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief show/hide coordination callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void show_hide_coord (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void show_hide_coord (GtkWidget * widg, gpointer data)
-*
-*  Usage: show/hide coordination callback GTK3
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void show_hide_coord (GtkWidget * widg, gpointer data)
+
+  \brief show/hide coordination callback GTK3
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void show_hide_coord (GtkWidget * widg, gpointer data)
 #endif
@@ -103,7 +111,7 @@ G_MODULE_EXPORT void show_hide_coord (GtkWidget * widg, gpointer data)
   int c, g, s;
   gboolean doit = TRUE;
   gboolean show;
-  struct project * this_proj = get_project_by_id(cid -> a);
+  project * this_proj = get_project_by_id(cid -> a);
   s = cid -> b;
   c = cid -> c;
   g = cid -> d;
@@ -117,7 +125,7 @@ G_MODULE_EXPORT void show_hide_coord (GtkWidget * widg, gpointer data)
   }
   j += c;
 #ifdef GTK3
-  show = gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg);
+  show = (widg) ? gtk_check_menu_item_get_active ((GtkCheckMenuItem *)widg) : this_proj -> modelgl -> anim -> last -> img -> show_coord[g][j];
 #else
   GVariant * state;
   if (action)
@@ -220,14 +228,14 @@ G_MODULE_EXPORT void show_hide_coord (GtkWidget * widg, gpointer data)
 }
 
 #ifdef GTK3
-/*
-*  void detach_frag_mol_menu (glwin * view, int id, int jd)
-*
-*  Usage: create a fragment/molecule type submenu
-*
-*  glwin * view : the target glwin
-*  int id       : main app (0) or popup (1)
-*  int jd       : coordination type
+/*!
+  \fn void detach_frag_mol_menu (glwin * view, int id, int jd)
+
+  \brief create a fragment/molecule type submenu
+
+  \param view the target glwin
+  \param id main app (0) or popup (1)
+  \param jd coordination type
 */
 void detach_frag_mol_menu (glwin * view, int id, int jd)
 {
@@ -264,21 +272,21 @@ void detach_frag_mol_menu (glwin * view, int id, int jd)
   }
 }
 
-/*
-*  GtkWidget * add_menu_coord (glwin * view, int id, int jd)
-*
-*  Usage: create a coordination type submenu
-*
-*  glwin * view : the target glwin
-*  int id       : main app (0) or popup (1)
-*  int jd       : coordination type
+/*!
+  \fn GtkWidget * add_menu_coord (glwin * view, int id, int jd)
+
+  \brief create a coordination type submenu
+
+  \param view the target glwin
+  \param id main app (0) or popup (1)
+  \param jd coordination type
 */
 GtkWidget * add_menu_coord (glwin * view, int id, int jd)
 {
   int i, j;
   GtkWidget * widg;
   GtkWidget * menucts;
-  struct project * this_proj = get_project_by_id (view -> proj);
+  project * this_proj = get_project_by_id (view -> proj);
   GtkWidget * menuct = gtk_menu_new ();
   if (is_coord_in_menu(jd, this_proj))
   {
@@ -404,13 +412,13 @@ GtkWidget * add_menu_coord (glwin * view, int id, int jd)
   return menuct;
 }
 
-/*
-*  GtkWidget * menu_coord (glwin * view, int id)
-*
-*  Usage: create the 'Coordination' submenu GTK3
-*
-*  glwin * view : the target glwin
-*  int id       : main app (0) or popup (1)
+/*!
+  \fn GtkWidget * menu_coord (glwin * view, int id)
+
+  \brief create the 'Coordination' submenu GTK3
+
+  \param view the target glwin
+  \param id main app (0) or popup (1)
 */
 GtkWidget * menu_coord (glwin * view, int id)
 {
@@ -423,13 +431,13 @@ GtkWidget * menu_coord (glwin * view, int id)
   return menuco;
 }
 
-/*
-*  GtkWidget * menu_rings (glwin * view, int id)
-*
-*  Usage: create the 'Ring(s)' submenu GTK3
-*
-*  glwin * view : the target glwin
-*  int id       : main app (0) or popup (1)
+/*!
+  \fn GtkWidget * menu_rings (glwin * view, int id)
+
+  \brief create the 'Ring(s)' submenu GTK3
+
+  \param view the target glwin
+  \param id main app (0) or popup (1)
 */
 GtkWidget * menu_rings (glwin * view, int id)
 {
@@ -456,17 +464,17 @@ GtkWidget * menu_rings (glwin * view, int id)
   return menuco;
 }
 #else
-/*
-*  GMenu * color_item (glwin * view, gchar * act, int popm, int id, GCallback handler, gpointer data)
-*
-*  Usage: create a submenu to attach a color palette
-*
-*  glwin * view      : the target glwin
-*  gchar * act       : the custom attribute to attach a widget
-*  int popm          : main app (0) or popup (1)
-*  int id            : id number
-*  GCallback handler : the associated callback
-*  gpointer data     : the associated data pointer
+/*!
+  \fn GMenu * color_item (glwin * view, gchar * act, int popm, int id, GCallback handler, gpointer data)
+
+  \brief create a submenu to attach a color palette
+
+  \param view the target glwin
+  \param act the custom attribute to attach a widget
+  \param popm main app (0) or popup (1)
+  \param id id number
+  \param handler the associated callback
+  \param data the associated data pointer
 */
 GMenu * color_item (glwin * view, gchar * act, int popm, int id, GCallback handler, gpointer data)
 {
@@ -476,21 +484,21 @@ GMenu * color_item (glwin * view, gchar * act, int popm, int id, GCallback handl
   return menu;
 }
 
-/*
-*  GMenu * menu_show_coord (glwin * view, int popm, int id, int mid)
-*
-*  Usage: create the coordination 'Show' or 'Color' submenus
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
-*  int id       : coordination type
-*  int mid      : 0 = show, 1 = color
+/*!
+  \fn GMenu * menu_show_coord (glwin * view, int popm, int id, int mid)
+
+  \brief create the coordination 'Show' or 'Color' submenus
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
+  \param id coordination type
+  \param mid 0 = show, 1 = color
 */
 GMenu * menu_show_coord (glwin * view, int popm, int id, int mid)
 {
   GMenu * menu = g_menu_new ();
   GMenu * menus;
-  struct project * this_proj = get_project_by_id (view -> proj);
+  project * this_proj = get_project_by_id (view -> proj);
   gchar * stra,  * strb;
   int i, j, k;
   for (i=0; i<this_proj -> nspec; i++)
@@ -537,34 +545,34 @@ GMenu * menu_show_coord (glwin * view, int popm, int id, int mid)
   return menu;
 }
 
-/*
-*  G_MODULE_EXPORT void to_coord_properties (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: open advancedd coordination properties GTK4 callback
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void to_coord_properties (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief open advancedd coordination properties GTK4 callback
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void to_coord_properties (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   coord_properties (NULL, data);
 }
 
-/*
-*  GMenu * menu_show_frag_mol (glwin * view, int popm, int id, int mid)
-*
-*  Usage: create a fragment/molecule coordination submenu
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
-*  int id       : coordination type
-*  int mid      : 0 = show, 1 = color
+/*!
+  \fn GMenu * menu_show_frag_mol (glwin * view, int popm, int id, int mid)
+
+  \brief create a fragment/molecule coordination submenu
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
+  \param id coordination type
+  \param mid 0 = show, 1 = color
 */
 GMenu * menu_show_frag_mol (glwin * view, int popm, int id, int mid)
 {
   GMenu * menu = g_menu_new ();
-  struct project * this_proj = get_project_by_id (view -> proj);
+  project * this_proj = get_project_by_id (view -> proj);
   if (active_coord -> totcoord[id] <= COORD_MAX_MENU)
   {
     gchar * stra, * strb;
@@ -590,15 +598,15 @@ GMenu * menu_show_frag_mol (glwin * view, int popm, int id, int mid)
   return menu;
 }
 
-/*
-*  GMenu * menu_show_rings (glwin * view, int popm, int id, int mid)
-*
-*  Usage: create a ring coordination submenu
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
-*  int id       : coordination type
-*  int mid      : 0 = show, 1 = color
+/*!
+  \fn GMenu * menu_show_rings (glwin * view, int popm, int id, int mid)
+
+  \brief create a ring coordination submenu
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
+  \param id coordination type
+  \param mid 0 = show, 1 = color
 */
 GMenu * menu_show_rings (glwin * view, int popm, int id, int mid)
 {
@@ -609,7 +617,7 @@ GMenu * menu_show_rings (glwin * view, int popm, int id, int mid)
     menus = g_menu_new ();
     append_submenu (menu, (id < 9) ? "Atoms In Ring(s) of Size " : "Atoms In Chain(s) of Size ", menus);
   }
-  struct project * this_proj = get_project_by_id (view -> proj);
+  project * this_proj = get_project_by_id (view -> proj);
   gchar * rin = g_strdup_printf ("rcol-%d", id);
   gchar * str;
   int i;
@@ -632,19 +640,19 @@ GMenu * menu_show_rings (glwin * view, int popm, int id, int mid)
   return menu;
 }
 
-/*
-*  GMenu * add_menu_coord (glwin * view, int popm, int id)
-*
-*  Usage: create a coordination type submenu
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
-*  int id       : coordination type
+/*!
+  \fn GMenu * add_menu_coord (glwin * view, int popm, int id)
+
+  \brief create a coordination type submenu
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
+  \param id coordination type
 */
 GMenu * add_menu_coord (glwin * view, int popm, int id)
 {
   GMenu * menu = g_menu_new ();
-  struct project * this_proj = get_project_by_id (view -> proj);
+  project * this_proj = get_project_by_id (view -> proj);
   gchar * menu_name[2] = {"Show/Hide", "Color"};
   if (is_coord_in_menu(id, this_proj))
   {
@@ -670,13 +678,13 @@ GMenu * add_menu_coord (glwin * view, int popm, int id)
   return menu;
 }
 
-/*
-*  GMenu * menu_coord (glwin * view, int popm)
-*
-*  Usage: create the 'Coordination' submenu GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * menu_coord (glwin * view, int popm)
+
+  \brief create the 'Coordination' submenu GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * menu_coord (glwin * view, int popm)
 {
@@ -686,13 +694,13 @@ GMenu * menu_coord (glwin * view, int popm)
   return menu;
 }
 
-/*
-*  GMenu * menu_rings (glwin * view, int popm)
-*
-*  Usage: create the 'Ring(s)' submenu GTK4
-*
-*  glwin * view : the target glwin
-*  int popm     : main app (0) or popup (1)
+/*!
+  \fn GMenu * menu_rings (glwin * view, int popm)
+
+  \brief create the 'Ring(s)' submenu GTK4
+
+  \param view the target glwin
+  \param popm main app (0) or popup (1)
 */
 GMenu * menu_rings (glwin * view, int popm)
 {

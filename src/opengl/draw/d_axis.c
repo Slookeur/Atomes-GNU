@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file d_axis.c
+* @short Functions to prepare the OpenGL rendering for the axis
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'd_axis.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to prepare the axis OpenGL rendering
+ - The functions to prepare the OpenGL rendering for the axis
 
 *
-*  List of subroutines:
+* List of functions:
 
   int create_axis_lists ();
 
@@ -59,12 +67,12 @@ float axis_radius;
 float arrow_base;
 float label_pos;
 
-/*
-*  ColRGBA color_axis (int id)
-*
-*  Usage: get axis color
-*
-*  int id : axis x (0), y(1) or z(2)
+/*!
+  \fn ColRGBA color_axis (int id)
+
+  \brief get axis color
+
+  \param id axis x (0), y(1) or z(2)
 */
 ColRGBA color_axis (int id)
 {
@@ -83,12 +91,12 @@ ColRGBA color_axis (int id)
   }
 }
 
-/*
-*  mat4_t create_axis_matrices (int type)
-*
-*  Usage: create axis OpenGL rendering matrices
-*
-*  int type   : axis type (standard: 0, atom edition viewer axis: 1)
+/*!
+  \fn mat4_t create_axis_matrices (int type)
+
+  \brief create axis OpenGL rendering matrices
+
+  \param type axis type (standard: 0, atom edition viewer axis: 1)
 */
 mat4_t create_axis_matrices (int type)
 {
@@ -158,17 +166,17 @@ mat4_t create_axis_matrices (int type)
   return m4_mul (axis_projection_matrix, axis_model_view_matrix);
 }
 
-/*
-*  void setup_arrow (float * vert, vec3_t a, vec3_t b, vec3_t c, vec3_t d, vec3_t e)
-*
-*  Usage: setup axis 3D arrow rendering data
-*
-*  float * vert : the OpenGL buffer data to fill
-*  vec3_t a     : position vector a
-*  vec3_t b     : position vector b
-*  vec3_t c     : position vector c
-*  vec3_t d     : position vector d
-*  vec3_t e     : position vector e
+/*!
+  \fn void setup_arrow (float * vert, vec3_t a, vec3_t b, vec3_t c, vec3_t d, vec3_t e)
+
+  \brief setup axis 3D arrow rendering data
+
+  \param vert the OpenGL buffer data to fill
+  \param a position vector a
+  \param b position vector b
+  \param c position vector c
+  \param d position vector d
+  \param e position vector e
 */
 void setup_arrow (float * vert, vec3_t a, vec3_t b, vec3_t c, vec3_t d, vec3_t e)
 {
@@ -180,10 +188,10 @@ void setup_arrow (float * vert, vec3_t a, vec3_t b, vec3_t c, vec3_t d, vec3_t e
   setup_triangles (vert, b, d, e);
 }
 
-/*
-*  void init_axis_param ()
-*
-*  Usage: initialize axis rendering parameters
+/*!
+  \fn void init_axis_param ()
+
+  \brief initialize axis rendering parameters
 */
 void init_axis_param ()
 {
@@ -202,14 +210,14 @@ void init_axis_param ()
   }
 }
 
-/*
-*  void prepare_axis_data (float * vert_a, float * vert_b, float * vert_c)
-*
-*  Usage: prepare axis OpenGL rendering data buffer
-*
-*  float * vert_a : OpenGL buffer data to fill
-*  float * vert_b : OpenGL buffer data to fill
-*  float * vert_c : OpenGL buffer data to fill
+/*!
+  \fn void prepare_axis_data (float * vert_a, float * vert_b, float * vert_c)
+
+  \brief prepare axis OpenGL rendering data buffer
+
+  \param vert_a OpenGL buffer data to fill
+  \param vert_b OpenGL buffer data to fill
+  \param vert_c OpenGL buffer data to fill
 */
 void prepare_axis_data (float * vert_a, float * vert_b, float * vert_c)
 {
@@ -252,10 +260,10 @@ void prepare_axis_data (float * vert_a, float * vert_b, float * vert_c)
   }
 }
 
-/*
-*  int create_axis_lists ()
-*
-*  Usage: prepare axis OpenGL rendering
+/*!
+  \fn int create_axis_lists ()
+
+  \brief prepare axis OpenGL rendering
 */
 int create_axis_lists ()
 {

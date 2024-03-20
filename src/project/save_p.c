@@ -1,42 +1,50 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file save_p.c
+* @short Functions to start saving an atomes project file
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'save_p.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Subroutines to start saving atomes project file
+ - The functions to start saving an atomes project file
 
 *
-*  List of subroutines:
+* List of functions:
 
   int save_this_string (FILE * fp, gchar * string);
-  int save_project (FILE * fp, struct project * this_proj, int npi);
+  int save_project (FILE * fp, project * this_proj, int npi);
 
 */
 
 #include "global.h"
 #include "project.h"
 
-/*
-*  int save_this_string (FILE * fp, gchar * string)
-*
-*  Usage: save string to file
-*
-*  FILE * fp      : the file pointer
-*  gchar * string : the string to save
+/*!
+  \fn int save_this_string (FILE * fp, gchar * string)
+
+  \brief save string to file
+
+  \param fp the file pointer
+  \param string the string to save
 */
 int save_this_string (FILE * fp, gchar * string)
 {
@@ -64,23 +72,23 @@ int save_this_string (FILE * fp, gchar * string)
   return OK;
 }
 
-/*
-*  int save_project (FILE * fp, struct project * this_proj, int npi)
-*
-*  Usage: save project to file
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
-*  int npi                    : the total number of projects in the workspace
+/*!
+  \fn int save_project (FILE * fp, project * this_proj, int npi)
+
+  \brief save project to file
+
+  \param fp the file pointer
+  \param this_proj the target project
+  \param npi the total number of projects in the workspace
 */
-int save_project (FILE * fp, struct project * this_proj, int npi)
+int save_project (FILE * fp, project * this_proj, int npi)
 {
   int i, j, k;
   gchar * ver;
 
   // First 2 lines for compatibility issues
   i = 2;
-  j = 6;
+  j = 7;
   ver = g_strdup_printf ("%%\n%% project file v-%1d.%1d\n%%\n", i, j);
   if (save_this_string (fp, ver) != OK)
   {

@@ -1,28 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file save_bond.c
+* @short Functions to save bonding information in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'save_bond.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to write bonding information in the atomes project file format
+ - The functions to save bonding information in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int save_bonding (FILE * fp, struct project * this_proj);
+  int save_bonding (FILE * fp, project * this_proj);
 
 */
 
@@ -31,15 +39,15 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "glview.h"
 #include "initcoord.h"
 
-/*
-*  int save_bonding (FILE * fp, struct project * this_proj)
-*
-*  Usage: save bonding information to file
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
+/*!
+  \fn int save_bonding (FILE * fp, project * this_proj)
+
+  \brief save bonding information to file
+
+  \param fp the file pointer
+  \param this_proj the target project
 */
-int save_bonding (FILE * fp, struct project * this_proj)
+int save_bonding (FILE * fp, project * this_proj)
 {
   int i, j, k;
   image * img = this_proj -> modelgl -> anim -> last -> img;

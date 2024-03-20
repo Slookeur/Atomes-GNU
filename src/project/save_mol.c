@@ -1,37 +1,45 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file save_mol.c
+* @short Functions to save molecules information in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'save_mol.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to write molecules information in the atomes project file format
+ - The functions to save molecules information in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int save_atom_m (FILE * fp, struct project * this_proj, int s, int a);
-  int save_this_mol (FILE * fp, struct project * this_proj, struct molecule * tmp);
-  int save_mol (FILE * fp, struct project * this_proj);
+  int save_atom_m (FILE * fp, project * this_proj, int s, int a);
+  int save_this_mol (FILE * fp, project * this_proj, molecule * tmp);
+  int save_mol (FILE * fp, project * this_proj);
 
 */
 
 #include "global.h"
 #include "project.h"
 
-/*struct molecule {
+/*molecule {
   int id;                                 // Molecule id number
   int md;                                 // MD step
   int multiplicity;                       // Multiplicity
@@ -39,43 +47,43 @@ If not, see <https://www.gnu.org/licenses/> */
   int natoms;                             // Number of atoms
   int nspec;                              // Number of chemical species
   int * species;                          // Number of atom by species
-  struct atom ** atoms;                   // The list of all atoms
+  atom ** atoms;                   // The list of all atoms
   int nbonds;                             // Number of chemical bonds
   int ** pbonds;                          // Number of chemical bonds by geometries
   int nangles;                            // Number of bond angles
   int *** pangles;                        // Number of bond angles by geometries
   int ** lgeo;                            // list of coordination spheres (by species)
-  struct molecule * next;
-  struct molecule * prev;
+  molecule * next;
+  molecule * prev;
 };*/
 
-/*
-*  int save_atom_m (FILE * fp, struct project * this_proj, int s, int a)
-*
-*  Usage: save atom data to file
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
-*  int s                      : the MD step
-*  int a                      : the atom number
+/*!
+  \fn int save_atom_m (FILE * fp, project * this_proj, int s, int a)
+
+  \brief save atom data to file
+
+  \param fp the file pointer
+  \param this_proj the target project
+  \param s the MD step
+  \param a the atom number
 */
-int save_atom_m (FILE * fp, struct project * this_proj, int s, int a)
+int save_atom_m (FILE * fp, project * this_proj, int s, int a)
 {
   if (fwrite (& this_proj -> atoms[s][a].coord[2], sizeof(int), 1, fp) != 1) return ERROR_RW;
   if (fwrite (& this_proj -> atoms[s][a].coord[3], sizeof(int), 1, fp) != 1) return ERROR_RW;
   return OK;
 }
 
-/*
-*  int save_this_mol (FILE * fp, struct project * this_proj, struct molecule * tmp)
-*
-*  Usage: save this molecule data to file
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
-*  struct molecule * tmp      : the molecule that contains the data
+/*!
+  \fn int save_this_mol (FILE * fp, project * this_proj, molecule * tmp)
+
+  \brief save this molecule data to file
+
+  \param fp the file pointer
+  \param this_proj the target project
+  \param tmp the molecule that contains the data
 */
-int save_this_mol (FILE * fp, struct project * this_proj, struct molecule * tmp)
+int save_this_mol (FILE * fp, project * this_proj, molecule * tmp)
 {
   if (fwrite (& tmp -> id, sizeof(int), 1, fp) != 1) return 0;
   if (fwrite (& tmp -> md, sizeof(int), 1, fp) != 1) return 0;
@@ -87,15 +95,15 @@ int save_this_mol (FILE * fp, struct project * this_proj, struct molecule * tmp)
   return 1;
 }
 
-/*
-*  int save_mol (FILE * fp, struct project * this_proj)
-*
-*  Usage: save molecule information to file
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
+/*!
+  \fn int save_mol (FILE * fp, project * this_proj)
+
+  \brief save molecule information to file
+
+  \param fp the file pointer
+  \param this_proj the target project
 */
-int save_mol (FILE * fp, struct project * this_proj)
+int save_mol (FILE * fp, project * this_proj)
 {
   int i, j;
   i = 0;

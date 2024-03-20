@@ -1,30 +1,38 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file cbuild_action.c
+* @short Functions to build a crystal using space group, crystallographic position(s) and object(s) to insert
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'cbuild_action.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to build a crystal using space group, crystallogrpahic position(s) and object(s) to insert
+ - The functions to build a crystal using space group, crystallographic position(s) and object(s) to insert
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int test_lattice (builder_edition * cbuilder);
+  int test_lattice (builder_edition * cbuilder, cell_info * cif_cell);
   int pos_not_saved (vec3_t * all_pos, int num_pos, vec3_t pos);
-  int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wrap, gboolean show_clones, cell_info * cell, GtkWidget * widg);
+  int build_crystal (gboolean visible, project * this_proj, gboolean to_wrap, gboolean show_clones, cell_info * cell, GtkWidget * widg);
 
   double get_val_from_setting (gchar * pos, gchar * sval);
   double get_value_from_pos (gchar * pos);
@@ -37,7 +45,7 @@ If not, see <https://www.gnu.org/licenses/> */
 
   void get_origin (space_group * spg);
   void compute_lattice_properties (cell_info * cell);
-  void clean_this_proj (struct project * this_proj, gboolean newp);
+  void clean_this_proj (project * this_proj, gboolean newp);
 
   space_group * duplicate_space_group (space_group * spg);
 
@@ -53,21 +61,23 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "bind.h"
 #include "project.h"
 #include "workspace.h"
+#include "atom_edit.h"
 #include "cbuild_edit.h"
 #include "readers.h"
 #include <ctype.h>
 
-extern int get_bravais_id (int spg);
+extern int get_crystal_id (int spg);
+extern atomic_object * cif_object;
 
 gchar * tmp_pos = NULL;
 
-/*
-*  double get_val_from_setting (gchar * pos, gchar * sval)
-*
-*  Usage: get value from space group setting
-*
-*  gchar * pos  : the position "a", "b" or "c"
-*  gchar * sval : the space group setting
+/*!
+  \fn double get_val_from_setting (gchar * pos, gchar * sval)
+
+  \brief get value from space group setting
+
+  \param pos the position "a", "b" or "c"
+  \param sval the space group setting
 */
 double get_val_from_setting (gchar * pos, gchar * sval)
 {
@@ -101,12 +111,12 @@ double get_val_from_setting (gchar * pos, gchar * sval)
   }
 }
 
-/*
-*  double get_value_from_pos (gchar * pos)
-*
-*  Usage: get position double value from string description
-*
-*  gchar * pos : the string description
+/*!
+  \fn double get_value_from_pos (gchar * pos)
+
+  \brief get position double value from string description
+
+  \param pos the string description
 */
 double get_value_from_pos (gchar * pos)
 {
@@ -126,12 +136,12 @@ double get_value_from_pos (gchar * pos)
   }
 }
 
-/*
-*  void get_origin (space_group * spg)
-*
-*  Usage: get space group origin matrices
-*
-*  space_group * spg : the target space group
+/*!
+  \fn void get_origin (space_group * spg)
+
+  \brief get space group origin matrices
+
+  \param spg the target space group
 */
 void get_origin (space_group * spg)
 {
@@ -173,12 +183,12 @@ void get_origin (space_group * spg)
 #endif
 }
 
-/*
-*  void compute_lattice_properties (cell_info * cell)
-*
-*  Usage: compute lattice parameters following cell description
-*
-*  cell_info * cell : the target cell description
+/*!
+  \fn void compute_lattice_properties (cell_info * cell)
+
+  \brief compute lattice parameters following cell description
+
+  \param cell the target cell description
 */
 void compute_lattice_properties (cell_info * cell)
 {
@@ -291,98 +301,147 @@ void compute_lattice_properties (cell_info * cell)
 #endif
 }
 
-/*
-*  int test_lattice (builder_edition * cbuilder)
-*
-*  Usage: test lattice parameters
-*
-*  builder_edition * cbuilder : the builder edition with the lattice parameters
+/*!
+  \fn int test_lattice (builder_edition * cbuilder, cell_info * cif_cell)
+
+  \brief test lattice parameters
+
+  \param cbuilder the builder edition with the lattice parameters
+  \param cif_cell the cell information when testing CIF file
 */
-int test_lattice (builder_edition * cbuilder)
+int test_lattice (builder_edition * cbuilder, cell_info * cif_cell)
 {
   int i, j;
-  cell_info * cell = & cbuilder -> cell;
+  cell_info * cell = (cbuilder) ? & cbuilder -> cell : cif_cell;
   box_info * box = & cell -> box[0];
   i = cell -> sp_group -> id;
-  j = get_bravais_id (i);
+  j = get_crystal_id (i);
 
-  if (! cell -> ltype)
+  if (cbuilder)
   {
-    // Adjust a,b,c,alpha,beta,gamma and compute vectors
-    if (j == 3 || j == 4 || j == 6)
+    if (! cell -> ltype)
     {
-      box -> param[1][1] = box -> param[1][2] = box -> param[1][0];
-    }
-    if (j == 3 || (j == 4 && cell -> sp_group -> name[0] == 'P') || j == 5)
-    {
-      box -> param[0][1] = box -> param[0][0];
-    }
-    else if ((j == 4 && cell -> sp_group -> name[0] == 'R') || j == 6)
-    {
-      box -> param[0][1] = box -> param[0][2] = box -> param[0][0];
-    }
-  }
-
-  if (! test_vol(box -> param, box -> vect))
-  {
-    show_warning ("Please describe properly the lattice parameters", cbuilder -> win);
-    return 0;
-  }
-
-  compute_lattice_properties (cell);
-  if (j < 3)
-  {
-    if (! (box -> param[0][0] != box -> param[0][1] && box -> param[0][0] != box -> param[0][2] && box -> param[0][1] != box -> param[0][2]))
-    {
-      // Box error a,b,c not all differents
-      return 0;
-    }
-  }
-  if (j == 0)
-  {
-    if (! (box -> param[1][0] != box -> param[1][1] && box -> param[1][0] != box -> param[1][2] && box -> param[1][1] != box -> param[1][2]))
-    {
-      // Box error alpha,beta,gamma not all differents
-      return 0;
-    }
-  }
-  else if (j == 1)
-  {
-    if (box -> param[1][1] != 90.0 && box -> param[1][2] != 90.0)
-    {
-      // Angle Error alpha or gamma must be = 90
-      return 0;
-    }
-  }
-  else if (j == 3 || j == 5)
-  {
-    if (box -> param[0][0] == box -> param[0][2])
-    {
-      // Angle Error alpha gamma must different than gamma
-      return 0;
-    }
-  }
-  else if (j == 4)
-  {
-    if (cell -> sp_group -> name[0] != 'R')
-    {
-      if (box -> param[0][0] == box -> param[0][2])
+      // Adjust a,b,c,alpha,beta,gamma and compute vectors
+      if (j == 3 || j == 4 || j == 6)
       {
-        // Angle Error alpha gamma must different than gamma
-        return 0;
+        box -> param[1][1] = box -> param[1][2] = box -> param[1][0];
+      }
+      if (j == 3 || (j == 4 && cell -> sp_group -> name[0] == 'P') || j == 5)
+      {
+        box -> param[0][1] = box -> param[0][0];
+      }
+      else if ((j == 4 && cell -> sp_group -> name[0] == 'R') || j == 6)
+      {
+        box -> param[0][1] = box -> param[0][2] = box -> param[0][0];
       }
     }
+    if (! test_vol(box -> param, box -> vect))
+    {
+      show_warning ("Please describe properly the lattice parameters", cbuilder -> win);
+      return 0;
+    }
+    compute_lattice_properties (cell);
+  }
+
+  // Strictly different or possibly different ?
+  /*if (j < 3)
+  {
+    if (box -> param[0][0] == box -> param[0][1] || box -> param[0][0] == box -> param[0][2] || box -> param[0][1] == box -> param[0][2])
+    {
+      // Box error: a, b, c not all different
+      return 0;
+    }
+  }*/
+
+  if (j == 3 || j == 4 || j == 5)
+  {
+    if (box -> param[0][0] != box -> param[0][1])
+    {
+      // Box error: a and b must be equal
+      return 0;
+    }
+  }
+  if (j == 2 || j == 3 || j == 6)
+  {
+    if (box -> param[1][0] != 90.0 || box -> param[1][1] != 90.0 || box -> param[1][2] != 90.0)
+    {
+      // Angle error: alpha, beta and gamma must be = 90
+      return 0;
+    }
+  }
+
+  switch (j)
+  {
+    // Strictly different or possibly different ?
+    /*
+    case 0:
+      if (! (box -> param[1][0] != box -> param[1][1] && box -> param[1][0] != box -> param[1][2] && box -> param[1][1] != box -> param[1][2]))
+      {
+        // Angle error: alpha, beta, gamma not all different
+       return 0;
+      }
+      break;
+    */
+    case 1:
+      if (box -> param[1][0] != 90.0)
+      {
+        // Angle error: alpha must be = 90
+        return 0;
+      }
+      else if (box -> param[1][1] != 90.0 && box -> param[1][2] != 90.0)
+      {
+        // Angle error: beta or gamma must be = 90
+        return 0;
+      }
+      break;
+    case 4:
+      if (cell -> sp_group -> name[0] != 'R')
+      {
+        if (box -> param[1][0] != 90.0 || box -> param[1][1] != 90.0 || box -> param[1][2] != 120.0)
+        {
+          // Angle error: alpha and beta must be equal= 90, gamma must be = 120
+          return 0;
+        }
+      }
+      else
+      {
+        if (box -> param[1][0] != box -> param[1][1] || box -> param[1][0] != box -> param[1][2] || box -> param[1][1] != box -> param[1][2])
+        {
+          // Angle error: alpha, beta, gamma must all be equal
+          return 0;
+        }
+        else if (box -> param[0][0] != box -> param[0][2])
+        {
+          // Box error: a, b and c must all be equal
+          return 0;
+        }
+      }
+      break;
+    case 5:
+      if (box -> param[1][0] != 90.0 || box -> param[1][1] != 90.0 || box -> param[1][2] != 120.0)
+      {
+        // Angle error: alpha and beta must be = 90, gamma must be = 120
+        return 0;
+      }
+      break;
+    case 6:
+      if (box -> param[0][0] != box -> param[0][1] || box -> param[0][0] != box -> param[0][2] || box -> param[0][1] != box -> param[0][2])
+      {
+        // Box error: a, b, c not all equal
+        return 0;
+      }
+      break;
   }
   return 1;
 }
 
-/*
-*  double get_val_from_wyckoff (gchar * pos, gchar * wval)
-*
-*  Usage: get point value from wyckoff position
-*
-*  gchar * pos  : "x", "y" or "z"
-*  gchar * wval : wyckoff position vector
+/*!
+  \fn double get_val_from_wyckoff (gchar * pos, gchar * wval)
+
+  \brief get point value from wyckoff position
+
+  \param pos "x", "y" or "z"
+  \param wval wyckoff position vector
 */
 double get_val_from_wyckoff (gchar * pos, gchar * wval)
 {
@@ -415,15 +474,15 @@ double get_val_from_wyckoff (gchar * pos, gchar * wval)
   }
 }
 
-/*
-*  void clean_this_proj (struct project * this_proj, gboolean newp)
-*
-*  Usage: clean project and/or associated cell parameters
-*
-*  struct project * this_proj : the target project
-*  gboolean newp              : is this a new project ?
+/*!
+  \fn void clean_this_proj (project * this_proj, gboolean newp)
+
+  \brief clean project and/or associated cell parameters
+
+  \param this_proj the target project
+  \param newp is this a new project ?
 */
-void clean_this_proj (struct project * this_proj, gboolean newp)
+void clean_this_proj (project * this_proj, gboolean newp)
 {
   int i, j;
   if (newp)
@@ -445,13 +504,13 @@ void clean_this_proj (struct project * this_proj, gboolean newp)
   }
 }
 
-/*
-*  gboolean same_coords (float a, float b)
-*
-*  Usage: test if values are similar, allowing a 0.0001 difference
-*
-*  float a : 1st value
-*  float b : 2nd value
+/*!
+  \fn gboolean same_coords (float a, float b)
+
+  \brief test if values are similar, allowing a 0.0001 difference
+
+  \param a 1st value
+  \param b 2nd value
 */
 gboolean same_coords (float a, float b)
 {
@@ -460,13 +519,13 @@ gboolean same_coords (float a, float b)
   return FALSE;
 }
 
-/*
-*  gboolean are_equal_vectors (vec3_t u, vec3_t v)
-*
-*  Usage: comparing atomic coordinates vectors
-*
-*  vec3_t u : 1st vector
-*  vec3_t v : 2nd vector
+/*!
+  \fn gboolean are_equal_vectors (vec3_t u, vec3_t v)
+
+  \brief comparing atomic coordinates vectors
+
+  \param u 1st vector
+  \param v 2nd vector
 */
 gboolean are_equal_vectors (vec3_t u, vec3_t v)
 {
@@ -477,14 +536,14 @@ gboolean are_equal_vectors (vec3_t u, vec3_t v)
   return FALSE;
 }
 
-/*
-*  int pos_not_saved (vec3_t * all_pos, int num_pos, vec3_t pos)
-*
-*  Usage: was this position already saved ?
-*
-*  vec3_t * all_pos : the list of saved atomic coordinates
-*  int num_pos      : the number of saved atomic coordinates
-*  vec3_t pos       : the vector to test
+/*!
+  \fn int pos_not_saved (vec3_t * all_pos, int num_pos, vec3_t pos)
+
+  \brief was this position already saved ?
+
+  \param all_pos the list of saved atomic coordinates
+  \param num_pos the number of saved atomic coordinates
+  \param pos the vector to test
 */
 int pos_not_saved (vec3_t * all_pos, int num_pos, vec3_t pos)
 {
@@ -496,12 +555,12 @@ int pos_not_saved (vec3_t * all_pos, int num_pos, vec3_t pos)
   return 1;
 }
 
-/*
-*  space_group * duplicate_space_group (space_group * spg)
-*
-*  Usage: duplicate space ground information
-*
-*  space_group * spg : the space group to duplicate
+/*!
+  \fn space_group * duplicate_space_group (space_group * spg)
+
+  \brief duplicate space ground information
+
+  \param spg the space group to duplicate
 */
 space_group * duplicate_space_group (space_group * spg)
 {
@@ -520,33 +579,13 @@ space_group * duplicate_space_group (space_group * spg)
   return new_spg;
 }
 
-typedef struct {
-  int objects;
-  int spec;
-  double * z;
-  int ** lot;
-  int ** at_type;
-  int * nsps;
-  int * at_by_object;
-  int * pos_by_object;
-  double * occupancy;
-  gboolean overlapping;
-  int ** sites;
-  gboolean shared_sites;
-  gboolean with_holes;
-  gboolean * holes;
-  vec3_t * insert;
-  vec3_t ** coord;
-  vec3_t ** position;
-} crystal_data;
+/*!
+  \fn crystal_data * allocate_crystal_data (int objects, int species)
 
-/*
-*  crystal_data * allocate_crystal_data (int objects, int species)
-*
-*  Usage: allocate crystal data pointer
-*
-*  int objects : the number of object(s)
-*  int species : the number of chemical species
+  \brief allocate crystal data pointer
+
+  \param objects the number of object(s)
+  \param species the number of chemical species
 */
 crystal_data * allocate_crystal_data (int objects, int species)
 {
@@ -568,12 +607,12 @@ crystal_data * allocate_crystal_data (int objects, int species)
   return cryst;
 }
 
-/*
-*  crystal_data * free_crystal_data (crystal_data * cryst)
-*
-*  Usage: free crystal data pointer
-*
-*  crystal_data * cryst : the data pointer to free
+/*!
+  \fn crystal_data * free_crystal_data (crystal_data * cryst)
+
+  \brief free crystal data pointer
+
+  \param cryst the data pointer to free
 */
 crystal_data * free_crystal_data (crystal_data * cryst)
 {
@@ -593,14 +632,14 @@ crystal_data * free_crystal_data (crystal_data * cryst)
   return NULL;
 }
 
-/*
-*  gboolean pos_not_taken (int pos, int dim, int * tab)
-*
-*  Usage: is this position already taken ?
-*
-*  int pos   : position id
-*  int dim   : number of position(s)
-*  int * tab : the list of position(s)
+/*!
+  \fn gboolean pos_not_taken (int pos, int dim, int * tab)
+
+  \brief is this position already taken ?
+
+  \param pos position id
+  \param dim number of position(s)
+  \param tab the list of position(s)
 */
 gboolean pos_not_taken (int pos, int dim, int * tab)
 {
@@ -609,19 +648,19 @@ gboolean pos_not_taken (int pos, int dim, int * tab)
   return TRUE;
 }
 
-/*
-*  gboolean adjust_object_occupancy (crystal_data * cryst, int occupying, int tot_cell)
-*
-*  Usage: adjust the crystallograpĥic sites occupancy
-*
-*  crystal_data * cryst : the crystal
-*  int occupying        : how to adjust occupancy:
+/*!
+  \fn gboolean adjust_object_occupancy (crystal_data * cryst, int occupying, int tot_cell)
+
+  \brief adjust the crystallograpĥic sites occupancy
+
+  \param cryst the crystal
+  \param occupying how to adjust occupancy:
       0 = Random for the initial cell only,
       1 = Random cell by cell,
       2 = Completely random
       3 = Successively
       4 = Alternatively
-*  int tot_cell         : the total number of cell to build
+  \param tot_cell the total number of cell to build
 */
 gboolean adjust_object_occupancy (crystal_data * cryst, int occupying, int tot_cell)
 {
@@ -702,7 +741,7 @@ gboolean adjust_object_occupancy (crystal_data * cryst, int occupying, int tot_c
         k = cryst -> sites[i][j+1];
 #ifdef DEBUG
         g_debug ("\tj= %d, k= %d, sites[%d][0]= %d, occ[%d]= %f, pos_by_objects[%d]= %d",
-                      j+1, k+1, k+1, cryst -> sites[k][0], k+1, cryst -> occupancy[k], k+1, cryst -> pos_by_object[k]);
+                 j+1, k+1, k+1, cryst -> sites[k][0], k+1, cryst -> occupancy[k], k+1, cryst -> pos_by_object[k]);
 #endif
         if (cryst -> sites[k][0] > -1)
         {
@@ -853,21 +892,22 @@ gboolean adjust_object_occupancy (crystal_data * cryst, int occupying, int tot_c
   return low_occ;
 }
 
-/*
-*  int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wrap, gboolean show_clones, cell_info * cell, GtkWidget * widg)
-*
-*  Usage: build crystal
-*
-*  gboolean visible           : is the crystal builder window visible ?
-*  struct project * this_proj : the target project
-*  gboolean to_wrap           : wrap or not atomic coordinates in the unit cell
-*  gboolean show_clones       : show / hide clone(s)
-*  cell_info * cell           : the cell info that contains the crystal description
-*  GtkWidget * widg           : the GtkWidget sending the signal
+/*!
+  \fn int build_crystal (gboolean visible, project * this_proj, gboolean to_wrap, gboolean show_clones, cell_info * cell, GtkWidget * widg)
+
+  \brief build crystal
+
+  \param visible is the crystal builder window visible ?
+  \param this_proj the target project
+  \param to_wrap wrap or not atomic coordinates in the unit cell
+  \param show_clones show / hide clone(s)
+  \param cell the cell info that contains the crystal description
+  \param widg the GtkWidget sending the signal
 */
-int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wrap, gboolean show_clones, cell_info * cell, GtkWidget * widg)
+int build_crystal (gboolean visible, project * this_proj, gboolean to_wrap, gboolean show_clones, cell_info * cell, GtkWidget * widg)
 {
   int h, i, j, k, l, m, n, o, p, q;
+  int build_res = 1;
   space_group * sp_group = cell -> sp_group;
   box_info * box = & cell -> box[0];
   gchar * str;
@@ -940,7 +980,7 @@ int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wra
   }
 
   vec3_t pos;
-  struct insert_object * object = NULL;
+  atomic_object * object = NULL;
   gboolean done;
   crystal_data * cdata = NULL;
   int occupying;
@@ -954,19 +994,37 @@ int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wra
     this_proj -> modelgl = g_malloc0(sizeof*this_proj -> modelgl);
     prepare_atom_edition (& point, FALSE);
     this_proj -> modelgl -> search_widg[7] = allocate_atom_search (this_proj -> id, INSERT, 7, this_reader -> natomes);
+    gboolean do_obj;
     for (i=0; i<this_reader -> natomes; i++)
     {
-      j = this_reader -> lot[i];
-      if (this_reader -> z[j] == -1.0)
+      do_obj = FALSE;
+      for (j=0; j<this_reader -> atom_unlabelled; j++)
       {
-        insert_this_project_from_lib (0, FALSE, this_proj, this_proj -> modelgl -> search_widg[7]);
+        if (this_reader -> u_atom_list[j] == i)
+        {
+          do_obj = TRUE;
+          break;
+        }
+      }
+      if (do_obj)
+      {
+        if (! object)
+        {
+          this_proj -> modelgl -> atom_win -> to_be_inserted[2] = duplicate_atomic_object (get_atomic_object_by_origin (cif_object, this_reader -> object_list[j], 0));
+          object = this_proj -> modelgl -> atom_win -> to_be_inserted[2];
+        }
+        else
+        {
+          object -> next = duplicate_atomic_object (get_atomic_object_by_origin (cif_object, this_reader -> object_list[j], 0));
+        }
       }
       else
       {
+        j = this_reader -> lot[i];
         to_insert_in_project ((int)this_reader -> z[j], -1, this_proj, this_proj -> modelgl -> search_widg[7], FALSE);
       }
       this_proj -> modelgl -> search_widg[7] -> todo[i] = 1;
-      if (i == 0)
+      if (! object)
       {
         object = this_proj -> modelgl -> atom_win -> to_be_inserted[2];
       }
@@ -1021,8 +1079,8 @@ int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wra
           cdata -> coord[i] = g_malloc0(n*sizeof*cdata -> coord[i]);
           cdata -> insert[i] = m4_mul_coord (sp_group -> coord_origin, vec3(object -> baryc[0], object -> baryc[1], object -> baryc[2]));
 #ifdef DEBUG
-          g_debug ("at_orig= %d, pos.x= %f, pos.y= %f, pos.z= %f", i+1, object -> baryc[0], object -> baryc[1], object -> baryc[2]);
-          g_debug ("at_calc= %d, pos.x= %f, pos.y= %f, pos.z= %f", i+1, cdata -> insert[i].x, cdata -> insert[i].y, cdata -> insert[i].z);
+          // g_debug ("at_orig= %d, pos.x= %f, pos.y= %f, pos.z= %f", i+1, object -> baryc[0], object -> baryc[1], object -> baryc[2]);
+          // g_debug ("at_calc= %d, pos.x= %f, pos.y= %f, pos.z= %f", i+1, cdata -> insert[i].x, cdata -> insert[i].y, cdata -> insert[i].z);
 #endif
           n = 0;
           for (o=0; o<npoints; o++)
@@ -1037,7 +1095,7 @@ int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wra
                 cdata -> coord[i][n].y = pos.y;
                 cdata -> coord[i][n].z = pos.z;
 #ifdef DEBUG
-                g_debug ("      c.x= %f, c.y= %f, c.z= %f", cdata -> coord[i][n].x, cdata -> coord[i][n].y, cdata -> coord[i][n].z);
+                // g_debug ("      c.x= %f, c.y= %f, c.z= %f", cdata -> coord[i][n].x, cdata -> coord[i][n].y, cdata -> coord[i][n].z);
 #endif
                 cdata -> at_type[i][n] = 1;
                 n ++;
@@ -1080,6 +1138,7 @@ int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wra
             str = g_strdup_printf ("%s size (%f Ang.) is bigger than the min(<b><i>a,b,c</i></b>)\n"
                                    "If you build the crystal the final structure is likely to be crowded !\n"
                                    "Continue anyway ?", object -> name, object -> dim);
+            build_res = 2;
             if (! ask_yes_no("This object might be too big !" , str, GTK_MESSAGE_WARNING, widg))
             {
               g_free (str);
@@ -1321,8 +1380,8 @@ int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wra
   }
   cdata = free_crystal_data (cdata);
   gboolean low_occ = adjust_object_occupancy (cryst, occupying, tot_cell);
-  struct atom at, bt;
-  struct distance dist;
+  atom at, bt;
+  distance dist;
   gboolean dist_chk = TRUE;
 
   if (! cryst -> overlapping)
@@ -1354,6 +1413,7 @@ int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wra
                     // g_print ("i= %d, j= %d, k= %d, m= %d, d= %f\n", i, j, k, m, dist.length);
                     if (dist_chk)
                     {
+                      build_res = 3;
                       if (ask_yes_no ("Inter-object distance(s) < 0.5 Ang. !",
                                       "Inter-object distance(s) &lt; 0.5 Ang. !\n\n\t\tContinue and leave a single object at each position ?", GTK_MESSAGE_WARNING, widg))
                       {
@@ -1461,6 +1521,7 @@ int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wra
       active_chem -> chem_prop[CHEM_M][k] = set_mass_ (& j);
       active_chem -> chem_prop[CHEM_R][k] = set_radius_ (& j, & l);
       active_chem -> chem_prop[CHEM_N][k] = set_neutron_ (& j);
+      active_chem -> chem_prop[CHEM_X][k] = active_chem -> chem_prop[CHEM_Z][k];
 #ifdef DEBUG
       g_debug ("CRYSTAL:: spec= %d, label= %s, nsps= %d", k+1, active_chem -> label[k], active_chem -> nsps[k]);
 #endif
@@ -1606,5 +1667,5 @@ int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wra
                           "\t <b>3)</b> Increase the number of unit cells up to get rid of this message.";
     show_warning (low_warning, widg);
   }
-  return 1;
+  return build_res;
 }

@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file show.c
+* @short Functions to draw the complete graph
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'show.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The general complete graph drawing subroutine
+ - The functions to draw the complete graph
 
 *
-*  List of subroutines:
+* List of functions:
 
   gboolean show_curve (GtkWidget * grwdget, cairo_t * cr, gpointer curve);
 
@@ -44,27 +52,27 @@ If not, see <https://www.gnu.org/licenses/> */
 extern void adjust_tool_model (int calc, int curve, gchar * string_path);
 
 #ifdef GTK3
-/*
-*  gboolean show_curve (GtkWidget * grwdget, cairo_t * cr, gpointer curve)
-*
-*  Usage: show curve callback GTK4
-*
-*  GtkWidget * grwdget : the GtkWidget sending the signal
-*  cairo_t * cr        : the cairo drawing context to use for the draw
-*  gpointer curve      : the associated data pointer
+/*!
+  \fn gboolean show_curve (GtkWidget * grwdget, cairo_t * cr, gpointer curve)
+
+  \brief show curve callback GTK4
+
+  \param grwdget the GtkWidget sending the signal
+  \param cr the cairo drawing context to use for the draw
+  \param curve the associated data pointer
 */
 gboolean show_curve (GtkWidget * grwdget, cairo_t * cr, gpointer curve)
 #else
-/*
-*  void show_curve (GtkDrawingArea * area, cairo_t * cr, int width, int height, gpointer curve)
-*
-*  Usage: show curve callback GTK3
-*
-*  GtkDrawingArea * area : the GtkDrawingArea sending the signal
-*  cairo_t * cr          : the cairo drawing context to use for the draw
-*  int width             : drawing area width
-*  int height            : drawing area height
-*  gpointer curve        : the associated pointer data
+/*!
+  \fn void show_curve (GtkDrawingArea * area, cairo_t * cr, int width, int height, gpointer curve)
+
+  \brief show curve callback GTK3
+
+  \param area the GtkDrawingArea sending the signal
+  \param cr the cairo drawing context to use for the draw
+  \param width drawing area width
+  \param height drawing area height
+  \param curve the associated pointer data
 */
 void show_curve (GtkDrawingArea * area, cairo_t * cr, int width, int height, gpointer curve)
 #endif
@@ -83,7 +91,7 @@ void show_curve (GtkDrawingArea * area, cairo_t * cr, int width, int height, gpo
   activer = rid;
   cairo_surface_t * surface;
 
-  struct project * this_proj = get_project_by_id(pid);
+  project * this_proj = get_project_by_id(pid);
 
   where = this_proj -> curves[rid][cid] -> format;
   // g_print ("where= %d, width = %d, height= %d\n", where, width, height);
@@ -180,7 +188,7 @@ void show_curve (GtkDrawingArea * area, cairo_t * cr, int width, int height, gpo
 // let's go for the plot
 // first we start by the possible extra curves
   i = 0;
-  struct cextra * ctmp = this_proj -> curves[rid][cid] -> extrac -> last;
+  CurveExtra * ctmp = this_proj -> curves[rid][cid] -> extrac -> last;
   for ( j=0 ; j < this_proj -> curves[rid][cid] -> extrac -> extras + 1; j++ )
   {
     if (this_proj -> curves[rid][cid] -> draw_id == j)
@@ -294,12 +302,12 @@ void show_curve (GtkDrawingArea * area, cairo_t * cr, int width, int height, gpo
 #endif
 }
 
-/*
-*  void hide_curve (gpointer data)
-*
-*  Usage: hide curve
-*
-*  gpointer data : the associated data pointer
+/*!
+  \fn void hide_curve (gpointer data)
+
+  \brief hide curve
+
+  \param data the associated data pointer
 */
 void hide_curve (gpointer data)
 {
@@ -312,24 +320,24 @@ void hide_curve (gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT gboolean to_hide_curve (GtkWindow * thecurve, gpointer data)
-*
-*  Usage: hide curve callback GTK4
-*
-*  GtkWindow * thecurve : the GtkWindow sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT gboolean to_hide_curve (GtkWindow * thecurve, gpointer data)
+
+  \brief hide curve callback GTK4
+
+  \param thecurve the GtkWindow sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT gboolean to_hide_curve (GtkWindow * thecurve, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT gboolean to_hide_curve (GtkWidget * thecurve, GdkEvent * event, gpointer data)
-*
-*  Usage: hide curve callback GTK3
-*
-*  GtkWidget * thecurve : the GtkWidget sending the signal
-*  GdkEvent * event     : the GdkEvent triggering the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT gboolean to_hide_curve (GtkWidget * thecurve, GdkEvent * event, gpointer data)
+
+  \brief hide curve callback GTK3
+
+  \param thecurve the GtkWidget sending the signal
+  \param event the GdkEvent triggering the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT gboolean to_hide_curve (GtkWidget * thecurve, GdkEvent * event, gpointer data)
 #endif

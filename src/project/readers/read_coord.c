@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_coord.c
+* @short General functions to import atomic coordinates
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_coord.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The initialization subroutines to import atomic coordinates
+ - The general functions to import atomic coordinates
 
 *
-*  List of subroutines:
+* List of functions:
 
   gboolean set_dummy_in_use (gchar * this_word);
 
@@ -49,26 +57,29 @@ extern int open_trj_file (int linec);
 extern int open_vas_file (int linec);
 extern int open_cif_file (int linec);
 extern int open_hist_file (int linec);
-extern void allocatoms (struct project * this_proj);
+extern void allocatoms (project * this_proj);
 extern chemical_data * alloc_chem_data (int spec);
-extern int build_crystal (gboolean visible, struct project * this_proj, gboolean to_wrap, gboolean show_clones, cell_info * cell, GtkWidget * widg);
+extern int build_crystal (gboolean visible, project * this_proj, gboolean to_wrap, gboolean show_clones, cell_info * cell, GtkWidget * widg);
 extern const gchar * dfi[2];
+
+extern atom_search * cif_search;
+extern atomic_object * cif_object;
 
 FILE * coordf;
 coord_file * this_reader;
 gchar ** coord_line = NULL;
 gchar * this_line = NULL;
 char * this_word;
-struct line_node * head = NULL;
-struct line_node * tail = NULL;
+line_node * head = NULL;
+line_node * tail = NULL;
 
-/*
-*  void add_reader_info (gchar * info, int mid)
-*
-*  Usage: append information message to the reader information
-*
-*  gchar * info : the reader information message
-*  int mid : message type (0 = error, 1 = warning)
+/*!
+  \fn void add_reader_info (gchar * info, int mid)
+
+  \brief append information message to the reader information
+
+  \param info the reader information message
+  \param mid message type (0 = error, 1 = warning)
 */
 void add_reader_info (gchar * info, int mid)
 {
@@ -76,29 +87,29 @@ void add_reader_info (gchar * info, int mid)
   if (! mid) this_reader -> mid = 0;
 }
 
-/*
-*  void reader_info (gchar * type, gchar * sinf, int val)
-*
-*  Usage: display reader information
-*
-*  gchar * type : File type
-*  gchar * sinf : Information message
-*  int val      : Value to present
+/*!
+  \fn void reader_info (gchar * type, gchar * sinf, int val)
+
+  \brief display reader information
+
+  \param type File type
+  \param sinf Information message
+  \param val Value to present
 */
 void reader_info (gchar * type, gchar * sinf, int val)
 {
   g_print ("Reading coordinates [%s]: %s = %d\n", type, sinf, val);
 }
 
-/*
-*  void format_error (int stp, int ato, gchar * mot, int line)
-*
-*  Usage: Message to display an error message
-*
-*  int stp     : the MD step id
-*  int ato     : Atom id
-*  gchar * mot : Message
-*  int line    : Line with the error
+/*!
+  \fn void format_error (int stp, int ato, gchar * mot, int line)
+
+  \brief Message to display an error message
+
+  \param stp the MD step id
+  \param ato Atom id
+  \param mot Message
+  \param line Line with the error
 */
 void format_error (int stp, int ato, gchar * mot, int line)
 {
@@ -119,12 +130,12 @@ void format_error (int stp, int ato, gchar * mot, int line)
   g_free (str);
 }
 
-/*
-*  int set_v_dummy (gchar * this_word)
-*
-*  Usage: check if dummy is used for unknown species, if not then ask what to do
-*
-*  gchar * this_word : the chemical species label
+/*!
+  \fn int set_v_dummy (gchar * this_word)
+
+  \brief check if dummy is used for unknown species, if not then ask what to do
+
+  \param this_word the chemical species label
 */
 int set_v_dummy (gchar * this_word)
 {
@@ -172,13 +183,13 @@ int set_v_dummy (gchar * this_word)
   }
 }
 
-/*
-*  void check_for_species (double v, int ato)
-*
-*  Usage: Fill the species for each atom and the associated data
-*
-*  double v : Z
-*  int ato  : Total number of atoms
+/*!
+  \fn void check_for_species (double v, int ato)
+
+  \brief Fill the species for each atom and the associated data
+
+  \param v Z
+  \param ato the atom id
 */
 void check_for_species (double v, int ato)
 {
@@ -226,13 +237,13 @@ void check_for_species (double v, int ato)
   }
 }
 
-/*
-*  int open_coord_file (gchar * filename, int fti)
-*
-*  Usage: open atomic coordinates file
-*
-*  gchar * filename : the file name
-*  int fti          : the type of coordinates
+/*!
+  \fn int open_coord_file (gchar * filename, int fti)
+
+  \brief open atomic coordinates file
+
+  \param filename the file name
+  \param fti the type of coordinates
 */
 int open_coord_file (gchar * filename, int fti)
 {
@@ -291,7 +302,7 @@ int open_coord_file (gchar * filename, int fti)
     else
     {
       tail -> next = g_malloc0 (sizeof*tail -> next);
-      if (fti == 9)
+      if (fti == 9 || fti == 10)
       {
         tail -> next -> prev = g_malloc0 (sizeof*tail -> next -> prev);
         tail -> next -> prev = tail;
@@ -328,12 +339,13 @@ int open_coord_file (gchar * filename, int fti)
     {
       res = open_pdb_file (i);
     }
-    else if (fti == 9)
+    else if (fti == 9 || fti == 10)
     {
+      if (fti == 10) cif_use_symmetry_positions = TRUE;
       this_reader -> cartesian = FALSE;
       res = open_cif_file (i);
     }
-    else if (fti == 10)
+    else if (fti == 11)
     {
       res = open_hist_file (i);
     }
@@ -353,10 +365,33 @@ int open_coord_file (gchar * filename, int fti)
       {
         // this_reader -> lattice.sp_group -> sid = 2;
         // get_origin (this_reader -> lattice.sp_group);
-        if (! build_crystal (FALSE, active_project, TRUE, FALSE, & this_reader -> lattice, MainWindow))
+        if (! cif_use_symmetry_positions)
         {
-          add_reader_info ("Error trying to build crystal using the CIF file parameters !", 0);
-          res = 3;
+          i = build_crystal (FALSE, active_project, TRUE, FALSE, & this_reader -> lattice, MainWindow);
+          if (! i)
+          {
+            add_reader_info ("Error trying to build crystal using the CIF file parameters !\n"
+                             "This usually comes from: \n"
+                             "\t - incorrect space group description\n"
+                             "\t - incomplete space group description\n"
+                             "\t - missing space group setting\n"
+                             "\t - incorrect space group setting\n", 0);
+            res = 3;
+          }
+          else if (i > 1)
+          {
+            add_reader_info ("Potential issue(s) when building crystal !\n"
+                             "This usually comes from: \n"
+                             "\t - incorrect space group description\n"
+                             "\t - incomplete space group description\n"
+                             "\t - missing space group setting\n"
+                             "\t - incorrect space group setting\n", 1);
+            if (this_reader -> num_sym_pos)
+            {
+              add_reader_info ("\nAnother model will be built using included symmetry positions\n", 1);
+              cif_use_symmetry_positions = TRUE;
+            }
+          }
         }
       }
     }
@@ -379,7 +414,7 @@ int open_coord_file (gchar * filename, int fti)
       active_project -> chemistry = alloc_chem_data (active_project -> nspec);
       active_project_changed (activep);
       k = l = 0;
-      reader_info (file_ext[fti], "Number of species", active_project -> nspec);
+      reader_info (coord_files_ext[fti], "Number of species", active_project -> nspec);
       for (i=0; i<active_project -> nspec; i++)
       {
         j = (int)this_reader -> z[i];
@@ -404,20 +439,35 @@ int open_coord_file (gchar * filename, int fti)
             g_free (str);
           }
           active_chem -> chem_prop[CHEM_N][i] = set_neutron_ (& j);
+          active_chem -> chem_prop[CHEM_X][i] = active_chem -> chem_prop[CHEM_Z][i];
         }
         active_chem -> nsps[i] = this_reader -> nsps[i];
-        g_print ("Reading coordinates [%s]:\t %s, nsps[%d]= %d\n", file_ext[fti], active_chem -> label[i], i+1, active_chem -> nsps[i]);
+        g_print ("Reading coordinates [%s]:\t %s, nsps[%d]= %d\n", coord_files_ext[fti], active_chem -> label[i], i+1, active_chem -> nsps[i]);
         active_chem -> chem_prop[CHEM_Z][i] = this_reader -> z[i];
       }
     }
     else
     {
-      reader_info (file_ext[fti], "Number of species", active_project -> nspec);
+      reader_info (coord_files_ext[fti], "Number of species", active_project -> nspec);
       for (i=0; i<active_project -> nspec; i++)
       {
-        g_print ("Reading coordinates [%s]:\t %s, nsps[%d]= %d\n", file_ext[fti], active_chem -> label[i], i+1, active_chem -> nsps[i]);
+        g_print ("Reading coordinates [%s]:\t %s, nsps[%d]= %d\n", coord_files_ext[fti], active_chem -> label[i], i+1, active_chem -> nsps[i]);
       }
     }
+  }
+  if (! (fti == 9 && cif_use_symmetry_positions) || res)
+  {
+    if (cif_search)
+    {
+      g_free (cif_search);
+      cif_search = NULL;
+    }
+    if (cif_object)
+    {
+      g_free (cif_object);
+      cif_object = NULL;
+    }
+    cif_use_symmetry_positions = FALSE;
   }
   return res;
 }

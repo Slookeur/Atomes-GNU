@@ -1,52 +1,60 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file dlp_viz.c
+* @short functions to handle the visualization events when creating a classical force field
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'dlp_viz.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to handle the visualization events when creating a classical force field
+ - The functions to handle the visualization events when creating a classical force field
 
 *
-*  List of subroutines:
+* List of functions:
 
   int get_field_objects (int id, int jd);
 
   gboolean show_field_object (int id, int jd, int kd);
 
   void field_selection (int i, int viz, int lab, int aid);
-  void viz_fragment (struct field_molecule * fmol, int id, int viz);
+  void viz_fragment (field_molecule * fmol, int id, int viz);
   void field_unselect_all ();
   void visualize_bonds (int viz, int aid,
-                         struct field_atom * at,
-                         struct field_atom * bt);
+                         field_atom* at,
+                         field_atom* bt);
   void visualize_angles (int viz, int aid,
-                         struct field_atom * at,
-                         struct field_atom * bt,
-                         struct field_atom * ct);
+                         field_atom* at,
+                         field_atom* bt,
+                         field_atom* ct);
   void visualize_dihedrals (int viz, int did,
-                            struct field_atom * at,
-                            struct field_atom * bt,
-                            struct field_atom * ct,
-                            struct field_atom * dt);
+                            field_atom* at,
+                            field_atom* bt,
+                            field_atom* ct,
+                            field_atom* dt);
   void visualize_imp_inv (int viz, int dih, int iid,
-                          struct field_atom * at,
-                          struct field_atom * bt,
-                          struct field_atom * ct,
-                          struct field_atom * dt);
-  void visualize_body (int viz, int bd, struct field_nth_body * body);
+                          field_atom* at,
+                          field_atom* bt,
+                          field_atom* ct,
+                          field_atom* dt);
+  void visualize_body (int viz, int bd, field_nth_body * body);
   void select_object (int id, int jd, int kd);
   void visualize_single_struct (int id, int jd, int kd, int * ids);
   void visualize_object (int id, int jd, int kd);
@@ -67,18 +75,18 @@ If not, see <https://www.gnu.org/licenses/> */
 tint toviz;
 
 extern int is_special[MAXDATA][11];
-extern void update_selection_list (struct atom_selection * at_list, struct atom * at, gboolean add);
+extern void update_selection_list (atom_selection * at_list, atom * at, gboolean add);
 extern void init_default_shaders (glwin * view);
 
-/*
-*  void field_selection (int i, int viz, int lab, int aid)
-*
-*  Usage: select / unselect atom
-*
-*  int i   : the atom id in the model
-*  int viz : visualization status (0= hide, 1 = show)
-*  int lab : the value to display for the label
-*  int aid : the value to use for the color
+/*!
+  \fn void field_selection (int i, int viz, int lab, int aid)
+
+  \brief select / unselect atom
+
+  \param i the atom id in the model
+  \param viz visualization status (0= hide, 1 = show)
+  \param lab the value to display for the label
+  \param aid the value to use for the color
 */
 void field_selection (int i, int viz, int lab, int aid)
 {
@@ -95,16 +103,16 @@ void field_selection (int i, int viz, int lab, int aid)
   tmp_proj -> atoms[0][i].coord[4] = aid;
 }
 
-/*
-*  void viz_fragment (struct field_molecule * fmol, int id, int viz)
-*
-*  Usage: show / hide fragment
-*
-*  struct field_molecule * fmol : the target field molecule
-*  int id                       : the fragment id
-*  int viz                      : visualization status (0 = hide, 1 = show)
+/*!
+  \fn void viz_fragment (field_molecule * fmol, int id, int viz)
+
+  \brief show / hide fragment
+
+  \param fmol the target field molecule
+  \param id the fragment id
+  \param viz visualization status (0 = hide, 1 = show)
 */
-void viz_fragment (struct field_molecule * fmol, int id, int viz)
+void viz_fragment (field_molecule * fmol, int id, int viz)
 {
   int i;
   for (i=0; i<tmp_proj -> natomes; i++)
@@ -114,10 +122,10 @@ void viz_fragment (struct field_molecule * fmol, int id, int viz)
   init_default_shaders (tmp_view);
 }
 
-/*
-*  void field_unselect_all ()
-*
-*  Usage: unselect all atoms
+/*!
+  \fn void field_unselect_all ()
+
+  \brief unselect all atoms
 */
 void field_unselect_all ()
 {
@@ -128,21 +136,21 @@ void field_unselect_all ()
 
 extern gboolean in_bond (int at, int bd[2]);
 
-/*
-*  void visualize_bonds (int viz, int aid,
-*                         struct field_atom * at,
-*                         struct field_atom * bt)
-*
-*  Usage: show / hide bond / bond restraint
-*
-*  int viz                : visualization status (0 = hide, 1 = show)
-*  int aid                : the id of the structural element
-*  struct field_atom * at : 1st field atom
-*  struct field_atom * bt : 2nd field atom
+/*!
+  \fn void visualize_bonds (int viz, int aid,
+*                         field_atom* at,
+*                         field_atom* bt)
+
+  \brief show / hide bond / bond restraint
+
+  \param viz visualization status (0 = hide, 1 = show)
+  \param aid the id of the structural element
+  \param at 1st field atom
+  \param bt 2nd field atom
 */
 void visualize_bonds (int viz, int bid,
-                      struct field_atom * at,
-                      struct field_atom * bt)
+                      field_atom* at,
+                      field_atom* bt)
 {
   int i, j, k, l;
   for (i=0; i<at -> num; i++)
@@ -160,24 +168,24 @@ void visualize_bonds (int viz, int bid,
   }
 }
 
-/*
-*  void visualize_angles (int viz, int aid,
-*                         struct field_atom * at,
-*                         struct field_atom * bt,
-*                         struct field_atom * ct)
-*
-*  Usage: show / hide angle / angle restraint
-*
-*  int viz                : visualization status (0 = hide, 1 = show)
-*  int aid                : the id of the structural element
-*  struct field_atom * at : 1st field atom
-*  struct field_atom * bt : 2nd field atom
-*  struct field_atom * ct : 3rd field atom
+/*!
+  \fn void visualize_angles (int viz, int aid,
+*                         field_atom* at,
+*                         field_atom* bt,
+*                         field_atom* ct)
+
+  \brief show / hide angle / angle restraint
+
+  \param viz visualization status (0 = hide, 1 = show)
+  \param aid the id of the structural element
+  \param at 1st field atom
+  \param bt 2nd field atom
+  \param ct 3rd field atom
 */
 void visualize_angles (int viz, int aid,
-                       struct field_atom * at,
-                       struct field_atom * bt,
-                       struct field_atom * ct)
+                       field_atom* at,
+                       field_atom* bt,
+                       field_atom* ct)
 {
   int i, j, k, l, m, n;
   for (i=0; i<at -> num; i++)
@@ -203,27 +211,27 @@ void visualize_angles (int viz, int aid,
   }
 }
 
-/*
-*  void visualize_dihedrals (int viz, int did,
-*                            struct field_atom * at,
-*                            struct field_atom * bt,
-*                            struct field_atom * ct,
-*                            struct field_atom * dt)
-*
-*  Usage: show / hide dihedral / dihedral restraint
-*
-*  int viz                : visualization status (0 = hide, 1 = show)
-*  int did                : the id of the structural element
-*  struct field_atom * at : 1st field atom
-*  struct field_atom * bt : 2nd field atom
-*  struct field_atom * ct : 3rd field atom
-*  struct field_atom * dt : 4th field atom
+/*!
+  \fn void visualize_dihedrals (int viz, int did,
+*                            field_atom* at,
+*                            field_atom* bt,
+*                            field_atom* ct,
+*                            field_atom* dt)
+
+  \brief show / hide dihedral / dihedral restraint
+
+  \param viz visualization status (0 = hide, 1 = show)
+  \param did the id of the structural element
+  \param at 1st field atom
+  \param bt 2nd field atom
+  \param ct 3rd field atom
+  \param dt 4th field atom
 */
 void visualize_dihedrals (int viz, int did,
-                          struct field_atom * at,
-                          struct field_atom * bt,
-                          struct field_atom * ct,
-                          struct field_atom * dt)
+                          field_atom* at,
+                          field_atom* bt,
+                          field_atom* ct,
+                          field_atom* dt)
 {
   int i, j, k, l, m, n, o, p;
   for (i=0; i<tmp_fat -> num; i++)
@@ -257,28 +265,28 @@ void visualize_dihedrals (int viz, int did,
   }
 }
 
-/*
-*  void visualize_imp_inv (int viz, int dih, int iid,
-*                          struct field_atom * at,
-*                          struct field_atom * bt,
-*                          struct field_atom * ct,
-*                          struct field_atom * dt)
-*
-*  Usage: show / hide improper or inversion
-*
-*  int viz                : visualization status (0 = hide, 1 = show)
-*  int dih                : 6 = improper, 7 = inversion
-*  int iid                : the id of the structural element
-*  struct field_atom * at : 1st field atom
-*  struct field_atom * bt : 2nd field atom
-*  struct field_atom * ct : 3rd field atom
-*  struct field_atom * dt : 4th field atom
+/*!
+  \fn void visualize_imp_inv (int viz, int dih, int iid,
+*                          field_atom* at,
+*                          field_atom* bt,
+*                          field_atom* ct,
+*                          field_atom* dt)
+
+  \brief show / hide improper or inversion
+
+  \param viz visualization status (0 = hide, 1 = show)
+  \param dih 6 = improper, 7 = inversion
+  \param iid the id of the structural element
+  \param at 1st field atom
+  \param bt 2nd field atom
+  \param ct 3rd field atom
+  \param dt 4th field atom
 */
 void visualize_imp_inv (int viz, int dih, int iid,
-                        struct field_atom * at,
-                        struct field_atom * bt,
-                        struct field_atom * ct,
-                        struct field_atom * dt)
+                        field_atom* at,
+                        field_atom* bt,
+                        field_atom* ct,
+                        field_atom* dt)
 {
   int i, j, k, l, m, n, o, p;
   for (i=0; i<tmp_fat -> num; i++)
@@ -321,16 +329,16 @@ void visualize_imp_inv (int viz, int dih, int iid,
   }
 }
 
-/*
-*  void visualize_body (int viz, int bd, struct field_nth_body * body)
-*
-*  Usage: show / hide non bonded interaction
-*
-*  int viz                      : visualization status (0 = hide, 1 = show)
-*  int bd                       : the type of non bonded interaction
-*  struct field_nth_body * body : the target non bonded interaction
+/*!
+  \fn void visualize_body (int viz, int bd, field_nth_body * body)
+
+  \brief show / hide non bonded interaction
+
+  \param viz visualization status (0 = hide, 1 = show)
+  \param bd the type of non bonded interaction
+  \param body the target non bonded interaction
 */
-void visualize_body (int viz, int bd, struct field_nth_body * body)
+void visualize_body (int viz, int bd, field_nth_body * body)
 {
   int h, i, j, k, l;
   l = body_at (body -> bd);
@@ -348,13 +356,13 @@ void visualize_body (int viz, int bd, struct field_nth_body * body)
   }
 }
 
-/*
-*  int get_field_objects (int id, int jd)
-*
-*  Usage: get the number of this type of field object
-*
-*  int id : the tyoe of field object
-*  int jd : the field molecule id
+/*!
+  \fn int get_field_objects (int id, int jd)
+
+  \brief get the number of this type of field object
+
+  \param id the tyoe of field object
+  \param jd the field molecule id
 */
 int get_field_objects (int id, int jd)
 {
@@ -405,14 +413,14 @@ int get_field_objects (int id, int jd)
   return kd;
 }
 
-/*
-*  void select_object (int id, int jd, int kd)
-*
-*  Usage: select structural element
-*
-*  int id : the type of structural element
-*  int jd : the object id, if any
-*  int kd : the field molecule id
+/*!
+  \fn void select_object (int id, int jd, int kd)
+
+  \brief select structural element
+
+  \param id the type of structural element
+  \param jd the object id, if any
+  \param kd the field molecule id
 */
 void select_object (int id, int jd, int kd)
 {
@@ -467,15 +475,15 @@ void select_object (int id, int jd, int kd)
   }
 }
 
-/*
-*  void visualize_single_struct (int id, int jd, int kd, int * ids)
-*
-*  Usage: visualize single structural element
-*
-*  int id    : the type of structural element
-*  int jd    : the object id, if any
-*  int kd    : the field molecule id
-*  int * ids : the list of atom id in the fragment
+/*!
+  \fn void visualize_single_struct (int id, int jd, int kd, int * ids)
+
+  \brief visualize single structural element
+
+  \param id the type of structural element
+  \param jd the object id, if any
+  \param kd the field molecule id
+  \param ids the list of atom id in the fragment
 */
 void visualize_single_struct (int id, int jd, int kd, int * ids)
 {
@@ -532,19 +540,19 @@ void visualize_single_struct (int id, int jd, int kd, int * ids)
   }
 }
 
-/*
-*  void visualize_object (int id, int jd, int kd)
-*
-*  Usage: visualize object and update OpenGL rendering
-*
-*  int id : the type of object
-*  int jd : the molecule id, if any
-*  int kd : the object id, if any
+/*!
+  \fn void visualize_object (int id, int jd, int kd)
+
+  \brief visualize object and update OpenGL rendering
+
+  \param id the type of object
+  \param jd the molecule id, if any
+  \param kd the object id, if any
 */
 void visualize_object (int id, int jd, int kd)
 {
   int l, m, n, o, p, q, r, s;
-  struct field_atom * tshell;
+  field_atom* tshell;
   field_object = id;
   num_field_objects = get_field_objects (id, kd);
   switch (id)
@@ -718,18 +726,18 @@ void visualize_object (int id, int jd, int kd)
   }
 }
 
-/*
-*  void check_to_visualize_properties_for_this_field_mol (int pid, int mol)
-*
-*  Usage: check if rendering is required for object in molecule
-*
-*  int pid : the type of field object
-*  int mol : the target field molecule
+/*!
+  \fn void check_to_visualize_properties_for_this_field_mol (int pid, int mol)
+
+  \brief check if rendering is required for object in molecule
+
+  \param pid the type of field object
+  \param mol the target field molecule
 */
 void check_to_visualize_properties_for_this_field_mol (int pid, int mol)
 {
   int h, i, j;
-  struct field_prop * propv;
+  field_prop * propv;
   h = toviz.c;
   toviz.c = 1;
   tmp_fmol = get_active_field_molecule (mol);
@@ -750,12 +758,12 @@ void check_to_visualize_properties_for_this_field_mol (int pid, int mol)
   toviz.c = h;
 }
 
-/*
-*  void check_to_visualize_properties (int pid)
-*
-*  Usage: check if it is requried to update rendering
-*
-*  int pid : the page number in the assistant
+/*!
+  \fn void check_to_visualize_properties (int pid)
+
+  \brief check if it is requried to update rendering
+
+  \param pid the page number in the assistant
 */
 void check_to_visualize_properties (int pid)
 {
@@ -768,13 +776,13 @@ void check_to_visualize_properties (int pid)
   init_default_shaders (tmp_view);
 }
 
-/*
-*  void update_mol_tree (int a, int b)
-*
-*  Usage: update the field molecule tree model
-*
-*  int a : 0 = show molecule id, 1 = show atom id in fragment
-*  int b : the target field molecule id
+/*!
+  \fn void update_mol_tree (int a, int b)
+
+  \brief update the field molecule tree model
+
+  \param a 0 = show molecule id, 1 = show atom id in fragment
+  \param b the target field molecule id
 */
 void update_mol_tree (int a, int b)
 {
@@ -810,14 +818,14 @@ void update_mol_tree (int a, int b)
   fill_field_model (field_model[0], 0, -1);
 }
 
-/*
-*  G_MODULE_EXPORT void on_toggle_visualize_or_select_object (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
-*
-*  Usage: on visualize force field object toggle callback
-*
-*  GtkCellRendererToggle * cell_renderer : the GtkCellRendererToggle sending the signal
-*  gchar * string_path                   : the path in the tree store
-*  gpointer data                         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void on_toggle_visualize_or_select_object (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
+
+  \brief on visualize force field object toggle callback
+
+  \param cell_renderer the GtkCellRendererToggle sending the signal
+  \param string_path the path in the tree store
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void on_toggle_visualize_or_select_object (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
 {
@@ -953,14 +961,14 @@ G_MODULE_EXPORT void on_toggle_visualize_or_select_object (GtkCellRendererToggle
   }
 }
 
-/*
-*  gboolean show_field_object (int id, int jd, int kd)
-*
-*  Usage: is the field object visible ?
-*
-*  int id : the type of object
-*  int jd : the object id, if any
-*  int kd : the field molecule id, if any
+/*!
+  \fn gboolean show_field_object (int id, int jd, int kd)
+
+  \brief is the field object visible ?
+
+  \param id the type of object
+  \param jd the object id, if any
+  \param kd the field molecule id, if any
 */
 gboolean show_field_object (int id, int jd, int kd)
 {
@@ -1005,13 +1013,13 @@ gboolean show_field_object (int id, int jd, int kd)
   return show;
 }
 
-/*
-*  G_MODULE_EXPORT void visualize_or_select_all_elements (GtkTreeViewColumn * col, gpointer data)
-*
-*  Usage: select all element(s) in the column for visualization
-*
-*  GtkTreeViewColumn * col : the target GtkTreeViewColumn
-*  gpointer data           : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void visualize_or_select_all_elements (GtkTreeViewColumn * col, gpointer data)
+
+  \brief select all element(s) in the column for visualization
+
+  \param col the target GtkTreeViewColumn
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void visualize_or_select_all_elements (GtkTreeViewColumn * col, gpointer data)
 {

@@ -1,32 +1,41 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file close_p.c
+* @short Functions to close an atomes project \n
+         Callbacks to close an atomes project
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'close_p.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to close a project
- - the callbacks to close a project
+ - the functions to close an atomes project
+ - the callbacks to close an atomes project
 
 *
-*  List of subroutines:
+* List of functions:
 
   void update_insert_combos ();
-  void close_project (struct project * to_close);
+  void close_project (project * to_close);
 
-  void to_close_this_project (int to_activate, struct project * this_proj);
+  void to_close_this_project (int to_activate, project * this_proj);
   G_MODULE_EXPORT void on_close_activate (GtkWidget * widg, gpointer cdata);
 
 */
@@ -41,17 +50,17 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "glview.h"
 
 extern GtkTreeStore * tool_model;
-extern GtkTreeModel * replace_combo_tree (gboolean insert, int p);
+extern GtkTreeModel * replace_combo_tree (gboolean insert, int proj);
 
-/*
-*  void update_insert_combos ()
-*
-*  Usage: update some GtkComboBox in the workspace if a project is removed
+/*!
+  \fn void update_insert_combos ()
+
+  \brief update some GtkComboBox in the workspace if a project is removed
 */
 void update_insert_combos ()
 {
   GtkTreeModel * model;
-  struct project * this_proj;
+  project * this_proj;
   GList * cell_list;
   GtkWidget * box;
   int i;
@@ -77,14 +86,14 @@ void update_insert_combos ()
   }
 }
 
-/*
-*  void close_project (struct project * to_close)
-*
-*  Usage: close a project
-*
-*  struct project * to_close : the project to close
+/*!
+  \fn void close_project (project * to_close)
+
+  \brief close a project
+
+  \param to_close the project to close
 */
-void close_project (struct project * to_close)
+void close_project (project * to_close)
 {
   int i, j, k, l;
 
@@ -215,7 +224,7 @@ void close_project (struct project * to_close)
   nprojects --;
   if (nprojects)
   {
-    struct project * this_proj = workzone.first;
+    project * this_proj = workzone.first;
     for (i=0 ; i<nprojects ; i++)
     {
       this_proj -> id = i;
@@ -289,15 +298,15 @@ void close_project (struct project * to_close)
   update_insert_combos ();
 }
 
-/*
-*  void to_close_this_project (int to_activate, struct project * this_proj)
-*
-*  Usage: to close this project
-*
-*  int to_activate            : If the workspace is not empty, activate first another project
-*  struct project * this_proj : the target project
+/*!
+  \fn void to_close_this_project (int to_activate, project * this_proj)
+
+  \brief to close this project
+
+  \param to_activate If the workspace is not empty, activate first another project
+  \param this_proj the target project
 */
-void to_close_this_project (int to_activate, struct project * this_proj)
+void to_close_this_project (int to_activate, project * this_proj)
 {
   if (nprojects > 0) close_project (this_proj);
   if (nprojects > 0)
@@ -312,13 +321,13 @@ void to_close_this_project (int to_activate, struct project * this_proj)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void on_close_activate (GtkWidget * widg, gpointer cdata)
-*
-*  Usage: signal to close a project
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer cdata   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void on_close_activate (GtkWidget * widg, gpointer cdata)
+
+  \brief signal to close a project
+
+  \param widg the GtkWidget sending the signal
+  \param cdata the associated data pointer
 */
 G_MODULE_EXPORT void on_close_activate (GtkWidget * widg, gpointer cdata)
 {

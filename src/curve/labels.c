@@ -1,28 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file labels.c
+* @short Function to draw the axis labels
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'labels.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Curve labels drawing subroutines
+ - Function to draw the axis labels
 
 *
-*  List of subroutines:
+* List of functions:
 
-  void label (cairo_t * cr, double val, int axe, int p, struct project * this_proj);
+  void label (cairo_t * cr, double val, int axe, int p, project * this_proj);
 
 */
 
@@ -34,18 +42,18 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "global.h"
 #include "curve.h"
 
-/*
-*  void label (cairo_t * cr, double val, int axe, int p, struct project * this_proj)
-*
-*  Usage: draw axis label
-*
-*  cairo_t * cr               : the cairo drawing context to use for the draw
-*  double val                 : the value to display
-*  int axe                    : axis (0 = x, 1 = y)
-*  int p                      : label position (0 = bottom, 1 = top)
-*  struct project * this_proj : the target project
+/*!
+  \fn void label (cairo_t * cr, double val, int axe, int p, project * this_proj)
+
+  \brief draw axis label
+
+  \param cr the cairo drawing context to use for the draw
+  \param val the value to display
+  \param axe axis (0 = x, 1 = y)
+  \param p label position (0 = bottom, 1 = top)
+  \param this_proj the target project
 */
-void label (cairo_t * cr, double val, int axe, int p, struct project * this_proj)
+void label (cairo_t * cr, double val, int axe, int p, project * this_proj)
 {
   gchar * label;
   gchar * lab;

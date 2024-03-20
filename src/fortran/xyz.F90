@@ -1,15 +1,22 @@
-! This file is part of Atomes.
+! This file is part of the 'atomes' software.
 !
-! Atomes is free software: you can redistribute it and/or modify it under the terms
+! 'atomes' is free software: you can redistribute it and/or modify it under the terms
 ! of the GNU Affero General Public License as published by the Free Software Foundation,
 ! either version 3 of the License, or (at your option) any later version.
 !
-! Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+! 'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 ! without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ! See the GNU General Public License for more details.
 !
-! You should have received a copy of the GNU Affero General Public License along with Atomes.
+! You should have received a copy of the GNU Affero General Public License along with 'atomes'.
 ! If not, see <https://www.gnu.org/licenses/>
+!
+! Copyright (C) 2022-2024 by CNRS and University of Strasbourg
+!
+!>
+!! @file xyz.F90
+!! @short Write XYZ atomic coordinates
+!! @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
 
 INTEGER (KIND=c_int) FUNCTION read_xyz (xyz_f, lxyz, is_npt) BIND (C,NAME='read_xyz_')
 
@@ -108,6 +115,22 @@ else
 endif
 
 END FUNCTION
+
+SUBROUTINE send_label (sp_id, sp_ln, spec_label) BIND (C,NAME='send_label_')
+
+USE PARAMETERS
+
+IMPLICIT NONE
+
+INTEGER (KIND=c_int), INTENT(IN) :: sp_id, sp_ln
+CHARACTER (KIND=c_char), DIMENSION(sp_ln), INTENT(IN) :: spec_label
+
+TL(sp_id)="  "
+do i=1, sp_ln
+  TL(sp_id)(i:i) = spec_label(i)
+enddo
+
+END SUBROUTINE
 
 INTEGER (KIND=c_int) FUNCTION write_xyz (xyz_f, lxyz, fxyz, txyz) BIND (C,NAME='write_xyz_')
 

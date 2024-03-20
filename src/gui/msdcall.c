@@ -1,29 +1,37 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file msdcall.c
+* @short Callbacks for the MSD calculation dialog
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'msdcall.c'
 *
-*  Contains:
+* Contains:
 *
 
  - The callbacks for the MSD calculation dialog
 
 *
-*  List of subroutines:
+* List of functions:
 
   void initmsd ();
-  void update_msd_view (struct project * this_proj);
+  void update_msd_view (project * this_proj);
 
   G_MODULE_EXPORT void on_calc_msd_released (GtkWidget * widg, gpointer data);
 
@@ -40,10 +48,10 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "curve.h"
 #include "project.h"
 
-/*
-*  void initmsd ()
-*
-*  Usage: initialize the curve widgets for the MSD
+/*!
+  \fn void initmsd ()
+
+  \brief initialize the curve widgets for the MSD
 */
 void initmsd ()
 {
@@ -103,14 +111,14 @@ void initmsd ()
   active_project -> initok[MS]=TRUE;
 }
 
-/*
-*  void update_msd_view (struct project * this_proj)
-*
-*  Usage: update the project text view for the MSD calculation
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn void update_msd_view (project * this_proj)
+
+  \brief update the project text view for the MSD calculation
+
+  \param this_proj the target project
 */
-void update_msd_view (struct project * this_proj)
+void update_msd_view (project * this_proj)
 {
   gchar * str;
   if (this_proj -> text_buffer[MS+OT] == NULL) this_proj -> text_buffer[MS+OT] = add_buffer (NULL, NULL, NULL);
@@ -134,13 +142,13 @@ void update_msd_view (struct project * this_proj)
   print_info (calculation_time(TRUE, this_proj -> calc_time[MS]), NULL, this_proj -> text_buffer[MS+OT]);
 }
 
-/*
-*  G_MODULE_EXPORT void on_calc_msd_released (GtkWidget * widg, gpointer data)
-*
-*  Usage: compute MSD
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void on_calc_msd_released (GtkWidget * widg, gpointer data)
+
+  \brief compute MSD
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void on_calc_msd_released (GtkWidget * widg, gpointer data)
 {

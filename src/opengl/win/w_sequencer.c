@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file w_sequencer.c
+* @short Functions to create the MD sequencer window
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'w_sequencer.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutine to create the MD sequencer window
+ - The functions to create the MD sequencer window
 
 *
-*  List of subroutines:
+* List of functions:
 
   static gboolean animate (gpointer data);
   static gboolean seq_wait_for_stop (gpointer data);
@@ -51,12 +59,12 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "glview.h"
 #include "glwindow.h"
 
-/*
-*  void set_player_title (glwin * view)
-*
-*  Usage: set sequencer window title
-*
-*  glwin * view : the target glwin
+/*!
+  \fn void set_player_title (glwin * view)
+
+  \brief set sequencer window title
+
+  \param view the target glwin
 */
 void set_player_title (glwin * view)
 {
@@ -66,19 +74,19 @@ void set_player_title (glwin * view)
   g_free (str);
 }
 
-/*
-*  void update_selection (glwin * view, int o_step)
-*
-*  Usage: match and udpate selected atom()s from o_step to the active step
-*
-*  glwin * view : the target glwin
-*  int o_step   : the step to match selection with
+/*!
+  \fn void update_selection (glwin * view, int o_step)
+
+  \brief match and udpate selected atom()s from o_step to the active step
+
+  \param view the target glwin
+  \param o_step the step to match selection with
 */
 void update_selection (glwin * view, int o_step)
 {
   int i, j, k;
   i = view -> anim -> last -> img -> step;
-  struct project * this_proj = get_project_by_id(view -> proj);
+  project * this_proj = get_project_by_id(view -> proj);
   for (k=0; k<2; k++)
   {
     view -> anim -> last -> img -> selected[k] -> selected = 0;
@@ -100,12 +108,12 @@ void update_selection (glwin * view, int o_step)
   }
 }
 
-/*
-*  void update_step_button (glwin * view)
-*
-*  Usage: correct widget buttons sensitivity based on MD step
-*
-*  glwin * view : the target glwin
+/*!
+  \fn void update_step_button (glwin * view)
+
+  \brief correct widget buttons sensitivity based on MD step
+
+  \param view the target glwin
 */
 void update_step_button (glwin * view)
 {
@@ -132,14 +140,14 @@ void update_step_button (glwin * view)
   }
 }
 
-/*
-*  void sequence (glwin * view, int o_step, int n_step)
-*
-*  Usage: sequence to next step
-*
-*  glwin * view : the target glwin
-*  int o_step   : actual step
-*  int n_step   : next step
+/*!
+  \fn void sequence (glwin * view, int o_step, int n_step)
+
+  \brief sequence to next step
+
+  \param view the target glwin
+  \param o_step actual step
+  \param n_step next step
 */
 void sequence (glwin * view, int o_step, int n_step)
 {
@@ -157,13 +165,13 @@ void sequence (glwin * view, int o_step, int n_step)
   update (view);
 }
 
-/*
-*  G_MODULE_EXPORT void seq_go_previous (GtkButton * but, gpointer data)
-*
-*  Usage: go to previous frame
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void seq_go_previous (GtkButton * but, gpointer data)
+
+  \brief go to previous frame
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void seq_go_previous (GtkButton * but, gpointer data)
 {
@@ -174,31 +182,31 @@ G_MODULE_EXPORT void seq_go_previous (GtkButton * but, gpointer data)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void seq_go_next (GtkButton * but, gpointer data)
-*
-*  Usage: go to next frame
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void seq_go_next (GtkButton * but, gpointer data)
+
+  \brief go to next frame
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void seq_go_next (GtkButton * but, gpointer data)
 {
   glwin * view = (glwin *) data;
-  struct project * this_proj = get_project_by_id(view -> proj);
+  project * this_proj = get_project_by_id(view -> proj);
   if (view -> anim -> last -> img -> step < this_proj -> steps-1)
   {
     sequence (view, view -> anim -> last -> img -> step, view -> anim -> last -> img -> step + 1);
   }
 }
 
-/*
-*  G_MODULE_EXPORT void seq_go_first (GtkButton * but, gpointer data)
-*
-*  Usage: go to first frame
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void seq_go_first (GtkButton * but, gpointer data)
+
+  \brief go to first frame
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void seq_go_first (GtkButton * but, gpointer data)
 {
@@ -206,13 +214,13 @@ G_MODULE_EXPORT void seq_go_first (GtkButton * but, gpointer data)
   sequence (view, view -> anim -> last -> img -> step, 0);
 }
 
-/*
-*  G_MODULE_EXPORT void seq_go_last (GtkButton * but, gpointer data)
-*
-*  Usage: got to last frame
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void seq_go_last (GtkButton * but, gpointer data)
+
+  \brief got to last frame
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void seq_go_last (GtkButton * but, gpointer data)
 {
@@ -220,20 +228,20 @@ G_MODULE_EXPORT void seq_go_last (GtkButton * but, gpointer data)
   sequence (view, view -> anim -> last -> img -> step, get_project_by_id(view -> proj) -> steps - 1);
 }
 
-/*
-*  G_MODULE_EXPORT void seq_go_to (GtkEntry * res, gpointer data)
-*
-*  Usage: jump to frame
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void seq_go_to (GtkEntry * res, gpointer data)
+
+  \brief jump to frame
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void seq_go_to (GtkEntry * res, gpointer data)
 {
   glwin * view = (glwin *) data;
   const gchar * m = entry_get_text (res);
   int s = (int)atof(m);
-  struct project * this_proj = get_project_by_id(view -> proj);
+  project * this_proj = get_project_by_id(view -> proj);
   if (s > 0 && s <= this_proj -> steps)
   {
     sequence (view, view -> anim -> last -> img -> step, s-1);
@@ -241,13 +249,13 @@ G_MODULE_EXPORT void seq_go_to (GtkEntry * res, gpointer data)
   update_entry_int (res, this_proj -> modelgl -> anim -> last -> img -> step+1);
 }
 
-/*
-*  G_MODULE_EXPORT void seq_jump (GtkButton * but, gpointer data)
-*
-*  Usage: jump to frame dialog
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void seq_jump (GtkButton * but, gpointer data)
+
+  \brief jump to frame dialog
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void seq_jump (GtkButton * but, gpointer data)
 {
@@ -265,12 +273,12 @@ G_MODULE_EXPORT void seq_jump (GtkButton * but, gpointer data)
   run_this_gtk_dialog (win, G_CALLBACK(run_destroy_dialog), NULL);
 }
 
-/*
-*  static gboolean animate (gpointer data)
-*
-*  Usage: animate
-*
-*  gpointer data : the associated data pointer
+/*!
+  \fn static gboolean animate (gpointer data)
+
+  \brief animate
+
+  \param data the associated data pointer
 */
 static gboolean animate (gpointer data)
 {
@@ -299,13 +307,13 @@ static gboolean animate (gpointer data)
   return view -> play;
 }
 
-/*
-*  G_MODULE_EXPORT void seq_play (GtkButton * but, gpointer data)
-*
-*  Usage: play
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void seq_play (GtkButton * but, gpointer data)
+
+  \brief play
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void seq_play (GtkButton * but, gpointer data)
 {
@@ -318,13 +326,13 @@ G_MODULE_EXPORT void seq_play (GtkButton * but, gpointer data)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void seq_stop (GtkButton * but, gpointer data)
-*
-*  Usage: stop
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void seq_stop (GtkButton * but, gpointer data)
+
+  \brief stop
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void seq_stop (GtkButton * but, gpointer data)
 {
@@ -332,13 +340,13 @@ G_MODULE_EXPORT void seq_stop (GtkButton * but, gpointer data)
   view -> play = FALSE;
 }
 
-/*
-*  G_MODULE_EXPORT void seq_loop (GtkButton * but, gpointer data)
-*
-*  Usage: loop the animation
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void seq_loop (GtkButton * but, gpointer data)
+
+  \brief loop the animation
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void seq_loop (GtkButton * but, gpointer data)
 {
@@ -356,12 +364,12 @@ G_MODULE_EXPORT void seq_loop (GtkButton * but, gpointer data)
   show_the_widgets (GTK_WIDGET(but));
 }
 
-/*
-*  static gboolean seq_wait_for_stop (gpointer data)
-*
-*  Usage: pause / restart if on pause
-*
-*  gpointer data : the associated data pointer
+/*!
+  \fn static gboolean seq_wait_for_stop (gpointer data)
+
+  \brief pause / restart if on pause
+
+  \param data the associated data pointer
 */
 static gboolean seq_wait_for_stop (gpointer data)
 {
@@ -378,13 +386,13 @@ static gboolean seq_wait_for_stop (gpointer data)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void seq_faster (GtkButton * but, gpointer data)
-*
-*  Usage: go faster
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void seq_faster (GtkButton * but, gpointer data)
+
+  \brief go faster
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void seq_faster (GtkButton * but, gpointer data)
 {
@@ -406,13 +414,13 @@ G_MODULE_EXPORT void seq_faster (GtkButton * but, gpointer data)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void seq_slower (GtkButton * but, gpointer data)
-*
-*  Usage: go slower
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void seq_slower (GtkButton * but, gpointer data)
+
+  \brief go slower
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void seq_slower (GtkButton * but, gpointer data)
 {
@@ -434,13 +442,13 @@ G_MODULE_EXPORT void seq_slower (GtkButton * but, gpointer data)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void window_sequencer (GtkWidget * widg, gpointer data)
-*
-*  Usage: create the sequencer window
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void window_sequencer (GtkWidget * widg, gpointer data)
+
+  \brief create the sequencer window
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void window_sequencer (GtkWidget * widg, gpointer data)
 {

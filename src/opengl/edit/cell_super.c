@@ -1,32 +1,40 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file cell_super.c
+* @short Functions to create a super-cell using the extra cell(s)
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'cell_super.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create a super-cell using the extra cell(s)
+ - The functions to create a super-cell using the extra cell(s)
 
 *
-*  List of subroutines:
+* List of functions:
 
-  gboolean ** duplicate_geom_info (struct project * this_proj);
-  gboolean ** duplicate_poly_info (struct project * this_proj);
+  gboolean ** duplicate_geom_info (project * this_proj);
+  gboolean ** duplicate_poly_info (project * this_proj);
 
-  void restore_coord_and_poly_info (struct project * proj, gboolean ** cshow, gboolean ** pshow);
-  void sens_superbut (struct project * this_proj);
+  void restore_coord_and_poly_info (project * proj, gboolean ** cshow, gboolean ** pshow);
+  void sens_superbut (project * this_proj);
   void super_celling (glwin * view);
 
   G_MODULE_EXPORT void super_cell (GSimpleAction * action, GVariant * parameter, gpointer data);
@@ -38,17 +46,17 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "cell_edit.h"
 #include "atom_edit.h"
 
-extern void clean_coord_window (struct project * this_proj);
-extern GtkWidget * cell_tab (int i, struct project * this_proj);
+extern void clean_coord_window (project * this_proj);
+extern GtkWidget * cell_tab (int i, project * this_proj);
 
-/*
-*  gboolean ** duplicate_geom_info (struct project * this_proj)
-*
-*  Usage: duplicate coordinations show status
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn gboolean ** duplicate_geom_info (project * this_proj)
+
+  \brief duplicate coordinations show status
+
+  \param this_proj the target project
 */
-gboolean ** duplicate_geom_info (struct project * this_proj)
+gboolean ** duplicate_geom_info (project * this_proj)
 {
   int i, j;
   gboolean ** show = g_malloc (2*sizeof*show);
@@ -63,14 +71,14 @@ gboolean ** duplicate_geom_info (struct project * this_proj)
   return show;
 }
 
-/*
-*  gboolean ** duplicate_poly_info (struct project * this_proj)
-*
-*  Usage: duplicate polyhedra show status
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn gboolean ** duplicate_poly_info (project * this_proj)
+
+  \brief duplicate polyhedra show status
+
+  \param this_proj the target project
 */
-gboolean ** duplicate_poly_info (struct project * this_proj)
+gboolean ** duplicate_poly_info (project * this_proj)
 {
   int i, j;
   gboolean ** show = g_malloc (2*sizeof*show);
@@ -85,16 +93,16 @@ gboolean ** duplicate_poly_info (struct project * this_proj)
   return show;
 }
 
-/*
-*  void restore_coord_and_poly_info (struct project * proj, gboolean ** cshow, gboolean ** pshow)
-*
-*  Usage: restore show status after
-*
-*  struct project * proj : the target project
-*  gboolean ** cshow     : the saved coordination show status
-*  gboolean ** pshow     : the saved polyhedra show status
+/*!
+  \fn void restore_coord_and_poly_info (project * proj, gboolean ** cshow, gboolean ** pshow)
+
+  \brief restore show status after
+
+  \param proj the target project
+  \param cshow the saved coordination show status
+  \param pshow the saved polyhedra show status
 */
-void restore_coord_and_poly_info (struct project * proj, gboolean ** cshow, gboolean ** pshow)
+void restore_coord_and_poly_info (project * proj, gboolean ** cshow, gboolean ** pshow)
 {
   int i, j;
   for (i=0; i<2; i++)
@@ -123,14 +131,14 @@ void restore_coord_and_poly_info (struct project * proj, gboolean ** cshow, gboo
   }
 }
 
-/*
-*  void sens_superbut (struct project * this_proj)
-*
-*  Usage: adjust 'Create super-cell' button sensitivity
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn void sens_superbut (project * this_proj)
+
+  \brief adjust 'Create super-cell' button sensitivity
+
+  \param this_proj the target project
 */
-void sens_superbut (struct project * this_proj)
+void sens_superbut (project * this_proj)
 {
   int i, j;
   if (this_proj -> modelgl -> record)
@@ -152,12 +160,12 @@ void sens_superbut (struct project * this_proj)
 #endif
 }
 
-/*
-*  void super_celling (glwin * view)
-*
-*  Usage: create super cell
-*
-*  glwin * view : the target glwin
+/*!
+  \fn void super_celling (glwin * view)
+
+  \brief create super cell
+
+  \param view the target glwin
 */
 void super_celling (glwin * view)
 {
@@ -292,24 +300,24 @@ void super_celling (glwin * view)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void super_cell (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: create super cell menu callback GTK4
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void super_cell (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief create super cell menu callback GTK4
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void super_cell (GSimpleAction * action, GVariant * parameter, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void super_cell (GtkWidget * widg, gpointer data)
-*
-*  Usage: create super cell menu callback GTK3
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void super_cell (GtkWidget * widg, gpointer data)
+
+  \brief create super cell menu callback GTK3
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void super_cell (GtkWidget * widg, gpointer data)
 #endif
@@ -319,13 +327,13 @@ G_MODULE_EXPORT void super_cell (GtkWidget * widg, gpointer data)
   sens_superbut (get_project_by_id(view -> proj));
 }
 
-/*
-*  G_MODULE_EXPORT void super_cell_but (GtkButton * but, gpointer data)
-*
-*  Usage: create super cell callback
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void super_cell_but (GtkButton * but, gpointer data)
+
+  \brief create super cell callback
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void super_cell_but (GtkButton * but, gpointer data)
 {

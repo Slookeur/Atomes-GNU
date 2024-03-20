@@ -1,38 +1,46 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file ogl_draw.c
+* @short OpenGL window drawing funcions
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'ogl_draw.c'
 *
-*  Contains:
+* Contains:
 *
 
-  - The main OpenGL drawing subroutines
+  - The OpenGL window drawing funcions
 
 *
-*  List of subroutines:
+* List of functions:
 
   void print_matrices ();
   void setup_camera ();
   void unrotate_camera ();
   void duplicate_material_and_lightning (image * new_img, image * old_img);
   void add_image ();
-  void at_shift (struct atom * at, float * shift);
-  void at_unshift (struct atom * at, float * shift);
+  void at_shift (atom * at, float * shift);
+  void at_unshift (atom * at, float * shift);
   void draw (glwin * view);
 
-  struct screen_string * duplicate_screen_string (struct screen_string * old_s);
-  struct atom * duplicate_atom (struct atom * at);
+  screen_string * duplicate_screen_string (screen_string * old_s);
+  atom * duplicate_atom (atom * at);
 
   image * duplicate_image (image * old_img);
 
@@ -45,11 +53,11 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern ColRGBA init_color (int id, int numid);
 extern Light * copy_light_sources (int dima, int dimb, Light * old_sp);
-extern struct atom_selection * duplicate_ogl_selection (struct atom_selection * old_sel);
+extern atom_selection * duplicate_ogl_selection (atom_selection * old_sel);
 double x, y, z;
 GLUquadricObj * quadric;
 glwin * wingl;
-struct project * proj_gl;
+project * proj_gl;
 int proj_sp;
 int proj_at;
 coord_info * coord_gl;
@@ -73,13 +81,13 @@ extern int create_pick_lists ();
 extern int create_label_lists ();
 extern void create_measures_lists ();
 extern void create_light_lists ();
-extern void create_slab_lists (struct project * this_proj);
+extern void create_slab_lists (project * this_proj);
 extern void create_volumes_lists ();
 
-/*
-*  void print_matrices ()
-*
-*  Usage: print OpenGL matrices
+/*!
+  \fn void print_matrices ()
+
+  \brief print OpenGL matrices
 */
 void print_matrices ()
 {
@@ -104,10 +112,10 @@ void print_matrices ()
   m4_print (wingl -> proj_model_view_matrix);
 }
 
-/*
-*  void setup_camera ()
-*
-*  Usage: setup OpenGL camera
+/*!
+  \fn void setup_camera ()
+
+  \brief setup OpenGL camera
 */
 void setup_camera ()
 {
@@ -127,10 +135,10 @@ void setup_camera ()
   // print_matrices();
 }
 
-/*
-*  void unrotate_camera ()
-*
-*  Usage: unrotate OpenGL camera
+/*!
+  \fn void unrotate_camera ()
+
+  \brief unrotate OpenGL camera
 */
 void unrotate_camera ()
 {
@@ -140,16 +148,16 @@ void unrotate_camera ()
   wingl -> model_view_matrix = m4_mul (wingl -> model_view_matrix, m4_quat_rotation (quat));
 }
 
-/*
-*  struct screen_string * duplicate_screen_string (struct screen_string * old_s)
-*
-*  Usage: create a copy a screen_string data structure
-*
-*  struct screen_string * old_s : the data structure to be copied
+/*!
+  \fn screen_string * duplicate_screen_string (screen_string * old_s)
+
+  \brief create a copy a screen_string data structure
+
+  \param old_s the data structure to be copied
 */
-struct screen_string * duplicate_screen_string (struct screen_string * old_s)
+screen_string * duplicate_screen_string (screen_string * old_s)
 {
-  struct screen_string * new_s = g_malloc0 (sizeof*new_s);
+  screen_string * new_s = g_malloc0 (sizeof*new_s);
   new_s -> word = g_strdup_printf ("%s", old_s -> word);
   new_s -> col = old_s -> col;
   int i;
@@ -161,13 +169,13 @@ struct screen_string * duplicate_screen_string (struct screen_string * old_s)
   return new_s;
 }
 
-/*
-*  void duplicate_material_and_lightning (image * new_img, image * old_img)
-*
-*  Usage: copy the material and lightning parameters of an image data structure
-*
-*  image * new_img : the new image
-*  image * old_img : the old image with the data to be copied
+/*!
+  \fn void duplicate_material_and_lightning (image * new_img, image * old_img)
+
+  \brief copy the material and lightning parameters of an image data structure
+
+  \param new_img the new image
+  \param old_img the old image with the data to be copied
 */
 void duplicate_material_and_lightning (image * new_img, image * old_img)
 {
@@ -186,12 +194,12 @@ void duplicate_material_and_lightning (image * new_img, image * old_img)
   new_img -> f_g.color = old_img -> f_g.color;
 }
 
-/*
-*  image * duplicate_image (image * old_img)
-*
-*  Usage: create a copy of an image data structure
-*
-*  image * old_img : the image to copy
+/*!
+  \fn image * duplicate_image (image * old_img)
+
+  \brief create a copy of an image data structure
+
+  \param old_img the image to copy
 */
 image * duplicate_image (image * old_img)
 {
@@ -254,7 +262,7 @@ image * duplicate_image (image * old_img)
     new_img -> axis_color = duplicate_color (3, old_img -> axis_color);
   }
 
-  struct screen_string * stmp_a, * stmp_b;
+  screen_string * stmp_a, * stmp_b;
 
   for (i=0; i<5; i++)
   {
@@ -346,14 +354,14 @@ image * duplicate_image (image * old_img)
   return new_img;
 }
 
-/*
-*  void add_image ()
-*
-*  Usage: add an image to the animation
+/*!
+  \fn void add_image ()
+
+  \brief add an image to the animation
 */
 void add_image ()
 {
-  struct snapshot * nextsnap = g_malloc0 (sizeof*nextsnap);
+  snapshot * nextsnap = g_malloc0 (sizeof*nextsnap);
   nextsnap -> img = duplicate_image (plot);
   nextsnap -> img -> id ++;
 
@@ -378,16 +386,16 @@ void add_image ()
 
 extern void update_gl_pick_colors ();
 
-/*
-*  struct atom * duplicate_atom (struct atom * at)
-*
-*  Usage: copy (partially) an atom data structure
-*
-*  struct atom * at : the atom to copy
+/*!
+  \fn atom * duplicate_atom (atom * at)
+
+  \brief copy (partially) an atom data structure
+
+  \param at the atom to copy
 */
-struct atom * duplicate_atom (struct atom * at)
+atom * duplicate_atom (atom * at)
 {
-  struct atom * bt = g_malloc0 (sizeof*bt);
+  atom * bt = g_malloc0 (sizeof*bt);
   bt -> x = at -> x;
   bt -> y = at -> y;
   bt -> z = at -> z;
@@ -413,42 +421,42 @@ struct atom * duplicate_atom (struct atom * at)
   return bt;
 }
 
-/*
-*  void at_shift (struct atom * at, float * shift)
-*
-*  Usage: modify atomic coordinates to display image in cell replica
-*
-*  struct atom * at : the atom
-*  float * shift    : the shift to apply
+/*!
+  \fn void at_shift (atom * at, float * shift)
+
+  \brief modify atomic coordinates to display image in cell replica
+
+  \param at the atom
+  \param shift the shift to apply
 */
-void at_shift (struct atom * at, float * shift)
+void at_shift (atom * at, float * shift)
 {
   at -> x += shift[0];
   at -> y += shift[1];
   at -> z += shift[2];
 }
 
-/*
-*  void at_unshift (struct atom * at, float * shift)
-*
-*  Usage: correct atomic coordinates modified to display image in cell replica
-*
-*  struct atom * at : the atom
-*  float * shift    : the shift to correct
+/*!
+  \fn void at_unshift (atom * at, float * shift)
+
+  \brief correct atomic coordinates modified to display image in cell replica
+
+  \param at the atom
+  \param shift the shift to correct
 */
-void at_unshift (struct atom * at, float * shift)
+void at_unshift (atom * at, float * shift)
 {
   at -> x -= shift[0];
   at -> y -= shift[1];
   at -> z -= shift[2];
 }
 
-/*
-*  void draw (glwin * view)
-*
-*  Usage: main drawing subroutine for the OpenGL window
-*
-*  glwin * view : the target glwin
+/*!
+  \fn void draw (glwin * view)
+
+  \brief main drawing subroutine for the OpenGL window
+
+  \param view the target glwin
 */
 void draw (glwin * view)
 {

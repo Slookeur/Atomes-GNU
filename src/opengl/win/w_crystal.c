@@ -1,27 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file w_crystal.c
+* @short Functions to create a crystal database window \n
+         This is a project and not in use for the time being
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'w_crystal.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create a crystal database window
+ - The functions to create a crystal database window
  - This is a project and not in use for the time being
 
 *
-*  List of subroutines:
+* List of functions:
 
   int cif_preview (const char * filetoread);
   int get_cgroup (gchar * str);
@@ -31,9 +40,9 @@ If not, see <https://www.gnu.org/licenses/> */
   int get_cif_info_from_cif_node (xmlNodePtr * cnode);
   int open_cif_database (gchar * filetoread);
   int prepare_data_base (int db);
-  int build_crystal_from_cif_database (struct project * this_proj);
+  int build_crystal_from_cif_database (project * this_proj);
 
-  void sort_files (int num_f);
+  void sort_crystal_files (int num_c);
   void fill_cif_tree (GtkListStore * store);
   void fill_group_tree (GtkListStore * store);
   void fill_symmetry_tree (GtkListStore * store);
@@ -74,10 +83,10 @@ extern void gtk_window_change_gdk_visual (GtkWidget * win);
 #endif // GTK3
 extern gboolean create_3d_model (int p, gboolean load);
 extern G_MODULE_EXPORT void on_realize (GtkGLArea * area, gpointer data);
-extern void init_camera (struct project * this_proj, gboolean get_depth);
-extern void alloc_proj_data (struct project * this_proj, int cid);
-extern int action_atoms_from_project (struct project * this_proj, atom_search * asearch, int status, gboolean visible);
-extern void to_insert_in_project (int stat, int orig, struct project * this_proj, atom_search * asearch, gboolean visible);
+extern void init_camera (project * this_proj, gboolean get_depth);
+extern void alloc_proj_data (project * this_proj, int cid);
+extern int action_atoms_from_project (project * this_proj, atom_search * asearch, int status, gboolean visible);
+extern void to_insert_in_project (int stat, int orig, project * this_proj, atom_search * asearch, gboolean visible);
 extern void create_object_from_library (int p);
 GtkListStore * database_store;
 GtkTreeIter first_database_iter;
@@ -96,24 +105,16 @@ gchar ** cif_file_name;
 gchar ** cif_name;
 GtkWidget * cif_preview_box = NULL;
 GtkWidget * cif_preview_plot = NULL;
-struct project * cif_proj = NULL;
+project * cif_proj = NULL;
 gchar * other_name[5];
 int o_names;
 
-typdef struct cif_data{
-  gchar * file_name;
-  gchar * name;
-  gchar * group;
-  gchar * formula;
-  int species;
-};
+/*!
+  \fn int cif_preview (const char * filetoread)
 
-/*
-*  int cif_preview (const char * filetoread)
-*
-*  Usage:
-*
-*  const char * filetoread :
+  \brief NOT USED !
+
+  \param filetoread
 */
 int cif_preview (const char * filetoread)
 {
@@ -130,12 +131,12 @@ int cif_preview (const char * filetoread)
   return 1;
 }
 
-/*
-*  int get_cgroup (gchar * str)
-*
-*  Usage:
-*
-*  gchar * str :
+/*!
+  \fn int get_cgroup (gchar * str)
+
+  \brief NOT USED !
+
+  \param str
 */
 int get_cgroup (gchar * str)
 {
@@ -147,20 +148,20 @@ int get_cgroup (gchar * str)
   return -1;
 }
 
-/*
-*  void sort_files (int num_f)
-*
-*  Usage:
-*
-*  int num_f :
+/*!
+  \fn void sort_crystal_files (int num_c)
+
+  \brief NOT USED !
+
+  \param num_c number of file(s) to sort
 */
-void sort_files (int num_f)
+void sort_crystal_files (int num_c)
 {
   int i, j;
   gchar * str = NULL;
-  for(i=0;i<num_f;i++)
+  for(i=0;i<num_c;i++)
   {
-    for(j=i+1;j<num_f;j++)
+    for(j=i+1;j<num_c;j++)
     {
        if(strcmp(cif_name[i],cif_name[j])>0)
        {
@@ -173,16 +174,16 @@ void sort_files (int num_f)
        }
     }
   }
-  for(i=0;i<num_f;i++)
+  for(i=0;i<num_c;i++)
   {
     cif_name[i] = check_xml_string(cif_name[i]);
   }
 }
 
-/*
-*  int get_cif_files ()
-*
-*  Usage:
+/*!
+  \fn int get_cif_files ()
+
+  \brief NOT USED !
 */
 int get_cif_files ()
 {
@@ -299,37 +300,37 @@ int get_cif_files ()
     }
 
 #endif
-    sort_files (val);
+    sort_crystal_files (val);
   }
   return val;
 }
 
-/*
-*  int get_num_cif ()
-*
-*  Usage:
+/*!
+  \fn int get_num_cif ()
+
+  \brief NOT USED !
 */
 int get_num_cif ()
 {
   return num_cif[the_symmetry][the_group];
 }
 
-/*
-*  int get_num_group ()
-*
-*  Usage:
+/*!
+  \fn int get_num_group ()
+
+  \brief NOT USED !
 */
 int get_num_group ()
 {
   return num_group[the_symmetry];
 }
 
-/*
-*  void fill_cif_tree (GtkListStore * store)
-*
-*  Usage:
-*
-*  GtkListStore * store :
+/*!
+  \fn void fill_cif_tree (GtkListStore * store)
+
+  \brief NOT USED !
+
+  \param store
 */
 void fill_cif_tree (GtkListStore * store)
 {
@@ -350,12 +351,12 @@ void fill_cif_tree (GtkListStore * store)
   }
 }
 
-/*
-*  void fill_group_tree (GtkListStore * store)
-*
-*  Usage:
-*
-*  GtkListStore * store :
+/*!
+  \fn void fill_group_tree (GtkListStore * store)
+
+  \brief NOT USED !
+
+  \param store
 */
 void fill_group_tree (GtkListStore * store)
 {
@@ -376,12 +377,12 @@ void fill_group_tree (GtkListStore * store)
   }
 }
 
-/*
-*  void fill_symmetry_tree (GtkListStore * store)
-*
-*  Usage:
-*
-*  GtkListStore * store :
+/*!
+  \fn void fill_symmetry_tree (GtkListStore * store)
+
+  \brief NOT USED !
+
+  \param store
 */
 void fill_symmetry_tree (GtkListStore * store)
 {
@@ -402,12 +403,12 @@ void fill_symmetry_tree (GtkListStore * store)
   }
 }
 
-/*
-*  void fill_database_tree (GtkListStore * store)
-*
-*  Usage:
-*
-*  GtkListStore * store :
+/*!
+  \fn void fill_database_tree (GtkListStore * store)
+
+  \brief NOT USED !
+
+  \param store
 */
 void fill_database_tree (GtkListStore * store)
 {
@@ -428,10 +429,10 @@ void fill_database_tree (GtkListStore * store)
   }
 }
 
-/*
-*  void insert_cif_preview ()
-*
-*  Usage:
+/*!
+  \fn void insert_cif_preview ()
+
+  \brief NOT USED !
 */
 void insert_cif_preview ()
 {
@@ -479,12 +480,12 @@ void insert_cif_preview ()
   gtk_widget_show_all (cif_preview_box);
 }
 
-/*
-*  void prepare_cif_preview (int id)
-*
-*  Usage:
-*
-*  int id :
+/*!
+  \fn void prepare_cif_preview (int id)
+
+  \brief NOT USED !
+
+  \param id
 */
 void prepare_cif_preview (int id)
 {
@@ -510,12 +511,12 @@ void prepare_cif_preview (int id)
   }
 }
 
-/*
-*  int get_cif_info_from_cif_node (xmlNodePtr * cnode)
-*
-*  Usage:
-*
-*  xmlNodePtr * cnode :
+/*!
+  \fn int get_cif_info_from_cif_node (xmlNodePtr * cnode)
+
+  \brief NOT USED !
+
+  \param cnode
 */
 int get_cif_info_from_cif_node (xmlNodePtr * cnode)
 {
@@ -523,14 +524,14 @@ int get_cif_info_from_cif_node (xmlNodePtr * cnode)
   return 1;
 }
 
-/*
-*  void prepare_cif_list (int dba, int sym, int spg)
-*
-*  Usage:
-*
-*  int dba :
-*  int sym :
-*  int spg :
+/*!
+  \fn void prepare_cif_list (int dba, int sym, int spg)
+
+  \brief NOT USED !
+
+  \param dba
+  \param sym
+  \param spg
 */
 void prepare_cif_list (int dba, int sym, int spg)
 {
@@ -574,12 +575,12 @@ void prepare_cif_list (int dba, int sym, int spg)
   }
 }
 
-/*
-*  int open_cif_database (gchar * filetoread)
-*
-*  Usage:
-*
-*  gchar * filetoread :
+/*!
+  \fn int open_cif_database (gchar * filetoread)
+
+  \brief NOT USED !
+
+  \param filetoread
 */
 int open_cif_database (gchar * filetoread)
 {
@@ -655,12 +656,12 @@ int open_cif_database (gchar * filetoread)
   }
 }
 
-/*
-*  int prepare_data_base (int db)
-*
-*  Usage: prepare CIF files database
-*
-*  int db :
+/*!
+  \fn int prepare_data_base (int db)
+
+  \brief prepare CIF files database
+
+  \param db
 */
 int prepare_data_base (int db)
 {
@@ -726,14 +727,14 @@ void select_cif_data (GtkTreeView * tree_view,
 
 G_MODULE_EXPORT void set_library_markup (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data);
 
-/*
-*  GtkWidget * cif_tree (GtkListStore * store, int id, gchar * name)
-*
-*  Usage: create cif tree store widget
-*
-*  GtkListStore * store : the GtkListStore model
-*  int id               :
-*  gchar * name         : column name
+/*!
+  \fn GtkWidget * cif_tree (GtkListStore * store, int id, gchar * name)
+
+  \brief create cif tree store widget
+
+  \param store the GtkListStore model
+  \param id
+  \param name column name
 */
 GtkWidget * cif_tree (GtkListStore * store, int id, gchar * name)
 {
@@ -755,14 +756,14 @@ GtkWidget * cif_tree (GtkListStore * store, int id, gchar * name)
   return scrol;
 }
 
-/*
-*  int build_crystal_from_cif_database (struct project * this_proj)
-*
-*  Usage: create crystal database window
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn int build_crystal_from_cif_database (project * this_proj)
+
+  \brief create crystal database window
+
+  \param this_proj the target project
 */
-int build_crystal_from_cif_database (struct project * this_proj)
+int build_crystal_from_cif_database (project * this_proj)
 {
   int active = activep;
   int res;

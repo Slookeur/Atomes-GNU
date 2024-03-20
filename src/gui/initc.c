@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file initc.c
+* @short Curve data buffer initialization
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'initc.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Curve data initialization
+ - Curve data buffer initialization
 
 *
-*  List of subroutines:
+* List of functions:
 
   void clean_curves_data (int calc, int start, int end);
   void alloc_curves (int rid);
@@ -35,14 +43,14 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern void clean_this_curve_window (int cid, int rid);
 
-/*
-*  void clean_curves_data (int calc, int start, int end)
-*
-*  Usage: clean curve data on a range of curve id
-*
-*  int calc  : the calculation
-*  int start : the starting value
-*  int end   : the ending value
+/*!
+  \fn void clean_curves_data (int calc, int start, int end)
+
+  \brief clean curve data on a range of curve id
+
+  \param calc the calculation
+  \param start the starting value
+  \param end the ending value
 */
 void clean_curves_data (int calc, int start, int end)
 {
@@ -56,12 +64,12 @@ void clean_curves_data (int calc, int start, int end)
   }
 }
 
-/*
-*  void alloc_curves (int rid)
-*
-*  Usage: allocating curve data
-*
-*  int rid : analysis id
+/*!
+  \fn void alloc_curves (int rid)
+
+  \brief allocating curve data
+
+  \param rid analysis id
 */
 void alloc_curves (int rid)
 {
@@ -88,10 +96,10 @@ void alloc_curves (int rid)
   }
 }
 
-/*
-*  void initcwidgets ()
-*
-*  Usage: initializing curve values
+/*!
+  \fn void initcwidgets ()
+
+  \brief initializing curve values
 */
 void initcwidgets ()
 {
@@ -132,16 +140,16 @@ void initcwidgets ()
   }
 }
 
-/*
-*  void prepostcalc (GtkWidget * widg, gboolean status, int run, int adv, double opc)
-*
-*  Usage: to just before and just after running a calculation
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gboolean status  : calculation completed (1/0)
-*  int run          : calculation id
-*  int adv          : calculation result
-*  double opc       : opacity
+/*!
+  \fn void prepostcalc (GtkWidget * widg, gboolean status, int run, int adv, double opc)
+
+  \brief to just before and just after running a calculation
+
+  \param widg the GtkWidget sending the signal
+  \param status calculation completed (1/0)
+  \param run calculation id
+  \param adv calculation result
+  \param opc opacity
 */
 void prepostcalc (GtkWidget * widg, gboolean status, int run, int adv, double opc)
 {

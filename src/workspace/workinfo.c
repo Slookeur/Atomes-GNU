@@ -1,28 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file workinfo.c
+* @short Functions to display project information in GtkTextBuffer
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'workinfo.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Subroutines to display project related information in GtkTextBuffer
+ - Functions to display project information in GtkTextBuffer
 
 *
-*  List of subroutines:
+* List of functions:
 
-  void workinfo (struct project * this_proj, int i);
+  void workinfo (project * this_proj, int i);
 
 */
 
@@ -30,29 +38,29 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "interface.h"
 #include "project.h"
 
-extern void update_rdf_view (struct project * this_proj, int rdf);
-extern void update_sq_view (struct project * this_proj, int sqk);
-extern void update_angle_view (struct project * this_proj);
-extern void update_rings_view (struct project * this_proj, int c);
-extern void update_chains_view (struct project * this_proj);
-extern void update_spherical_view (struct project * this_proj);
-extern void update_msd_view (struct project * this_proj);
-extern void model_info (struct project * this_proj, GtkTextBuffer * buf);
-extern void opengl_info (struct project * this_proj, GtkTextBuffer * buf);
+extern void update_rdf_view (project * this_proj, int rdf);
+extern void update_sq_view (project * this_proj, int sqk);
+extern void update_angle_view (project * this_proj);
+extern void update_rings_view (project * this_proj, int c);
+extern void update_chains_view (project * this_proj);
+extern void update_spherical_view (project * this_proj);
+extern void update_msd_view (project * this_proj);
+extern void model_info (project * this_proj, GtkTextBuffer * buf);
+extern void opengl_info (project * this_proj, GtkTextBuffer * buf);
 
-/*
-*  void workinfo (struct project * this_proj, int i)
-*
-*  Usage: display information about a workspace menu item for a project
-*
-*  struct project * this_proj : the target project
-*  int i                      : the properties to display from the menu
+/*!
+  \fn void workinfo (project * this_proj, int i)
+
+  \brief display information about a workspace menu item for a project
+
+  \param this_proj the target project
+  \param i the properties to display from the menu
 */
-void workinfo (struct project * this_proj, int i)
+void workinfo (project * this_proj, int i)
 {
   gchar * str;
   int j;
-  struct project * tmp_proj;
+  project * tmp_proj;
   switch (i)
   {
     case 0:

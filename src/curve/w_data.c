@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file w_data.c
+* @short Functions to export curve data
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'w_data.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to write / output curve data
+ - The functions to export curve data
 
 *
-*  List of subroutines:
+* List of functions:
 
   void write_curve (gpointer idata);
 
@@ -44,27 +52,27 @@ void append_to_file_ (int *, double *, double *, double *, int *, int *, int *, 
 GtkFileFilter * filter1, * filter2;
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void run_write_curve (GtkNativeDialog * info, gint response_id, gpointer data)
-*
-*  Usage: save curve data - running the dialog GTK4
-*
-*  GtkNativeDialog * info : the GtkNativeDialog sending the signal
-*  gint response_id       : the response id
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void run_write_curve (GtkNativeDialog * info, gint response_id, gpointer data)
+
+  \brief save curve data - running the dialog GTK4
+
+  \param info the GtkNativeDialog sending the signal
+  \param response_id the response id
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void run_write_curve (GtkNativeDialog * info, gint response_id, gpointer data)
 {
   GtkFileChooser * chooser = GTK_FILE_CHOOSER((GtkFileChooserNative *)info);
 #else
-/*
-*  G_MODULE_EXPORT void run_write_curve (GtkDialog * info, gint response_id, gpointer data)
-*
-*  Usage: save curve data - running the dialog GTK3
-*
-*  GtkDialog * info : the GtkDialog sending the signal
-*  gint response_id : the response id
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void run_write_curve (GtkDialog * info, gint response_id, gpointer data)
+
+  \brief save curve data - running the dialog GTK3
+
+  \param info the GtkDialog sending the signal
+  \param response_id the response id
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void run_write_curve (GtkDialog * info, gint response_id, gpointer data)
 {
@@ -77,7 +85,7 @@ G_MODULE_EXPORT void run_write_curve (GtkDialog * info, gint response_id, gpoint
   c = cd -> c;
   if (response_id == GTK_RESPONSE_ACCEPT)
   {
-    struct project * this_proj = get_project_by_id(a);
+    project * this_proj = get_project_by_id(a);
     this_proj -> curves[b][c] -> cfile = file_chooser_get_file_name (chooser);
     GtkFileFilter * tmp = gtk_file_chooser_get_filter (chooser);
     if (tmp == filter1)
@@ -119,7 +127,7 @@ G_MODULE_EXPORT void run_write_curve (GtkDialog * info, gint response_id, gpoint
                        & b, & c, & l, & m, & p,
                        & j, this_proj -> curves[b][c] -> title);
       j = this_proj -> curves[b][c] -> extrac -> extras;
-      struct cextra * ctmp = this_proj -> curves[b][c] -> extrac -> first;
+      CurveExtra * ctmp = this_proj -> curves[b][c] -> extrac -> first;
       for (i=0 ; i < j ; i++ )
       {
         m = m + 1;
@@ -146,12 +154,12 @@ G_MODULE_EXPORT void run_write_curve (GtkDialog * info, gint response_id, gpoint
 #endif
 }
 
-/*
-*  void write_curve (gpointer idata)
-*
-*  Usage: save curve data - creating the dialog
-*
-*  gpointer idata : the associated data pointer
+/*!
+  \fn void write_curve (gpointer idata)
+
+  \brief save curve data - creating the dialog
+
+  \param idata the associated data pointer
 */
 void write_curve (gpointer idata)
 {
@@ -165,7 +173,7 @@ void write_curve (gpointer idata)
   a = cd -> a;
   b = cd -> b;
   c = cd -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   info = create_file_chooser ("Save Data",
                               GTK_WINDOW(this_proj -> curves[b][c] -> window),
                               GTK_FILE_CHOOSER_ACTION_SAVE,

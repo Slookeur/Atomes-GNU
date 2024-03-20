@@ -1,29 +1,37 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_mol.c
+* @short Functions to read molecule(s) data in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_mol.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutine to read molecule(s) data from atomes project file
+ - The functions to read molecule(s) data in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
   int read_atom_m (FILE * fp, int s, int a);
-  int read_this_mol (FILE * fp, struct molecule * tmp);
+  int read_this_mol (FILE * fp, molecule * tmp);
   int read_mol (FILE * fp);
 
 */
@@ -33,16 +41,16 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "initcoord.h"
 #include "submenus.h"
 
-extern void duplicate_molecule (struct molecule * new_mol, struct molecule * old_mol);
+extern void duplicate_molecule (molecule * new_mol, molecule * old_mol);
 
-/*
-*  int read_atom_m (FILE * fp, int s, int a)
-*
-*  Usage: read atom fragment and molecule data
-*
-*  FILE * fp : the file pointer
-*  int s     : the MD step
-*  int a     : the atom number
+/*!
+  \fn int read_atom_m (FILE * fp, int s, int a)
+
+  \brief read atom fragment and molecule data
+
+  \param fp the file pointer
+  \param s the MD step
+  \param a the atom number
 */
 int read_atom_m (FILE * fp, int s, int a)
 {
@@ -51,15 +59,15 @@ int read_atom_m (FILE * fp, int s, int a)
   return OK;
 }
 
-/*
-*  int read_this_mol (FILE * fp, struct molecule * tmp)
-*
-*  Usage: read molecule data
-*
-*  FILE * fp             : the file pointer
-*  struct molecule * tmp : the molecule to store the data
+/*!
+  \fn int read_this_mol (FILE * fp, molecule * tmp)
+
+  \brief read molecule data
+
+  \param fp the file pointer
+  \param tmp the molecule to store the data
 */
-int read_this_mol (FILE * fp, struct molecule * tmp)
+int read_this_mol (FILE * fp, molecule * tmp)
 {
   if (fread (& tmp -> id, sizeof(int), 1, fp) != 1) return 0;
   if (fread (& tmp -> md, sizeof(int), 1, fp) != 1) return 0;
@@ -74,12 +82,12 @@ int read_this_mol (FILE * fp, struct molecule * tmp)
   return 1;
 }
 
-/*
-*  int read_mol (FILE * fp)
-*
-*  Usage: read molecule(s) information from file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int read_mol (FILE * fp)
+
+  \brief read molecule(s) information from file
+
+  \param fp the file pointer
 */
 int read_mol (FILE * fp)
 {
@@ -101,7 +109,7 @@ int read_mol (FILE * fp)
     active_project -> modelfc -> mols[i] = g_malloc0 (active_project -> modelfc -> mol_by_step[i]*sizeof*active_project -> modelfc -> mols[i]);
   }
 
-  struct molecule * tmp = g_malloc0(sizeof*tmp);
+  molecule * tmp = g_malloc0(sizeof*tmp);
   for (i=0; i<active_project -> steps; i++)
   {
     for (j=0; j<active_project -> modelfc -> mol_by_step[i]; j++)

@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file w_img.c
+* @short Functions to save screenshot from graph / curve(s)
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'w_img.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to save screenshot from graph / curve(s)
+ - The functions to save screenshot from graph / curve(s)
 
 *
-*  List of subroutines:
+* List of functions:
 
   void write_image (gpointer curetow);
   void save_image (gpointer cdata);
@@ -42,17 +50,22 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "interface.h"
 #include "curve.h"
 
+typedef struct {
+  GtkWidget * a;
+  GtkWidget * b;
+} dwidget;
+
 double back_alpha;
 dwidget thedata;
 int forme;
 
-/*
-*  G_MODULE_EXPORT void set_size (GtkEntry * val, gpointer data)
-*
-*  Usage: set image size entry callback
-*
-*  GtkEntry * val : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_size (GtkEntry * val, gpointer data)
+
+  \brief set image size entry callback
+
+  \param val the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_size (GtkEntry * val, gpointer data)
 {
@@ -76,23 +89,23 @@ G_MODULE_EXPORT void set_size (GtkEntry * val, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void set_background (GtkCheckButton * backb, gpointer data)
-*
-*  Usage: show / hide image background toggle callback GTK4
-*
-*  GtkCheckButton * backb : the GtkCheckButton sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_background (GtkCheckButton * backb, gpointer data)
+
+  \brief show / hide image background toggle callback GTK4
+
+  \param backb the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_background (GtkCheckButton * backb, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void set_background (GtkToggleButton * backb, gpointer data)
-*
-*  Usage: show / hide image background toggle callback GTK3
-*
-*  GtkToggleButton * backb :  the GtkTogglekButton sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_background (GtkToggleButton * backb, gpointer data)
+
+  \brief show / hide image background toggle callback GTK3
+
+  \param backb the GtkTogglekButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_background (GtkToggleButton * backb, gpointer data)
 #endif
@@ -111,13 +124,13 @@ G_MODULE_EXPORT void set_background (GtkToggleButton * backb, gpointer data)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void choose_format (GtkComboBox * box, gpointer cid)
-*
-*  Usage: change image format
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer cid      : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void choose_format (GtkComboBox * box, gpointer cid)
+
+  \brief change image format
+
+  \param box the GtkComboBox sending the signal
+  \param cid the associated data pointer
 */
 G_MODULE_EXPORT void choose_format (GtkComboBox * box, gpointer cid)
 {
@@ -166,27 +179,27 @@ gchar * i_pattern[4]={"*.png",
                       "*.eps"};
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void run_write_image (GtkNativeDialog * info, gint response_id, gpointer data)
-*
-*  Usage: write image - running the dialog GTK4
-*
-*  GtkNativeDialog * info : the GtkNativeDialog sending the signal
-*  gint response_id       : the response id
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void run_write_image (GtkNativeDialog * info, gint response_id, gpointer data)
+
+  \brief write image - running the dialog GTK4
+
+  \param info the GtkNativeDialog sending the signal
+  \param response_id the response id
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void run_write_image (GtkNativeDialog * info, gint response_id, gpointer data)
 {
   GtkFileChooser * chooser = GTK_FILE_CHOOSER((GtkFileChooserNative *)info);
 #else
-/*
-*  G_MODULE_EXPORT void run_write_image (GtkDialog * info, gint response_id, gpointer data)
-*
-*  Usage: write image - running the dialog GTK3
-*
-*  GtkDialog * info : the GtkDialog sending the signal
-*  gint response_id : the response id
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void run_write_image (GtkDialog * info, gint response_id, gpointer data)
+
+  \brief write image - running the dialog GTK3
+
+  \param info the GtkDialog sending the signal
+  \param response_id the response id
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void run_write_image (GtkDialog * info, gint response_id, gpointer data)
 {
@@ -196,7 +209,7 @@ G_MODULE_EXPORT void run_write_image (GtkDialog * info, gint response_id, gpoint
   if (response_id == GTK_RESPONSE_ACCEPT)
   {
     curve_image_file = file_chooser_get_file_name (chooser);
-    struct project * this_proj = get_project_by_id (cd -> a);
+    project * this_proj = get_project_by_id (cd -> a);
     this_proj -> curves[cd -> b][cd -> c] -> format = forme + 1;
 #ifdef GTK3
     show_curve (NULL, NULL, data);
@@ -213,12 +226,12 @@ G_MODULE_EXPORT void run_write_image (GtkDialog * info, gint response_id, gpoint
 #endif
 }
 
-/*
-*  void write_image (gpointer curetow)
-*
-*  Usage: write image - creating the file chooser dialog
-*
-*  gpointer curetow : the associated data pointer
+/*!
+  \fn void write_image (gpointer curetow)
+
+  \brief write image - creating the file chooser dialog
+
+  \param curetow the associated data pointer
 */
 void write_image (gpointer curetow)
 {
@@ -232,7 +245,7 @@ void write_image (gpointer curetow)
                        "SVG file (*.svg)",
                        "EPS file (*.eps)"};
   GtkFileFilter * filter;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   if (forme == -1)
   {
     show_warning ("To save an image please enter a file format", this_proj -> curves[b][c] -> window);
@@ -268,14 +281,14 @@ void write_image (gpointer curetow)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void run_save_image (GtkDialog * save_img, gint response_id, gpointer data)
-*
-*  Usage: export curve window plot to image - running the dialog
-*
-*  GtkDialog * save_img : the GtkDialog sending the signal
-*  gint response_id     : the response id
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void run_save_image (GtkDialog * save_img, gint response_id, gpointer data)
+
+  \brief export curve window plot to image - running the dialog
+
+  \param save_img the GtkDialog sending the signal
+  \param response_id the response id
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void run_save_image (GtkDialog * save_img, gint response_id, gpointer data)
 {
@@ -303,12 +316,12 @@ G_MODULE_EXPORT void run_save_image (GtkDialog * save_img, gint response_id, gpo
   if (done) destroy_this_dialog (save_img);
 }
 
-/*
-*  void save_image (gpointer cdata)
-*
-*  Usage: export curve window plot to image - creating the dialog
-*
-*  gpointer cdata : the associated data pointer
+/*!
+  \fn void save_image (gpointer cdata)
+
+  \brief export curve window plot to image - creating the dialog
+
+  \param cdata the associated data pointer
 */
 void save_image (gpointer cdata)
 {
@@ -327,7 +340,7 @@ void save_image (gpointer cdata)
   a = cd -> a;
   b = cd -> b;
   c = cd -> c;
-  struct project * this_proj = get_project_by_id(a);
+  project * this_proj = get_project_by_id(a);
   save_img = dialog_cancel_apply ("Export image", this_proj -> curves[b][c] -> window, FALSE);
   gtk_window_set_resizable (GTK_WINDOW (save_img), FALSE);
 #ifndef GTK4

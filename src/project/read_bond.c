@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_bond.c
+* @short Function to read bonding information in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_bond.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutine to read bonding information from atomes project file
+ - The function to read bonding information in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
   int read_bonding (FILE * fp);
 
@@ -30,21 +38,21 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "project.h"
 #include "glview.h"
 
-extern void new_coord_menus (struct project * this_proj, coord_info * coord, int new_spec, int nmols,
+extern void new_coord_menus (project * this_proj, coord_info * coord, int new_spec, int nmols,
                              gboolean * showcoord[2], gboolean * showpoly[2], gboolean * showfrag,
                              gboolean update_it, gboolean update_mol);
 
-/*
-*  int read_bonding (FILE * fp)
-*
-*  Usage: read bonding information from file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int read_bonding (FILE * fp)
+
+  \brief read bonding information from file
+
+  \param fp the file pointer
 */
 int read_bonding (FILE * fp)
 {
   int i, j, k, l, m;
-  struct distance clo;
+  distance clo;
   coord_info * coord = g_malloc0 (sizeof*coord);
   coord -> species = active_project -> nspec;
   image * img = active_glwin -> anim -> last -> img;

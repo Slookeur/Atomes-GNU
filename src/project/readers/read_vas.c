@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_vas.c
+* @short Functions to read VASP atomic coordinates
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_vas.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to read VASP atomic coordinates
+ - The functions to read VASP atomic coordinates
 
 *
-*  List of subroutines:
+* List of functions:
 
   int vas_get_atom_coordinates (int sli);
   int open_vas_file (int linec);
@@ -36,12 +44,12 @@ If not, see <https://www.gnu.org/licenses/> */
 #include <omp.h>
 #include "readers.h"
 
-/*
-*  int vas_get_atom_coordinates (int sli)
-*
-*  Usage: get the atomic coordinates from the VASP file
-*
-*  int sli : Correction parameters depending on the VASP file version
+/*!
+  \fn int vas_get_atom_coordinates (int sli)
+
+  \brief get the atomic coordinates from the VASP file
+
+  \param sli Correction parameters depending on the VASP file version
 */
 int vas_get_atom_coordinates (int sli)
 {
@@ -162,7 +170,7 @@ int vas_get_atom_coordinates (int sli)
     }
   }
 #else
-  struct line_node * tmp_line;
+  line_node * tmp_line;
   tail = head;
   k = 0;
   for (i=0; i<sli; i++)
@@ -224,12 +232,12 @@ int vas_get_atom_coordinates (int sli)
   return 0;
 }
 
-/*
-*  int open_vas_file (int linec)
-*
-*  Usage: open VASP file
-*
-*  int linec : Number of lines in the file
+/*!
+  \fn int open_vas_file (int linec)
+
+  \brief open VASP file
+
+  \param linec Number of lines in the file
 */
 int open_vas_file (int linec)
 {

@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file initring.c
+* @short Functions to retrieve rings data from Fortran90
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'initring.c'
 *
-*  Contains:
+* Contains:
 *
 
- -
+ - The functions to retrieve rings data from Fortran90
 
 *
-*  List of subroutines:
+* List of functions:
 
   void send_rings_opengl_ (int * id, int * st, int * ta, int * ri, int nring[* ta+1]);
   void send_atom_rings_id_opengl_ (int * st, int * at, int * id, int * ta, int * num, int ring[* num]);
@@ -31,16 +39,16 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "global.h"
 #include "glwindow.h"
 
-/*
-*  void send_rings_opengl_ (int * id, int * st, int * ta, int * ri, int nring[* ta+1])
-*
-*  Usage: get single ring data for the glwin from Fortran90
-*
-*  int * id          : type of ring
-*  int * st          : the MD step
-*  int * ta          : size of the ring
-*  int * ri          : ring size id
-*  int nring[* ta+1] : ring's atom list
+/*!
+  \fn void send_rings_opengl_ (int * id, int * st, int * ta, int * ri, int nring[*ta+1])
+
+  \brief get single ring data for the glwin from Fortran90
+
+  \param id type of ring
+  \param st the MD step
+  \param ta size of the ring
+  \param ri ring size id
+  \param nring ring's atom list
 */
 void send_rings_opengl_ (int * id, int * st, int * ta, int * ri, int nring[* ta+1])
 {
@@ -52,17 +60,17 @@ void send_rings_opengl_ (int * id, int * st, int * ta, int * ri, int nring[* ta+
   }
 }
 
-/*
-*  void send_atom_rings_id_opengl_ (int * st, int * at, int * id, int * ta, int * num, int ring[* num])
-*
-*  Usage: get rings data for an atom from Fortran90
-*
-*  int * st        : the MD step
-*  int * at        : atom id
-*  int * id        : type of ring
-*  int * ta        : size of the ring
-*  int * num       : number of ring(s) of that size
-*  int ring[* num] : the list(s) of atoms of the(these) ring(s)
+/*!
+  \fn void send_atom_rings_id_opengl_ (int * st, int * at, int * id, int * ta, int * num, int ring[*num])
+
+  \brief get rings data for an atom from Fortran90
+
+  \param st the MD step
+  \param at atom id
+  \param id type of ring
+  \param ta size of the ring
+  \param num number of ring(s) of that size
+  \param ring the list(s) of atoms of the(these) ring(s)
 */
 void send_atom_rings_id_opengl_ (int * st, int * at, int * id, int * ta, int * num, int ring[* num])
 {
@@ -78,15 +86,15 @@ void send_atom_rings_id_opengl_ (int * st, int * at, int * id, int * ta, int * n
   }
 }
 
-/*
-*  void allocate_all_rings_ (int * id, int * st, int * ta, int * nring)
-*
-*  Usage: allocate data to store ring statistics results for the glwin
-*
-*  int * id    : the type of ring
-*  int * st    : the MD step
-*  int * ta    : the size of the ring
-*  int * nring : the number of ring(s) of that size
+/*!
+  \fn void allocate_all_rings_ (int * id, int * st, int * ta, int * nring)
+
+  \brief allocate data to store ring statistics results for the glwin
+
+  \param id the type of ring
+  \param st the MD step
+  \param ta the size of the ring
+  \param nring the number of ring(s) of that size
 */
 void allocate_all_rings_ (int * id, int * st, int * ta, int * nring)
 {

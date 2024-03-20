@@ -1,15 +1,22 @@
-! This file is part of Atomes.
+! This file is part of the 'atomes' software.
 !
-! Atomes is free software: you can redistribute it and/or modify it under the terms
+! 'atomes' is free software: you can redistribute it and/or modify it under the terms
 ! of the GNU Affero General Public License as published by the Free Software Foundation,
 ! either version 3 of the License, or (at your option) any later version.
 !
-! Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+! 'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 ! without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ! See the GNU General Public License for more details.
 !
-! You should have received a copy of the GNU Affero General Public License along with Atomes.
+! You should have received a copy of the GNU Affero General Public License along with 'atomes'.
 ! If not, see <https://www.gnu.org/licenses/>
+!
+! Copyright (C) 2022-2024 by CNRS and University of Strasbourg
+!
+!>
+!! @file bonds.F90
+!! @short Bonding properties
+!! @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
 
 INTEGER (KIND=c_int) FUNCTION bonding (scf, sbf, adv, bdist, bmin, delt_ij, sfil) BIND (C,NAME='bonding_')
 
@@ -363,7 +370,7 @@ do i=1, NSP
     call partial_geo_out (i-1, k-1, NSP, GESP)
     if (k .lt. j) GA => GA%NEXT
   enddo
-  call envout (i-1, j, NGSA, LGSA)
+  call envout (i-1, j, NGSA)
   call init_menu_coordinations (1, i-1, j, LGSA)
   if (allocated(NGSA)) deallocate(NGSA)
   if (allocated(LGSA)) deallocate(LGSA)
@@ -672,18 +679,25 @@ do i=1, NS
     enddo
   enddo
 enddo
-oglmax=0.0d0
-do l=1,3
-  oglmax = oglmax + (pmax(l)-pmin(l))**2
-enddo
-oglmax = 2.0*sqrt(oglmax)
 
-dmax = 0.0d0
-do l=1, NCELLS
-  dmax = max(dmax, THE_BOX(l)%maxv)
+allocate (NFULLPOS(2,3,1))
+do l=1, 3
+  NFULLPOS(1,l,1) = pmin(l)
+  NFULLPOS(2,l,1) = pmax(l)
 enddo
+call CALCRIJ (1, 2, -2, 1, 1)
+deallocate (NFULLPOS)
 
-if (oglmax < dmax) oglmax = dmax*2.0;
+if (PBC) then
+  oglmax = sqrt(Dij)
+  dmax = 0.0d0
+  do l=1, NCELLS
+    dmax = max(dmax, THE_BOX(l)%maxv)
+  enddo
+  if (oglmax < dmax) oglmax = dmax*3.0;
+else
+  oglmax=2.0*sqrt(Dij)
+endif
 
 if (oglmax .lt. 10.0) oglmax = 10.0
 

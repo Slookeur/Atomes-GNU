@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file d_rings.c
+* @short Functions to prepare the OpenGL rendering of rings polyhedra
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'd_rings.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to prepare the ring(s) polyhedra OpenGL rendering
+ - The functions to prepare the OpenGL rendering of rings polyhedra
 
 *
-*  List of subroutines:
+* List of functions:
 
   int prepare_rings_gl (float * vertices, int se, int ge, int ta, int id, gboolean go);
 
@@ -39,17 +47,17 @@ extern void setup_polyhedron (float * vertices, GLfloat ** xyz, int s);
 extern void get_centroid (GLfloat ** xyz, int id);
 extern void check_triangles (int s, GLfloat ** xyz);
 
-/*
-*  int prepare_rings_gl (float * vertices, int se, int ge, int ta, int id, gboolean go)
-*
-*  Usage: prepare a ring polyhedra OpenGL rendering
-*
-*  float * vertices : the ring atomic positions buffer to fill, if any
-*  int se           : type of ring
-*  int ge           : the coord id for this size of ring
-*  int ta           : the size of the ring
-*  int id           : the ring id number
-*  gboolean go      : render the ring or not (1/0)
+/*!
+  \fn int prepare_rings_gl (float * vertices, int se, int ge, int ta, int id, gboolean go)
+
+  \brief prepare a ring polyhedra OpenGL rendering
+
+  \param vertices the ring atomic positions buffer to fill, if any
+  \param se type of ring
+  \param ge the coord id for this size of ring
+  \param ta the size of the ring
+  \param id the ring id number
+  \param go render the ring or not (1/0)
 */
 int prepare_rings_gl (float * vertices, int se, int ge, int ta, int id, gboolean go)
 {
@@ -58,8 +66,8 @@ int prepare_rings_gl (float * vertices, int se, int ge, int ta, int id, gboolean
   gboolean add_poly;
   gboolean old_pbc;
   GLfloat *** xyz;
-  struct distance d;
-  struct atom at, bt;
+  distance d;
+  atom at, bt;
 
   xyz = alloctfloat (ta, ta, 3);
   j = -1;
@@ -153,10 +161,10 @@ int prepare_rings_gl (float * vertices, int se, int ge, int ta, int id, gboolean
   return 0;
 }
 
-/*
-*  void create_ring_lists ()
-*
-*  Usage: prepare ring(s) polyhedra OpenGL rendering
+/*!
+  \fn void create_ring_lists ()
+
+  \brief prepare ring(s) polyhedra OpenGL rendering
 */
 void create_ring_lists ()
 {
@@ -201,7 +209,7 @@ void create_ring_lists ()
             }
           }
         }
-        // m is the number of summit of the polyedra
+        // m is the number of summit of the polyhedra
         // +1 if only a 3 atom size ring to include a centroid
         m = (k == 3) ? k+1: k;
         // Then we need the max number of triangles for all these polyedron

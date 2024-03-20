@@ -1,39 +1,47 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file dlp_edit.c
+* @short Functions to edit DL-POLY force field parameters
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'dlp_edit.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subourtines to edit DL-POLY force field properties
+ - The functions to edit DL-POLY force field parameters
 
 *
-*  List of subroutines:
+* List of functions:
 
   int get_num_vdw_max ();
 
-  gboolean are_identical_prop (int ti, int ai, struct field_prop * pro_a, struct field_prop * pro_b);
+  gboolean are_identical_prop (int ti, int ai, field_prop * pro_a, field_prop * pro_b);
   gboolean tersoff_question ();
-  gboolean body_identicals (struct field_nth_body * body, int nbd, int * na, int ** ma, int ** ba);
+  gboolean body_identicals (field_nth_body * body, int nbd, int * na, int ** ma, int ** ba);
 
   gchar * get_this_vdw_string ();
   gchar * field_str (int a);
   gchar * body_str (int a);
-  gchar * get_body_element_name (struct field_nth_body * body, int aid, int nbd);
+  gchar * get_body_element_name (field_nth_body * body, int aid, int nbd);
 
-  void adjust_field_prop (int fil, int sti, struct field_prop * tmp, int * ids, int key);
+  void adjust_field_prop (int fil, int sti, field_prop * tmp, int * ids, int key);
   void select_atom_set_color (GtkCellRenderer * renderer, int i);
   void select_atom_set_cmv (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data);
   void update_field_dist (float v);
@@ -63,7 +71,7 @@ If not, see <https://www.gnu.org/licenses/> */
   G_MODULE_EXPORT void add_field_prop (GSimpleAction * action, GVariant * parameter, gpointer data);
   G_MODULE_EXPORT void remove_field_prop (GSimpleAction * action, GVariant * parameter, gpointer data);
 
-  GtkWidget * combo_cross (struct field_nth_body * body);
+  GtkWidget * combo_cross (field_nth_body * body);
   GtkWidget * parameters_box (int obj, int key,  gchar ** words, float * data);
   GtkWidget * param_prop_param_box (int pid);
 
@@ -93,7 +101,7 @@ extern void field_selection (int i, int viz, int lab, int aid);
 extern void field_unselect_all ();
 extern void compare_non_bonded (gchar * fatom);
 extern void visualize_single_struct (int id, int jd, int kd, int * ids);
-extern void visualize_body (int viz, int bd, struct field_nth_body * body);
+extern void visualize_body (int viz, int bd, field_nth_body * body);
 extern void init_default_shaders (glwin * view);
 extern GtkWidget * create_field_prop_combo (int f, int is_moy);
 extern void check_atom_for_updates ();
@@ -114,17 +122,17 @@ GtkWidget * afftype;
 int is_moy;
 int * edit_atids;
 
-/*
-*  gboolean are_identical_prop (int ti, int ai, struct field_prop * pro_a, struct field_prop * pro_b)
-*
-*  Usage: are the 2 field property identicals ?
-*
-*  int ti                    : the type of field property
-*  int ai                    : the number of field atoms for this field property
-*  struct field_prop * pro_a : 1st field property
-*  struct field_prop * pro_b : 2nd field property
+/*!
+  \fn gboolean are_identical_prop (int ti, int ai, field_prop * pro_a, field_prop * pro_b)
+
+  \brief are the 2 field property identicals ?
+
+  \param ti the type of field property
+  \param ai the number of field atoms for this field property
+  \param pro_a 1st field property
+  \param pro_b 2nd field property
 */
-gboolean are_identical_prop (int ti, int ai, struct field_prop * pro_a, struct field_prop * pro_b)
+gboolean are_identical_prop (int ti, int ai, field_prop * pro_a, field_prop * pro_b)
 {
   if (pro_a -> key != pro_b -> key) return FALSE;
   if (pro_a -> use != pro_b -> use) return FALSE;
@@ -141,23 +149,23 @@ gboolean are_identical_prop (int ti, int ai, struct field_prop * pro_a, struct f
   return TRUE;
 }
 
-/*
-*  void adjust_field_prop (int fil, int sti, struct field_prop * tmp, int * ids, int key)
-*
-*  Usage: adjust field property
-*
-*  int fil                 : the type of field property
-*  int sti                 : the number of field atoms for this type of field property
-*  struct field_prop * tmp : the pointer of the field property list
-*  int * ids               : the list of field atoms
-*  int key                 : the key value to adjust
+/*!
+  \fn void adjust_field_prop (int fil, int sti, field_prop * tmp, int * ids, int key)
+
+  \brief adjust field property
+
+  \param fil the type of field property
+  \param sti the number of field atoms for this type of field property
+  \param tmp the pointer of the field property list
+  \param ids the list of field atoms
+  \param key the key value to adjust
 */
-void adjust_field_prop (int fil, int sti, struct field_prop * tmp, int * ids, int key)
+void adjust_field_prop (int fil, int sti, field_prop * tmp, int * ids, int key)
 {
   int i, j, k, l;
   gboolean add;
   add = FALSE;
-  struct field_prop * pro, * ptmp;
+  field_prop * pro, * ptmp;
   if (ids[0] < 0)
   {
     // Default prop
@@ -318,13 +326,13 @@ void adjust_field_prop (int fil, int sti, struct field_prop * tmp, int * ids, in
   }
 }
 
-/*
-*  G_MODULE_EXPORT void update_atom_parameter (GtkEntry * res, gpointer data)
-*
-*  Usage: update field atom parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void update_atom_parameter (GtkEntry * res, gpointer data)
+
+  \brief update field atom parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void update_atom_parameter (GtkEntry * res, gpointer data)
 {
@@ -370,13 +378,13 @@ G_MODULE_EXPORT void update_atom_parameter (GtkEntry * res, gpointer data)
 
 int object_is;
 
-/*
-*  G_MODULE_EXPORT void update_field_parameter (GtkEntry * res, gpointer data)
-*
-*  Usage: update field parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void update_field_parameter (GtkEntry * res, gpointer data)
+
+  \brief update field parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void update_field_parameter (GtkEntry * res, gpointer data)
 {
@@ -411,13 +419,13 @@ double *** cross = NULL;
 int num_body_d;
 gboolean change_tersoff;
 
-/*
-*  G_MODULE_EXPORT void update_cross_parameter (GtkEntry * res, gpointer data)
-*
-*  Usage: update field cross parameter entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void update_cross_parameter (GtkEntry * res, gpointer data)
+
+  \brief update field cross parameter entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void update_cross_parameter (GtkEntry * res, gpointer data)
 {
@@ -430,13 +438,13 @@ G_MODULE_EXPORT void update_cross_parameter (GtkEntry * res, gpointer data)
   cross[tmp_fbody -> id][j][k] = cross[j][tmp_fbody -> id][k] = v;
 }
 
-/*
-*  G_MODULE_EXPORT void changed_cross_combo (GtkComboBox * box, gpointer data)
-*
-*  Usage: change field cross combo
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void changed_cross_combo (GtkComboBox * box, gpointer data)
+
+  \brief change field cross combo
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void changed_cross_combo (GtkComboBox * box, gpointer data)
 {
@@ -449,21 +457,21 @@ G_MODULE_EXPORT void changed_cross_combo (GtkComboBox * box, gpointer data)
   }
 }
 
-/*
-*  GtkWidget * combo_cross (struct field_nth_body * body)
-*
-*  Usage: create field cross configuration widgets
-*
-*  struct field_nth_body * body : the pointer on the first non bonded field structure
+/*!
+  \fn GtkWidget * combo_cross (field_nth_body * body)
+
+  \brief create field cross configuration widgets
+
+  \param body the pointer on the first non bonded field structure
 */
-GtkWidget * combo_cross (struct field_nth_body * body)
+GtkWidget * combo_cross (field_nth_body * body)
 {
  GtkWidget * combo;
  combo = create_combo ();
  g_signal_connect (G_OBJECT(combo), "changed", G_CALLBACK(changed_cross_combo), NULL);
  if (tmp_field -> first_body[2] && tmp_fbody -> na[0] > -1)
  {
-   struct field_nth_body * obody;
+   field_nth_body * obody;
    obody = tmp_field -> first_body[2];
    while (obody)
    {
@@ -474,10 +482,10 @@ GtkWidget * combo_cross (struct field_nth_body * body)
  return combo;
 }
 
-/*
-*  gchar * get_this_vdw_string ()
-*
-*  Usage: get VdW formalism description string
+/*!
+  \fn gchar * get_this_vdw_string ()
+
+  \brief get VdW formalism description string
 */
 gchar * get_this_vdw_string ()
 {
@@ -503,15 +511,15 @@ gchar * get_this_vdw_string ()
   return str;
 }
 
-/*
-*  GtkWidget * parameters_box (int obj, int key,  gchar ** words, float * data)
-*
-*  Usage: pepare field property edition parameters
-*
-*  int obj        : the type of field property
-*  int key        : the key type for this field property, if any
-*  gchar ** words : the parameter(s) labels
-*  float * data   : the actual value(s) for the parameter(s)
+/*!
+  \fn GtkWidget * parameters_box (int obj, int key,  gchar ** words, float * data)
+
+  \brief pepare field property edition parameters
+
+  \param obj the type of field property
+  \param key the key type for this field property, if any
+  \param words the parameter(s) labels
+  \param data the actual value(s) for the parameter(s)
 */
 GtkWidget * parameters_box (int obj, int key,  gchar ** words, float * data)
 {
@@ -630,12 +638,12 @@ GtkWidget * parameters_box (int obj, int key,  gchar ** words, float * data)
   return vbox;
 }
 
-/*
-*  gchar * field_str (int a)
-*
-*  Usage: get field external name
-*
-*  int a : the field external id
+/*!
+  \fn gchar * field_str (int a)
+
+  \brief get field external name
+
+  \param a the field external id
 */
 gchar * field_str (int a)
 {
@@ -647,10 +655,10 @@ gchar * field_str (int a)
   return str;
 }
 
-/*
-*  gboolean tersoff_question ()
-*
-*  Usage: change Tersoff potential ?
+/*!
+  \fn gboolean tersoff_question ()
+
+  \brief change Tersoff potential ?
 */
 gboolean tersoff_question ()
 {
@@ -669,12 +677,12 @@ gboolean tersoff_question ()
   }
 }
 
-/*
-*  GtkWidget * param_prop_param_box (int pid)
-*
-*  Usage: prepare field parameter edition widgets
-*
-*  int pid : the type of field parameter
+/*!
+  \fn GtkWidget * param_prop_param_box (int pid)
+
+  \brief prepare field parameter edition widgets
+
+  \param pid the type of field parameter
 */
 GtkWidget * param_prop_param_box (int pid)
 {
@@ -721,13 +729,13 @@ GtkWidget * param_prop_param_box (int pid)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void changed_field_key_combo (GtkComboBox * box, gpointer data)
-*
-*  Usage: change field key
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void changed_field_key_combo (GtkComboBox * box, gpointer data)
+
+  \brief change field key
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void changed_field_key_combo (GtkComboBox * box, gpointer data)
 {
@@ -811,23 +819,23 @@ G_MODULE_EXPORT void changed_field_key_combo (GtkComboBox * box, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void visualize_it (GtkCheckButton * but, gpointer data)
-*
-*  Usage:  visualize object toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void visualize_it (GtkCheckButton * but, gpointer data)
+
+  \brief  visualize object toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void visualize_it (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void visualize_it (GtkToggleButton * but, gpointer data)
-*
-*  Usage: visualize object toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void visualize_it (GtkToggleButton * but, gpointer data)
+
+  \brief visualize object toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void visualize_it (GtkToggleButton * but, gpointer data)
 #endif
@@ -864,23 +872,23 @@ G_MODULE_EXPORT void visualize_it (GtkToggleButton * but, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void select_it (GtkCheckButton * but, gpointer data)
-*
-*  Usage: select object toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void select_it (GtkCheckButton * but, gpointer data)
+
+  \brief select object toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void select_it (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void select_it (GtkToggleButton * but, gpointer data)
-*
-*  Usage: select object toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void select_it (GtkToggleButton * but, gpointer data)
+
+  \brief select object toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void select_it (GtkToggleButton * but, gpointer data)
 #endif
@@ -911,14 +919,14 @@ extern void run_select_atom_dialog (GtkDialog * select_dialog, gint response_id,
 GtkWidget * add_tree;
 int vdw_id;
 
-/*
-*  G_MODULE_EXPORT void field_molecule_select_atom_id (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
-*
-*  Usage: on select atom in field molecule toggle callback
-*
-*  GtkCellRendererToggle * cell_renderer : the GtkCellRendererToggle sending the signal
-*  gchar * string_path                   : the path in the tree store
-*  gpointer data                         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void field_molecule_select_atom_id (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
+
+  \brief on select atom in field molecule toggle callback
+
+  \param cell_renderer the GtkCellRendererToggle sending the signal
+  \param string_path the path in the tree store
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void field_molecule_select_atom_id (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
 {
@@ -991,7 +999,7 @@ G_MODULE_EXPORT void field_molecule_select_atom_id (GtkCellRendererToggle * cell
   else
   {
     h = vdw_id = sel_at[0][i-1];
-    struct field_nth_body * tmp_fbo = tmp_field -> first_body[0];
+    field_nth_body * tmp_fbo = tmp_field -> first_body[0];
     for (k=0; k<tmp_field -> nbody[0]; k++)
     {
       if (tmp_fbo -> id == h)
@@ -1012,29 +1020,29 @@ G_MODULE_EXPORT void field_molecule_select_atom_id (GtkCellRendererToggle * cell
   gtk_widget_show (add_tree);
 }
 
-/*
-*  void select_atom_set_color (GtkCellRenderer * renderer, int i)
-*
-*  Usage: set cell renderer color
-*
-*  GtkCellRenderer * renderer : the target GtkCellRen
-*  int i                      : the color id
+/*!
+  \fn void select_atom_set_color (GtkCellRenderer * renderer, int i)
+
+  \brief set cell renderer color
+
+  \param renderer the target GtkCellRen
+  \param i the color id
 */
 void select_atom_set_color (GtkCellRenderer * renderer, int i)
 {
   set_renderer_color (i, renderer, init_color (i-1, num_field_objects));
 }
 
-/*
-*  void select_atom_set_cmv (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
-*
-*  Usage: field atom set renderer color, markup and visibility in the property edition atom(s) selection tree store
-*
-*  GtkTreeViewColumn * col        : the target GtkTreeViewColumn
-*  GtkTreeCellRenderer * renderer : the target cell renderer
-*  GtkTreeModel                   : the target tree model
-*  GtkTreeIter                    : the target tree iter
-*  gpointer data                  : the associated data pointer
+/*!
+  \fn void select_atom_set_cmv (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
+
+  \brief field atom set renderer color, markup and visibility in the property edition atom(s) selection tree store
+
+  \param col the target GtkTreeViewColumn
+  \param renderer the target cell renderer
+  \param mod the target tree model
+  \param iter the target tree iter
+  \param data the associated data pointer
 */
 void select_atom_set_cmv (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
 {
@@ -1134,13 +1142,13 @@ float * val_at;
 
 /*
 * G_MODULE_EXPORT void edit_unit_weight (GtkCellRendererText * cell, gchar * path_string, gchar * new_text, gpointer data)
-*
-*  Usage: on edit unit weight callback
-*
-*  GtkCellRendererText * cell : the GtkCellRendererToggle sending the signal
-*  gchar * string_path        : the path in the tree store
+
+  \brief on edit unit weight callback
+
+  \param cell the GtkCellRendererToggle sending the signal
+  \param string_path the path in the tree store
 *  gchar
-*  gpointer data              : the associated data pointer
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void edit_unit_weight (GtkCellRendererText * cell, gchar * path_string, gchar * new_text, gpointer data)
 {
@@ -1153,13 +1161,13 @@ G_MODULE_EXPORT void edit_unit_weight (GtkCellRendererText * cell, gchar * path_
   val_at[i] = atof(new_text);
 }
 
-/*
-*  G_MODULE_EXPORT void select_atom_id_from_fied_molecule (GtkButton * but, gpointer data)
-*
-*  Usage: select atom id from field molecule - creating the dialog
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void select_atom_id_from_fied_molecule (GtkButton * but, gpointer data)
+
+  \brief select atom id from field molecule - creating the dialog
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void select_atom_id_from_fied_molecule (GtkButton * but, gpointer data)
 {
@@ -1309,7 +1317,7 @@ G_MODULE_EXPORT void select_atom_id_from_fied_molecule (GtkButton * but, gpointe
   }
   else
   {
-    struct field_nth_body * tmp_fbo = tmp_field -> first_body[0];
+    field_nth_body * tmp_fbo = tmp_field -> first_body[0];
     k = 0;
     for (i=0; i<tmp_field -> nbody[0]; i++)
     {
@@ -1440,7 +1448,7 @@ G_MODULE_EXPORT void select_atom_id_from_fied_molecule (GtkButton * but, gpointe
   else if (active_sel > 10)
   {
     m = active_sel-11;
-    struct field_nth_body * tmp_fbo = tmp_field -> first_body[0];
+    field_nth_body * tmp_fbo = tmp_field -> first_body[0];
     k = 0;
     for (i=0; i<tmp_field -> nbody[0]; i++)
     {
@@ -1599,12 +1607,12 @@ G_MODULE_EXPORT void select_atom_id_from_fied_molecule (GtkButton * but, gpointe
 
 GtkWidget * av_lgt;
 
-/*
-*  void update_field_dist (float v)
-*
-*  Usage: update field distance widget
-*
-*  float v : the new value
+/*!
+  \fn void update_field_dist (float v)
+
+  \brief update field distance widget
+
+  \param v the new value
 */
 void update_field_dist (float v)
 {
@@ -1621,12 +1629,12 @@ void update_field_dist (float v)
   gtk_label_set_use_markup (GTK_LABEL(av_lgt), TRUE);
 }
 
-/*
-*  gchar * body_str (int a)
-*
-*  Usage: get body potential string name
-*
-*  int a : the type of potential
+/*!
+  \fn gchar * body_str (int a)
+
+  \brief get body potential string name
+
+  \param a the type of potential
 */
 gchar * body_str (int a)
 {
@@ -1645,13 +1653,13 @@ gchar * body_str (int a)
   return str;
 }
 
-/*
-*  G_MODULE_EXPORT void selection_button (GtkButton * but, gpointer data)
-*
-*  Usage: select field object callback
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void selection_button (GtkButton * but, gpointer data)
+
+  \brief select field object callback
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void selection_button (GtkButton * but, gpointer data)
 {
@@ -1792,7 +1800,7 @@ G_MODULE_EXPORT void selection_button (GtkButton * but, gpointer data)
   {
     if (tmp_fpmf -> num[0] > 0 && tmp_fpmf -> num[1] > 0)
     {
-      struct atom at[2][tmp_fmol -> multi];
+      atom at[2][tmp_fmol -> multi];
       float ma[2][tmp_fmol -> multi];
       gboolean all_zero = TRUE;
       float v;
@@ -1864,13 +1872,13 @@ G_MODULE_EXPORT void selection_button (GtkButton * but, gpointer data)
   g_free (stra);
 }
 
-/*
-*  G_MODULE_EXPORT void changed_atom_combo (GtkComboBox * box, gpointer data)
-*
-*  Usage: change atom
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void changed_atom_combo (GtkComboBox * box, gpointer data)
+
+  \brief change atom
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void changed_atom_combo (GtkComboBox * box, gpointer data)
 {
@@ -1914,16 +1922,16 @@ G_MODULE_EXPORT void changed_atom_combo (GtkComboBox * box, gpointer data)
   }
 }
 
-/*
-*  gchar * get_body_element_name (struct field_nth_body * body, int aid, int nbd)
-*
-*  Usage: get field body potential element name
-*
-*  struct field_nth_body * body : the field body potential
-*  int aid                      : the atom id, if any
-*  int nbd                      : the body potential id
+/*!
+  \fn gchar * get_body_element_name (field_nth_body * body, int aid, int nbd)
+
+  \brief get field body potential element name
+
+  \param body the field body potential
+  \param aid the atom id, if any
+  \param nbd the body potential id
 */
-gchar * get_body_element_name (struct field_nth_body * body, int aid, int nbd)
+gchar * get_body_element_name (field_nth_body * body, int aid, int nbd)
 {
   int i, j;
   i = body -> ma[aid][0];
@@ -1938,18 +1946,18 @@ gchar * get_body_element_name (struct field_nth_body * body, int aid, int nbd)
   }
 }
 
-/*
-*  gboolean body_identicals (struct field_nth_body * body, int nbd, int * na, int ** ma, int ** ba)
-*
-*  Usage: are these non bonded potentials identicals ?
-*
-*  struct field_nth_body * body : the field non bonded property
-*  int nbd                      : number of distinct interactions
-*  int * na                     : number of atoms (0 = 1st pot, 1 = 2nd pot)
-*  int ** ma                    : 1st potential data
-*  int ** ba                    : 2nd potential data
+/*!
+  \fn gboolean body_identicals (field_nth_body * body, int nbd, int * na, int ** ma, int ** ba)
+
+  \brief are these non bonded potentials identicals ?
+
+  \param body the field non bonded property
+  \param nbd number of distinct interactions
+  \param na number of atoms (0 = 1st pot, 1 = 2nd pot)
+  \param ma 1st potential data
+  \param ba 2nd potential data
 */
-gboolean body_identicals (struct field_nth_body * body, int nbd, int * na, int ** ma, int ** ba)
+gboolean body_identicals (field_nth_body * body, int nbd, int * na, int ** ma, int ** ba)
 {
   gchar * stra, * strb, * strc, * strd;
   int i, j;
@@ -1986,16 +1994,16 @@ gboolean body_identicals (struct field_nth_body * body, int nbd, int * na, int *
   return res;
 }
 
-/*
-*  int get_num_vdw_max ()
-*
-*  Usage:
+/*!
+  \fn int get_num_vdw_max ()
+
+  \brief Get the number of field shell interactions
 */
 int get_num_vdw_max ()
 {
   int i;
-  struct field_molecule * molff;
-  struct field_shell * shellff;
+  field_molecule * molff;
+  field_shell * shellff;
   molff = tmp_field -> first_molecule;
   i = 0;
   while (molff)
@@ -2012,20 +2020,20 @@ int get_num_vdw_max ()
   return i;
 }
 
-/*
-*  void adjust_vdw_interactions (gboolean add_shell)
-*
-*  Usage: adjust VdW interactions
-*
-*  gboolean add_shell : update field shells
+/*!
+  \fn void adjust_vdw_interactions (gboolean add_shell)
+
+  \brief adjust VdW interactions
+
+  \param add_shell update field shells
 */
 void adjust_vdw_interactions (gboolean add_shell)
 {
   int i, j, k, l, m, n;
-  struct field_molecule * molff;
-  struct field_atom * atff;
-  struct field_shell * shellff;
-  struct field_nth_body * bodyff;
+  field_molecule * molff;
+  field_atom* atff;
+  field_shell * shellff;
+  field_nth_body * bodyff;
 
   i = get_num_vdw_max ();
   m = i * (i+1) / 2;
@@ -2199,23 +2207,23 @@ void adjust_vdw_interactions (gboolean add_shell)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void shell_in_vdw (GtkCheckButton * but, gpointer data)
-*
-*  Usage: VdW in shell toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void shell_in_vdw (GtkCheckButton * but, gpointer data)
+
+  \brief VdW in shell toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void shell_in_vdw (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void shell_in_vdw (GtkToggleButton * but, gpointer data)
-*
-*  Usage: VdW in shell toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void shell_in_vdw (GtkToggleButton * but, gpointer data)
+
+  \brief VdW in shell toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void shell_in_vdw (GtkToggleButton * but, gpointer data)
 #endif
@@ -2231,14 +2239,14 @@ G_MODULE_EXPORT void shell_in_vdw (GtkToggleButton * but, gpointer data)
 dint rep;
 gchar * rep_atom_name;
 
-/*
-*  G_MODULE_EXPORT void run_edit_parameters (GtkDialog * dialog, gint response_id, gpointer data)
-*
-*  Usage: edit field parameter - running the dialog
-*
-*  GtkDialog * dialog : the GtkDialog sending the signal
-*  gint response_id   : the response id
-*  gpointer data      : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void run_edit_parameters (GtkDialog * dialog, gint response_id, gpointer data)
+
+  \brief edit field parameter - running the dialog
+
+  \param dialog the GtkDialog sending the signal
+  \param response_id the response id
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void run_edit_parameters (GtkDialog * dialog, gint response_id, gpointer data)
 {
@@ -2259,13 +2267,13 @@ G_MODULE_EXPORT void run_edit_parameters (GtkDialog * dialog, gint response_id, 
   destroy_this_dialog (dialog);
 }
 
-/*
-*  void edit_parameters (int f, int id)
-*
-*  Usage: edit field parameter - creating the dialog
-*
-*  int f  : the type of parameter to edit
-*  int id : the field molecule id, if any
+/*!
+  \fn void edit_parameters (int f, int id)
+
+  \brief edit field parameter - creating the dialog
+
+  \param f the type of parameter to edit
+  \param id the field molecule id, if any
 */
 void edit_parameters (int f, int id)
 {
@@ -2906,18 +2914,18 @@ void edit_parameters (int f, int id)
   g_main_loop_run (Event_loop[dialog_id]);
 }
 
-/*
-*  void update_tersoffs (int id, int key)
-*
-*  Usage: update non bonded potential
-*
-*  int id  : potential id
-*  int key : potenntial type
+/*!
+  \fn void update_tersoffs (int id, int key)
+
+  \brief update non bonded potential
+
+  \param id potential id
+  \param key potenntial type
 */
 void update_tersoffs (int id, int key)
 {
   int i;
-  struct field_nth_body * bod = tmp_field -> first_body[2];
+  field_nth_body * bod = tmp_field -> first_body[2];
   for (i=0; i<tmp_field -> nbody[2]; i++)
   {
     if (i != id)
@@ -2938,13 +2946,13 @@ void update_tersoffs (int id, int key)
   }
 }
 
-/*
-*  void check_tersoffs (int id, int key)
-*
-*  Usage: check non bonded potential
-*
-*  int id  : potential id
-*  int key : potential type
+/*!
+  \fn void check_tersoffs (int id, int key)
+
+  \brief check non bonded potential
+
+  \param id potential id
+  \param key potential type
 */
 void check_tersoffs (int id, int key)
 {
@@ -2973,14 +2981,14 @@ void check_tersoffs (int id, int key)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void edit_field_prop (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: edit field property callback
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void edit_field_prop (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief edit field property callback
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void edit_field_prop (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
@@ -3038,21 +3046,21 @@ G_MODULE_EXPORT void edit_field_prop (GSimpleAction * action, GVariant * paramet
   }
 }
 
-/*
-*  G_MODULE_EXPORT void add_field_prop (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: add field property callback
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void add_field_prop (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief add field property callback
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void add_field_prop (GSimpleAction * action, GVariant * parameter, gpointer data)
 {
   int i, j, k, l, m;
   gboolean save_it;
   i = GPOINTER_TO_INT (data);
-  struct field_molecule * fmol;
+  field_molecule * fmol;
   if (i < MOLIMIT)
   {
     j = gtk_combo_box_get_active (GTK_COMBO_BOX(combo_mol[i-1]));
@@ -3278,14 +3286,14 @@ G_MODULE_EXPORT void add_field_prop (GSimpleAction * action, GVariant * paramete
   update_field_trees ();
 }
 
-/*
-*  G_MODULE_EXPORT void remove_field_prop (GSimpleAction * action, GVariant * parameter, gpointer data)
-*
-*  Usage: remove field property callback
-*
-*  GSimpleAction * action : the GAction sending the signal
-*  GVariant * parameter   : GVariant parameter of the GAction
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void remove_field_prop (GSimpleAction * action, GVariant * parameter, gpointer data)
+
+  \brief remove field property callback
+
+  \param action the GAction sending the signal
+  \param parameter GVariant parameter of the GAction
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void remove_field_prop (GSimpleAction * action, GVariant * parameter, gpointer data)
 {

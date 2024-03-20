@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file cpmd_atoms.c
+* @short Functions to handle dummy atom(s) for the CPMD input file
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'cpmd_atoms.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to handle dummy atom(s) for the CPMD input file
+ - The functions to handle dummy atom(s) for the CPMD input file
 
 *
-*  List of subroutines:
+* List of functions:
 
   void create_dummy_param_box (int dummy_id);
   void dummy_set_color (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data);
@@ -39,8 +47,8 @@ If not, see <https://www.gnu.org/licenses/> */
 
   GtkWidget * create_dummy_box ();
 
-  struct dummy_atom * get_active_dummy (int id);
-  struct dummy_atom * init_dummy (int type, int id);
+  dummy_atom * get_active_dummy (int id);
+  dummy_atom * init_dummy (int type, int id);
 
 */
 
@@ -62,22 +70,22 @@ extern int num_cpmd_objects;
 GtkWidget * dummy_box[2];
 GtkWidget * the_dummy_box;
 GtkWidget * dummy_param_box;
-struct dummy_atom * dummy;
+dummy_atom * dummy;
 int n_dummy;
 int * old_dummy;
 GtkCellRenderer * dummy_renderer[5];
 GtkTreeViewColumn * dummy_col[5];
 
-/*
-*  struct dummy_atom * get_active_dummy (int id)
-*
-*  Usage: get dummy atom by id
-*
-*  int id : the target dummy atom id
+/*!
+  \fn dummy_atom * get_active_dummy (int id)
+
+  \brief get dummy atom by id
+
+  \param id the target dummy atom id
 */
-struct dummy_atom * get_active_dummy (int id)
+dummy_atom * get_active_dummy (int id)
 {
-  struct dummy_atom * dumm = tmp_cpmd -> dummy;
+  dummy_atom * dumm = tmp_cpmd -> dummy;
   while (dumm -> id != id)
   {
     if (dumm -> next != NULL) dumm = dumm -> next;
@@ -85,13 +93,13 @@ struct dummy_atom * get_active_dummy (int id)
   return dumm;
 }
 
-/*
-*  G_MODULE_EXPORT void update_dummy_coord (GtkEntry * res, gpointer data)
-*
-*  Usage: udate dummy atom coordinate entry callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void update_dummy_coord (GtkEntry * res, gpointer data)
+
+  \brief udate dummy atom coordinate entry callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void update_dummy_coord (GtkEntry * res, gpointer data)
 {
@@ -106,13 +114,13 @@ G_MODULE_EXPORT void update_dummy_coord (GtkEntry * res, gpointer data)
 
 void create_dummy_param_box (int dummy_id);
 
-/*
-*  G_MODULE_EXPORT void dummy_type_changed (GtkComboBox * box, gpointer data)
-*
-*  Usage: change the dummy atom type
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void dummy_type_changed (GtkComboBox * box, gpointer data)
+
+  \brief change the dummy atom type
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void dummy_type_changed (GtkComboBox * box, gpointer data)
 {
@@ -126,12 +134,12 @@ G_MODULE_EXPORT void dummy_type_changed (GtkComboBox * box, gpointer data)
   print_the_section (8, 0, qmbuffer[8]);
 }
 
-/*
-*  void create_dummy_param_box (int dummy_id)
-*
-*  Usage: crreate dummy atom parameter widgets
-*
-*  int dummy_id : dummy atom id
+/*!
+  \fn void create_dummy_param_box (int dummy_id)
+
+  \brief crreate dummy atom parameter widgets
+
+  \param dummy_id dummy atom id
 */
 void create_dummy_param_box (int dummy_id)
 {
@@ -188,13 +196,13 @@ void create_dummy_param_box (int dummy_id)
   }
 }
 
-/*
-*  G_MODULE_EXPORT void changed_dummy_id_box (GtkComboBox * box, gpointer data)
-*
-*  Usage: change the dummy atom id
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void changed_dummy_id_box (GtkComboBox * box, gpointer data)
+
+  \brief change the dummy atom id
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void changed_dummy_id_box (GtkComboBox * box, gpointer data)
 {
@@ -203,17 +211,17 @@ G_MODULE_EXPORT void changed_dummy_id_box (GtkComboBox * box, gpointer data)
   create_dummy_param_box (i);
 }
 
-/*
-*  struct dummy_atom * init_dummy (int type, int id)
-*
-*  Usage: create dummy atom
-*
-*  int type : the type of dummy atom to create
-*  int id   : the id of the new dummy atom
+/*!
+  \fn dummy_atom * init_dummy (int type, int id)
+
+  \brief create dummy atom
+
+  \param type the type of dummy atom to create
+  \param id the id of the new dummy atom
 */
-struct dummy_atom * init_dummy (int type, int id)
+dummy_atom * init_dummy (int type, int id)
 {
-  struct dummy_atom * dumm = g_malloc0 (sizeof*dumm);
+  dummy_atom * dumm = g_malloc0 (sizeof*dumm);
   dumm -> id = id;
   dumm -> type = type;
   dumm -> show = FALSE;
@@ -225,14 +233,14 @@ struct dummy_atom * init_dummy (int type, int id)
   return dumm;
 }
 
-/*
-*  G_MODULE_EXPORT void select_dummy (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
-*
-*  Usage: on select dummy atom toggle callback
-*
-*  GtkCellRendererToggle * cell_renderer : the GtkCellRendererToggle sending the signal
-*  gchar * string_path                   : the path in the tree store
-*  gpointer data                         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void select_dummy (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
+
+  \brief on select dummy atom toggle callback
+
+  \param cell_renderer the GtkCellRendererToggle sending the signal
+  \param string_path the path in the tree store
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void select_dummy (GtkCellRendererToggle * cell_renderer, gchar * string_path, gpointer data)
 {
@@ -260,16 +268,16 @@ G_MODULE_EXPORT void select_dummy (GtkCellRendererToggle * cell_renderer, gchar 
   // Viz
 }
 
-/*
-*  void dummy_set_color (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
-*
-*  Usage: set renderer color in the CPMD dummy atom(s) tree store
-*
-*  GtkTreeViewColumn * col        : the target GtkTreeViewColumn
-*  GtkTreeCellRenderer * renderer : the target cell renderer
-*  GtkTreeModel                   : the target tree model
-*  GtkTreeIter                    : the target tree iter
-*  gpointer data                  : the associated data pointer
+/*!
+  \fn void dummy_set_color (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
+
+  \brief set renderer color in the CPMD dummy atom(s) tree store
+
+  \param col the target GtkTreeViewColumn
+  \param renderer the target cell renderer
+  \param mod the target tree model
+  \param iter the target tree iter
+  \param data the associated data pointer
 */
 void dummy_set_color (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
 {
@@ -279,16 +287,16 @@ void dummy_set_color (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTr
   set_renderer_color (get_active_dummy (i-1) -> show, renderer, init_color (i-1, num_cpmd_objects));
 }
 
-/*
-*  void dummy_set_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
-*
-*  Usage: show / hide cell renderer in the CPMD dummy atom(s) tree store
-*
-*  GtkTreeViewColumn * col        : the target GtkTreeViewColumn
-*  GtkTreeCellRenderer * renderer : the target cell renderer
-*  GtkTreeModel                   : the target tree model
-*  GtkTreeIter                    : the target tree iter
-*  gpointer data                  : the associated data pointer
+/*!
+  \fn void dummy_set_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
+
+  \brief show / hide cell renderer in the CPMD dummy atom(s) tree store
+
+  \param col the target GtkTreeViewColumn
+  \param renderer the target cell renderer
+  \param mod the target tree model
+  \param iter the target tree iter
+  \param data the associated data pointer
 */
 void dummy_set_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, GtkTreeModel * mod, GtkTreeIter * iter, gpointer data)
 {
@@ -317,10 +325,10 @@ void dummy_set_visible (GtkTreeViewColumn * col, GtkCellRenderer * renderer, Gtk
 
 GtkWidget * create_dummy_box ();
 
-/*
-*  void clean_dummy_widgets ()
-*
-*  Usage: destroy dummy atom(s) widgets
+/*!
+  \fn void clean_dummy_widgets ()
+
+  \brief destroy dummy atom(s) widgets
 */
 void clean_dummy_widgets ()
 {
@@ -331,21 +339,21 @@ void clean_dummy_widgets ()
   the_dummy_box = destroy_this_widget (the_dummy_box);
 }
 
-/*
-*  G_MODULE_EXPORT void run_remove_dummy (GtkDialog * dialog, gint response_id, gpointer data)
-*
-*  Usage: remove dummy atom(s) - running the dialog
-*
-*  GtkDialog * dialog : the GtkDialog sending the signal
-*  gint response_id   : the response id
-*  gpointer data      : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void run_remove_dummy (GtkDialog * dialog, gint response_id, gpointer data)
+
+  \brief remove dummy atom(s) - running the dialog
+
+  \param dialog the GtkDialog sending the signal
+  \param response_id the response id
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void run_remove_dummy (GtkDialog * dialog, gint response_id, gpointer data)
 {
   int i, j;
   gboolean done = FALSE;
   int num_to_remove = GPOINTER_TO_INT(data);
-  struct dummy_atom * dumm;
+  dummy_atom * dumm;
   gchar * str;
   switch (response_id)
   {
@@ -420,12 +428,12 @@ G_MODULE_EXPORT void run_remove_dummy (GtkDialog * dialog, gint response_id, gpo
   if (done) destroy_this_dialog (dialog);
 }
 
-/*
-*  void remove_dummy (int num_to_remove)
-*
-*  Usage: remove dummy atom(s) - creating the dialog
-*
-*  int num_to_remove : the number of dummy atom(s) to remove
+/*!
+  \fn void remove_dummy (int num_to_remove)
+
+  \brief remove dummy atom(s) - creating the dialog
+
+  \param num_to_remove the number of dummy atom(s) to remove
 */
 void remove_dummy (int num_to_remove)
 {
@@ -463,7 +471,7 @@ void remove_dummy (int num_to_remove)
     gtk_tree_view_column_set_cell_data_func (dummy_col[i], dummy_renderer[i], dummy_set_visible, GINT_TO_POINTER(i), NULL);
   }
   // fill model
-  struct dummy_atom * dumm = tmp_cpmd -> dummy;
+  dummy_atom * dumm = tmp_cpmd -> dummy;
   for (i=0; i<tmp_cpmd -> dummies; i++)
   {
     gtk_tree_store_append (remove_model, & dummy_level, NULL);
@@ -492,12 +500,12 @@ void remove_dummy (int num_to_remove)
 }
 
 
-/*
-*  void add_dummy (int extra)
-*
-*  Usage: add dummy atom(s)
-*
-*  int extra : the number of dummy atom(s) to add
+/*!
+  \fn void add_dummy (int extra)
+
+  \brief add dummy atom(s)
+
+  \param extra the number of dummy atom(s) to add
 */
 void add_dummy (int extra)
 {
@@ -508,7 +516,7 @@ void add_dummy (int extra)
     tmp_cpmd -> dummies = 1;
     extra --;
   }
-  struct dummy_atom * dumm = tmp_cpmd -> dummy;
+  dummy_atom * dumm = tmp_cpmd -> dummy;
   while (dumm -> next != NULL) dumm = dumm -> next;
   for (i=0; i<extra; i++)
   {
@@ -522,13 +530,13 @@ void add_dummy (int extra)
   create_selection_combo (1, tmp_cpmd -> dummies, 0, G_CALLBACK(changed_dummy_id_box));
 }
 
-/*
-*  G_MODULE_EXPORT void add_or_remove_dummy (GtkSpinButton * res, gpointer data)
-*
-*  Usage: add or remove dummy atom spin callback
-*
-*  GtkSpinButton * res : the GtkSpinButton sending the signal
-*  gpointer data       : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void add_or_remove_dummy (GtkSpinButton * res, gpointer data)
+
+  \brief add or remove dummy atom spin callback
+
+  \param res the GtkSpinButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void add_or_remove_dummy (GtkSpinButton * res, gpointer data)
 {
@@ -562,10 +570,10 @@ G_MODULE_EXPORT void add_or_remove_dummy (GtkSpinButton * res, gpointer data)
   print_the_section (8, 0, qmbuffer[8]);
 }
 
-/*
-*  GtkWidget * create_dummy_box ()
-*
-*  Usage: create the dummy atom(s) widgets
+/*!
+  \fn GtkWidget * create_dummy_box ()
+
+  \brief create the dummy atom(s) widgets
 */
 GtkWidget * create_dummy_box ()
 {
@@ -583,13 +591,13 @@ GtkWidget * create_dummy_box ()
   return vbox;
 }
 
-/*
-*  G_MODULE_EXPORT void atom_button (GtkWidget * but, gpointer data)
-*
-*  Usage: CPMD input file, add constraint(s) or dummy atom(s) - creating the dialog
-*
-*  GtkWidget * but : the GtkWidget sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void atom_button (GtkWidget * but, gpointer data)
+
+  \brief CPMD input file, add constraint(s) or dummy atom(s) - creating the dialog
+
+  \param but the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void atom_button (GtkWidget * but, gpointer data)
 {

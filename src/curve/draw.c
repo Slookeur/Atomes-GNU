@@ -1,23 +1,31 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file draw.c
+* @short Function to draw a curve
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'draw.c'
 *
-*  Contains:
+* Contains:
 *
 
-- The curve draw main instructions
+- The function to draw a curve
 
 *
 */
@@ -31,11 +39,11 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "global.h"
 #include "curve.h"
 
-/*
-*  void draw_curve (cairo_t * cr,
+/*!
+  \fn void draw_curve (cairo_t * cr,
                     int cid,
                     int rid,
-                    struct project * this_proj,
+                    project * this_proj,
                     int points,
                     ColRGBA withcolor,
                     int xscale,
@@ -51,33 +59,33 @@ If not, see <https://www.gnu.org/licenses/> */
                     int hpos,
                    int extra,
                     int pid)
-*
-*  Usage: draw target curve to the cairo drawing context
-*
-*  cairo_t * cr               : the cairo drawing context to use for the draw
-*  int cid                    : the target curve id
-*  int rid                    : the target calculation id
-*  struct project * this_proj : the target project
-*  int points                 : the number of data point(s)
-*  ColRGBA withcolor          : the data color
-*  int xscale                 : x axis scale type (0 = linear, 1 = log)
-*  int yscale                 : y axis scale type (0 = linear, 1 = log)
-*  int asp                    : data aspect (0 = x/y normal, 1 = historgram)
-*  int vdash                  : dash type
-*  double thick               : line tthickness
-*  int glyp                   : glyph type
-*  double gize                : glyph size
-*  int freq                   : glyph frequency
-*  double hwidth              : histogram bar width
-*  double hopac               : histogram bar opacity value
-*  int hpos                   : histogram opacity treatment (0 = no opacity, 1 = use opacity)
-*  int extra                  : the number of extra data sets
-*  int pid                    : 0 (x/y plot) or plot id number (historgram)
+
+  \brief draw target curve to the cairo drawing context
+
+  \param cr the cairo drawing context to use for the draw
+  \param cid the target curve id
+  \param rid the target calculation id
+  \param this_proj the target project
+  \param points the number of data point(s)
+  \param withcolor the data color
+  \param xscale x axis scale type (0 = linear, 1 = log)
+  \param yscale y axis scale type (0 = linear, 1 = log)
+  \param asp data aspect (0 = x/y normal, 1 = historgram)
+  \param vdash dash type
+  \param thick line tthickness
+  \param glyp glyph type
+  \param gize glyph size
+  \param freq glyph frequency
+  \param hwidth histogram bar width
+  \param hopac histogram bar opacity value
+  \param hpos histogram opacity treatment (0 = no opacity, 1 = use opacity)
+  \param extra the number of extra data sets
+  \param pid 0 (x/y plot) or plot id number (historgram)
 */
 void draw_curve (cairo_t * cr,
                  int cid,
                  int rid,
-                 struct project * this_proj,
+                 project * this_proj,
                  int points,
                  ColRGBA withcolor,
                  int xscale,
@@ -102,7 +110,7 @@ void draw_curve (cairo_t * cr,
   double ** plotdata;
   gboolean plot;
   gboolean dglyp;
-  thedash * dasht;
+  curve_dash * dasht;
 
   plotdata = allocddouble (points, 2);
   for ( i=0 ; i < points; i++ )

@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file cell_extra.c
+* @short Functions to create the 'add cell(s)' tab in the cell edition window
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'cell_extra.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the add cell(s) tab in the cell edition window
+ - The functions to create the 'add cell(s)' tab in the cell edition window
 
 *
-*  List of subroutines:
+* List of functions:
 
   G_MODULE_EXPORT void add_cell (GtkSpinButton * res, gpointer data);
 
@@ -30,19 +38,19 @@ If not, see <https://www.gnu.org/licenses/> */
 
 #include "cell_edit.h"
 
-/*
-*  G_MODULE_EXPORT void add_cell (GtkSpinButton * res, gpointer data)
-*
-*  Usage: add cell callback
-*
-*  GtkSpinButton * res : the GtkSpinButton sending the signal
-*  gpointer data       : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void add_cell (GtkSpinButton * res, gpointer data)
+
+  \brief add cell callback
+
+  \param res the GtkSpinButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void add_cell (GtkSpinButton * res, gpointer data)
 {
   tint * dat = (tint *)data;
   int i;
-  struct project * this_proj = get_project_by_id (dat -> a);
+  project * this_proj = get_project_by_id (dat -> a);
   image * last = this_proj -> modelgl -> anim -> last -> img;
   i = max(last -> extra_cell[0], last -> extra_cell[1]);
   i = max(i, last -> extra_cell[2]);
@@ -63,12 +71,12 @@ G_MODULE_EXPORT void add_cell (GtkSpinButton * res, gpointer data)
   sens_superbut (this_proj);
 }
 
-/*
-*  GtkWidget * add_extra_cell_tab (glwin * view)
-*
-*  Usage: create the add cell(s) tab
-*
-*  glwin * view : the target glwin
+/*!
+  \fn GtkWidget * add_extra_cell_tab (glwin * view)
+
+  \brief create the add cell(s) tab
+
+  \param view the target glwin
 */
 GtkWidget * add_extra_cell_tab (glwin * view)
 {

@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file atom_search.c
+* @short Functions to prepare the model edition 'search' tabs and the associated widgets
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'atom_search.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to prepare the model edtion search tabs and associated widgets
+ - The functions to prepare the model edition 'search' tabs and the associated widgets
 
 *
-*  List of subroutines:
+* List of functions:
 
   G_MODULE_EXPORT void turn_rebuild_on (GtkCheckButton * but, gpointer data);
   G_MODULE_EXPORT void turn_rebuild_on (GtkToggleButton * but, gpointer data);
@@ -29,32 +37,32 @@ If not, see <https://www.gnu.org/licenses/> */
   G_MODULE_EXPORT void set_atoms_for_action (GtkComboBox * box, gpointer data);
   G_MODULE_EXPORT void expanding_atoms (GtkWidget * exp, gpointer data);
 
-  GtkWidget * create_search_box (int aid, struct project * this_proj);
-  GtkWidget * create_action_combo (int id, struct project * this_proj);
-  GtkWidget * action_tab (int aid, struct project * this_proj);
+  GtkWidget * create_search_box (int aid, project * this_proj);
+  GtkWidget * create_action_combo (int id, project * this_proj);
+  GtkWidget * action_tab (int aid, project * this_proj);
 
 */
 
 #include "atom_edit.h"
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void turn_rebuild_on (GtkCheckButton * but, gpointer data)
-*
-*  Usage: rebuild toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void turn_rebuild_on (GtkCheckButton * but, gpointer data)
+
+  \brief rebuild toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void turn_rebuild_on (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void turn_rebuild_on (GtkToggleButton * but, gpointer data)
-*
-*  Usage: rebuild toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void turn_rebuild_on (GtkToggleButton * but, gpointer data)
+
+  \brief rebuild toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void turn_rebuild_on (GtkToggleButton * but, gpointer data)
 #endif
@@ -72,23 +80,23 @@ G_MODULE_EXPORT void turn_rebuild_on (GtkToggleButton * but, gpointer data)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void turn_bonding_on (GtkCheckButton * but, gpointer data)
-*
-*  Usage: update bonding toggle callback GTK4
-*
-*  GtkCheckButton * but : the GtkCheckButton sending the signal
-*  gpointer data        : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void turn_bonding_on (GtkCheckButton * but, gpointer data)
+
+  \brief update bonding toggle callback GTK4
+
+  \param but the GtkCheckButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void turn_bonding_on (GtkCheckButton * but, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT void turn_bonding_on (GtkToggleButton * but, gpointer data)
-*
-*  Usage: update bonding toggle callback GTK3
-*
-*  GtkToggleButton * but : the GtkToggleButton sending the signal
-*  gpointer data         : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void turn_bonding_on (GtkToggleButton * but, gpointer data)
+
+  \brief update bonding toggle callback GTK3
+
+  \param but the GtkToggleButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void turn_bonding_on (GtkToggleButton * but, gpointer data)
 #endif
@@ -103,15 +111,15 @@ G_MODULE_EXPORT void turn_bonding_on (GtkToggleButton * but, gpointer data)
   asearch -> recompute_bonding = i;
 }
 
-/*
-*  GtkWidget * create_search_box (int aid, struct project * this_proj)
-*
-*  Usage: create the action search widget
-*
-*  int aid                    : the action id
-*  struct project * this_proj : the target project
+/*!
+  \fn GtkWidget * create_search_box (int aid, project * this_proj)
+
+  \brief create the action search widget
+
+  \param aid the action id
+  \param this_proj the target project
 */
-GtkWidget * create_search_box (int aid, struct project * this_proj)
+GtkWidget * create_search_box (int aid, project * this_proj)
 {
   gchar * appl[5] = {" Move atom(s)", " Replace atom(s)", " Remove atom(s)", " Insert atom(s)", " Move atom(s)"};
   gchar * img[4]= {EDITA, LIST_REM, LIST_ADD, MEDIA_PLAY};
@@ -166,18 +174,18 @@ GtkWidget * create_search_box (int aid, struct project * this_proj)
   return vbox;
 }
 
-/*
-*  G_MODULE_EXPORT void set_atoms_for_action (GtkComboBox * box, gpointer data)
-*
-*  Usage: change selection status
-*
-*  GtkComboBox * box : the GtkComboBox sending the signal
-*  gpointer data     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_atoms_for_action (GtkComboBox * box, gpointer data)
+
+  \brief change selection status
+
+  \param box the GtkComboBox sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_atoms_for_action (GtkComboBox * box, gpointer data)
 {
   tint * id = (tint *)data;
-  struct project * this_proj = get_project_by_id (id -> a);
+  project * this_proj = get_project_by_id (id -> a);
   int i, j, k;
   i = gtk_combo_box_get_active (box);
   this_proj -> modelgl -> search_widg[id -> c] -> status = i;
@@ -193,19 +201,19 @@ G_MODULE_EXPORT void set_atoms_for_action (GtkComboBox * box, gpointer data)
       }
     }
   }
-  clean_picked_and_labelled (this_proj -> modelgl -> search_widg[id -> c]);
+  clean_picked_and_labelled (this_proj -> modelgl -> search_widg[id -> c], TRUE);
   update_search_tree (this_proj -> modelgl -> search_widg[id -> c]);
 }
 
-/*
-*  GtkWidget * create_action_combo (int id, struct project * this_proj)
-*
-*  Usage: create action combo box
-*
-*  int id                     : the action id
-*  struct project * this_proj : the target project
+/*!
+  \fn GtkWidget * create_action_combo (int id, project * this_proj)
+
+  \brief create action combo box
+
+  \param id the action id
+  \param this_proj the target project
 */
-GtkWidget * create_action_combo (int id, struct project * this_proj)
+GtkWidget * create_action_combo (int id, project * this_proj)
 {
   GtkWidget * combo;
   if (id == 3 || id == 5)
@@ -237,18 +245,18 @@ GtkWidget * create_action_combo (int id, struct project * this_proj)
   return combo;
 }
 
-/*
-*  G_MODULE_EXPORT void expanding_atoms (GtkWidget * exp, gpointer data)
-*
-*  Usage: expanding motion callback
-*
-*  GtkWidget * exp : the GtkWidget sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void expanding_atoms (GtkWidget * exp, gpointer data)
+
+  \brief expanding motion callback
+
+  \param exp the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void expanding_atoms (GtkWidget * exp, gpointer data)
 {
   tint * dat = (tint *)data;
-  struct project * this_proj = get_project_by_id (dat -> a);
+  project * this_proj = get_project_by_id (dat -> a);
   int i;
   for (i=0; i<3; i++)
   {
@@ -262,15 +270,15 @@ G_MODULE_EXPORT void expanding_atoms (GtkWidget * exp, gpointer data)
   }
 }
 
-/*
-*  GtkWidget * action_tab (int aid, struct project * this_proj)
-*
-*  Usage: create model edtion action tab
-*
-*  int aid                    : the action id
-*  struct project * this_proj : the target project
+/*!
+  \fn GtkWidget * action_tab (int aid, project * this_proj)
+
+  \brief create model edtion action tab
+
+  \param aid the action id
+  \param this_proj the target project
 */
-GtkWidget * action_tab (int aid, struct project * this_proj)
+GtkWidget * action_tab (int aid, project * this_proj)
 {
   gchar * action[7] = {"moved", "replaced", "removed", "inserted", "moved randomly", " ", "passivated"};
   GtkWidget * vbox = create_vbox (BSEP);

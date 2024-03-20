@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file read_pdb.c
+* @short Functions to read PDB files
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'read_pdb.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to read PDB files
+ - The functions to read PDB files
 
 *
-*  List of subroutines:
+* List of functions:
 
   int pdb_get_atoms_data (int linec);
   int open_pdb_file (int linec);
@@ -40,12 +48,12 @@ If not, see <https://www.gnu.org/licenses/> */
 #include <omp.h>
 #include <ctype.h>
 
-/*
-*  double get_z_from_pdb_name (char * name)
-*
-*  Usage: get Z from the PDB atom string
-*
-*  char * name : the string from the PDB file
+/*!
+  \fn double get_z_from_pdb_name (char * name)
+
+  \brief get Z from the PDB atom string
+
+  \param name the string from the PDB file
 */
 double get_z_from_pdb_name (char * name)
 {
@@ -53,29 +61,31 @@ double get_z_from_pdb_name (char * name)
   return get_z_from_periodic_table (name);
 }
 
-/*
-*  int pdb_get_atoms_data (int linec)
-*
-*  Usage: get the atomic data from the PDB file
-*
-*  int linec : Total number of lines
+/*!
+  \fn int pdb_get_atoms_data (int linec)
+
+  \brief get the atomic data from the PDB file
+
+  \param linec Total number of lines
 */
 int pdb_get_atoms_data (int linec)
 {
-  int h, i, j, k, l;
-  struct pdb_atom {
+  typedef struct pdb_atom pdb_atom;
+  struct pdb_atom
+  {
     int id;
     int sp;
     double nz;
     double x, y, z;
-    struct pdb_atom * prev;
-    struct pdb_atom * next;
+    pdb_atom * prev;
+    pdb_atom * next;
   };
 #ifdef OPENMP
+  int h, i, j, k, l;
   int res;
   int numth = omp_get_max_threads ();
-  struct pdb_atom ** first_at = g_malloc0(numth*sizeof*first_at);
-  struct pdb_atom * other_at = NULL;
+  pdb_atom ** first_at = g_malloc0(numth*sizeof*first_at);
+  pdb_atom * other_at = NULL;
   gchar * saved_line;
   gboolean add_spec;
   h = 0;
@@ -196,12 +206,12 @@ int pdb_get_atoms_data (int linec)
   return active_project -> natomes;
 }
 
-/*
-*  int open_pdb_file (int linec)
-*
-*  Usage: open PDB file
-*
-*  int linec : Number of lines in the file
+/*!
+  \fn int open_pdb_file (int linec)
+
+  \brief open PDB file
+
+  \param linec Number of lines in the file
 */
 int open_pdb_file (int linec)
 {

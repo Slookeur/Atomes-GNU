@@ -1,28 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file dlp_comp.c
+* @short Functions to compare and adjust field body parameters
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'dlp_comp.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to compare and adjust field body properties
+ - The functions to compare and adjust field body parameters
 
 *
-*  List of subroutines:
+* List of functions:
 
-  void compare_body (gchar * fatom, struct field_nth_body * new_body, int n_body, struct field_nth_body * old_body, int o_body);
+  void compare_body (gchar * fatom, field_nth_body * new_body, int n_body, field_nth_body * old_body, int o_body);
   void compare_non_bonded (gchar * fatom);
 
 */
@@ -33,29 +41,29 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "glview.h"
 #include "dlp_field.h"
 
-struct field_nth_body * comp_fbody;
+field_nth_body * comp_fbody;
 
-extern void duplicate_nbody_params (struct field_nth_body * new_fbody, struct field_nth_body * old_fbody);
+extern void duplicate_nbody_params (field_nth_body * new_fbody, field_nth_body * old_fbody);
 
-/*
-*  void compare_body (gchar * fatom, struct field_nth_body * new_body, int n_body, struct field_nth_body * old_body, int o_body)
-*
-*  Usage: compare, and if require ajdust, two lists of field body properties
-*
-*  gchar * fatom                    : the name of the field atom to search for
-*  struct field_nth_body * new_body : 1st list of field body property(ies)
-*  int n_body                       : the number of field body in this 1st list
-*  struct field_nth_body * old_body : 2nd list of field body property(ies)
-*  int o_body                       : the number of field body in this 2nd list
+/*!
+  \fn void compare_body (gchar * fatom, field_nth_body * new_body, int n_body, field_nth_body * old_body, int o_body)
+
+  \brief compare, and if require ajdust, two lists of field body properties
+
+  \param fatom the name of the field atom to search for
+  \param new_body 1st list of field body property(ies)
+  \param n_body the number of field body in this 1st list
+  \param old_body 2nd list of field body property(ies)
+  \param o_body the number of field body in this 2nd list
 */
-void compare_body (gchar * fatom, struct field_nth_body * new_body, int n_body, struct field_nth_body * old_body, int o_body)
+void compare_body (gchar * fatom, field_nth_body * new_body, int n_body, field_nth_body * old_body, int o_body)
 {
   int i, j, k, l, m, n, o, p;
-  struct field_nth_body * tmp_new = new_body;
-  struct field_nth_body * tmp_old;
-  struct field_nth_body * new_guy;
-  struct field_nth_body * old_one;
-  struct field_nth_body * new_one;
+  field_nth_body * tmp_new = new_body;
+  field_nth_body * tmp_old;
+  field_nth_body * new_guy;
+  field_nth_body * old_one;
+  field_nth_body * new_one;
   gboolean doit;
 
   for (i=0; i<n_body; i++)
@@ -166,12 +174,12 @@ void compare_body (gchar * fatom, struct field_nth_body * new_body, int n_body, 
   tmp_field -> nbody[0] = n_body;
 }
 
-/*
-*  void compare_non_bonded (gchar * fatom)
-*
-*  Usage: compare non bond interaction parameters
-*
-*  gchar * fatom : the name of the target field atom
+/*!
+  \fn void compare_non_bonded (gchar * fatom)
+
+  \brief compare non bond interaction parameters
+
+  \param fatom the name of the target field atom
 */
 void compare_non_bonded (gchar * fatom)
 {

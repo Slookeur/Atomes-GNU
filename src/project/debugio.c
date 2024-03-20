@@ -1,49 +1,57 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file debugio.c
+* @short Some debugging and printing functions
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'debugio.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Some debugging and printing subroutines
+ - Some debugging and printing functions
 
 *
-*  List of subroutines:
+* List of functions:
 
-  void debugiocurve (struct project * this_proj, gboolean win, int rid, int cid, gchar * iost);
-  void debug_lattice_info (struct project * this_proj, gchar * iost);
-  void debugioproj (struct project * this_proj, gchar * iost);
-  void debug_chemical_information (struct project * this_proj);
+  void debugiocurve (project * this_proj, gboolean win, int rid, int cid, gchar * iost);
+  void debug_lattice_info (project * this_proj, gchar * iost);
+  void debugioproj (project * this_proj, gchar * iost);
+  void debug_chemical_information (project * this_proj);
 
 */
 
 #include "global.h"
 #include "project.h"
 
-/*
-*  void debugiocurve (struct project * this_proj, gboolean win, int rid, int cid, gchar * iost)
-*
-*  Usage: debug and print some info about the curves in a project
-*
-*  struct project * this_proj : the target project
-*  gboolean win               : curve window exists (1/0)
-*  int rid                    : analysis id
-*  int cid                    : curve id
-*  gchar * iost               : input or output information
+/*!
+  \fn void debugiocurve (project * this_proj, gboolean win, int rid, int cid, gchar * iost)
+
+  \brief debug and print some info about the curves in a project
+
+  \param this_proj the target project
+  \param win curve window exists (1/0)
+  \param rid analysis id
+  \param cid curve id
+  \param iost input or output information
 */
-void debugiocurve (struct project * this_proj, gboolean win, int rid, int cid, gchar * iost)
+void debugiocurve (project * this_proj, gboolean win, int rid, int cid, gchar * iost)
 {
   g_debug (" ");
   g_debug ("IODEBUG: %s: pid= %d, rid= %d, cid= %d", iost, this_proj -> id, rid, cid);
@@ -164,15 +172,15 @@ void debugiocurve (struct project * this_proj, gboolean win, int rid, int cid, g
   }
 }
 
-/*
-*  void debug_lattice_info (struct project * this_proj, gchar * iost)
-*
-*  Usage: debug lattice data
-*
-*  struct project * this_proj : the target project
-*  gchar * iost               : input or output information
+/*!
+  \fn void debug_lattice_info (project * this_proj, gchar * iost)
+
+  \brief debug lattice data
+
+  \param this_proj the target project
+  \param iost input or output information
 */
-void debug_lattice_info (struct project * this_proj, gchar * iost)
+void debug_lattice_info (project * this_proj, gchar * iost)
 {
   g_debug ("IODEBUG::%s:: lattice debug", iost);
   cell_info * debug_cell = & this_proj -> cell;
@@ -190,15 +198,15 @@ void debug_lattice_info (struct project * this_proj, gchar * iost)
   }
 }
 
-/*
-*  void debugioproj (struct project * this_proj, gchar * iost)
-*
-*  Usage: debug project info
-*
-*  struct project * this_proj : the target project
-*  gchar * iost               : input or output information
+/*!
+  \fn void debugioproj (project * this_proj, gchar * iost)
+
+  \brief debug project info
+
+  \param this_proj the target project
+  \param iost input or output information
 */
-void debugioproj (struct project * this_proj, gchar * iost)
+void debugioproj (project * this_proj, gchar * iost)
 {
   int i, j;
 
@@ -272,14 +280,14 @@ void debugioproj (struct project * this_proj, gchar * iost)
   debug_lattice_info (this_proj, iost);
 }
 
-/*
-*  void debug_chemical_information (struct project * this_proj)
-*
-*  Usage: debug chemical data info
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn void debug_chemical_information (project * this_proj)
+
+  \brief debug chemical data info
+
+  \param this_proj the target project
 */
-void debug_chemical_information (struct project * this_proj)
+void debug_chemical_information (project * this_proj)
 {
   g_debug ("Number of species: %d", this_proj -> nspec);
   int i;

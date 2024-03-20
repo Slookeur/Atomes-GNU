@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file save_field.c
+* @short Functions to save force field information in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'save_field.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to write force field information in the atomes project file format
+ - The functions to save force field information in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
   int save_field_atom (FILE * fp);
   int save_field_shell (FILE * fp);
@@ -33,8 +41,8 @@ If not, see <https://www.gnu.org/licenses/> */
   int save_field_molecule (FILE * fp, int fid);
   int save_field_body (FILE * fp, int fid);
   int save_field_external (FILE * fp, int fid);
-  int save_dlp_field_data (FILE * fp, struct project * this_proj);
-  int save_lmp_field_data (FILE * fp, struct project * this_proj);
+  int save_dlp_field_data (FILE * fp, project * this_proj);
+  int save_lmp_field_data (FILE * fp, project * this_proj);
 
 */
 
@@ -43,7 +51,9 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "dlp_field.h"
 
 /*
-typedef struct {
+typedef struct field field
+struct field
+{
   gboolean prepare_file[2];
   // Field and Config files
   gboolean afp[MAXDATC+MAXDATA];
@@ -51,13 +61,13 @@ typedef struct {
   int energy_unit;
   int atom_init;
   int molecules;
-  struct field_molecule * first_molecule;
+  field_molecule * first_molecule;
   int nbody[5];
-  struct field_nth_body * first_body[5];
+  field_nth_body * first_body[5];
   // Tersoff potential cross terms
   double ** cross;
   int extern_fields;
-  struct field_external * first_external;
+  field_external * first_external;
 
   // Control file
   double sys_opts[17];
@@ -72,17 +82,16 @@ typedef struct {
   double thermo_opts[10];
   double md_opts[20];
   double out_opts[31];
-
-} field;
+};
 
 */
 
-/*
-*  int save_field_atom (FILE * fp)
-*
-*  Usage: save field atom data to file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int save_field_atom (FILE * fp)
+
+  \brief save field atom data to file
+
+  \param fp the file pointer
 */
 int save_field_atom (FILE * fp)
 {
@@ -103,12 +112,12 @@ int save_field_atom (FILE * fp)
   return OK;
 }
 
-/*
-*  int save_field_shell (FILE * fp)
-*
-*  Usage: save field core shell data to file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int save_field_shell (FILE * fp)
+
+  \brief save field core shell data to file
+
+  \param fp the file pointer
 */
 int save_field_shell (FILE * fp)
 {
@@ -124,12 +133,12 @@ int save_field_shell (FILE * fp)
   return OK;
 }
 
-/*
-*  int save_field_constraint (FILE * fp)
-*
-*  Usage: save field constraint data to file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int save_field_constraint (FILE * fp)
+
+  \brief save field constraint data to file
+
+  \param fp the file pointer
 */
 int save_field_constraint (FILE * fp)
 {
@@ -142,12 +151,12 @@ int save_field_constraint (FILE * fp)
   return OK;
 }
 
-/*
-*  int save_field_pmf (FILE * fp)
-*
-*  Usage: save field mean force potential data to file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int save_field_pmf (FILE * fp)
+
+  \brief save field mean force potential data to file
+
+  \param fp the file pointer
 */
 int save_field_pmf (FILE * fp)
 {
@@ -167,12 +176,12 @@ int save_field_pmf (FILE * fp)
   return OK;
 }
 
-/*
-*  int save_field_rigid (FILE * fp)
-*
-*  Usage: save field rigid constraints data to file
-*
-*  FILE * fp : the file pointer
+/*!
+  \fn int save_field_rigid (FILE * fp)
+
+  \brief save field rigid constraints data to file
+
+  \param fp the file pointer
 */
 int save_field_rigid (FILE * fp)
 {
@@ -184,13 +193,13 @@ int save_field_rigid (FILE * fp)
   return OK;
 }
 
-/*
-*  int save_field_tethered (FILE * fp, int fid)
-*
-*  Usage: save field tethered data to file
-*
-*  FILE * fp : the file pointer
-*  int fid   :
+/*!
+  \fn int save_field_tethered (FILE * fp, int fid)
+
+  \brief save field tethered data to file
+
+  \param fp the file pointer
+  \param fid
 */
 int save_field_tethered (FILE * fp, int fid)
 {
@@ -204,14 +213,14 @@ int save_field_tethered (FILE * fp, int fid)
   return OK;
 }
 
-/*
-*  int save_field_prop (FILE * fp, int fid, int pid)
-*
-*  Usage: save field property data to file
-*
-*  FILE * fp : the file pointer
-*  int fid   : the field id
-*  int pid   : the property id
+/*!
+  \fn int save_field_prop (FILE * fp, int fid, int pid)
+
+  \brief save field property data to file
+
+  \param fp the file pointer
+  \param fid the field id
+  \param pid the property id
 */
 int save_field_prop (FILE * fp, int fid, int pid)
 {
@@ -227,13 +236,13 @@ int save_field_prop (FILE * fp, int fid, int pid)
   return OK;
 }
 
-/*
-*  int save_field_struct (FILE * fp, int fid)
-*
-*  Usage: save field structural properties to file
-*
-*  FILE * fp : the file pointer
-*  int fid   : the field id
+/*!
+  \fn int save_field_struct (FILE * fp, int fid)
+
+  \brief save field structural properties to file
+
+  \param fp the file pointer
+  \param fid the field id
 */
 int save_field_struct (FILE * fp, int fid)
 {
@@ -265,13 +274,13 @@ int save_field_struct (FILE * fp, int fid)
   return OK;
 }
 
-/*
-*  int save_field_molecule (FILE * fp, int fid)
-*
-*  Usage: save field molecule data to file
-*
-*  FILE * fp : the file pointer
-*  int fid   : the field id
+/*!
+  \fn int save_field_molecule (FILE * fp, int fid)
+
+  \brief save field molecule data to file
+
+  \param fp the file pointer
+  \param fid the field id
 */
 int save_field_molecule (FILE * fp, int fid)
 {
@@ -345,13 +354,13 @@ int save_field_molecule (FILE * fp, int fid)
   return OK;
 }
 
-/*
-*  int save_field_body (FILE * fp, int fid)
-*
-*  Usage: save field nth body data to file
-*
-*  FILE * fp : the file pointer
-*  int fid   : the field id
+/*!
+  \fn int save_field_body (FILE * fp, int fid)
+
+  \brief save field nth body data to file
+
+  \param fp the file pointer
+  \param fid the field id
 */
 int save_field_body (FILE * fp, int fid)
 {
@@ -373,13 +382,13 @@ int save_field_body (FILE * fp, int fid)
   return OK;
 }
 
-/*
-*  int save_field_external (FILE * fp, int fid)
-*
-*  Usage: save field external data to file
-*
-*  FILE * fp : the file pointer
-*  int fid   : the field id
+/*!
+  \fn int save_field_external (FILE * fp, int fid)
+
+  \brief save field external data to file
+
+  \param fp the file pointer
+  \param fid the field id
 */
 int save_field_external (FILE * fp, int fid)
 {
@@ -391,15 +400,15 @@ int save_field_external (FILE * fp, int fid)
   return OK;
 }
 
-/*
-*  int save_dlp_field_data (FILE * fp, struct project * this_proj)
-*
-*  Usage: save force field data to file
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
+/*!
+  \fn int save_dlp_field_data (FILE * fp, project * this_proj)
+
+  \brief save force field data to file
+
+  \param fp the file pointer
+  \param this_proj the target project
 */
-int save_dlp_field_data (FILE * fp, struct project * this_proj)
+int save_dlp_field_data (FILE * fp, project * this_proj)
 {
   int i, j;
   if (this_proj -> force_field[0] == NULL)
@@ -472,15 +481,15 @@ int save_dlp_field_data (FILE * fp, struct project * this_proj)
   return OK;
 }
 
-/*
-*  int save_lmp_field_data (FILE * fp, struct project * this_proj)
-*
-*  Usage: save LAMMPS force field data to file
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
+/*!
+  \fn int save_lmp_field_data (FILE * fp, project * this_proj)
+
+  \brief save LAMMPS force field data to file
+
+  \param fp the file pointer
+  \param this_proj the target project
 */
-int save_lmp_field_data (FILE * fp, struct project * this_proj)
+int save_lmp_field_data (FILE * fp, project * this_proj)
 {
   int i;
   if (this_proj -> force_field[1] == NULL)

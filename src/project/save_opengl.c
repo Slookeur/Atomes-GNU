@@ -1,31 +1,39 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file save_opengl.c
+* @short Functions to save OpenGL information in the atomes project file format
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'save_opengl.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to write OpenGL information in the atomes project file format
+ - The functions to save OpenGL information in the atomes project file format
 
 *
-*  List of subroutines:
+* List of functions:
 
-  int save_atom_a (FILE * fp, struct project * this_proj, int s, int a);
-  int save_atom_b (FILE * fp, struct project * this_proj, int s, int a);
+  int save_atom_a (FILE * fp, project * this_proj, int s, int a);
+  int save_atom_b (FILE * fp, project * this_proj, int s, int a);
   int save_rings_chains_data (FILE * fp, int type, int size, int steps, int data_max, int ** num_data, gboolean *** show, int **** all_data);
-  int save_opengl_image (FILE * fp, struct project * this_proj, image * img, int sid);
+  int save_opengl_image (FILE * fp, project * this_proj, image * img, int sid);
 
 */
 
@@ -33,17 +41,17 @@ If not, see <https://www.gnu.org/licenses/> */
 #include "project.h"
 #include "glwin.h"
 
-/*
-*  int save_atom_a (FILE * fp, struct project * this_proj, int s, int a)
-*
-*  Usage: save atom data to file (a)
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
-*  int s                      : the MD step
-*  int a                      : the atom number
+/*!
+  \fn int save_atom_a (FILE * fp, project * this_proj, int s, int a)
+
+  \brief save atom data to file (a)
+
+  \param fp the file pointer
+  \param this_proj the target project
+  \param s the MD step
+  \param a the atom number
 */
-int save_atom_a (FILE * fp, struct project * this_proj, int s, int a)
+int save_atom_a (FILE * fp, project * this_proj, int s, int a)
 {
   if (fwrite (& this_proj -> atoms[s][a].id, sizeof(int), 1, fp) != 1) return ERROR_RW;
   if (fwrite (& this_proj -> atoms[s][a].sp, sizeof(int), 1, fp) != 1) return ERROR_RW;
@@ -55,17 +63,17 @@ int save_atom_a (FILE * fp, struct project * this_proj, int s, int a)
   return OK;
 }
 
-/*
-*  int save_atom_b (FILE * fp, struct project * this_proj, int s, int a)
-*
-*  Usage: save atom data to file (b)
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
-*  int s                      : the MD step
-*  int a                      : the atom number
+/*!
+  \fn int save_atom_b (FILE * fp, project * this_proj, int s, int a)
+
+  \brief save atom data to file (b)
+
+  \param fp the file pointer
+  \param this_proj the target project
+  \param s the MD step
+  \param a the atom number
 */
-int save_atom_b (FILE * fp, struct project * this_proj, int s, int a)
+int save_atom_b (FILE * fp, project * this_proj, int s, int a)
 {
   if (fwrite (this_proj -> atoms[s][a].show, sizeof(gboolean), 2, fp) != 2) return ERROR_RW;
   if (fwrite (this_proj -> atoms[s][a].label, sizeof(gboolean), 2, fp) != 2) return ERROR_RW;
@@ -73,19 +81,19 @@ int save_atom_b (FILE * fp, struct project * this_proj, int s, int a)
   return OK;
 }
 
-/*
-*  int save_rings_chains_data (FILE * fp, int type, int size, int steps, int data_max, int ** num_data, gboolean *** show, int **** all_data)
-*
-*  Usage: saving rings and chains statistics data to file
-*
-*  FILE * fp         : the file pointer
-*  int type          : Rings (0) or chains (1)
-*  int size          : the number of data to save
-*  int steps         : the MD step
-*  int data_max      : the maximum size of
-*  int ** num_data   : Id of the objects to save
-*  gboolean *** show : Display information pointer
-*  int **** all_data : Atoms id of the objects to save
+/*!
+  \fn int save_rings_chains_data (FILE * fp, int type, int size, int steps, int data_max, int ** num_data, gboolean *** show, int **** all_data)
+
+  \brief saving rings and chains statistics data to file
+
+  \param fp the file pointer
+  \param type Rings (0) or chains (1)
+  \param size the number of data to save
+  \param steps the MD step
+  \param data_max the maximum size of
+  \param num_data Id of the objects to save
+  \param show Display information pointer
+  \param all_data Atoms id of the objects to save
 */
 int save_rings_chains_data (FILE * fp, int type, int size, int steps, int data_max, int ** num_data, gboolean *** show, int **** all_data)
 {
@@ -113,17 +121,17 @@ int save_rings_chains_data (FILE * fp, int type, int size, int steps, int data_m
   return OK;
 }
 
-/*
-*  int save_opengl_image (FILE * fp, struct project * this_proj, image * img, int sid)
-*
-*  Usage: save OpenGL image properties to file
-*
-*  FILE * fp                  : the file pointer
-*  struct project * this_proj : the target project
-*  image * img                : the image that contains the data
-*  int sid                    : the number of chemical species
+/*!
+  \fn int save_opengl_image (FILE * fp, project * this_proj, image * img, int sid)
+
+  \brief save OpenGL image properties to file
+
+  \param fp the file pointer
+  \param this_proj the target project
+  \param img the image that contains the data
+  \param sid the number of chemical species
 */
-int save_opengl_image (FILE * fp, struct project * this_proj, image * img, int sid)
+int save_opengl_image (FILE * fp, project * this_proj, image * img, int sid)
 {
   int i, j, k, l;
   gboolean val;
@@ -426,7 +434,7 @@ int save_opengl_image (FILE * fp, struct project * this_proj, image * img, int s
     if (fwrite (& img -> selected[i] -> selected, sizeof(int), 1, fp) != 1) return ERROR_RW;
     if (img -> selected[i] -> selected)
     {
-      struct selatom * at = img -> selected[i] -> first;
+      atom_in_selection * at = img -> selected[i] -> first;
       for (j=0; j<img -> selected[i] -> selected; j++)
       {
         if (fwrite (& at -> id, sizeof(int), 1, fp) != 1) return ERROR_RW;

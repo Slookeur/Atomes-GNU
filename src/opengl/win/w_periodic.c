@@ -1,27 +1,36 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file w_periodic.c
+* @short Functions to create the periodic table of the elements \n
+         Functions to select element from the periodic table
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'w_periodic.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the periodic table of the elements
- - The subroutines to select element from the periodic table
+ - The functions to create the periodic table of the elements
+ - The functions to select element from the periodic table
 
 *
-*  List of subroutines:
+* List of functions:
 
   int is_in_table (int i, int j);
   int get_atom_id_from_periodic_table (atom_search * asearch);
@@ -46,7 +55,7 @@ If not, see <https://www.gnu.org/licenses/> */
 
 #include "global.h"
 
-extern struct insertion mol[];
+extern insertion_menu mol[];
 
 atom_search * periodic_search;
 int element;
@@ -66,13 +75,13 @@ ColRGBA rtcolo[11] = {{142, 255, 142, 1.0}, // #8EFF8E
                       {95, 192, 176, 1.0}}; // #5FC0B0
 gchar * ptcolo[11] = {"#8EFF8E", "#F5FF53", "#FFB853", "#FF6C7D", "#F4A7FF", "#408538", "#B15EFF", "#8EE3FF", "#505DFD", "#7EFFEB", "#5FC0B0"};
 
-/*
-*  gchar * get_electronic_structure (int r, int c)
-*
-*  Usage: get electronic structure for this (row,column) combination
-*
-*  int r : row
-*  int c : column
+/*!
+  \fn gchar * get_electronic_structure (int r, int c)
+
+  \brief get electronic structure for this (row,column) combination
+
+  \param r row
+  \param c column
 */
 gchar * get_electronic_structure (int r, int c)
 {
@@ -174,13 +183,13 @@ gchar * get_electronic_structure (int r, int c)
   return str;
 }
 
-/*
-*  int is_in_table (int i, int j)
-*
-*  Usage: is this (row,column) combination a chemical element ?
-*
-*  int i : row
-*  int j : column
+/*!
+  \fn int is_in_table (int i, int j)
+
+  \brief is this (row,column) combination a chemical element ?
+
+  \param i row
+  \param j column
 */
 int is_in_table (int i, int j)
 {
@@ -211,15 +220,15 @@ int is_in_table (int i, int j)
   return -1;
 }
 
-/*
-*  GtkWidget * create_el_preview (int p, int a, int r, int c)
-*
-*  Usage: create element preview
-*
-*  int p : the target project id
-*  int a : target atom search id
-*  int r : row
-*  int c : column
+/*!
+  \fn GtkWidget * create_el_preview (int p, int a, int r, int c)
+
+  \brief create element preview
+
+  \param p the target project id
+  \param a target atom search id
+  \param r row
+  \param c column
 */
 GtkWidget * create_el_preview (int p, int a, int r, int c)
 {
@@ -289,13 +298,13 @@ GtkWidget * create_el_preview (int p, int a, int r, int c)
   return preview;
 }
 
-/*
-*  GtkWidget * el_preview (int p, int a)
-*
-*  Usage: create element preview CSS widget
-*
-*  int p : the target project id
-*  int a : target atom search id
+/*!
+  \fn GtkWidget * el_preview (int p, int a)
+
+  \brief create element preview CSS widget
+
+  \param p the target project id
+  \param a target atom search id
 */
 GtkWidget * el_preview (int p, int a)
 {
@@ -321,24 +330,24 @@ GtkWidget * el_preview (int p, int a)
 }
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void on_element_focus (GtkEventControllerFocus * focus, gpointer data)
-*
-*  Usage: periodic table focus event callback GTK4
-*
-*  GtkEventControllerFocus * focus : the GtkEventControllerFocus sending the signal
-*  gpointer data                   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void on_element_focus (GtkEventControllerFocus * focus, gpointer data)
+
+  \brief periodic table focus event callback GTK4
+
+  \param focus the GtkEventControllerFocus sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void on_element_focus (GtkEventControllerFocus * focus, gpointer data)
 #else
-/*
-*  G_MODULE_EXPORT gboolean on_element_focus (GtkWidget * widget, GdkEvent * event, gpointer data)
-*
-*  Usage: periodic table focus event callback GTK3
-*
-*  GtkWidget * widget : the GtkWidget sending the signal
-*  GdkEvent * event   : the GdkEvent triggering the signal
-*  gpointer data      : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT gboolean on_element_focus (GtkWidget * widget, GdkEvent * event, gpointer data)
+
+  \brief periodic table focus event callback GTK3
+
+  \param widget the GtkWidget sending the signal
+  \param event the GdkEvent triggering the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT gboolean on_element_focus (GtkWidget * widget, GdkEvent * event, gpointer data)
 #endif
@@ -352,15 +361,15 @@ G_MODULE_EXPORT gboolean on_element_focus (GtkWidget * widget, GdkEvent * event,
 #endif
 }
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void on_element_motion_enter (GtkEventControllerMotion * motion, gdouble x, gdouble y, gpointer data)
-*
-*  Usage: periodic table motion event callback GTK4
-*
-*  GtkEventControllerMotion * motion : the GtkEventControllerMotion sending the signal
-*  gdouble x                         : x position
-*  gdouble y                         : y position
-*  gpointer data                     : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void on_element_motion_enter (GtkEventControllerMotion * motion, gdouble x, gdouble y, gpointer data)
+
+  \brief periodic table motion event callback GTK4
+
+  \param motion the GtkEventControllerMotion sending the signal
+  \param x x position
+  \param y y position
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void on_element_motion_enter (GtkEventControllerMotion * motion, gdouble x, gdouble y, gpointer data)
 {
@@ -371,27 +380,27 @@ G_MODULE_EXPORT void on_element_motion_enter (GtkEventControllerMotion * motion,
 }
 #endif
 
-/*
-*  G_MODULE_EXPORT void run_periodic_table (GtkDialog * info, gint response_id, gpointer data)
-*
-*  Usage: periodic table - running the dialog
-*
-*  GtkDialog * info : the GtkDialog sending the signal
-*  gint response_id : the response id
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void run_periodic_table (GtkDialog * info, gint response_id, gpointer data)
+
+  \brief periodic table - running the dialog
+
+  \param info the GtkDialog sending the signal
+  \param response_id the response id
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void run_periodic_table (GtkDialog * info, gint response_id, gpointer data)
 {
   destroy_this_dialog (info);
 }
 
-/*
-*  G_MODULE_EXPORT void get_element (GtkButton * but, gpointer data)
-*
-*  Usage: get element from periodic table button
-*
-*  GtkButton * but : the GtkButton sending the signal
-*  gpointer data   : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void get_element (GtkButton * but, gpointer data)
+
+  \brief get element from periodic table button
+
+  \param but the GtkButton sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void get_element (GtkButton * but, gpointer data)
 {
@@ -400,15 +409,15 @@ G_MODULE_EXPORT void get_element (GtkButton * but, gpointer data)
   // g_signal_emit_by_name (G_OBJECT(get_top_level(but)), "activate", data);
 }
 
-/*
-*  GtkWidget * create_css_button (int p, int id, int r, int c)
-*
-*  Usage: create CSS periodic table element button
-*
-*  int p  : the target project id
-*  int id : is element table (1 / 0)
-*  int r  : row
-*  int c  : column
+/*!
+  \fn GtkWidget * create_css_button (int p, int id, int r, int c)
+
+  \brief create CSS periodic table element button
+
+  \param p the target project id
+  \param id is element table (1 / 0)
+  \param r row
+  \param c column
 */
 GtkWidget * create_css_button (int p, int id, int r, int c)
 {
@@ -556,13 +565,13 @@ GtkWidget * create_css_button (int p, int id, int r, int c)
   return but;
 }
 
-/*
-*  GtkWidget * create_css_group (int p, int i)
-*
-*  Usage: create group CSS
-*
-*  int p : the target project id
-*  int i : the group
+/*!
+  \fn GtkWidget * create_css_group (int p, int i)
+
+  \brief create group CSS
+
+  \param p the target project id
+  \param i the group
 */
 GtkWidget * create_css_group (int p, int i)
 {
@@ -586,14 +595,14 @@ GtkWidget * create_css_group (int p, int i)
   return lab;
 }
 
-/*
-*  GtkWidget * css_element (int p, int i, int j)
-*
-*  Usage: create CSS for the periodic table elements
-*
-*  int p : target project id
-*  int i : row
-*  int j : column
+/*!
+  \fn GtkWidget * css_element (int p, int i, int j)
+
+  \brief create CSS for the periodic table elements
+
+  \param p target project id
+  \param i row
+  \param j column
 */
 GtkWidget * css_element (int p, int i, int j)
 {
@@ -612,13 +621,13 @@ GtkWidget * css_element (int p, int i, int j)
   }
 }
 
-/*
-*  GtkWidget * periodic_table (int p, int a)
-*
-*  Usage: create periodic table
-*
-*  int p : target project id
-*  int a : target atom search id
+/*!
+  \fn GtkWidget * periodic_table (int p, int a)
+
+  \brief create periodic table
+
+  \param p target project id
+  \param a target atom search id
 */
 GtkWidget * periodic_table (int p, int a)
 {
@@ -653,12 +662,12 @@ GtkWidget * periodic_table (int p, int a)
   return ptable;
 }
 
-/*
-*  int get_atom_id_from_periodic_table (atom_search * asearch)
-*
-*  Usage: get atom Z from selection in the periodic table
-*
-*  atom_search * asearch : target atom search, if any
+/*!
+  \fn int get_atom_id_from_periodic_table (atom_search * asearch)
+
+  \brief get atom Z from selection in the periodic table
+
+  \param asearch target atom search, if any
 */
 int get_atom_id_from_periodic_table (atom_search * asearch)
 {

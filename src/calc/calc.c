@@ -1,28 +1,38 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file calc.c
+* @short Callbacks used in by the molecular dynamics calculation assistants \n
+         Atom selection structure manipulation tools \n
+         The initialization of the assistants
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'calc.c'
 *
-*  Contains:
+* Contains:
 *
 
- - Callbacks used in by the assistants
- - Atom selection manipulation tools
- - The initialization of the assistant
+ - Callbacks used in by the molecular dynamics calculation assistant
+ - Atom selection structure manipulation tools
+ - The initialization of the assistants
 
 *
-*  List of subroutines:
+* List of functions:
 
   void field_question (gchar * question, GCallback handler, gpointer data);
   void unselect_all_atoms (glwin * view);
@@ -32,7 +42,7 @@ If not, see <https://www.gnu.org/licenses/> */
   G_MODULE_EXPORT void confirm_selection (GtkDialog * dialog, gint response_id, gpointer data);
   G_MODULE_EXPORT void create_field (GtkWidget * widg, gpointer data);
 
-  struct atom_selection * duplicate_ogl_selection (struct atom_selection * old_sel);
+  atom_selection * duplicate_ogl_selection (atom_selection * old_sel);
 
 */
 
@@ -46,15 +56,15 @@ If not, see <https://www.gnu.org/licenses/> */
 
 extern void create_classical_force_field (int p, int f);
 extern void create_qm_input_file (int c, int p, int s);
-extern void create_new_project_using_data (struct atom_selection * selection);
+extern void create_new_project_using_data (atom_selection * selection);
 extern int selected_aspec;
 extern int num_bonds (int i);
 extern int num_angles (int i);
 extern int num_dihedrals (int i);
-extern struct selatom * new_selatom (int id, int sp);
+extern atom_in_selection * new_atom_in_selection (int id, int sp);
 
 GtkWidget * qm_assistant;
-struct project * qm_proj;
+project * qm_proj;
 glwin * qm_view;
 coord_info * qm_coord;
 GtkTextBuffer * qmbuffer[MAXDATAQM+2];
@@ -66,14 +76,14 @@ int icomb;
 
 gboolean selection_confirmed;
 
-/*
-*  G_MODULE_EXPORT void confirm_selection (GtkDialog * dialog, gint response_id, gpointer data)
-*
-*  Usage: confirm that the selection is good
-*
-*  GtkDialog * dialog : the GtkDialog sending the signal
-*  gint response_id   : the response id
-*  gpointer data      : the pointer if needed, not in this case
+/*!
+  \fn G_MODULE_EXPORT void confirm_selection (GtkDialog * dialog, gint response_id, gpointer data)
+
+  \brief confirm that the selection is good
+
+  \param dialog the GtkDialog sending the signal
+  \param response_id the response id
+  \param data the pointer if needed, not in this case
 */
 G_MODULE_EXPORT void confirm_selection (GtkDialog * dialog, gint response_id, gpointer data)
 {
@@ -81,14 +91,14 @@ G_MODULE_EXPORT void confirm_selection (GtkDialog * dialog, gint response_id, gp
   destroy_this_dialog (dialog);
 }
 
-/*
-*  void field_question (gchar * question, GCallback handler, gpointer data)
-*
-*  Usage: ask the use to confirm something
-*
-*  gchar * question  : the text to display
-*  GCallback handler : the callback to use
-*  gpointer data     : the data to transmit to the callback
+/*!
+  \fn void field_question (gchar * question, GCallback handler, gpointer data)
+
+  \brief ask the use to confirm something
+
+  \param question the text to display
+  \param handler the callback to use
+  \param data the data to transmit to the callback
 */
 void field_question (gchar * question, GCallback handler, gpointer data)
 {
@@ -99,18 +109,18 @@ void field_question (gchar * question, GCallback handler, gpointer data)
   run_this_gtk_dialog (dialog, handler, data);
 }
 
-/*
-*  struct atom_selection * duplicate_ogl_selection (struct atom_selection * old_sel)
-*
-*  Usage: copy an atom selection
-*
-*  struct atom_selection * old_sel : the atom selection to copy
+/*!
+  \fn atom_selection * duplicate_ogl_selection (atom_selection * old_sel)
+
+  \brief copy an atom selection
+
+  \param old_sel the atom selection to copy
 */
-struct atom_selection * duplicate_ogl_selection (struct atom_selection * old_sel)
+atom_selection * duplicate_ogl_selection (atom_selection * old_sel)
 {
   int i, j;
-  struct selatom * at, * bt;
-  struct atom_selection * new_sel = g_malloc0 (sizeof*new_sel);
+  atom_in_selection * at, * bt;
+  atom_selection * new_sel = g_malloc0 (sizeof*new_sel);
   if (! old_sel -> selected) return new_sel;
   new_sel -> selected = old_sel -> selected;
   at = old_sel -> first;
@@ -118,13 +128,13 @@ struct atom_selection * duplicate_ogl_selection (struct atom_selection * old_sel
   {
     if (! i)
     {
-      new_sel -> first = new_selatom (at -> id, at -> sp);
+      new_sel -> first = new_atom_in_selection (at -> id, at -> sp);
       bt = new_sel -> first;
       new_sel -> last = NULL;
     }
     else
     {
-      bt -> next = new_selatom (at -> id, at -> sp);
+      bt -> next = new_atom_in_selection (at -> id, at -> sp);
       bt -> next -> prev = bt;
       bt = bt -> next;
     }
@@ -162,17 +172,17 @@ struct atom_selection * duplicate_ogl_selection (struct atom_selection * old_sel
   return new_sel;
 }
 
-/*
-*  void unselect_all_atoms (glwin * view)
-*
-*  Usage: remove all atom(s) from selection
-*
-*  glwin * view : the glwin the selection comes from
+/*!
+  \fn void unselect_all_atoms (glwin * view)
+
+  \brief remove all atom(s) from selection
+
+  \param view the glwin the selection comes from
 */
 void unselect_all_atoms (glwin * view)
 {
   int i, j, k;
-  struct project * this_proj = get_project_by_id (view -> proj);
+  project * this_proj = get_project_by_id (view -> proj);
   for (i=0; i<2; i++)
   {
     save_all_selections (view, i);
@@ -198,24 +208,24 @@ void unselect_all_atoms (glwin * view)
   init_default_shaders (view);
 }
 
-/*
-*  void restore_ogl_selection (glwin * view)
-*
-*  Usage: restore a saved atom selection
-*
-*  glwin * view : the glwin to restore the selection to
+/*!
+  \fn void restore_ogl_selection (glwin * view)
+
+  \brief restore a saved atom selection
+
+  \param view the glwin to restore the selection to
 */
 void restore_ogl_selection (glwin * view)
 {
   int i, j, k, l;
-  struct project * this_proj = get_project_by_id (view -> proj);
+  project * this_proj = get_project_by_id (view -> proj);
   unselect_all_atoms (view);
   for (i=0; i<2; i++)
   {
     view -> anim -> last -> img -> selected[i] = duplicate_ogl_selection (view -> tmp_sel[i]);
     if (view -> anim -> last -> img -> selected[i] -> selected)
     {
-      struct selatom * at = view -> anim -> last -> img -> selected[i] -> first;
+      atom_in_selection * at = view -> anim -> last -> img -> selected[i] -> first;
       while (at)
       {
         for (j=0; j<this_proj -> steps; j++)
@@ -244,17 +254,17 @@ void restore_ogl_selection (glwin * view)
   }
 }
 
-/*
-*  void preserve_ogl_selection (glwin * view)
-*
-*  Usage: copy the atom selection, so that it can be re-used once the input assistant is closed.
-*
-*  glwin * view : the glwin the selection comes from
+/*!
+  \fn void preserve_ogl_selection (glwin * view)
+
+  \brief copy the atom selection, so that it can be re-used once the input assistant is closed.
+
+  \param view the glwin the selection comes from
 */
 void preserve_ogl_selection (glwin * view)
 {
   int h, i, j, k, l;
-  struct project * this_proj = get_project_by_id (view -> proj);
+  project * this_proj = get_project_by_id (view -> proj);
   h = view -> anim -> last -> img -> step;
   k = 0;
   for (i=0; i<2; i++)
@@ -287,13 +297,13 @@ void preserve_ogl_selection (glwin * view)
 
 extern char * input_types[NINPUTS];
 
-/*
-*  G_MODULE_EXPORT void create_field (GtkWidget * widg, gpointer data)
-*
-*  Usage: start an input creation assistant
-*
-*  GtkWidget * widg : the GtkWidget sending the signal
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void create_field (GtkWidget * widg, gpointer data)
+
+  \brief start an input creation assistant
+
+  \param widg the GtkWidget sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void create_field (GtkWidget * widg, gpointer data)
 {

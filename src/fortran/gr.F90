@@ -1,15 +1,22 @@
-! This file is part of Atomes.
+! This file is part of the 'atomes' software.
 !
-! Atomes is free software: you can redistribute it and/or modify it under the terms
+! 'atomes' is free software: you can redistribute it and/or modify it under the terms
 ! of the GNU Affero General Public License as published by the Free Software Foundation,
 ! either version 3 of the License, or (at your option) any later version.
 !
-! Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+! 'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 ! without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ! See the GNU General Public License for more details.
 !
-! You should have received a copy of the GNU Affero General Public License along with Atomes.
+! You should have received a copy of the GNU Affero General Public License along with 'atomes'.
 ! If not, see <https://www.gnu.org/licenses/>
+!
+! Copyright (C) 2022-2024 by CNRS and University of Strasbourg
+!
+!>
+!! @file gr.F90
+!! @short g(r) analysis: direct real space calculation
+!! @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
 
 INTEGER (KIND=c_int) FUNCTION g_of_r (NDR, DTR, FCR) BIND (C,NAME='g_of_r_')
 
@@ -292,7 +299,6 @@ SUML=SUML*SUML
 XSUML=XSUML*XSUML
 
 ! Attention bi(NSCATTL(i) dans le code) en fm et bi² en barn = fm*fm*1e-2 = 1e-24cm²
-
 do i=1, NDR
   do j=1, NSP
     do k=1, NSP

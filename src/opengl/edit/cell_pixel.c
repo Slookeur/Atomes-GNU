@@ -1,37 +1,46 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file cell_pixel.c
+* @short Functions to create the pixel debugging tab for the cell edition window \n
+         This is only used when DEBUG option is activated at build time
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'cell_pixel.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to create the pixel debugging tab for the cell edition window
+ - The functions to create the pixel debugging tab for the cell edition window
    This is only used when DEBUG option is activated at build time
 
 *
-*  List of subroutines:
+* List of functions:
 
   void pix_info_ (int * na, int * nb, int * nc);
   void send_pix_info_ (int * p, int listp[27], int * ngb);
-  void update_pix_table (struct project * this_proj);
+  void update_pix_table (project * this_proj);
 
   G_MODULE_EXPORT void set_pix (GtkEntry * res, gpointer data);
 
   GtkWidget * create_css_label (gchar * str, int id);
-  GtkWidget * attach_grid (struct project * this_proj, int init);
-  GtkWidget * pixels_tab (struct project * this_proj);
+  GtkWidget * attach_grid (project * this_proj, int init);
+  GtkWidget * pixels_tab (project * this_proj);
 
 */
 
@@ -39,14 +48,14 @@ If not, see <https://www.gnu.org/licenses/> */
 
 #include "cell_edit.h"
 
-/*
-*  void pix_info_ (int * na, int * nb, int * nc)
-*
-*  Usage: allocate pixel data pointer from Fortran90
-*
-*  int * na : x size
-*  int * nb : y size
-*  int * nc : z size
+/*!
+  \fn void pix_info_ (int * na, int * nb, int * nc)
+
+  \brief allocate pixel data pointer from Fortran90
+
+  \param na x size
+  \param nb y size
+  \param nc z size
 */
 void pix_info_ (int * na, int * nb, int * nc)
 {
@@ -56,14 +65,14 @@ void pix_info_ (int * na, int * nb, int * nc)
   active_project -> pixels = allocdint (active_project -> pix[0]*active_project -> pix[1]*active_project -> pix[2],27);
 }
 
-/*
-*  void send_pix_info_ (int * p, int listp[27], int * ngb)
-*
-*  Usage: retrieve pixel information from Fortran90
-*
-*  int * p       : the pixel id
-*  int listp[27] : the neighbor list for pixel id
-*  int * ngb     : the number of neighbor for pixel id
+/*!
+  \fn void send_pix_info_ (int * p, int listp[27], int * ngb)
+
+  \brief retrieve pixel information from Fortran90
+
+  \param p the pixel id
+  \param listp the neighbor list for pixel id
+  \param ngb the number of neighbor for pixel id
 */
 void send_pix_info_ (int * p, int listp[27], int * ngb)
 {
@@ -74,38 +83,48 @@ void send_pix_info_ (int * p, int listp[27], int * ngb)
   }
 }
 
-/*
-*  GtkWidget * create_css_label (gchar * str, int id)
-*
-*  Usage: create CSS label
-*
-*  gchar * str : the string
-*  int id      : 0 = white, 1 = yellow
+/*!
+  \fn GtkWidget * create_css_label (gchar * str, int id)
+
+  \brief create CSS label
+
+  \param str the string
+  \param id 0 = white, 1 = yellow
 */
 GtkWidget * create_css_label (gchar * str, int id)
 {
   gchar * colo[2] = {"white", "yellow"};
-  gchar * backcol = g_strdup_printf ("label#color {\n"
-                                     "  background-color: blue;\n"
-                                     "  color: %s;\n"
-                                     "}", colo[id]);
+  gchar * backcol;
+  if (id)
+  {
+    backcol = g_strdup_printf ("label#icolor {\n"
+                               "  background-color: red;\n"
+                               "  color: %s;\n}", colo[id]);
+  }
+  else
+  {
+    backcol = g_strdup_printf ("label#color {\n"
+                               "  background-color: blue;\n"
+                               "  color: %s;\n}", colo[id]);
+
+  }
   provide_gtk_css (backcol);
   g_free (backcol);
   GtkWidget * lab = markup_label(str, 50, 50, 0.5, 0.5);
-  gtk_widget_set_name (lab, "color");
+  gtk_widget_set_name (lab, (id) ? "icolor" : "color");
   gtk_widget_show (lab);
   return lab;
 }
 
-/*
-*  GtkWidget * attach_grid (struct project * this_proj, int init)
-*
-*  Usage: create pixel grid
-*
-*  struct project * this_proj : the target project
-*  int init                   : the target pixel
+/*!
+  \fn GtkWidget * attach_grid (project * this_proj, int init)
+
+  \brief create pixel grid
+
+  \param this_proj the target project
+  \param init the target pixel
 */
-GtkWidget * attach_grid (struct project * this_proj, int init)
+GtkWidget * attach_grid (project * this_proj, int init)
 {
   GtkWidget * table = gtk_grid_new ();
   gchar * str;
@@ -150,14 +169,14 @@ GtkWidget * attach_grid (struct project * this_proj, int init)
   return table;
 }
 
-/*
-*  void update_pix_table (struct project * this_proj)
-*
-*  Usage: prepare pixel table widget
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn void update_pix_table (project * this_proj)
+
+  \brief prepare pixel table widget
+
+  \param this_proj the target project
 */
-void update_pix_table (struct project * this_proj)
+void update_pix_table (project * this_proj)
 {
   int i;
   int pix[3];
@@ -184,7 +203,7 @@ void update_pix_table (struct project * this_proj)
   pix[1] *= (this_proj -> pix[0]*this_proj -> pix[1]);
 
   // Seed for top grid
-  if (this_proj -> actif_pix >= this_proj -> pix[0]*this_proj -> pix[1]*(this_proj -> pix[2]-1))
+  if (this_proj -> actif_pix > this_proj -> pix[0]*this_proj -> pix[1]*(this_proj -> pix[2]-1))
   {
     pix[2] = 0;
   }
@@ -197,23 +216,23 @@ void update_pix_table (struct project * this_proj)
   for (i=0; i<3; i++)
   {
     this_proj -> pix_tab[i] = attach_grid (this_proj, pix[i]);
-    add_box_child_start (GTK_ORIENTATION_HORIZONTAL, this_proj -> pix_box, this_proj -> pix_tab[i], FALSE, FALSE, 20);
+    add_box_child_start (GTK_ORIENTATION_VERTICAL, this_proj -> pix_box, this_proj -> pix_tab[i], FALSE, FALSE, 20);
   }
   show_the_widgets (this_proj -> pix_box);
 }
 
-/*
-*  G_MODULE_EXPORT void set_pix (GtkEntry * res, gpointer data)
-*
-*  Usage: set pixel id callback
-*
-*  GtkEntry * res : the GtkEntry sending the signal
-*  gpointer data  : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void set_pix (GtkEntry * res, gpointer data)
+
+  \brief set pixel id callback
+
+  \param res the GtkEntry sending the signal
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void set_pix (GtkEntry * res, gpointer data)
 {
   int id = GPOINTER_TO_INT (data);
-  struct project * this_proj = get_project_by_id (id);
+  project * this_proj = get_project_by_id (id);
   const gchar * m = entry_get_text (res);
   double v = atof(m);
   int p = (int)v;
@@ -226,29 +245,29 @@ G_MODULE_EXPORT void set_pix (GtkEntry * res, gpointer data)
   update_pix_table (this_proj);
 }
 
-/*
-*  GtkWidget * pixels_tab (struct project * this_proj)
-*
-*  Usage: create the PBC pixels checking tab
-*
-*  struct project * this_proj : the target project
+/*!
+  \fn GtkWidget * pixels_tab (project * this_proj)
+
+  \brief create the PBC pixels checking tab
+
+  \param this_proj the target project
 */
-GtkWidget * pixels_tab (struct project * this_proj)
+GtkWidget * pixels_tab (project * this_proj)
 {
-  GtkWidget * layout = create_layout (700, 750);
-  GtkWidget * vbox = add_vbox_to_layout (layout, -1, -1);
+  GtkWidget * vbox = create_vbox (BSEP);
   GtkWidget * hbox = create_hbox (0);
-  add_box_child_start (GTK_ORIENTATION_VERTICAL, vbox, hbox, FALSE, FALSE, 5);
   gchar * str = g_strdup_printf ("\tSelect pixel to check, from 1 to %d:", this_proj -> pix[0]*this_proj -> pix[1]*this_proj->pix[2]);
   add_box_child_start (GTK_ORIENTATION_HORIZONTAL, hbox, markup_label(str, -1, -1, 0.0, 0.5), FALSE, FALSE, 10);
   g_free (str);
   add_box_child_start (GTK_ORIENTATION_HORIZONTAL, hbox, create_entry(G_CALLBACK(set_pix), 100, 15, FALSE, GINT_TO_POINTER(this_proj -> id)), FALSE, FALSE, 10);
+  add_box_child_start (GTK_ORIENTATION_VERTICAL, vbox, hbox, FALSE, FALSE, 5);
+  GtkWidget * scroll = create_scroll (vbox, 700, 350, GTK_SHADOW_ETCHED_IN);
   this_proj -> actif_pix = 1;
-  this_proj -> pix_box = create_hbox (0);
-  add_box_child_start (GTK_ORIENTATION_VERTICAL, vbox, this_proj -> pix_box, FALSE, FALSE, 5);
+  this_proj -> pix_box = create_vbox (0);
   this_proj -> pix_tab[0] = this_proj -> pix_tab[1] = this_proj -> pix_tab[2] = NULL;
   update_pix_table (this_proj);
-  return layout;
+  add_container_child (CONTAINER_SCR, scroll, this_proj -> pix_box);
+  return vbox;
 }
 
 #endif // DEBUG

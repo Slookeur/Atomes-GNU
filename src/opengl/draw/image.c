@@ -1,26 +1,34 @@
-/* This file is part of Atomes.
+/* This file is part of the 'atomes' software
 
-Atomes is free software: you can redistribute it and/or modify it under the terms
+'atomes' is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
-Atomes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+'atomes' is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along with Atomes.
-If not, see <https://www.gnu.org/licenses/> */
+You should have received a copy of the GNU Affero General Public License along with 'atomes'.
+If not, see <https://www.gnu.org/licenses/>
+
+Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
+
+/*!
+* @file image.c
+* @short Functions to render an image from the OpenGL window
+* @author Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+*/
 
 /*
 * This file: 'image.c'
 *
-*  Contains:
+* Contains:
 *
 
- - The subroutines to render an image from the OpenGL window
+ - The functions to render an image from the OpenGL window
 
 *
-*  List of subroutines:
+* List of functions:
 
   void render_image (glwin * view, video_options * iopts);
 
@@ -61,27 +69,27 @@ extern void init_frame_buffer (int x, int y);
 extern void close_frame_buffer ();
 
 #ifdef GTK4
-/*
-*  G_MODULE_EXPORT void run_render_image (GtkNativeDialog * info, gint response_id, gpointer data)
-*
-*  Usage: render an image from the OpenGL window - running the dialog
-*
-*  GtkNativeDialog * info : the GtkNativeDialog sending the signal
-*  gint response_id       : the response id
-*  gpointer data          : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void run_render_image (GtkNativeDialog * info, gint response_id, gpointer data)
+
+  \brief render an image from the OpenGL window - running the dialog
+
+  \param info the GtkNativeDialog sending the signal
+  \param response_id the response id
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void run_render_image (GtkNativeDialog * info, gint response_id, gpointer data)
 {
   GtkFileChooser * chooser = GTK_FILE_CHOOSER((GtkFileChooserNative *)info);
 #else
-/*
-*  G_MODULE_EXPORT void run_render_image (GtkDialog * info, gint response_id, gpointer data)
-*
-*  Usage: render an image from the OpenGL window - running the dialog
-*
-*  GtkDialog * info : the GtkDialog sending the signal
-*  gint response_id : the response id
-*  gpointer data    : the associated data pointer
+/*!
+  \fn G_MODULE_EXPORT void run_render_image (GtkDialog * info, gint response_id, gpointer data)
+
+  \brief render an image from the OpenGL window - running the dialog
+
+  \param info the GtkDialog sending the signal
+  \param response_id the response id
+  \param data the associated data pointer
 */
 G_MODULE_EXPORT void run_render_image (GtkDialog * info, gint response_id, gpointer data)
 {
@@ -97,7 +105,7 @@ G_MODULE_EXPORT void run_render_image (GtkDialog * info, gint response_id, gpoin
     destroy_this_dialog (info);
 #endif
     init_frame_buffer (iopts -> video_res[0], iopts -> video_res[1]);
-    struct project * this_proj = get_project_by_id (iopts -> proj);
+    project * this_proj = get_project_by_id (iopts -> proj);
     glwin * view = this_proj -> modelgl;
     init_opengl (view);
     int i, x, y, q;
@@ -145,13 +153,13 @@ G_MODULE_EXPORT void run_render_image (GtkDialog * info, gint response_id, gpoin
   }
 }
 
-/*
-*  void render_image (glwin * view, video_options * iopts)
-*
-*  Usage: render an image from the OpenGL window - prepare the dialog
-*
-*  glwin * view          : the target glwin
-*  video_options * iopts : the rendering options
+/*!
+  \fn void render_image (glwin * view, video_options * iopts)
+
+  \brief render an image from the OpenGL window - prepare the dialog
+
+  \param view the target glwin
+  \param iopts the rendering options
 */
 void render_image (glwin * view, video_options * iopts)
 {
