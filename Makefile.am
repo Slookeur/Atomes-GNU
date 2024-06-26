@@ -51,7 +51,7 @@ install-data-local:
 	fi
 	$(INSTALL_DATA) $(srcdir)/metadata/atomes.desktop  $(atomes_desktopdir)/atomes.desktop
 # Finalize
-	touch --no-create $(atomes_iconsdir)/pixmaps
+	touch -c $(atomes_iconsdir)
 	if [ -u `which gtk-update-icon-cache` ]; then \
 	  	gtk-update-icon-cache -q $(atomes_iconsdir); \
 	fi
@@ -74,7 +74,7 @@ uninstall-local:
 	-rm -f $(atomes_mimedir)/atomes-mime.xml
 	-rm -f $(atomes_bashdir)/atomes
 	-rmdir $(atomes_docdir)
-	touch --no-create $(atomes_iconsdir)
+	touch -c $(atomes_iconsdir)
 	if [ -u `which gtk-update-icon-cache` ]; then \
 		gtk-update-icon-cache -q $(atomes_iconsdir); \
 	fi
