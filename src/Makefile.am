@@ -13,10 +13,10 @@ OpenMP_FLAGS = -DOPENMP -fopenmp
 AM_LDFLAGS = $(OpenMP_FLAGS)
 
 # Use AM_CPPFLAGS to define additional preprocessor flags:
-if NATIVE_WIN32
+if WINDOWS
 AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) 
 else
-AM_CPPFLAGS = \
+PACKAGE_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_LIB_DIR=\""$(datadir)/atomes/library"\" \
 	-DPACKAGE_LOGO=\""$(datadir)/atomes/pixmaps/logo.png"\" \
@@ -76,8 +76,12 @@ AM_CPPFLAGS = \
 	-DPACKAGE_SGOF=\""$(datadir)/atomes/pixmaps/bravais/Orthorhombic-F.png"\" \
 	-DPACKAGE_SGMP=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-P.png"\" \
 	-DPACKAGE_SGMI=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-I.png"\" \
-	-DPACKAGE_SGTC=\""$(datadir)/atomes/pixmaps/bravais/Triclinic.png"\" \
-	-DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS)
+	-DPACKAGE_SGTC=\""$(datadir)/atomes/pixmaps/bravais/Triclinic.png"\"
+if LINUX
+AM_CPPFLAGS = -DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) $(PACKAGE_CPPFLAGS)
+else
+AM_CPPFLAGS = -DOSX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) $(PACKAGE_CPPFLAGS)
+endif
 endif
 
 # Use AM_FFLAGS to define additional Fortran 90 flags:
@@ -402,7 +406,7 @@ atomes_SOURCES = \
 	$(atomes_curve) \
 	$(atomes_opengl)
 
-if NATIVE_WIN32
+if WINDOWS
   EXTRA_DIST = atomes.rc.in
   atomes_LDADD += winatomes.o
 endif

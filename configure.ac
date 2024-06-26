@@ -29,14 +29,54 @@ GETTEXT_PACKAGE=atomes
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 
+dnl ***************************************************************************
+dnl Check for the operating system
+dnl ***************************************************************************
+
+AC_CANONICAL_HOST
+
+build_linux=no
+build_windows=no
+build_mac=no
+
+# Detect the target system
+case "${host_os}" in
+    linux*)
+        build_linux=yes
+	echo "Building Linux application"
+        ;;
+    cygwin*|mingw*)
+        build_windows=yes
+	echo "Building Windows application"
+        ;;
+    darwin*)
+        build_mac=yes
+	echo "Building macOS application"
+        ;;
+    *)
+        AC_MSG_ERROR(["OS $host_os is not supported"])
+        ;;
+esac
+
+# Pass the conditionals to automake
+AM_CONDITIONAL([LINUX], [test "$build_linux" = "yes"])
+AM_CONDITIONAL([WINDOWS], [test "$build_windows" = "yes"])
+AM_CONDITIONAL([OSX], [test "$build_mac" = "yes"])
+
+if test "$build_windows" = "yes"; then
+  AC_CHECK_TOOL([WINDRES], [windres], [no])
+  if test "$WINDRES" = no; then
+    AC_MSG_ERROR([*** Could not find an implementation of windres in your PATH.])
+  fi
+fi
 
 dnl ***************************************************************************
 dnl Check for utilities
 dnl ***************************************************************************
-AC_CHECK_PROG([PKG_CONFIG], [pkg-config], [pkg-config], [no])
-AC_CHECK_PROG([UP_MIME], [update-mime-database], [update-mime-database], [no])
-AC_CHECK_PROG([UP_DESKTOP], [update-desktop-database], [update-desktop-database], [no])
-AC_CHECK_PROG([UP_APPSTREAM], [appstream-util], [appstream-util], [no])
+AC_CHECK_PROG([PKG_CONFIG], [pkg-config], [yes], [no])
+AC_CHECK_PROG([UP_MIME], [update-mime-database], [yes], [no])
+AC_CHECK_PROG([UP_DESKTOP], [update-desktop-database], [yes], [no])
+AC_CHECK_PROG([UP_APPSTREAM], [appstream-util], [yes], [no])
 
 
 dnl ***************************************************************************
@@ -44,6 +84,10 @@ dnl Check for required librairies
 dnl ***************************************************************************
 
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.16])
+dnl GTK3 for OSX requires the package gtk-mac-integration
+if test "$build_mac" = "yes"; then
+  PKG_CHECK_MODULES(INTEGRATION, [gtk-mac-integration])
+fi
 dnl PKG_CHECK_MODULES(GTK, [gtk4 >= 4.6])
 PKG_CHECK_MODULES(LIBXML2, [libxml-2.0 >= 2.4.0])
 PKG_CHECK_MODULES(PANGOFT2, [pangoft2])
@@ -102,39 +146,6 @@ AX_CHECK_COMPILER_FLAGS([$FCFLAGS])
 AC_FC_LIBRARY_LDFLAGS
 AC_FC_FREEFORM
 AC_LANG_POP([Fortran])
-
-dnl ***************************************************************************
-dnl Check for windows
-dnl ***************************************************************************
-
-case $host in
-  *mingw* | pw32* | cygwin*)
-    platform_win32=yes
-    echo "Building win32 application"
-    ;;
-  *)
-    platform_win32=no
-    ;;
-esac
-AM_CONDITIONAL(PLATFORM_WIN32, test x"$platform_win32" = "xyes")
-
-case $host in
-  *mingw*)
-    native_win32=yes
-    echo "Building native win32 application"
-    ;;
-  *)
-    native_win32=no
-    ;;
-esac
-AM_CONDITIONAL(NATIVE_WIN32, test x"$native_win32" = "xyes")
-
-if test "$native_win32" = "yes"; then
-  AC_CHECK_TOOL(WINDRES, windres, no)
-  if test "$WINDRES" = no; then
-    AC_MSG_ERROR([*** Could not find an implementation of windres in your PATH.])
-  fi
-fi
 
 cat lic > src/version.h
 echo "#define FC \""$FC"\"" >> src/version.h
