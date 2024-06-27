@@ -490,9 +490,12 @@ void open_this_data_file (int file_type, gchar * file_name)
 */
 G_MODULE_EXPORT void run_program (GApplication * app, gpointer data)
 {
+GtkSettings * default_settings = gtk_settings_get_default ();
 #ifdef GTK3
-  GtkSettings * default_settings = gtk_settings_get_default ();
   g_object_set (default_settings, "gtk-button-images", TRUE, NULL);
+  g_object_set (default_settings, "gtk-application-prefer-dark-theme", TRUE, NULL);
+#else
+  g_object_set (default_settings, "gtk-application-prefer-dark-theme", TRUE, NULL);
 #endif
 #ifdef G_OS_WIN32
 #ifdef GTK3
@@ -728,6 +731,8 @@ int main (int argc, char *argv[])
 #else
     AtomesApp = gtk_application_new (g_strdup_printf ("atomes.prog-%d", (int)clock()), G_APPLICATION_DEFAULT_FLAGS);
 #endif
+    GError * error = NULL;
+    g_application_register (G_APPLICATION(AtomesApp), NULL, & error);
     g_signal_connect (G_OBJECT(AtomesApp), "activate", G_CALLBACK(run_program), NULL);
     int status = g_application_run (G_APPLICATION (AtomesApp), 0, NULL);
     g_object_unref (AtomesApp);

@@ -477,7 +477,7 @@ void insert_cif_preview ()
   str = g_strdup_printf ("<b>%s</b>", );
   gtk_grid_attach (GTK_GRID (grid), markup_label(str, 100, 30, 0.0, 0.5), 3, 5, 11, 1);
 
-  gtk_widget_show_all (cif_preview_box);
+  show_the_widgets_all (cif_preview_box);
 }
 
 /*!
@@ -801,7 +801,7 @@ int build_crystal_from_cif_database (project * this_proj)
   gtk_list_store_clear (cif_store);
   fill_cif_tree (cif_store);
   gtk_tree_selection_select_iter (cifselect[3], & first_cif_iter);
-  gtk_widget_show_all (clib);
+  show_the_widgets_all (clib);
   prepare_cif_preview (0);
   this_proj -> modelgl -> nth_copy = 0;
   switch (gtk_dialog_run (GTK_DIALOG(clib)))

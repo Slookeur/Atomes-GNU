@@ -88,8 +88,8 @@ G_MODULE_EXPORT void set_box_axis_style (GtkWidget * widg, gpointer data)
   {
     this_proj -> modelgl -> anim -> last -> img -> box_axis[o] = NONE - 1;
     gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_box_axis[o][l], FALSE);
-    gtk_widget_show (this_proj -> modelgl -> ogl_box_axis[o][3+2*(m-1)]);
-    gtk_widget_hide (this_proj -> modelgl -> ogl_box_axis[o][3+2*(l-1)]);
+    show_the_widgets (this_proj -> modelgl -> ogl_box_axis[o][3+2*(m-1)]);
+    hide_the_widgets (this_proj -> modelgl -> ogl_box_axis[o][3+2*(l-1)]);
     if (widg != this_proj -> modelgl -> ogl_box_axis[o][(k == NONE) ? 1 : m])
     {
       gtk_check_menu_item_set_active ((GtkCheckMenuItem *)this_proj -> modelgl -> ogl_box_axis[o][(k == NONE) ? 1 : m], TRUE);

@@ -175,7 +175,7 @@ void set_legend_box_style (gpointer data)
   legend_style_area = create_image_from_data (IMG_SURFACE, (gpointer)pix);
   cairo_surface_destroy (pix);
   widget_set_sensitive (legend_style_area, this_proj -> curves[b][c] -> show_legend_box);
-  gtk_widget_show (legend_style_area);
+  show_the_widgets (legend_style_area);
 #ifdef GTK4
   gtk_widget_set_hexpand (legend_style_area, TRUE);
 #endif

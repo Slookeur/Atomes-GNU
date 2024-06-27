@@ -505,6 +505,6 @@ G_MODULE_EXPORT void window_sequencer (GtkWidget * widg, gpointer data)
   }
   else
   {
-    gtk_widget_show (view -> player -> win);
+    show_the_widgets (view -> player -> win);
   }
 }

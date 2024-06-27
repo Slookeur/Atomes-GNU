@@ -1168,12 +1168,12 @@ gchar * page_name_cp2k (int p)
 */
 gboolean cp2k_with_motion ()
 {
-  if (GTK_IS_WIDGET(motion_box[0])) gtk_widget_hide (motion_box[0]);
-  if (GTK_IS_WIDGET(motion_box[1])) gtk_widget_hide (motion_box[1]);
+  if (GTK_IS_WIDGET(motion_box[0])) hide_the_widgets (motion_box[0]);
+  if (GTK_IS_WIDGET(motion_box[1])) hide_the_widgets (motion_box[1]);
   if (tmp_cp2k -> opts[CP2RUN] == 2.0 || tmp_cp2k -> opts[CP2RUN] == 3.0 || tmp_cp2k -> opts[CP2RUN] == 6.0)
   {
     int i = (tmp_cp2k -> opts[CP2RUN] == 2.0) ? 1 : 0;
-    if (GTK_IS_WIDGET(motion_box[i])) gtk_widget_show (motion_box[i]);
+    if (GTK_IS_WIDGET(motion_box[i])) show_the_widgets (motion_box[i]);
     return TRUE;
   }
   else

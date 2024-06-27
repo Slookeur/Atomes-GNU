@@ -248,8 +248,8 @@ G_MODULE_EXPORT void edition_win (GtkWidget * widg, gpointer data)
 
   for (i=1; i<6; i++)
   {
-    if (i < 3) gtk_widget_hide (this_proj -> modelgl -> cell_win -> slab_hbox[i]);
-    gtk_widget_hide (this_proj -> modelgl -> cell_win -> slab_box[i]);
+    if (i < 3) hide_the_widgets (this_proj -> modelgl -> cell_win -> slab_hbox[i]);
+    hide_the_widgets (this_proj -> modelgl -> cell_win -> slab_box[i]);
   }
   int page = id -> b;
   gtk_notebook_set_current_page (GTK_NOTEBOOK (this_proj -> modelgl -> cell_win -> notebook), page);

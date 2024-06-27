@@ -583,11 +583,11 @@ G_MODULE_EXPORT void atom_properties (GSimpleAction * action, GVariant * paramet
     show_the_widgets (this_proj -> modelgl -> model_win[atom_or_clone] -> win);
     if (this_proj -> natomes < 10000)
     {
-      gtk_widget_hide (this_proj -> modelgl -> search_widg[atom_or_clone] -> info[1]);
+      hide_the_widgets (this_proj -> modelgl -> search_widg[atom_or_clone] -> info[1]);
     }
     else
     {
-      gtk_widget_hide (this_proj -> modelgl -> search_widg[atom_or_clone] -> id_box);
+      hide_the_widgets (this_proj -> modelgl -> search_widg[atom_or_clone] -> id_box);
     }
   }
   if (GTK_IS_WIDGET(this_proj -> modelgl -> model_win[atom_or_clone] -> win))

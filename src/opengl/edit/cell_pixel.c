@@ -112,7 +112,7 @@ GtkWidget * create_css_label (gchar * str, int id)
   g_free (backcol);
   GtkWidget * lab = markup_label(str, 50, 50, 0.5, 0.5);
   gtk_widget_set_name (lab, (id) ? "icolor" : "color");
-  gtk_widget_show (lab);
+  show_the_widgets (lab);
   return lab;
 }
 

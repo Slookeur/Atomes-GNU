@@ -737,7 +737,7 @@ G_MODULE_EXPORT void set_so (GtkComboBox * box, gpointer data)
   cbuilder -> so_info = markup_label(frac_string(str), -1, -1, 0.5, 0.5);
   g_free (str);
   add_box_child_start (GTK_ORIENTATION_HORIZONTAL, cbuilder -> so_box, cbuilder -> so_info, FALSE, FALSE, 10);
-  gtk_widget_show (cbuilder -> so_info);
+  show_the_widgets (cbuilder -> so_info);
   cbuilder -> cell.sp_group -> sid = i;
   get_origin (cbuilder -> cell.sp_group);
 }
@@ -984,7 +984,7 @@ G_MODULE_EXPORT void set_cs (GtkComboBox * box, gpointer data)
   cbuilder -> bl_combo = create_bl_combo (i, data);
   add_box_child_start (GTK_ORIENTATION_HORIZONTAL, cbuilder -> bl_box, cbuilder -> bl_combo, FALSE, FALSE, 0);
   adjust_sg_combo (cbuilder, i, 0);
-  gtk_widget_show (cbuilder -> bl_combo);
+  show_the_widgets (cbuilder -> bl_combo);
 }
 
 #ifdef GTK4

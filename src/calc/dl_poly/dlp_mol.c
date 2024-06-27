@@ -130,7 +130,7 @@ void clean_up_molecules_info (gboolean usel)
     combo_mol[i] = destroy_this_widget (combo_mol[i]);
     combo_mol[i] = create_combo_mol (i);
     add_box_child_start (GTK_ORIENTATION_HORIZONTAL, mol_box[i], combo_mol[i], FALSE, FALSE, 10);
-    gtk_widget_show (combo_mol[i]);
+    show_the_widgets (combo_mol[i]);
     changed_mol_box (GTK_COMBO_BOX(combo_mol[i]), GINT_TO_POINTER(i+1));
   }
   set_mol_num_label ();

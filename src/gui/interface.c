@@ -424,7 +424,7 @@ G_MODULE_EXPORT gboolean leaving_question (GtkWidget * widget, GdkEvent * event,
   }
   else
   {
-    gtk_widget_show (MainWindow);
+    show_the_widgets (MainWindow);
   }
   return TRUE;
 }
@@ -655,10 +655,10 @@ gchar * cask (char * question,  char * lab, int id, char * old, GtkWidget * win)
 
   hboxa = create_hbox (0);
   add_box_child_start (GTK_ORIENTATION_VERTICAL, dialog_ask, hboxa, TRUE, TRUE, 0);
-  gtk_widget_show(hboxa);
+  show_the_widgets (hboxa);
   quest = gtk_label_new (lab);
   add_box_child_start (GTK_ORIENTATION_HORIZONTAL, hboxa, quest, TRUE, TRUE, 0);
-  gtk_widget_show(quest);
+  show_the_widgets (quest);
   answer = gtk_entry_new ();
   add_box_child_start (GTK_ORIENTATION_HORIZONTAL, hboxa, answer, TRUE, TRUE, 0);
   gtk_widget_set_size_request (answer, 50, -1);

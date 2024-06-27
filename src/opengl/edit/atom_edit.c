@@ -135,8 +135,8 @@ void clean_other_window_after_edit (project * this_proj)
         show_the_widgets (this_proj -> modelgl -> cell_win -> win);
         for (i=1; i<6; i++)
         {
-          if (i < 3) gtk_widget_hide (this_proj -> modelgl -> cell_win -> slab_hbox[i]);
-          gtk_widget_hide (this_proj -> modelgl -> cell_win -> slab_box[i]);
+          if (i < 3) hide_the_widgets (this_proj -> modelgl -> cell_win -> slab_hbox[i]);
+          hide_the_widgets (this_proj -> modelgl -> cell_win -> slab_box[i]);
         }
       }
     }
@@ -489,11 +489,11 @@ void prepare_atom_edition (gpointer data, gboolean visible)
       {
         if (this_proj -> modelgl -> search_widg[i+2] -> todo_size < 10000)
         {
-          gtk_widget_hide (this_proj -> modelgl -> search_widg[i+2] -> info[1]);
+          hide_the_widgets (this_proj -> modelgl -> search_widg[i+2] -> info[1]);
         }
         else
         {
-          gtk_widget_hide (this_proj -> modelgl -> search_widg[i+2] -> id_box);
+          hide_the_widgets (this_proj -> modelgl -> search_widg[i+2] -> id_box);
         }
       }
       widget_set_sensitive (gtk_notebook_get_nth_page(GTK_NOTEBOOK (this_proj -> modelgl -> atom_win -> notebook), i), this_proj -> natomes);

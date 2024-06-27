@@ -670,7 +670,7 @@ void apply_project (gboolean showtools)
     initcutoffs (active_chem, active_project -> nspec);
   }
   prep_model (active_project -> id);
-  if (showtools) gtk_widget_show (curvetoolbox);
+  if (showtools) show_the_widgets (curvetoolbox);
 }
 
 /*!
