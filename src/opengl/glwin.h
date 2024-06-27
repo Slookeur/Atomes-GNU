@@ -941,8 +941,10 @@ struct glwin
   GLXContext glcontext;
 #endif
   int pixels[2];
+
   int mouseX;
   int mouseY;
+  int mouseButton;
   int mouseAction;
   int mouseStatus;
   int nth_copy;
