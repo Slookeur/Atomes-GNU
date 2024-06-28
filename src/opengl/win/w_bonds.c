@@ -60,7 +60,7 @@ G_MODULE_EXPORT void update_bond_parameter (GtkEntry * res, gpointer data)
 {
   int id = GPOINTER_TO_INT(data);
   const gchar * n = entry_get_text (res);
-  double v = atof(n);
+  double v = string_to_double ((gpointer)n);
   int j, k, l, m;
   int a, b, s;
   s =  opengl_project -> nspec;

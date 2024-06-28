@@ -48,6 +48,7 @@ Copyright (C) 2022-2024 by CNRS and University of Strasbourg */
   double *** alloctdouble (int xal, int yal, int zal);
   double **** allocqdouble (int wal, int xal, int yal, int zal);
   double * duplicate_double (int num, double * old_val);
+  double string_to_double (gpointer string);
   double get_calc_time (struct timespec start, struct timespec stop);
 
   gboolean * allocbool (int  val);
@@ -623,6 +624,25 @@ double * duplicate_double (int num, double * old_val)
   int i;
   for (i=0; i<num; i++) new_val[i] = old_val[i];
   return new_val;
+}
+
+
+/*!
+  \fn double string_to_double (gpointer string)
+
+  \brief convert string to double
+
+  \param string the string to convert
+*/
+double string_to_double (gpointer string)
+{
+  char * endPtr = NULL;
+  double value = strtod ((char *)string, & endPtr);
+  if (endPtr == (char *)string)
+  {
+     g_print ("Error in string format: %s - value == %lf\n", endPtr, value);
+  }
+  return value;
 }
 
 /*!
