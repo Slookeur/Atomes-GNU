@@ -7,7 +7,11 @@ atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU
 LIBS_CFLAGS = $(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
 
 # To turn OpenMP on/off
-OpenMP_FLAGS = -DOPENMP -fopenmp
+if OPENMP
+OpenMP_FLAGS = -DOPENMP $(OPENMP_CFLAGS)
+else
+OpenMP_FLAGS = 
+endif
 
 # Use AM_LDFLAGS to define additional linker flags:
 AM_LDFLAGS = $(OpenMP_FLAGS)

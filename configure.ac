@@ -153,6 +153,10 @@ echo "#define FCFLAGS \""$FCFLAGS"\"" >> src/version.h
 echo "#define CC \""$CC"\"" >> src/version.h
 echo "#define CFLAGS \""$CFLAGS"\"" >> src/version.h
 
+AC_OPENMP
+AC_SUBST([OPENMP_CFLAGS])
+AM_CONDITIONAL([OPENMP], [test "${OPENMP_CFLAGS}" != ""])
+
 dnl Flatpak 
 AC_ARG_ENABLE([flatpak],
 	     [  --enable-flatpak        to build the Flatpak])
