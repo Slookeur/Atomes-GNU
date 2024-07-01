@@ -245,7 +245,7 @@ void action_to_plot (gpointer data)
   \brief curve menu edit action callback
 
   \param action the GAction sending the signal
-  \param parameter GVariant parameter of the GAction
+  \param parameter GVariant parameter of the GAction, if any
   \param data the associated data pointer
 */
 G_MODULE_EXPORT void curve_edit_menu_action (GSimpleAction * action, GVariant * parameter, gpointer data)
@@ -259,7 +259,7 @@ G_MODULE_EXPORT void curve_edit_menu_action (GSimpleAction * action, GVariant * 
   \brief curve menu add / remove action callback
 
   \param action the GAction sending the signal
-  \param parameter GVariant parameter of the GAction
+  \param parameter GVariant parameter of the GAction, if any
   \param data the associated data pointer
 */
 G_MODULE_EXPORT void curve_add_remove_menu_action (GSimpleAction * action, GVariant * parameter, gpointer data)
@@ -273,7 +273,7 @@ G_MODULE_EXPORT void curve_add_remove_menu_action (GSimpleAction * action, GVari
   \brief curve menu action callback
 
   \param action the GAction sending the signal
-  \param parameter GVariant parameter of the GAction
+  \param parameter GVariant parameter of the GAction, if any
   \param data the associated data pointer
 */
 G_MODULE_EXPORT void curve_menu_bar_action (GSimpleAction * action, GVariant * parameter, gpointer data)
