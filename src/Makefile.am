@@ -2,6 +2,13 @@
 bin_PROGRAMS = atomes
 
 atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS)
+if WINDOWS
+  EXTRA_DIST = ../misc/win/atomes.rc.in
+  atomes_LDADD += winatomes.o
+
+winatomes.o: atomes.rc
+	$(WINDRES) $< $@
+endif
 
 # Create a variable to store the CFLAGS for all the required libraries
 LIBS_CFLAGS = $(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
@@ -409,11 +416,3 @@ atomes_SOURCES = \
 	$(atomes_calc) \
 	$(atomes_curve) \
 	$(atomes_opengl)
-
-if WINDOWS
-  EXTRA_DIST = atomes.rc.in
-  atomes_LDADD += winatomes.o
-endif
-
-winatomes.o: atomes.rc
-	$(WINDRES) $< $@

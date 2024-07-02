@@ -13,7 +13,7 @@ If not, see <https://www.gnu.org/licenses/> */
 
 #include <winver.h>
 
-ATOMES_ICON		ICON		"../bin/atomes.ico"
+ATOMES_ICON		ICON		"../win/atomes.ico"
 
 VS_VERSION_INFO VERSIONINFO
   FILEVERSION    @ATOMES_MAJOR_VERSION@,@ATOMES_MINOR_VERSION@,@ATOMES_PATCH_VERSION@,0

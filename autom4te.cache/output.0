@@ -3673,14 +3673,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTK_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtk+-3.0 >= 3.16" 2>&1`
+                GTK_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtk+-3.0 >= 3.16" 2>&1`
         else
-	        GTK_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtk+-3.0 >= 3.16" 2>&1`
+                GTK_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtk+-3.0 >= 3.16" 2>&1`
         fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$GTK_PKG_ERRORS" >&5
+        # Put the nasty error message in config.log where it belongs
+        echo "$GTK_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (gtk+-3.0 >= 3.16) were not met:
+        as_fn_error $? "Package requirements (gtk+-3.0 >= 3.16) were not met:
 
 $GTK_PKG_ERRORS
 
@@ -3693,7 +3693,7 @@ See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-	{ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+        { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -3706,11 +3706,11 @@ See the pkg-config man page for more details.
 To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details" "$LINENO" 5; }        
 else
-	GTK_CFLAGS=$pkg_cv_GTK_CFLAGS
-	GTK_LIBS=$pkg_cv_GTK_LIBS
+        GTK_CFLAGS=$pkg_cv_GTK_CFLAGS
+        GTK_LIBS=$pkg_cv_GTK_LIBS
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-	
+        
 fi
 if test "$build_mac" = "yes"; then
   
@@ -3765,14 +3765,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        INTEGRATION_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtk-mac-integration" 2>&1`
+                INTEGRATION_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtk-mac-integration" 2>&1`
         else
-	        INTEGRATION_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtk-mac-integration" 2>&1`
+                INTEGRATION_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtk-mac-integration" 2>&1`
         fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$INTEGRATION_PKG_ERRORS" >&5
+        # Put the nasty error message in config.log where it belongs
+        echo "$INTEGRATION_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (gtk-mac-integration) were not met:
+        as_fn_error $? "Package requirements (gtk-mac-integration) were not met:
 
 $INTEGRATION_PKG_ERRORS
 
@@ -3785,7 +3785,7 @@ See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-	{ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+        { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -3798,11 +3798,11 @@ See the pkg-config man page for more details.
 To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details" "$LINENO" 5; }        
 else
-	INTEGRATION_CFLAGS=$pkg_cv_INTEGRATION_CFLAGS
-	INTEGRATION_LIBS=$pkg_cv_INTEGRATION_LIBS
+        INTEGRATION_CFLAGS=$pkg_cv_INTEGRATION_CFLAGS
+        INTEGRATION_LIBS=$pkg_cv_INTEGRATION_LIBS
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-	
+        
 fi
 fi
 
@@ -3857,14 +3857,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        LIBXML2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libxml-2.0 >= 2.4.0" 2>&1`
+                LIBXML2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libxml-2.0 >= 2.4.0" 2>&1`
         else
-	        LIBXML2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libxml-2.0 >= 2.4.0" 2>&1`
+                LIBXML2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libxml-2.0 >= 2.4.0" 2>&1`
         fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$LIBXML2_PKG_ERRORS" >&5
+        # Put the nasty error message in config.log where it belongs
+        echo "$LIBXML2_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (libxml-2.0 >= 2.4.0) were not met:
+        as_fn_error $? "Package requirements (libxml-2.0 >= 2.4.0) were not met:
 
 $LIBXML2_PKG_ERRORS
 
@@ -3877,7 +3877,7 @@ See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-	{ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+        { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -3890,11 +3890,11 @@ See the pkg-config man page for more details.
 To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details" "$LINENO" 5; }        
 else
-	LIBXML2_CFLAGS=$pkg_cv_LIBXML2_CFLAGS
-	LIBXML2_LIBS=$pkg_cv_LIBXML2_LIBS
+        LIBXML2_CFLAGS=$pkg_cv_LIBXML2_CFLAGS
+        LIBXML2_LIBS=$pkg_cv_LIBXML2_LIBS
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-	
+        
 fi
 
 pkg_failed=no
@@ -3948,14 +3948,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        PANGOFT2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "pangoft2" 2>&1`
+                PANGOFT2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "pangoft2" 2>&1`
         else
-	        PANGOFT2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "pangoft2" 2>&1`
+                PANGOFT2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "pangoft2" 2>&1`
         fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$PANGOFT2_PKG_ERRORS" >&5
+        # Put the nasty error message in config.log where it belongs
+        echo "$PANGOFT2_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (pangoft2) were not met:
+        as_fn_error $? "Package requirements (pangoft2) were not met:
 
 $PANGOFT2_PKG_ERRORS
 
@@ -3968,7 +3968,7 @@ See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-	{ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+        { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -3981,11 +3981,11 @@ See the pkg-config man page for more details.
 To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details" "$LINENO" 5; }        
 else
-	PANGOFT2_CFLAGS=$pkg_cv_PANGOFT2_CFLAGS
-	PANGOFT2_LIBS=$pkg_cv_PANGOFT2_LIBS
+        PANGOFT2_CFLAGS=$pkg_cv_PANGOFT2_CFLAGS
+        PANGOFT2_LIBS=$pkg_cv_PANGOFT2_LIBS
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-	
+        
 fi
 
 pkg_failed=no
@@ -4039,14 +4039,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        FFMPEG_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libavcodec libavformat libavutil libswscale" 2>&1`
+                FFMPEG_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libavcodec libavformat libavutil libswscale" 2>&1`
         else
-	        FFMPEG_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libavcodec libavformat libavutil libswscale" 2>&1`
+                FFMPEG_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libavcodec libavformat libavutil libswscale" 2>&1`
         fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$FFMPEG_PKG_ERRORS" >&5
+        # Put the nasty error message in config.log where it belongs
+        echo "$FFMPEG_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (libavcodec libavformat libavutil libswscale) were not met:
+        as_fn_error $? "Package requirements (libavcodec libavformat libavutil libswscale) were not met:
 
 $FFMPEG_PKG_ERRORS
 
@@ -4059,7 +4059,7 @@ See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-	{ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+        { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -4072,11 +4072,11 @@ See the pkg-config man page for more details.
 To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details" "$LINENO" 5; }        
 else
-	FFMPEG_CFLAGS=$pkg_cv_FFMPEG_CFLAGS
-	FFMPEG_LIBS=$pkg_cv_FFMPEG_LIBS
+        FFMPEG_CFLAGS=$pkg_cv_FFMPEG_CFLAGS
+        FFMPEG_LIBS=$pkg_cv_FFMPEG_LIBS
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-	
+        
 fi
 
 pkg_failed=no
@@ -4130,14 +4130,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GLU_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "glu" 2>&1`
+                GLU_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "glu" 2>&1`
         else
-	        GLU_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "glu" 2>&1`
+                GLU_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "glu" 2>&1`
         fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$GLU_PKG_ERRORS" >&5
+        # Put the nasty error message in config.log where it belongs
+        echo "$GLU_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (glu) were not met:
+        as_fn_error $? "Package requirements (glu) were not met:
 
 $GLU_PKG_ERRORS
 
@@ -4150,7 +4150,7 @@ See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-	{ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+        { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -4163,11 +4163,11 @@ See the pkg-config man page for more details.
 To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details" "$LINENO" 5; }        
 else
-	GLU_CFLAGS=$pkg_cv_GLU_CFLAGS
-	GLU_LIBS=$pkg_cv_GLU_LIBS
+        GLU_CFLAGS=$pkg_cv_GLU_CFLAGS
+        GLU_LIBS=$pkg_cv_GLU_LIBS
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-	
+        
 fi
 
 pkg_failed=no
@@ -4221,14 +4221,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        EPOXY_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "epoxy" 2>&1`
+                EPOXY_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "epoxy" 2>&1`
         else
-	        EPOXY_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "epoxy" 2>&1`
+                EPOXY_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "epoxy" 2>&1`
         fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$EPOXY_PKG_ERRORS" >&5
+        # Put the nasty error message in config.log where it belongs
+        echo "$EPOXY_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (epoxy) were not met:
+        as_fn_error $? "Package requirements (epoxy) were not met:
 
 $EPOXY_PKG_ERRORS
 
@@ -4241,7 +4241,7 @@ See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-	{ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+        { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -4254,11 +4254,11 @@ See the pkg-config man page for more details.
 To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details" "$LINENO" 5; }        
 else
-	EPOXY_CFLAGS=$pkg_cv_EPOXY_CFLAGS
-	EPOXY_LIBS=$pkg_cv_EPOXY_LIBS
+        EPOXY_CFLAGS=$pkg_cv_EPOXY_CFLAGS
+        EPOXY_LIBS=$pkg_cv_EPOXY_LIBS
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-	
+        
 fi
 
 # Checking for compilers

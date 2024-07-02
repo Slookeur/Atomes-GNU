@@ -563,6 +563,7 @@ top_srcdir = @top_srcdir@
 atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) \
 	$(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS) \
 	$(am__append_1)
+@WINDOWS_TRUE@EXTRA_DIST = ../misc/win/atomes.rc.in
 
 # Create a variable to store the CFLAGS for all the required libraries
 LIBS_CFLAGS = $(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
@@ -953,7 +954,6 @@ atomes_SOURCES = \
 	$(atomes_curve) \
 	$(atomes_opengl)
 
-@WINDOWS_TRUE@EXTRA_DIST = atomes.rc.in
 all: all-am
 
 .SUFFIXES:
@@ -1823,15 +1823,15 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
+
+@WINDOWS_TRUE@winatomes.o: atomes.rc
+@WINDOWS_TRUE@	$(WINDRES) $< $@
 $(patsubst %.F90,%.o,$(atomes_fortran_files)): $(patsubst %.F90,%.o,$(atomes_fortran_modules))
 
 clean: 
 	-rm -f *.mod
 	-rm -f */*.o
 	-rm -f */*/*.o
-
-winatomes.o: atomes.rc
-	$(WINDRES) $< $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

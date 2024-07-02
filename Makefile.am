@@ -2,6 +2,9 @@
 
 SUBDIRS = src data
 
+if OSX
+  atomes_bindir = $(DESTDIR)$(bindir)
+endif
 atomes_datadir = $(DESTDIR)$(datadir)
 atomes_pkgdatadir = $(DESTDIR)$(pkgdatadir)
 atomes_iconsdir = $(atomes_datadir)/pixmaps
@@ -62,13 +65,17 @@ install-data-local:
 		update-desktop-database $(atomes_desktopdir) &> /dev/null || :; \
 		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
 	fi
-	
+if OSX
+	mv $(atomes_bindir)/atomes $(atomes_bindir)/atomes-bin
+	$(INSTALL_PROGRAM) $(srcdir)/misc/macos/atomes.sh $(atomes_bindir)/atomes
+endif
+
 # Remove doc directordy on uninstall
 uninstall-local:
-	-rm -rf $(atomes_iconsdir)/atomes.svg
-	-rm -rf $(atomes_iconsdir)/atomes-workspace.svg
-	-rm -rf $(atomes_iconsdir)/atomes-project.svg
-	-rm -rf $(atomes_iconsdir)/atomes-coordinates.svg
+	-rm -f $(atomes_iconsdir)/atomes.svg
+	-rm -f $(atomes_iconsdir)/atomes-workspace.svg
+	-rm -f $(atomes_iconsdir)/atomes-project.svg
+	-rm -f $(atomes_iconsdir)/atomes-coordinates.svg
 	-rm -f $(atomes_desktopdir)/atomes.desktop
 	-rm -f $(atomes_metadir)/fr.ipcms.atomes.appdata.xml
 	-rm -f $(atomes_mimedir)/atomes-mime.xml
@@ -82,3 +89,6 @@ uninstall-local:
 		update-desktop-database $(atomes_desktopdir) &> /dev/null || :; \
 		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
 	fi
+if OSX
+	-rm -f $(atomes_bindir)/atomes-bin
+endif
