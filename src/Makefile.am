@@ -3,11 +3,10 @@ bin_PROGRAMS = atomes
 
 atomes_LDADD = $(LGTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS)
 if WINDOWS
-  EXTRA_DIST = ../misc/win/atomes.rc.in
   atomes_LDADD += winatomes.o
 
-winatomes.o: atomes.rc
-	$(WINDRES) $< $@
+winatomes.o: ../misc/win/atomes.rc
+	$(WINDRES) $< $@		
 endif
 
 # Create a variable to store the CFLAGS for all the required libraries

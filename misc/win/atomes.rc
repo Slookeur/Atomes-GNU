@@ -12,12 +12,13 @@ You should have received a copy of the GNU Affero General Public License along w
 If not, see <https://www.gnu.org/licenses/> */
 
 #include <winver.h>
+#include "../../config.h"
 
 ATOMES_ICON		ICON		"../win/atomes.ico"
 
 VS_VERSION_INFO VERSIONINFO
-  FILEVERSION    @ATOMES_MAJOR_VERSION@,@ATOMES_MINOR_VERSION@,@ATOMES_PATCH_VERSION@,0
-  PRODUCTVERSION @ATOMES_MAJOR_VERSION@,@ATOMES_MINOR_VERSION@,@ATOMES_PATCH_VERSION@,0
+  FILEVERSION    PACKAGE_VERSION,0
+  PRODUCTVERSION PACKAGE_VERISON
   FILEOS         VOS__WINDOWS32
   FILETYPE       VFT_APP
   BEGIN
@@ -26,12 +27,12 @@ VS_VERSION_INFO VERSIONINFO
       BLOCK "040904B0"
       BEGIN
         VALUE "CompanyName", "CNRS - IPCMS - DMO"
-        VALUE "FileDescription", "@PACKAGE-@ATOMES_MAJOR_VERSION@.@ATOMES_MINOR_VERSION@.@ATOMES_PATCH_VERSION@"
-        VALUE "FileVersion", "@ATOMES_MAJOR_VERSION@.@ATOMES_MINOR_VERSION@.@ATOMES_PATCH_VERSION@"
-        VALUE "LegalCopyright", "Copyright © 2024 Sébastien Le Roux"
+        VALUE "FileDescription", PACKAGE_STRING
+        VALUE "FileVersion", PACKAGE_VERSION
+        VALUE "LegalCopyright", "Copyright @ 2024 Sébastien Le Roux"
         VALUE "OriginalFileName", "atomes.exe"
-        VALUE "ProductName", "Atomes @ATOMES_MAJOR_VERSION@.@ATOMES_MINOR_VERSION@.@ATOMES_PATCH_VERSION@"
-        VALUE "ProductVersion", "@ATOMES_MAJOR_VERSION@.@ATOMES_MINOR_VERSION@.@ATOMES_PATCH_VERSION@"
+        VALUE "ProductName", PACKAGE_STRING
+        VALUE "ProductVersion", PACKAGE_VERSION
       END
     END
     BLOCK "VarFileInfo"

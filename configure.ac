@@ -111,7 +111,9 @@ fi
 PKG_CHECK_MODULES(LIBXML2, [libxml-2.0 >= 2.4.0])
 PKG_CHECK_MODULES(PANGOFT2, [pangoft2])
 PKG_CHECK_MODULES(FFMPEG, [libavcodec libavformat libavutil libswscale])
-PKG_CHECK_MODULES(GLU, [glu])
+if test "$build_windows" = "no"; then
+  PKG_CHECK_MODULES(GLU, [glu])
+fi
 PKG_CHECK_MODULES(EPOXY, [epoxy])
 
 # Checking for compilers
