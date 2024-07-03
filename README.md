@@ -46,77 +46,37 @@ make
 
 #### Building the GTK4 version of ***Atomes***
 
-***Atomes*** uses the [GTK][gtk] lib for the GUI, by default GTK3 is used, however it is possible to build the GTK4 version (beta), to do that edit the `Makefile` and change:
+***Atomes*** uses the [GTK][gtk] lib for the GUI, by default GTK3 is used, however it is possible to build the GTK4 version (beta).
 
-  1. Edit the file `configure.ac`: 
+To do that:
 
-And change: 
-
-```
-PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.16])
-dnl PKG_CHECK_MODULES(GTK, [gtk4 >= 4.6])
-```
-
-To:
+  1. Configure using the `--with-gtk=` flag:
 
 ```
-dnl PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.16])
-PKG_CHECK_MODULES(GTK, [gtk4 >= 4.6])
+./configure --with-gtk=4
 ```
 
-  2. Edit the file `src/Makefile.am`
+Note the default flag is: `--with-gtk=3`
 
-And change:
 
-> -DGTK3
-
-To:
-
-> -DGTK4
-
-  3. Update the `configure` script:
+  2. Build ***Atomes***
 
 ```
-rm -f aclocal.m4
-rm -rf autom4te.cache
-rm -f configure~
-aclocal
-autoconf
-automake --add-missing
-```
-
-  4. Build ***Atomes***
-
-```
-./configure
 make
 ```
 
 Here are some issues with GTK4 that cannot be sovled for the time being:
-  1. No way to use Pango markups in menu items with sub-menus (https://gitlab.gnome.org/GNOME/gtk/-/issues/5946)
-  2. No way to attach widget to menu items not in the top level of the menu (https://gitlab.gnome.org/GNOME/gtk/-/issues/5955)
+  1. No way to attach widget to menu items not in the top level of the menu (https://gitlab.gnome.org/GNOME/gtk/-/issues/5955)
 
 #### Building the serial version of ***Atomes***
 
 By default ***Atomes*** uses [OpenMP][openmp] to parallelize several calculations over the CPU cores. 
 It is possible to turn this off, and to build a serial version of ***Atomes***, to do that:
 
-  1. Edit the file `src/Makefile.am` 
-
-And remove all: 
-
-> -DOPENMP -fopenmp 
-
-  2. Update the `configure` script:
-
 ```
-rm -f aclocal.m4
-rm -rf autom4te.cache
-rm -f configure~
-aclocal
-autoconf
-automake --add-missing
+./configure --disable-openmp
 ```
+
 
   3. Build ***Atomes***
 

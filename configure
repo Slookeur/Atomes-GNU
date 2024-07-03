@@ -761,6 +761,7 @@ enable_option_checking
 enable_silent_rules
 with_gtk
 enable_dependency_tracking
+enable___disable_openmp
 enable_openmp
 '
       ac_precious_vars='build_alias
@@ -1423,6 +1424,7 @@ Optional Features:
                           do not reject slow dependency extractors
   --disable-dependency-tracking
                           speeds up one-time build
+  --disable-openmp        disable OpenMP thread parallelisation (default: no)
   --disable-openmp        do not use OpenMP
 
 Optional Packages:
@@ -7333,7 +7335,22 @@ echo "#define FCFLAGS \""$FCFLAGS"\"" >> src/version.h
 echo "#define CC \""$CC"\"" >> src/version.h
 echo "#define CFLAGS \""$CFLAGS"\"" >> src/version.h
 
-if test -e penmp || test -e mp; then
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking the OpenMP specification and flags" >&5
+printf %s "checking the OpenMP specification and flags... " >&6; }
+# Check whether --enable---disable-openmp was given.
+if test ${enable___disable_openmp+y}
+then :
+  enableval=$enable___disable_openmp; with_opemp="no"
+else $as_nop
+  with_openmp="yes"
+fi
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $with_openmp" >&5
+printf "%s\n" "$with_openmp" >&6; }
+if test "$with_openmp" = "yes"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $with_openmp" >&5
+printf "%s\n" "$with_openmp" >&6; }
+  if test -e penmp || test -e mp; then
   as_fn_error $? "AC_OPENMP clobbers files named 'mp' and 'penmp'. Aborting configure because one of these files already exists." "$LINENO" 5
 fi
 # Check whether --enable-openmp was given.
@@ -7411,7 +7428,7 @@ printf "%s\n" "$ac_cv_prog_c_openmp" >&6; }
 
 
 
- if test "${OPENMP_CFLAGS}" != ""; then
+   if test "${OPENMP_CFLAGS}" != ""; then
   OPENMP_TRUE=
   OPENMP_FALSE='#'
 else
@@ -7419,6 +7436,7 @@ else
   OPENMP_FALSE=
 fi
 
+fi
 
 ac_config_files="$ac_config_files Makefile src/Makefile data/Makefile"
 

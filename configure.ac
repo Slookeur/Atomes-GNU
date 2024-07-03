@@ -174,9 +174,15 @@ echo "#define FCFLAGS \""$FCFLAGS"\"" >> src/version.h
 echo "#define CC \""$CC"\"" >> src/version.h
 echo "#define CFLAGS \""$CFLAGS"\"" >> src/version.h
 
-AC_OPENMP
-AC_SUBST([OPENMP_CFLAGS])
-AM_CONDITIONAL([OPENMP], [test "${OPENMP_CFLAGS}" != ""])
+AC_MSG_CHECKING([the OpenMP specification and flags])
+AC_ARG_ENABLE([--disable-openmp], [AS_HELP_STRING([--disable-openmp], [disable OpenMP thread parallelisation (default: no)])], [with_opemp="no"], [with_openmp="yes"])
+AC_MSG_RESULT([$with_openmp])
+if test "$with_openmp" = "yes"; then
+  AC_MSG_RESULT([$with_openmp])
+  AC_OPENMP
+  AC_SUBST([OPENMP_CFLAGS])
+  AM_CONDITIONAL([OPENMP], [test "${OPENMP_CFLAGS}" != ""])
+fi
 
 AC_CONFIG_FILES([
  Makefile
