@@ -619,8 +619,6 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIB@&t@OBJS
-FLATPAK_FALSE
-FLATPAK_TRUE
 OPENMP_FALSE
 OPENMP_TRUE
 OPENMP_CFLAGS
@@ -658,10 +656,12 @@ LIBXML2_LIBS
 LIBXML2_CFLAGS
 INTEGRATION_LIBS
 INTEGRATION_CFLAGS
-GTK_LIBS
-GTK_CFLAGS
+LGTK_LIBS
+LGTK_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
+GTK3_FALSE
+GTK3_TRUE
 UP_APPSTREAM
 UP_DESKTOP
 UP_MIME
@@ -759,9 +759,9 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_silent_rules
+with_gtk
 enable_dependency_tracking
 enable_openmp
-enable_flatpak
 '
       ac_precious_vars='build_alias
 host_alias
@@ -769,8 +769,8 @@ target_alias
 PKG_CONFIG
 PKG_CONFIG_PATH
 PKG_CONFIG_LIBDIR
-GTK_CFLAGS
-GTK_LIBS
+LGTK_CFLAGS
+LGTK_LIBS
 INTEGRATION_CFLAGS
 INTEGRATION_LIBS
 LIBXML2_CFLAGS
@@ -1424,7 +1424,11 @@ Optional Features:
   --disable-dependency-tracking 
                           speeds up one-time build
   --disable-openmp        do not use OpenMP
-  --enable-flatpak        to build the Flatpak
+
+Optional Packages:
+  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-gtk=3|4          the GTK version to use (default: 3)
 
 Some influential environment variables:
   PKG_CONFIG  path to pkg-config utility
@@ -1432,8 +1436,8 @@ Some influential environment variables:
               directories to add to pkg-config's search path
   PKG_CONFIG_LIBDIR 
               path overriding pkg-config's built-in search path
-  GTK_CFLAGS  C compiler flags for GTK, overriding pkg-config
-  GTK_LIBS    linker flags for GTK, overriding pkg-config
+  LGTK_CFLAGS C compiler flags for LGTK, overriding pkg-config
+  LGTK_LIBS   linker flags for LGTK, overriding pkg-config
   INTEGRATION_CFLAGS 
               C compiler flags for INTEGRATION, overriding pkg-config
   INTEGRATION_LIBS 
@@ -3491,6 +3495,39 @@ fi
 
 
 
+# determine the GTK version to use
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking the GTK version to use" >&5
+printf %s "checking the GTK version to use... " >&6; }
+
+@%:@ Check whether --with-gtk was given.
+if test ${with_gtk+y}
+then :
+  withval=$with_gtk; case "$with_gtk" in
+	        3|4) ;;
+        	*) as_fn_error $? "invalid GTK version specified" "$LINENO" 5 ;;
+        esac
+else $as_nop
+  with_gtk=3
+fi
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $with_gtk" >&5
+printf "%s\n" "$with_gtk" >&6; }
+ if test "$with_gtk" == "3"; then
+  GTK3_TRUE=
+  GTK3_FALSE='#'
+else
+  GTK3_TRUE='#'
+  GTK3_FALSE=
+fi
+
+case "$with_gtk" in
+	3) gtk_version="gtk+-3.0"
+	   gtk_version_number="3.16"
+	   ;;
+	4) gtk_version="gtk4"
+	   gtk_version_number="4.6"
+   	   ;;
+esac	   
 
 
 
@@ -3623,19 +3660,19 @@ printf "%s\n" "no" >&6; }
 fi
 
 pkg_failed=no
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for gtk+-3.0 >= 3.16" >&5
-printf %s "checking for gtk+-3.0 >= 3.16... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for \"$gtk_version\" >= \"$gtk_version_number\"" >&5
+printf %s "checking for \"$gtk_version\" >= \"$gtk_version_number\"... " >&6; }
 
-if test -n "$GTK_CFLAGS"; then
-    pkg_cv_GTK_CFLAGS="$GTK_CFLAGS"
+if test -n "$LGTK_CFLAGS"; then
+    pkg_cv_LGTK_CFLAGS="$LGTK_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-3.0 >= 3.16\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtk+-3.0 >= 3.16") 2>&5
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\"\$gtk_version\" >= \"\$gtk_version_number\"\""; } >&5
+  ($PKG_CONFIG --exists --print-errors ""$gtk_version" >= "$gtk_version_number"") 2>&5
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTK_CFLAGS=`$PKG_CONFIG --cflags "gtk+-3.0 >= 3.16" 2>/dev/null`
+  pkg_cv_LGTK_CFLAGS=`$PKG_CONFIG --cflags ""$gtk_version" >= "$gtk_version_number"" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes 
 else
   pkg_failed=yes
@@ -3643,16 +3680,16 @@ fi
  else
     pkg_failed=untried
 fi
-if test -n "$GTK_LIBS"; then
-    pkg_cv_GTK_LIBS="$GTK_LIBS"
+if test -n "$LGTK_LIBS"; then
+    pkg_cv_LGTK_LIBS="$LGTK_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-3.0 >= 3.16\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtk+-3.0 >= 3.16") 2>&5
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\"\$gtk_version\" >= \"\$gtk_version_number\"\""; } >&5
+  ($PKG_CONFIG --exists --print-errors ""$gtk_version" >= "$gtk_version_number"") 2>&5
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTK_LIBS=`$PKG_CONFIG --libs "gtk+-3.0 >= 3.16" 2>/dev/null`
+  pkg_cv_LGTK_LIBS=`$PKG_CONFIG --libs ""$gtk_version" >= "$gtk_version_number"" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes 
 else
   pkg_failed=yes
@@ -3673,22 +3710,22 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-                GTK_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtk+-3.0 >= 3.16" 2>&1`
+                LGTK_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs ""$gtk_version" >= "$gtk_version_number"" 2>&1`
         else
-                GTK_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtk+-3.0 >= 3.16" 2>&1`
+                LGTK_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs ""$gtk_version" >= "$gtk_version_number"" 2>&1`
         fi
         # Put the nasty error message in config.log where it belongs
-        echo "$GTK_PKG_ERRORS" >&5
+        echo "$LGTK_PKG_ERRORS" >&5
 
-        as_fn_error $? "Package requirements (gtk+-3.0 >= 3.16) were not met:
+        as_fn_error $? "Package requirements (\"$gtk_version\" >= \"$gtk_version_number\") were not met:
 
-$GTK_PKG_ERRORS
+$LGTK_PKG_ERRORS
 
 Consider adjusting the PKG_CONFIG_PATH environment variable if you
 installed software in a non-standard prefix.
 
-Alternatively, you may set the environment variables GTK_CFLAGS
-and GTK_LIBS to avoid the need to call pkg-config.
+Alternatively, you may set the environment variables LGTK_CFLAGS
+and LGTK_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5        
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -3699,21 +3736,22 @@ as_fn_error $? "The pkg-config script could not be found or is too old.  Make su
 is in your PATH or set the PKG_CONFIG environment variable to the full
 path to pkg-config.
 
-Alternatively, you may set the environment variables GTK_CFLAGS
-and GTK_LIBS to avoid the need to call pkg-config.
+Alternatively, you may set the environment variables LGTK_CFLAGS
+and LGTK_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 
 To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details" "$LINENO" 5; }        
 else
-        GTK_CFLAGS=$pkg_cv_GTK_CFLAGS
-        GTK_LIBS=$pkg_cv_GTK_LIBS
+        LGTK_CFLAGS=$pkg_cv_LGTK_CFLAGS
+        LGTK_LIBS=$pkg_cv_LGTK_LIBS
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
         
 fi
-if test "$build_mac" = "yes"; then
-  
+if test "$with_gtk" = "3"; then
+	if test "$build_mac" = "yes"; then
+		
 pkg_failed=no
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for gtk-mac-integration" >&5
 printf %s "checking for gtk-mac-integration... " >&6; }
@@ -3804,6 +3842,7 @@ else
 printf "%s\n" "yes" >&6; }
         
 fi
+	fi
 fi
 
 pkg_failed=no
@@ -7379,21 +7418,6 @@ else
 fi
 
 
-@%:@ Check whether --enable-flatpak was given.
-if test ${enable_flatpak+y}
-then :
-  enableval=$enable_flatpak; 
-fi
-
- if test "x$flatpak" != "xno"; then
-  FLATPAK_TRUE=
-  FLATPAK_FALSE='#'
-else
-  FLATPAK_TRUE='#'
-  FLATPAK_FALSE=
-fi
-
-
 ac_config_files="$ac_config_files Makefile src/Makefile data/Makefile"
 
 
@@ -7537,6 +7561,10 @@ if test -z "${OSX_TRUE}" && test -z "${OSX_FALSE}"; then
   as_fn_error $? "conditional \"OSX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
+if test -z "${GTK3_TRUE}" && test -z "${GTK3_FALSE}"; then
+  as_fn_error $? "conditional \"GTK3\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   as_fn_error $? "conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -7547,10 +7575,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${OPENMP_TRUE}" && test -z "${OPENMP_FALSE}"; then
   as_fn_error $? "conditional \"OPENMP\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${FLATPAK_TRUE}" && test -z "${FLATPAK_FALSE}"; then
-  as_fn_error $? "conditional \"FLATPAK\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

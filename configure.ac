@@ -83,12 +83,31 @@ dnl ***************************************************************************
 dnl Check for required librairies
 dnl ***************************************************************************
 
-PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.16])
-dnl GTK3 for OSX requires the package gtk-mac-integration
-if test "$build_mac" = "yes"; then
-  PKG_CHECK_MODULES(INTEGRATION, [gtk-mac-integration])
+# determine the GTK version to use
+AC_MSG_CHECKING([the GTK version to use])
+AC_ARG_WITH([gtk],
+        [AS_HELP_STRING([--with-gtk=3|4], [the GTK version to use (default: 3)])],
+        [case "$with_gtk" in
+	        3|4) ;;
+        	*) AC_MSG_ERROR([invalid GTK version specified]) ;;
+        esac],
+        [with_gtk=3])
+AC_MSG_RESULT([$with_gtk])
+AM_CONDITIONAL([GTK3], [test "$with_gtk" == "3"])
+case "$with_gtk" in
+	3) gtk_version="gtk+-3.0"
+	   gtk_version_number="3.16"
+	   ;;
+	4) gtk_version="gtk4"
+	   gtk_version_number="4.6"
+   	   ;;
+esac	   
+PKG_CHECK_MODULES(LGTK, ["$gtk_version" >= "$gtk_version_number"])
+if test "$with_gtk" = "3"; then
+	if test "$build_mac" = "yes"; then
+		PKG_CHECK_MODULES(INTEGRATION, [gtk-mac-integration])
+	fi
 fi
-dnl PKG_CHECK_MODULES(GTK, [gtk4 >= 4.6])
 PKG_CHECK_MODULES(LIBXML2, [libxml-2.0 >= 2.4.0])
 PKG_CHECK_MODULES(PANGOFT2, [pangoft2])
 PKG_CHECK_MODULES(FFMPEG, [libavcodec libavformat libavutil libswscale])
@@ -156,11 +175,6 @@ echo "#define CFLAGS \""$CFLAGS"\"" >> src/version.h
 AC_OPENMP
 AC_SUBST([OPENMP_CFLAGS])
 AM_CONDITIONAL([OPENMP], [test "${OPENMP_CFLAGS}" != ""])
-
-dnl Flatpak 
-AC_ARG_ENABLE([flatpak],
-	     [  --enable-flatpak        to build the Flatpak])
-AM_CONDITIONAL([FLATPAK], [test "x$flatpak" != "xno"])
 
 AC_CONFIG_FILES([
  Makefile

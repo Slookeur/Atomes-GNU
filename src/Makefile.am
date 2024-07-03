@@ -1,7 +1,7 @@
 # Setup the name of the program to be generated, using:
 bin_PROGRAMS = atomes
 
-atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS)
+atomes_LDADD = $(LGTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS)
 if WINDOWS
   EXTRA_DIST = ../misc/win/atomes.rc.in
   atomes_LDADD += winatomes.o
@@ -11,7 +11,7 @@ winatomes.o: atomes.rc
 endif
 
 # Create a variable to store the CFLAGS for all the required libraries
-LIBS_CFLAGS = $(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
+LIBS_CFLAGS = $(LGTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
 
 # To turn OpenMP on/off
 if OPENMP
@@ -23,9 +23,15 @@ endif
 # Use AM_LDFLAGS to define additional linker flags:
 AM_LDFLAGS = $(OpenMP_FLAGS)
 
+if GTK3
+  GTK_VERSION=-DGTK3
+else
+  GTK_VERSION=-DGTK4
+endif
+
 # Use AM_CPPFLAGS to define additional preprocessor flags:
 if WINDOWS
-AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) 
+AM_CPPFLAGS = $(GTK_VERSION) -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) 
 else
 PACKAGE_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
@@ -89,9 +95,9 @@ PACKAGE_CPPFLAGS = \
 	-DPACKAGE_SGMI=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-I.png"\" \
 	-DPACKAGE_SGTC=\""$(datadir)/atomes/pixmaps/bravais/Triclinic.png"\"
 if LINUX
-AM_CPPFLAGS = -DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) $(PACKAGE_CPPFLAGS)
+AM_CPPFLAGS = -DLINUX $(GTK_VERSION) -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) $(PACKAGE_CPPFLAGS)
 else
-AM_CPPFLAGS = -DOSX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) $(PACKAGE_CPPFLAGS)
+AM_CPPFLAGS = -DOSX $(GTK_VERSION) -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) $(PACKAGE_CPPFLAGS)
 endif
 endif
 
