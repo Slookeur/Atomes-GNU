@@ -563,7 +563,6 @@ top_srcdir = @top_srcdir@
 atomes_LDADD = $(LGTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) \
 	$(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS) \
 	$(am__append_1)
-@WINDOWS_TRUE@EXTRA_DIST = ../misc/win/atomes.rc.in
 
 # Create a variable to store the CFLAGS for all the required libraries
 LIBS_CFLAGS = $(LGTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
@@ -1826,8 +1825,8 @@ uninstall-am: uninstall-binPROGRAMS
 .PRECIOUS: Makefile
 
 
-@WINDOWS_TRUE@winatomes.o: atomes.rc
-@WINDOWS_TRUE@	$(WINDRES) $< $@
+@WINDOWS_TRUE@winatomes.o: ../misc/win/atomes.rc
+@WINDOWS_TRUE@	$(WINDRES) $< $@		
 $(patsubst %.F90,%.o,$(atomes_fortran_files)): $(patsubst %.F90,%.o,$(atomes_fortran_modules))
 
 clean: 
