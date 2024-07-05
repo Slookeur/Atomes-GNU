@@ -14,11 +14,11 @@ AC_INIT([atomes], [atomes_version], [atomes@ipcms.unistra.fr], [atomes_tar], [at
 
 AM_INIT_AUTOMAKE
 
-AC_DEFINE(ATOMES_MAJOR_VERSION, atomes_major_version, [Atomes major version])
+AC_DEFINE([ATOMES_MAJOR_VERSION], [atomes_major_version], [Atomes major version])
 AC_SUBST(ATOMES_MAJOR_VERSION, atomes_major_version)
-AC_DEFINE(ATOMES_MINOR_VERSION, atomes_minor_version, [Atomes minor version])
+AC_DEFINE([ATOMES_MINOR_VERSION], [atomes_minor_version], [Atomes minor version])
 AC_SUBST(ATOMES_MINOR_VERSION, atomes_minor_version)
-AC_DEFINE(ATOMES_PATCH_VERSION, atomes_patch_version, [Atomes patch version])
+AC_DEFINE([ATOMES_PATCH_VERSION], [atomes_patch_version], [Atomes patch version])
 AC_SUBST(ATOMES_PATCH_VERSION, atomes_patch_version)
 
 dnl ***************************************************************************
@@ -102,53 +102,42 @@ case "$with_gtk" in
 	   gtk_version_number="4.6"
    	   ;;
 esac	   
-PKG_CHECK_MODULES(LGTK, ["$gtk_version" >= "$gtk_version_number"])
+PKG_CHECK_MODULES([LGTK], [$gtk_version >= $gtk_version_number])
 if test "$with_gtk" = "3"; then
 	if test "$build_mac" = "yes"; then
-		PKG_CHECK_MODULES(INTEGRATION, [gtk-mac-integration])
+		PKG_CHECK_MODULES([INTEGRATION], [gtk-mac-integration])
 	fi
 fi
-PKG_CHECK_MODULES(LIBXML2, [libxml-2.0 >= 2.4.0])
-PKG_CHECK_MODULES(PANGOFT2, [pangoft2])
-PKG_CHECK_MODULES(FFMPEG, [libavcodec libavformat libavutil libswscale])
+PKG_CHECK_MODULES([LIBXML2], [libxml-2.0 >= 2.4.0])
+PKG_CHECK_MODULES([PANGOFT2], [pangoft2])
+PKG_CHECK_MODULES([FFMPEG], [libavcodec libavformat libavutil libswscale])
 if test "$build_windows" = "no"; then
-  PKG_CHECK_MODULES(GLU, [glu])
+  PKG_CHECK_MODULES([GLU], [glu])
 fi
-PKG_CHECK_MODULES(EPOXY, [epoxy])
+PKG_CHECK_MODULES([EPOXY], [epoxy])
 
 # Checking for compilers
-
-AC_DEFUN([AX_CHECK_COMPILER_FLAGS],
-[AC_PREREQ(2.59) dnl for _AC_LANG_PREFIX
-AC_MSG_CHECKING([whether _AC_LANG compiler accepts $1])
-dnl Some hackery here since AC_CACHE_VAL can't handle a non-literal varname:
-AS_LITERAL_IF([$1],
-  [AC_CACHE_VAL(AS_TR_SH(ax_cv_[]_AC_LANG_ABBREV[]_flags_$1), [
-      ax_save_FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
-      _AC_LANG_PREFIX[]FLAGS="$1"
-      AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
-        AS_TR_SH(ax_cv_[]_AC_LANG_ABBREV[]_flags_$1)=yes,
-        AS_TR_SH(ax_cv_[]_AC_LANG_ABBREV[]_flags_$1)=no)
-      _AC_LANG_PREFIX[]FLAGS=$ax_save_FLAGS])],
-  [ax_save_FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
-   _AC_LANG_PREFIX[]FLAGS="$1"
-   AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
-     eval AS_TR_SH(ax_cv_[]_AC_LANG_ABBREV[]_flags_$1)=yes,
-     eval AS_TR_SH(ax_cv_[]_AC_LANG_ABBREV[]_flags_$1)=no)
-   _AC_LANG_PREFIX[]FLAGS=$ax_save_FLAGS])
-eval ax_check_compiler_flags=$AS_TR_SH(ax_cv_[]_AC_LANG_ABBREV[]_flags_$1)
-AC_MSG_RESULT($ax_check_compiler_flags)
-if test "x$ax_check_compiler_flags" = xyes; then
-        m4_default([$2], :)
-else
-        m4_default([$3], :)
-fi
-])dnl AX_CHECK_COMPILER_FLAGS
+dnl Definig the macro AX_CHECK_COMPILER_FLAG:
+AC_DEFUN([AX_CHECK_COMPILER_FLAG],
+  [AC_PREREQ(2.64) dnl for _AC_LANG_PREFIX and AS_VAR_IF
+  AS_VAR_PUSHDEF([CACHEVAR], [ax_cv_check_[]_AC_LANG_ABBREV[]flags_$4_$1])
+  AC_CACHE_CHECK([whether _AC_LANG compiler accepts $1], CACHEVAR, [
+    ax_check_save_flags=$[]_AC_LANG_PREFIX[]FLAGS
+    _AC_LANG_PREFIX[]FLAGS="$[]_AC_LANG_PREFIX[]FLAGS $4 $1"
+    AC_COMPILE_IFELSE([m4_default([$5],[AC_LANG_PROGRAM()])],
+                      [AS_VAR_SET(CACHEVAR,[yes])],
+                      [AS_VAR_SET(CACHEVAR,[no])])
+    _AC_LANG_PREFIX[]FLAGS=$ax_check_save_flags])
+    AS_VAR_IF(CACHEVAR,yes,
+      [m4_default([$2], :)],
+      [m4_default([$3], :)])
+  AS_VAR_POPDEF([CACHEVAR])
+])dnl AX_CHECK_COMPILER_FLAG
 
 # C
 AC_PROG_CC
 
-AX_CHECK_COMPILER_FLAGS([$CFLAGS])
+AX_CHECK_COMPILER_FLAG([$CFLAGS])
 
 # Fortran 90 
 
@@ -162,7 +151,7 @@ FCFLAGS="$fcflags_save"
 AC_FC_SRCEXT(f90, FCFLAGS_f90="$FCFLAGS_f90 $FCFLAGS", AC_MSG_ERROR([Cannot compile .f90 files]))
 AC_FC_SRCEXT(F90, FCFLAGS_F90="$FCFLAGS_F90 $FCFLAGS", AC_MSG_ERROR([Cannot compile .F90 files]))
 
-AX_CHECK_COMPILER_FLAGS([$FCFLAGS])
+AX_CHECK_COMPILER_FLAG([$FCFLAGS])
 
 AC_FC_LIBRARY_LDFLAGS
 AC_FC_FREEFORM
@@ -178,7 +167,6 @@ AC_MSG_CHECKING([the OpenMP specification and flags])
 AC_ARG_ENABLE([--disable-openmp], [AS_HELP_STRING([--disable-openmp], [disable OpenMP thread parallelisation (default: no)])], [with_opemp="no"], [with_openmp="yes"])
 AC_MSG_RESULT([$with_openmp])
 if test "$with_openmp" = "yes"; then
-  AC_MSG_RESULT([$with_openmp])
   AC_OPENMP
   AC_SUBST([OPENMP_CFLAGS])
   AM_CONDITIONAL([OPENMP], [test "${OPENMP_CFLAGS}" != ""])
