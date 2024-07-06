@@ -67,7 +67,7 @@ install-data-local:
 	fi
 if OSX
 	mv $(atomes_bindir)/atomes $(atomes_bindir)/atomes-bin
-	$(INSTALL_PROGRAM) $(srcdir)/misc/macos/atomes.sh $(atomes_bindir)/atomes
+	$(INSTALL_SCRIPT) $(srcdir)/misc/macos/atomes.sh $(atomes_bindir)/atomes
 endif
 
 # Remove doc directordy on uninstall
