@@ -174,8 +174,9 @@ fi
 
 AC_CONFIG_FILES([
  Makefile
- src/Makefile
  data/Makefile
+ opengl-testing/Makefile 
+ src/Makefile
 ])
 
 AC_CONFIG_HEADERS([config.h])

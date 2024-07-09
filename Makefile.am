@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src data
+SUBDIRS = opengl-testing src data
 
 if OSX
   atomes_bindir = $(DESTDIR)$(bindir)
