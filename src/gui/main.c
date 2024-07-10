@@ -574,8 +574,7 @@ int check_opengl_rendering ()
 #ifdef G_OS_WIN32
   proc_name = g_build_filename (PACKAGE_PREFIX, "atomes_startup_testing", NULL);
 #else
-//  proc_name = g_build_filename (PACKAGE_PREFIX, "atomes_startup_testing", NULL);
-  proc_name = g_build_filename ("atomes_startup_testing", NULL);
+  proc_name = g_build_filename (PACKAGE_PREFIX, "atomes_startup_testing", NULL);
 #endif
   GSubprocess * proc = g_subprocess_new (G_SUBPROCESS_FLAGS_NONE, & error, proc_name, NULL);
   g_free (proc_name);
@@ -771,17 +770,21 @@ int main (int argc, char *argv[])
 
   if (RUNC)
   {
-    int opengl_context = check_opengl_rendering ();
-    if (opengl_context == 1)
+    atomes_visual = check_opengl_rendering ();
+    if (atomes_visual == 1)
     {
+      // Fatal error, trying again adapting environment
       g_setenv ("GSK_RENDERER", "gl", TRUE);
       g_setenv ("GDK_DEBUG", "gl-prefer-gl", TRUE);
-      opengl_context = check_opengl_rendering ();
-      if (opengl_context > 0 || opengl_context == -2)
-      {
-        return 1;
-      }
+      atomes_visual = check_opengl_rendering ();
     }
+    if (atomes_visual > 0 || atomes_visual == -2)
+    {
+      // No way to initialize an OpenGL context: must quit
+      return 1;
+    }
+    atomes_visual = ! (abs(atomes_visual));
+
     // setlocale(LC_ALL,"en_US");
     gtk_disable_setlocale ();
 #if GLIB_MINOR_VERSION < 74
