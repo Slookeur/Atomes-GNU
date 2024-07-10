@@ -88,9 +88,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = atomes_opengl_testing$(EXEEXT)
+bin_PROGRAMS = atomes_startup_testing$(EXEEXT)
 @WINDOWS_TRUE@am__append_1 = winatomes.o
-subdir = opengl-testing
+subdir = startup-testing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -102,11 +102,11 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__objects_1 = atomes-opengl-testing.$(OBJEXT)
-am_atomes_opengl_testing_OBJECTS = $(am__objects_1)
-atomes_opengl_testing_OBJECTS = $(am_atomes_opengl_testing_OBJECTS)
+am__objects_1 = startup_testing.$(OBJEXT)
+am_atomes_startup_testing_OBJECTS = $(am__objects_1)
+atomes_startup_testing_OBJECTS = $(am_atomes_startup_testing_OBJECTS)
 am__DEPENDENCIES_1 =
-atomes_opengl_testing_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+atomes_startup_testing_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) $(am__append_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -123,7 +123,7 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/atomes-opengl-testing.Po
+am__depfiles_remade = ./$(DEPDIR)/startup_testing.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -137,8 +137,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(atomes_opengl_testing_SOURCES)
-DIST_SOURCES = $(atomes_opengl_testing_SOURCES)
+SOURCES = $(atomes_startup_testing_SOURCES)
+DIST_SOURCES = $(atomes_startup_testing_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -291,7 +291,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-atomes_opengl_testing_LDADD = $(LGTK_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) \
+atomes_startup_testing_LDADD = $(LGTK_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) \
 	$(am__append_1)
 
 # Create a variable to store the CFLAGS for all the required libraries
@@ -309,11 +309,11 @@ includes = $(inc) -DGTK_DISABLE_DEPRECATED
 
 # Use AM_CFLAGS to define additional C flags:
 AM_CFLAGS = $(includes) $(LIBS_CFLAGS)
-atomes_ogl = atomes-opengl-testing.c
-atomes_opengl_includes = config.h version.h
+atomes_startup_testing_src = startup_testing.c
+atomes_startup_testing_includes = config.h version.h
 
 # List the files required to build the program
-atomes_opengl_testing_SOURCES = $(atomes_ogl)
+atomes_startup_testing_SOURCES = $(atomes_startup_testing_src)
 all: all-am
 
 .SUFFIXES:
@@ -327,9 +327,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu opengl-testing/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu startup-testing/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu opengl-testing/Makefile
+	  $(AUTOMAKE) --gnu startup-testing/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -390,9 +390,9 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-atomes_opengl_testing$(EXEEXT): $(atomes_opengl_testing_OBJECTS) $(atomes_opengl_testing_DEPENDENCIES) $(EXTRA_atomes_opengl_testing_DEPENDENCIES) 
-	@rm -f atomes_opengl_testing$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(atomes_opengl_testing_OBJECTS) $(atomes_opengl_testing_LDADD) $(LIBS)
+atomes_startup_testing$(EXEEXT): $(atomes_startup_testing_OBJECTS) $(atomes_startup_testing_DEPENDENCIES) $(EXTRA_atomes_startup_testing_DEPENDENCIES) 
+	@rm -f atomes_startup_testing$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(atomes_startup_testing_OBJECTS) $(atomes_startup_testing_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -400,7 +400,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/atomes-opengl-testing.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/startup_testing.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -546,7 +546,7 @@ maintainer-clean-generic:
 clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/atomes-opengl-testing.Po
+		-rm -f ./$(DEPDIR)/startup_testing.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -592,7 +592,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/atomes-opengl-testing.Po
+		-rm -f ./$(DEPDIR)/startup_testing.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

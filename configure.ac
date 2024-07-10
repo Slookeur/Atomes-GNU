@@ -175,7 +175,7 @@ fi
 AC_CONFIG_FILES([
  Makefile
  data/Makefile
- opengl-testing/Makefile 
+ startup-testing/Makefile 
  src/Makefile
 ])
 

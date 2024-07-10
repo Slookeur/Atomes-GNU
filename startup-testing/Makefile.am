@@ -1,9 +1,9 @@
 # Setup the name of the program to be generated, using:
-bin_PROGRAMS = atomes_opengl_testing
+bin_PROGRAMS = atomes_startup_testing
 
-atomes_opengl_testing_LDADD = $(LGTK_LIBS) $(GLU_LIBS) $(EPOXY_LIBS)
+atomes_startup_testing_LDADD = $(LGTK_LIBS) $(GLU_LIBS) $(EPOXY_LIBS)
 if WINDOWS
-  atomes_opengl_testing_LDADD += winatomes.o
+  atomes_startup_testing_LDADD += winatomes.o
 
 winatomes.o: ../misc/win/atomes.rc
 	$(WINDRES) $< $@		
@@ -36,12 +36,12 @@ includes = $(inc) -DGTK_DISABLE_DEPRECATED
 # Use AM_CFLAGS to define additional C flags:
 AM_CFLAGS = $(includes) $(LIBS_CFLAGS)
 
-atomes_ogl = atomes-opengl-testing.c
+atomes_startup_testing_src = startup_testing.c
 
-atomes_opengl_includes = config.h version.h
+atomes_startup_testing_includes = config.h version.h
 
 clean: 
 	-rm -f *.o
 
 # List the files required to build the program
-atomes_opengl_testing_SOURCES = $(atomes_ogl)
+atomes_startup_testing_SOURCES = $(atomes_startup_testing_src)
