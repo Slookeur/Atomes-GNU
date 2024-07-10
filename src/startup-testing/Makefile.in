@@ -90,7 +90,7 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = atomes_startup_testing$(EXEEXT)
 @WINDOWS_TRUE@am__append_1 = winatomes.o
-subdir = startup-testing
+subdir = src/startup-testing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -304,7 +304,7 @@ LIBS_CFLAGS = $(LGTK_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
 # Use AM_CPPFLAGS to define additional preprocessor flags:
 @WINDOWS_TRUE@AM_CPPFLAGS = $(GTK_VERSION) -DGTKGLAREA
 @WINDOWS_FALSE@PACKAGE_CPPFLAGS = -DPACKAGE_PREFIX=\""$(datadir)/atomes"\" 
-inc = -I../src/ -I../src/opengl/ -I.
+inc = -I../../ -I../ -I../opengl/ 
 includes = $(inc) -DGTK_DISABLE_DEPRECATED
 
 # Use AM_CFLAGS to define additional C flags:
@@ -327,9 +327,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu startup-testing/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/startup-testing/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu startup-testing/Makefile
+	  $(AUTOMAKE) --gnu src/startup-testing/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -629,7 +629,7 @@ uninstall-am: uninstall-binPROGRAMS
 .PRECIOUS: Makefile
 
 
-@WINDOWS_TRUE@winatomes.o: ../misc/win/atomes.rc
+@WINDOWS_TRUE@winatomes.o: ../../misc/win/atomes.rc
 @WINDOWS_TRUE@	$(WINDRES) $< $@		
 
 clean: 

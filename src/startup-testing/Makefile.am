@@ -5,7 +5,7 @@ atomes_startup_testing_LDADD = $(LGTK_LIBS) $(GLU_LIBS) $(EPOXY_LIBS)
 if WINDOWS
   atomes_startup_testing_LDADD += winatomes.o
 
-winatomes.o: ../misc/win/atomes.rc
+winatomes.o: ../../misc/win/atomes.rc
 	$(WINDRES) $< $@		
 endif
 
@@ -30,7 +30,7 @@ AM_CPPFLAGS = -DOSX $(GTK_VERSION) -DGTKGLAREA $(PACKAGE_CPPFLAGS)
 endif
 endif
 
-inc = -I../src/ -I../src/opengl/ -I.
+inc = -I../../ -I../ -I../opengl/ 
 includes = $(inc) -DGTK_DISABLE_DEPRECATED
 
 # Use AM_CFLAGS to define additional C flags:

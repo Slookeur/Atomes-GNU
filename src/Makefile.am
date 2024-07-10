@@ -1,3 +1,7 @@
+
+# To prepare the OpenGL testing utility:
+SUBDIRS = startup-testing
+
 # Setup the name of the program to be generated, using:
 bin_PROGRAMS = atomes
 

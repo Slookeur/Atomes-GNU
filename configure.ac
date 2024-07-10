@@ -175,8 +175,8 @@ fi
 AC_CONFIG_FILES([
  Makefile
  data/Makefile
- startup-testing/Makefile 
  src/Makefile
+ src/startup-testing/Makefile 
 ])
 
 AC_CONFIG_HEADERS([config.h])

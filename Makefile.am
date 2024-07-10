@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = startup-testing src data
+SUBDIRS = src data
 
 if OSX
   atomes_bindir = $(DESTDIR)$(bindir)
