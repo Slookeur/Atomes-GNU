@@ -338,6 +338,7 @@ enum ImageFormats {
 
 #ifdef G_OS_WIN32
 extern gchar * PACKAGE_PREFIX;
+extern gchar * PACKAGE_LIBEXEC;
 #endif
 extern gchar * PACKAGE_LIB_DIR;
 extern gchar * PACKAGE_DATA_DIR;
