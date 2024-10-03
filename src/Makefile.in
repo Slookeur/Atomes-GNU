@@ -89,7 +89,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = atomes$(EXEEXT)
-@WINDOWS_TRUE@am__append_1 = winatomes.o
+@WINDOWS_TRUE@am__append_1 = win_atomes.o
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -1883,7 +1883,7 @@ uninstall-am: uninstall-binPROGRAMS
 .PRECIOUS: Makefile
 
 
-@WINDOWS_TRUE@winatomes.o: ../misc/win/atomes.rc
+@WINDOWS_TRUE@win_atomes.o: ../misc/win/atomes.rc
 @WINDOWS_TRUE@	$(WINDRES) $< $@		
 $(patsubst %.F90,%.o,$(atomes_fortran_files)): $(patsubst %.F90,%.o,$(atomes_fortran_modules))
 

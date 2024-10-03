@@ -7,9 +7,9 @@ bin_PROGRAMS = atomes
 
 atomes_LDADD = $(LGTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS)
 if WINDOWS
-  atomes_LDADD += winatomes.o
+  atomes_LDADD += win_atomes.o
 
-winatomes.o: ../misc/win/atomes.rc
+win_atomes.o: ../misc/win/atomes.rc
 	$(WINDRES) $< $@		
 endif
 
@@ -36,7 +36,7 @@ endif
 if WINDOWS
 AM_CPPFLAGS = $(GTK_VERSION) -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) 
 else
-PACKAGE_CPPFLAGS = -DPACKAGE_PREFIX=\""$(datadir)/atomes"\"
+PACKAGE_CPPFLAGS = -DPACKAGE_PREFIX=\""$(datadir)/atomes"\" -DPACKAGE_LIBEXEC=\""$(libexecdir)"\"
 if LINUX
 AM_CPPFLAGS = -DLINUX $(GTK_VERSION) -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) $(PACKAGE_CPPFLAGS)
 else

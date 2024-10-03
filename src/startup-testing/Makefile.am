@@ -1,11 +1,11 @@
 # Setup the name of the program to be generated, using:
-bin_PROGRAMS = atomes_startup_testing
+libexec_PROGRAMS = atomes_startup_testing
 
 atomes_startup_testing_LDADD = $(LGTK_LIBS) $(GLU_LIBS) $(EPOXY_LIBS)
 if WINDOWS
-  atomes_startup_testing_LDADD += winatomes.o
+  atomes_startup_testing_LDADD += win_startup.o
 
-winatomes.o: ../../misc/win/atomes.rc
+win_startup.o: ../../misc/win/startup.rc
 	$(WINDRES) $< $@		
 endif
 

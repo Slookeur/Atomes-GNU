@@ -5,7 +5,7 @@ AC_PREREQ(2.59)
 
 m4_define(atomes_major_version, 1)
 m4_define(atomes_minor_version, 1)
-m4_define(atomes_patch_version, 14)
+m4_define(atomes_patch_version, 15)
 m4_define(atomes_version, atomes_major_version.atomes_minor_version.atomes_patch_version)
 m4_define(atomes_url, https://atomes.ipcms.fr)
 m4_define(atomes_tar, atomes)
@@ -180,5 +180,7 @@ AC_CONFIG_FILES([
 ])
 
 AC_CONFIG_HEADERS([config.h])
-
+if test "$build_windows" = "yes"; then
+  AC_CONFIG_FILES([misc/win/atomes.rc:misc/win/atomes.rc.in misc/win/startup.rc:misc/win/startup.rc.in])
+fi
 AC_OUTPUT

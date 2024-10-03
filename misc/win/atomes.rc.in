@@ -12,15 +12,12 @@ You should have received a copy of the GNU Affero General Public License along w
 If not, see <https://www.gnu.org/licenses/> */
 
 #include <winver.h>
-#include <config.h>
 
 ATOMES_ICON ICON "../misc/win/atomes.ico"
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION    @PACKAGE_VERSION@,0
-PRODUCTVERSION @PACKAGE_VERSION@
-FILEFLAGSMASK  VS_FFI_FILEFLAGSMASK
-FILEFLAGS      VER_DBG
+FILEVERSION    @ATOMES_MAJOR_VERSION@,@ATOMES_MINOR_VERSION@,@ATOMES_PATCH_VERSION@
+PRODUCTVERSION @ATOMES_MAJOR_VERSION@,@ATOMES_MINOR_VERSION@,@ATOMES_PATCH_VERSION@
 FILEOS         VOS_NT
 FILETYPE       VFT_APP
 BEGIN
@@ -28,14 +25,14 @@ BEGIN
 	BEGIN
 		BLOCK "040904b0"
 	BEGIN
-		VALUE "Comments", @PACKAGE@
+		VALUE "Comments", "@PACKAGE@"
 		VALUE "CompanyName", "CNRS - IPCMS - DMO"
-		VALUE "FileDescription", @PACKAGE_STRING@
-		VALUE "FileVersion", @PACKAGE_VERSION@
-		VALUE "LegalCopyright", "(C) 2024 Sébastien Le Roux"
-		VALUE "OriginalFileName", "atomes.exe"
-		VALUE "ProductName", @PACKAGE_STRING@
-		VALUE "ProductVersion", @PACKAGE_VERSION@
+		VALUE "FileDescription", "@PACKAGE_STRING@"
+		VALUE "FileVersion", "@PACKAGE_VERSION@"
+		VALUE "LegalCopyright", "\251 2024 S\351bastien Le Roux"
+		VALUE "OriginalFileName", "@PACKAGE@.exe"
+		VALUE "ProductName", "@PACKAGE_STRING@"
+		VALUE "ProductVersion", "@PACKAGE_VERSION@"
 	END
 	END
 	BLOCK "VarFileInfo"
