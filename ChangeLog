@@ -1,3 +1,14 @@
+2024-04-10 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
+         Release of version 1.1.15
+         * Bug corrections:
+		Several MacOS OS related bugs corrected
+		Various small bug corrections
+         * Improvements:
+		OpenGL testing utility implemented at startup
+		Shorcuts information dialog for all windows with shorcuts 
+		GTK4 forward transition code wide
+		MacOS beta version
+
 2024-20-03 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr>
          Release of version 1.1.14
          * Bug corrections:
