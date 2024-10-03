@@ -363,7 +363,6 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = src data
-@OSX_TRUE@atomes_bindir = $(DESTDIR)$(bindir)
 atomes_datadir = $(DESTDIR)$(datadir)
 atomes_pkgdatadir = $(DESTDIR)$(pkgdatadir)
 atomes_iconsdir = $(atomes_datadir)/pixmaps
@@ -956,8 +955,6 @@ install-data-local:
 		update-desktop-database $(atomes_desktopdir) &> /dev/null || :; \
 		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
 	fi
-@OSX_TRUE@	mv $(atomes_bindir)/atomes $(atomes_bindir)/atomes-bin
-@OSX_TRUE@	$(INSTALL_SCRIPT) $(srcdir)/misc/macos/atomes.sh $(atomes_bindir)/atomes
 
 # Remove doc directordy on uninstall
 uninstall-local:
@@ -978,7 +975,6 @@ uninstall-local:
 		update-desktop-database $(atomes_desktopdir) &> /dev/null || :; \
 		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
 	fi
-@OSX_TRUE@	-rm -f $(atomes_bindir)/atomes-bin
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

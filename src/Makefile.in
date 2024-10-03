@@ -625,7 +625,7 @@ AM_LDFLAGS = $(OpenMP_FLAGS)
 
 # Use AM_CPPFLAGS to define additional preprocessor flags:
 @WINDOWS_TRUE@AM_CPPFLAGS = $(GTK_VERSION) -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) 
-@WINDOWS_FALSE@PACKAGE_CPPFLAGS = -DPACKAGE_PREFIX=\""$(datadir)/atomes"\"
+@WINDOWS_FALSE@PACKAGE_CPPFLAGS = -DPACKAGE_PREFIX=\""$(datadir)/atomes"\" -DPACKAGE_LIBEXEC=\""$(libexecdir)"\"
 
 # Use AM_FFLAGS to define additional Fortran 90 flags:
 AM_FFLAGS = $(OpenMP_FLAGS)
