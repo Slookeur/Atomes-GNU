@@ -90,6 +90,12 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 * Fri Oct 04 2024 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.15-1
 - Bug corrections and improvements (see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.15)
 
+* Mon Sep 23 2024 Fabio Valentini <decathorpe@gmail.com> - 1.1.14-4
+- Rebuild for ffmpeg 7
+
+* Wed Jul 17 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.14-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
 * Wed Mar 20 2024 Sébastien Le Roux <sebastien.leroux@ipcms.unistra.fr> - 1.1.14-2
 - Bug corrections and improvements (see: https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.14)
 
