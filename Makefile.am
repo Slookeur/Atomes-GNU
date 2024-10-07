@@ -9,7 +9,6 @@ atomes_desktopdir = $(atomes_datadir)/applications
 atomes_mimedir = $(atomes_datadir)/mime/packages/
 atomes_metadir = $(atomes_datadir)/metainfo
 atomes_bashdir = $(atomes_datadir)/bash-completion/completions
-
 atomes_docdir = $(docdir)
 atomes_doc_DATA = \
 	README.md \
@@ -51,7 +50,7 @@ install-data-local:
 	fi
 	$(INSTALL_DATA) $(srcdir)/metadata/atomes.desktop  $(atomes_desktopdir)/atomes.desktop
 # Finalize
-	touch --no-create $(atomes_iconsdir)/pixmaps
+	touch -c $(atomes_iconsdir)
 	if [ -u `which gtk-update-icon-cache` ]; then \
 	  	gtk-update-icon-cache -q $(atomes_iconsdir); \
 	fi
@@ -62,19 +61,19 @@ install-data-local:
 		update-desktop-database $(atomes_desktopdir) &> /dev/null || :; \
 		update-mime-database $(atomes_datadir)/mime &> /dev/null || :; \
 	fi
-	
+
 # Remove doc directordy on uninstall
 uninstall-local:
-	-rm -rf $(atomes_iconsdir)/atomes.svg
-	-rm -rf $(atomes_iconsdir)/atomes-workspace.svg
-	-rm -rf $(atomes_iconsdir)/atomes-project.svg
-	-rm -rf $(atomes_iconsdir)/atomes-coordinates.svg
+	-rm -f $(atomes_iconsdir)/atomes.svg
+	-rm -f $(atomes_iconsdir)/atomes-workspace.svg
+	-rm -f $(atomes_iconsdir)/atomes-project.svg
+	-rm -f $(atomes_iconsdir)/atomes-coordinates.svg
 	-rm -f $(atomes_desktopdir)/atomes.desktop
 	-rm -f $(atomes_metadir)/fr.ipcms.atomes.appdata.xml
 	-rm -f $(atomes_mimedir)/atomes-mime.xml
 	-rm -f $(atomes_bashdir)/atomes
 	-rmdir $(atomes_docdir)
-	touch --no-create $(atomes_iconsdir)
+	touch -c $(atomes_iconsdir)
 	if [ -u `which gtk-update-icon-cache` ]; then \
 		gtk-update-icon-cache -q $(atomes_iconsdir); \
 	fi

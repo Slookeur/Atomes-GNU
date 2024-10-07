@@ -1,83 +1,47 @@
+
+# To prepare the OpenGL testing utility:
+SUBDIRS = startup-testing
+
 # Setup the name of the program to be generated, using:
 bin_PROGRAMS = atomes
 
-atomes_LDADD = $(GTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS)
+atomes_LDADD = $(LGTK_LIBS) $(LIBXML2_LIBS) $(PANGOFT2_LIBS) $(FFMPEG_LIBS) $(GLU_LIBS) $(EPOXY_LIBS) $(INTLLIBS)
+if WINDOWS
+  atomes_LDADD += win_atomes.o
+
+win_atomes.o: ../misc/win/atomes.rc
+	$(WINDRES) $< $@		
+endif
 
 # Create a variable to store the CFLAGS for all the required libraries
-LIBS_CFLAGS = $(GTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
+LIBS_CFLAGS = $(LGTK_CFLAGS) $(LIBXML2_CFLAGS) $(PANGOFT2_CFLAGS) $(FFMPEG_CFLAGS) $(GLU_CFLAGS) $(EPOXY_CFLAGS)
 
 # To turn OpenMP on/off
-OpenMP_FLAGS = -DOPENMP -fopenmp
+if OPENMP
+OpenMP_FLAGS = -DOPENMP $(OPENMP_CFLAGS)
+else
+OpenMP_FLAGS = 
+endif
 
 # Use AM_LDFLAGS to define additional linker flags:
 AM_LDFLAGS = $(OpenMP_FLAGS)
 
-# Use AM_CPPFLAGS to define additional preprocessor flags:
-if NATIVE_WIN32
-AM_CPPFLAGS = -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) 
+if GTK3
+  GTK_VERSION=-DGTK3
 else
-AM_CPPFLAGS = \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	-DPACKAGE_LIB_DIR=\""$(datadir)/atomes/library"\" \
-	-DPACKAGE_LOGO=\""$(datadir)/atomes/pixmaps/logo.png"\" \
-	-DPACKAGE_LAGPL=\""$(datadir)/atomes/pixmaps/logo-agpl.png"\" \
-	-DPACKAGE_LABOUT=\""$(datadir)/atomes/pixmaps/logo-about.png"\" \
-	-DPACKAGE_TD=\""$(datadir)/atomes/pixmaps/td.png"\" \
-	-DPACKAGE_MOL=\""$(datadir)/atomes/pixmaps/molecule.png"\" \
-	-DPACKAGE_IMP=\""$(datadir)/atomes/pixmaps/import.png"\" \
-	-DPACKAGE_CON=\""$(datadir)/atomes/pixmaps/convert.png"\" \
-	-DPACKAGE_IMG=\""$(datadir)/atomes/pixmaps/image.png"\" \
-	-DPACKAGE_PDF=\""$(datadir)/atomes/pixmaps/pdf.png"\" \
-	-DPACKAGE_SVG=\""$(datadir)/atomes/pixmaps/svg.png"\" \
-	-DPACKAGE_EPS=\""$(datadir)/atomes/pixmaps/eps.png"\" \
-	-DPACKAGE_PNG=\""$(datadir)/atomes/pixmaps/png.png"\" \
-	-DPACKAGE_JPG=\""$(datadir)/atomes/pixmaps/jpg.png"\" \
-	-DPACKAGE_BMP=\""$(datadir)/atomes/pixmaps/bmp.png"\" \
-	-DPACKAGE_TIFF=\""$(datadir)/atomes/pixmaps/tiff.png"\" \
-	-DPACKAGE_EDIT=\""$(datadir)/atomes/pixmaps/cedit.png"\" \
-	-DPACKAGE_VOID=\""$(datadir)/atomes/pixmaps/void.png"\" \
-	-DPACKAGE_GR=\""$(datadir)/atomes/pixmaps/gr.png"\" \
-	-DPACKAGE_SQ=\""$(datadir)/atomes/pixmaps/sq.png"\" \
-	-DPACKAGE_AN=\""$(datadir)/atomes/pixmaps/an.png"\" \
-	-DPACKAGE_BD=\""$(datadir)/atomes/pixmaps/bd.png"\" \
-	-DPACKAGE_RI=\""$(datadir)/atomes/pixmaps/ri.png"\" \
-	-DPACKAGE_CH=\""$(datadir)/atomes/pixmaps/ch.png"\" \
-	-DPACKAGE_SP=\""$(datadir)/atomes/pixmaps/sp.png"\" \
-	-DPACKAGE_MS=\""$(datadir)/atomes/pixmaps/ms.png"\" \
-	-DPACKAGE_OGL=\""$(datadir)/atomes/pixmaps/opengl.png"\" \
-	-DPACKAGE_OGLM=\""$(datadir)/atomes/pixmaps/mol.png"\" \
-	-DPACKAGE_OGLC=\""$(datadir)/atomes/pixmaps/mol.png"\" \
-	-DPACKAGE_PRO=\""$(datadir)/atomes/pixmaps/prop.png"\" \
-	-DPACKAGE_SET=\""$(datadir)/atomes/pixmaps/settings.png"\" \
-	-DPACKAGE_DOTA=\""$(datadir)/atomes/pixmaps/dots/dots-a.png"\" \
-	-DPACKAGE_DOTB=\""$(datadir)/atomes/pixmaps/dots/dots-b.png"\" \
-	-DPACKAGE_DOTC=\""$(datadir)/atomes/pixmaps/dots/dots-c.png"\" \
-	-DPACKAGE_DOTD=\""$(datadir)/atomes/pixmaps/dots/dots-d.png"\" \
-	-DPACKAGE_DOTE=\""$(datadir)/atomes/pixmaps/dots/dots-e.png"\" \
-	-DPACKAGE_DOTF=\""$(datadir)/atomes/pixmaps/dots/dots-f.png"\" \
-	-DPACKAGE_DOTG=\""$(datadir)/atomes/pixmaps/dots/dots-g.png"\" \
-	-DPACKAGE_DOTH=\""$(datadir)/atomes/pixmaps/dots/dots-h.png"\" \
-	-DPACKAGE_DOTI=\""$(datadir)/atomes/pixmaps/dots/dots-i.png"\" \
-	-DPACKAGE_DFBD=\""$(datadir)/atomes/pixmaps/field/bd.png"\" \
-	-DPACKAGE_DFAN=\""$(datadir)/atomes/pixmaps/field/an.png"\" \
-	-DPACKAGE_DFDI=\""$(datadir)/atomes/pixmaps/field/di.png"\" \
-	-DPACKAGE_DFTD=\""$(datadir)/atomes/pixmaps/field/td.png"\" \
-	-DPACKAGE_DFIN=\""$(datadir)/atomes/pixmaps/field/in.png"\" \
-	-DPACKAGE_SGCP=\""$(datadir)/atomes/pixmaps/bravais/Cubic-P.png"\" \
-	-DPACKAGE_SGCI=\""$(datadir)/atomes/pixmaps/bravais/Cubic-I.png"\" \
-	-DPACKAGE_SGCF=\""$(datadir)/atomes/pixmaps/bravais/Cubic-F.png"\" \
-	-DPACKAGE_SGHP=\""$(datadir)/atomes/pixmaps/bravais/Hexagonal.png"\" \
-	-DPACKAGE_SGTR=\""$(datadir)/atomes/pixmaps/bravais/Trigonal-R.png"\" \
-	-DPACKAGE_SGTI=\""$(datadir)/atomes/pixmaps/bravais/Tetragonal-I.png"\" \
-	-DPACKAGE_SGTP=\""$(datadir)/atomes/pixmaps/bravais/Tetragonal-P.png"\" \
-	-DPACKAGE_SGOP=\""$(datadir)/atomes/pixmaps/bravais/Orthorhombic-P.png"\" \
-	-DPACKAGE_SGOI=\""$(datadir)/atomes/pixmaps/bravais/Orthorhombic-I.png"\" \
-	-DPACKAGE_SGOC=\""$(datadir)/atomes/pixmaps/bravais/Orthorhombic-C.png"\" \
-	-DPACKAGE_SGOF=\""$(datadir)/atomes/pixmaps/bravais/Orthorhombic-F.png"\" \
-	-DPACKAGE_SGMP=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-P.png"\" \
-	-DPACKAGE_SGMI=\""$(datadir)/atomes/pixmaps/bravais/Monoclinic-I.png"\" \
-	-DPACKAGE_SGTC=\""$(datadir)/atomes/pixmaps/bravais/Triclinic.png"\" \
-	-DLINUX -DGTK3 -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS)
+  GTK_VERSION=-DGTK4
+endif
+
+# Use AM_CPPFLAGS to define additional preprocessor flags:
+if WINDOWS
+AM_CPPFLAGS = $(GTK_VERSION) -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) 
+else
+PACKAGE_CPPFLAGS = -DPACKAGE_PREFIX=\""$(datadir)/atomes"\" -DPACKAGE_LIBEXEC=\""$(libexecdir)"\"
+if LINUX
+AM_CPPFLAGS = -DLINUX $(GTK_VERSION) -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) $(PACKAGE_CPPFLAGS)
+else
+AM_CPPFLAGS = -DOSX $(GTK_VERSION) -DGTKGLAREA -DMENU_ICONS $(OpenMP_FLAGS) $(PACKAGE_CPPFLAGS)
+endif
 endif
 
 # Use AM_FFLAGS to define additional Fortran 90 flags:
@@ -401,11 +365,3 @@ atomes_SOURCES = \
 	$(atomes_calc) \
 	$(atomes_curve) \
 	$(atomes_opengl)
-
-if NATIVE_WIN32
-  EXTRA_DIST = atomes.rc.in
-  atomes_LDADD += winatomes.o
-endif
-
-winatomes.o: atomes.rc
-	$(WINDRES) $< $@

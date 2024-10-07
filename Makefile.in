@@ -99,7 +99,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = misc/win/atomes.rc misc/win/startup.rc
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -185,9 +185,11 @@ am__define_uniq_tagged_files = \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
 DIST_SUBDIRS = $(SUBDIRS)
-am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in AUTHORS \
-	COPYING ChangeLog INSTALL NEWS README.md compile config.guess \
-	config.sub depcomp install-sh missing
+am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
+	$(top_srcdir)/misc/win/atomes.rc.in \
+	$(top_srcdir)/misc/win/startup.rc.in AUTHORS COPYING ChangeLog \
+	INSTALL NEWS README.md compile config.guess config.sub depcomp \
+	install-sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -268,14 +270,16 @@ FFMPEG_LIBS = @FFMPEG_LIBS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLU_CFLAGS = @GLU_CFLAGS@
 GLU_LIBS = @GLU_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_LIBS = @GTK_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INTEGRATION_CFLAGS = @INTEGRATION_CFLAGS@
+INTEGRATION_LIBS = @INTEGRATION_LIBS@
 LDFLAGS = @LDFLAGS@
+LGTK_CFLAGS = @LGTK_CFLAGS@
+LGTK_LIBS = @LGTK_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
@@ -284,6 +288,7 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 OBJEXT = @OBJEXT@
+OPENMP_CFLAGS = @OPENMP_CFLAGS@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -427,6 +432,10 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+misc/win/atomes.rc: $(top_builddir)/config.status $(top_srcdir)/misc/win/atomes.rc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+misc/win/startup.rc: $(top_builddir)/config.status $(top_srcdir)/misc/win/startup.rc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-atomes_docDATA: $(atomes_doc_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(atomes_doc_DATA)'; test -n "$(atomes_docdir)" || list=; \
@@ -935,7 +944,7 @@ install-data-local:
 	fi
 	$(INSTALL_DATA) $(srcdir)/metadata/atomes.desktop  $(atomes_desktopdir)/atomes.desktop
 # Finalize
-	touch --no-create $(atomes_iconsdir)/pixmaps
+	touch -c $(atomes_iconsdir)
 	if [ -u `which gtk-update-icon-cache` ]; then \
 	  	gtk-update-icon-cache -q $(atomes_iconsdir); \
 	fi
@@ -949,16 +958,16 @@ install-data-local:
 
 # Remove doc directordy on uninstall
 uninstall-local:
-	-rm -rf $(atomes_iconsdir)/atomes.svg
-	-rm -rf $(atomes_iconsdir)/atomes-workspace.svg
-	-rm -rf $(atomes_iconsdir)/atomes-project.svg
-	-rm -rf $(atomes_iconsdir)/atomes-coordinates.svg
+	-rm -f $(atomes_iconsdir)/atomes.svg
+	-rm -f $(atomes_iconsdir)/atomes-workspace.svg
+	-rm -f $(atomes_iconsdir)/atomes-project.svg
+	-rm -f $(atomes_iconsdir)/atomes-coordinates.svg
 	-rm -f $(atomes_desktopdir)/atomes.desktop
 	-rm -f $(atomes_metadir)/fr.ipcms.atomes.appdata.xml
 	-rm -f $(atomes_mimedir)/atomes-mime.xml
 	-rm -f $(atomes_bashdir)/atomes
 	-rmdir $(atomes_docdir)
-	touch --no-create $(atomes_iconsdir)
+	touch -c $(atomes_iconsdir)
 	if [ -u `which gtk-update-icon-cache` ]; then \
 		gtk-update-icon-cache -q $(atomes_iconsdir); \
 	fi
