@@ -74,6 +74,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/fr.ipcms.%{nam
 %files
 %license COPYING
 %{_bindir}/%{name}
+%{_libexecdir}/%{name}_startup_testing
 %{_datadir}/doc/%{name}/
 %{_mandir}/man1/%{name}.1*
 %{_datadir}/%{name}/
