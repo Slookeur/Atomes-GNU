@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-awf">
+    <comment>Atomes Workspace</comment>
+    <glob pattern="*.awf"/>
+    <generic-icon name="atomes-workspace"/>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+  <mime-type type="application/x-apf">
+    <comment>Atomes Project</comment>
+    <glob pattern="*.apf"/>
+    <generic-icon name="atomes-project"/>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+  <mime-type type="application/x-ipf">
+    <comment>I.S.A.A.C.S. project file</comment>
+    <glob pattern="*.ipf"/>
+    <generic-icon name="atomes-coordinates"/>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+  <mime-type type="application/x-xyz">
+    <comment>XYZ atomic coordinates</comment>
+    <glob pattern="*.xyz"/>
+    <generic-icon name="atomes-coordinates"/>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+  <mime-type type="application/x-pdb">
+    <comment>Protein Data Bank file</comment>
+    <glob pattern="*.pdb"/>
+    <generic-icon name="atomes-coordinates"/>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+  <mime-type type="application/x-ent">
+    <comment>Protein Data Bank file</comment>
+    <glob pattern="*.ent"/>
+    <generic-icon name="atomes-coordinates"/>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+  <mime-type type="application/x-cif">
+    <comment>Crystallographic information</comment>
+    <glob pattern="*.cif"/>
+    <generic-icon name="atomes-coordinates"/>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+  <mime-type type="application/x-trj">
+    <comment>CPMD trajectory</comment>
+    <glob pattern="*.trj"/>
+    <generic-icon name="atomes-coordinates"/>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+  <mime-type type="application/x-xdatcar">
+    <comment>VASP trajectory</comment>
+    <glob pattern="*.xdatcar"/>
+    <generic-icon name="atomes-coordinates"/>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+  <mime-type type="application/x-c3d">
+    <comment>Chem3D atomic coordinates</comment>
+    <glob pattern="*.c3d"/>
+    <generic-icon name="atomes-coordinates"/>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+  <mime-type type="application/x-hist">
+    <comment>DL-POLY History file</comment>
+    <glob pattern="*.hist"/>
+    <generic-icon name="atomes-coordinates"/>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+</mime-info>

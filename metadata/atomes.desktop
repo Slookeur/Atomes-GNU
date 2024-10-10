@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=atomes
+GenericName=atomes
+Comment=An atomic scale toolbox
+Comment[fr]=Une boite à outils pour la modélisation à l'échelle atomique
+Keywords=chemistry;physics;atom;molecule;crystal;coordination;polyedra;measure;volume;builder;material;
+Keywords[fr]=chimie;physique;atome;molécule;cristal;coordination;polyèdre;mesure;volume;constructeur;matériau;
+Keywords[es]=química;física;átomo;molécula;cristal;coordinación;poliedro;medida;volumen;constructor;material;
+Icon=atomes
+Exec=atomes %F
+Terminal=false
+MimeType=application/x-awf;application/x-apf;application/x-ipf;application/x-xyz;application/x-pdb;application/x-ent;application/x-cif;application/x-trj;application/x-xdatcar;application/x-c3d;application/x-hist;
+StartupNotify=true
+Categories=Education;Science;Chemistry;Physics;

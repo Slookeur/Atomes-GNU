@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2022 Sébastien Le Roux -->
+<component type="desktop">
+  <id>fr.ipcms.atomes</id>
+  
+  <name>Atomes</name>
+  <summary>An atomistic toolbox</summary>
+  
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>AGPL-3.0-or-later</project_license>
+  
+  <description>
+    <p>Atomes: a toolbox to analyze, to visualize  and to create/edit three-dimensional atomistic models. It offers a workspace that allows to have many projects opened simultaneously. The different projects in the workspace can exchange data:  analysis results, atomic coordinates...</p>
+    <p>Atomes also provides an advanced input preparation system  for further calculations using well known molecular dynamics codes:</p>
+    <ul>
+      <li>Classical MD: DLPOLY and LAMMPS</li>
+      <li>ab-initio MD: CPMD and CP2K</li>
+      <li>QM-MM MD: CPMD and CP2K</li>
+    </ul>
+    <p>To prepare the input files for these calculations is likely to be the key, and most complicated step towards MD simulations. Atomes offers a user-friendly assistant to help and guide the scientist step by step to achieve this crucial step.</p>
+  </description>
+  
+  <launchable type="desktop-id">atomes.desktop</launchable>
+  
+  <screenshots>
+    <screenshot>
+      <caption>A powerful program for 3D atomistic modeling</caption>
+      <video container="webm" codec="vp9" width="1920" height="1080">http://atomes.ipcms.fr/wp-content/uploads/2023/04/PAD_CON.webm</video>
+    </screenshot>
+    <screenshot type="default">
+      <caption>Overview of the Atomes program</caption>
+      <image type="source" width="1600" height="900">https://atomes.ipcms.fr/wp-content/uploads/2022/10/atomes-16-9.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Physico-chemical analysis in the Atomes program</caption>
+      <image type="source" width="1600" height="900">https://atomes.ipcms.fr/wp-content/uploads/2022/10/calc-16-9.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Visualization tools in the Atomes program</caption>
+      <image type="source" width="1600" height="900">https://atomes.ipcms.fr/wp-content/uploads/2022/10/Ni-Phth-16-9.png</image>
+    </screenshot>
+  </screenshots>
+  
+  <url type="homepage">https://atomes.ipcms.fr/</url>
+  <url type="bugtracker">https://github.com/Slookeur/Atomes/issues/new/choose</url>
+  <developer_name>Dr. Sébastien Le Roux</developer_name>
+  <update_contact>atomes_AT_ipcms.unistra.fr</update_contact>
+  
+  <provides>
+    <id>atomes.desktop</id>
+  </provides>
+
+  <keywords>
+    <keyword>chemistry</keyword>
+    <keyword>physics</keyword>
+    <keyword>atom</keyword>
+    <keyword>molecule</keyword>
+    <keyword>crystal</keyword>
+    <keyword>coordination</keyword>
+    <keyword>polyhedra</keyword>
+    <keyword>measure</keyword>
+    <keyword>volume</keyword>
+    <keyword>builder</keyword>
+    <keyword>material</keyword>
+    <keyword xml:lang="fr">chimie</keyword>
+    <keyword xml:lang="fr">physique</keyword>
+    <keyword xml:lang="fr">atome</keyword>
+    <keyword xml:lang="fr">molécule</keyword>
+    <keyword xml:lang="fr">cristal</keyword>
+    <keyword xml:lang="fr">coordination</keyword>
+    <keyword xml:lang="fr">polyhèdre</keyword>
+    <keyword xml:lang="fr">mesure</keyword>
+    <keyword xml:lang="fr">volume</keyword>
+    <keyword xml:lang="fr">constructeur</keyword>
+    <keyword xml:lang="fr">matériau</keyword>
+    <keyword xml:lang="es">química</keyword>
+    <keyword xml:lang="es">física</keyword>
+    <keyword xml:lang="es">átomo</keyword>
+    <keyword xml:lang="es">molécula</keyword>
+    <keyword xml:lang="es">cristal</keyword>
+    <keyword xml:lang="es">ccoordinación</keyword>
+    <keyword xml:lang="es">poliedro</keyword>
+    <keyword xml:lang="es">medida</keyword>
+    <keyword xml:lang="es">volumen</keyword>
+    <keyword xml:lang="es">constructor</keyword>
+    <keyword xml:lang="es">material</keyword>
+  </keywords>
+  
+  <content_rating type="oars-1.1"/>
+  
+  <releases>
+    <release version="1.1.14" date="2024-20-03">
+      <description>
+        <p>Release of version 1.1.14:</p>
+        <p>- Bug corrections, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.14</url></p>
+	<p>- Improvements, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.14</url></p>
+      </description>
+    </release>
+    <release version="1.1.13" date="2024-28-02">
+      <description>
+        <p>Release of version 1.1.13:</p>
+        <p>- Bug corrections, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.13</url></p>
+	<p>- Improvements, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.13</url></p>
+      </description>
+    </release>
+    <release version="1.1.12" date="2023-09-11">
+      <description>
+        <p>Release of version 1.1.12:</p>
+        <p>- Bug corrections, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.12</url></p>
+	<p>- Improvements, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.12</url></p>
+      </description>
+    </release>
+    <release version="1.1.11" date="2023-03-27">
+      <description>
+        <p>Release of version 1.1.11:</p>
+        <p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.11</url></p>
+      </description>
+    </release>	  
+    <release version="1.1.10" date="2022-11-04">
+      <description>
+        <p>Release of version 1.1.10:</p>
+        <p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.10</url></p>
+      </description>
+    </release>
+    <release version="1.1.9" date="2022-10-28">
+      <description>
+        <p>Release of version 1.1.9:</p>
+        <p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.9</url></p>
+      </description>
+    </release>
+    <release version="1.1.8" date="2022-10-27">
+      <description>
+        <p>Release of version 1.1.8:</p>
+        <p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.8</url></p>
+      </description>
+    </release>
+    <release version="1.1.7" date="2022-10-13">
+      <description>
+        <p>Release of version 1.1.7:</p>
+        <p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.7</url></p>
+      </description>
+    </release>
+    <release version="1.1.6" date="2022-10-10">
+      <description>
+        <p>Release of version 1.1.6:</p>
+        <p>- Bug corrections: see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.6</url></p>
+      </description>
+    </release>
+    <release version="1.1.5" date="2022-09-23">
+      <description>
+        <p>Release of version 1.1.5:</p>
+        <p>- Bug correction:</p>
+        <ul><li>w_search.c: selection not to crash if atom_win is closed</li></ul>
+      </description>
+    </release>
+    <release version="1.1.4" date="2022-09-22">
+      <description>
+        <p>Release of version 1.1.4:</p>
+        <p>- Bug corrections:</p>
+        <ul>
+          <li>read_coord.c: Windows to handle properly EOL symbols</li>
+          <li>m_curve.c: Windows to not crash when destroying label widget</li>
+          <li>glview.c: correct GWARNING messages on widget scale</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.1.3" date="2022-09-15">
+      <description>
+        <p>Release of version 1.1.3:</p>
+        <p>- Bug corrections:</p>
+        <ul>
+          <li>read_opengl.c: correct 'read_atom_b'</li>
+          <li>initring.c: correct 'send_rings_opengl_'</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.1.2" date="2022-09-14">
+      <description>
+        <p>Release of version 1.1.2:</p>
+        <p>- Bug corrections:</p>
+        <ul>
+          <li>atom_action.c: recompute bonding on passivate</li>
+          <li>bdcall.c: do not trigger menu init on passivate</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.1.1" date="2022-09-13">
+      <description>
+        <p>Release of version 1.1.1:</p>
+        <p>- Bug correction:</p>
+        <ul>
+          <li>workspace.c: double click on workspace</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.1.0" date="2022-09-13">
+      <description>
+        <p>Initial release of the Atomes program v1.1.0 !</p>
+      </description>
+    </release>
+  </releases>
+  
+</component>
