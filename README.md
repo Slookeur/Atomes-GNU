@@ -1,6 +1,6 @@
 # Atomes
 
-![](https://github.com/Slookeur/Atomes.io/workflows/ns/badge.svg)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9146/badge)](https://www.bestpractices.dev/projects/9146/badge)
 ![](https://www.codefactor.io/repository/github/Slookeur/Atomes/badge)
 
 [Atomes][atomes] is a Free (Open Source) cross-platform software licensed under the terms 
