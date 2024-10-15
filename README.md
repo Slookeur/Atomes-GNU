@@ -1,7 +1,7 @@
 # Atomes
 
 [![License]][license]
-[![OpenSSF Best Practices]][openssf]
+[![OpenSSF Best Practices]][openssf]([openssf])
 
 [Atomes][atomes] is a Free (Open Source) cross-platform software licensed under the terms 
 of the Affero GPL v3+ license. 
