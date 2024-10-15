@@ -1,7 +1,7 @@
 # Atomes
 
+[![License](https://img.shields.io/badge/License-AGPL_v3%2B-blue)](https://img.shields.io/badge/License-AGPL_v3%2B-blue)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9146/badge)](https://www.bestpractices.dev/projects/9146/badge)
-![](https://www.codefactor.io/repository/github/Slookeur/Atomes/badge)
 
 [Atomes][atomes] is a Free (Open Source) cross-platform software licensed under the terms 
 of the Affero GPL v3+ license. 
