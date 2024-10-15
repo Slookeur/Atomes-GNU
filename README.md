@@ -1,7 +1,6 @@
 # Atomes
 
-[![License](https://img.shields.io/badge/License-AGPL_v3%2B-blue)](https://img.shields.io/badge/License-AGPL_v3%2B-blue)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9146/badge)](https://www.bestpractices.dev/projects/9146/badge)
+[![License]([license])]([license]) [![OpenSSF Best Practices]([openssf])]([openssf])
 
 [Atomes][atomes] is a Free (Open Source) cross-platform software licensed under the terms 
 of the Affero GPL v3+ license. 
@@ -114,6 +113,8 @@ The documenation is hosted on [GitHub][github] here: [Atomes documentation][atom
 
 Tutorial are regrouped and hosted on [GitHub][github] here: [Atomes tutorials][atomes-tuto]
 
+[license]:https://img.shields.io/badge/License-AGPL_v3%2B-blue
+[openssf]:https://www.bestpractices.dev/projects/9146/badge
 [slr]:https://www.ipcms.fr/sebastien-le-roux/
 [cnrs]:https://www.cnrs.fr/
 [ipcms]:https://www.ipcms.fr/
