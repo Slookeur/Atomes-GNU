@@ -3,14 +3,8 @@
 ![License][license]
 ![OpenSSF Best Practices][openssf]
 ![Development Status][dev_status]
-<!-- Begin SF Tag -->
-<div class="sf-root" data-id="3489808" data-badge="oss-rising-star-black" data-metadata="achievement=oss-rising-star" style="width:125px">
-    <a href="https://sourceforge.net/projects/atomes/" target="_blank">Atomes</a>
-</div>
-<script>(function () {var sc=document.createElement('script');sc.async=true;sc.src='https://b.sf-syn.com/badge_js?sf_id=3489808';var p=document.getElementsByTagName('script')[0];p.parentNode.insertBefore(sc, p);})();
-</script>
-[![Download Atomes](https://img.shields.io/sourceforge/dw/atomes.svg)](https://sourceforge.net/projects/atomes/files/latest/download)
-<!-- End SF Tag -->
+![Download Atomes][down_status]
+(https://img.shields.io/sourceforge/dw/atomes.svg)](https://sourceforge.net/projects/atomes/files/latest/download)
 
 [Atomes][atomes] is a Free (Open Source) cross-platform software licensed under the terms 
 of the Affero GPL v3+ license. 
@@ -126,6 +120,7 @@ Tutorial are regrouped and hosted on [GitHub][github] here: [Atomes tutorials][a
 [license]:https://img.shields.io/badge/License-AGPL_v3%2B-blue
 [openssf]:https://www.bestpractices.dev/projects/9146/badge
 [dev_status]:https://www.repostatus.org/badges/latest/active.svg
+[open_status]:https://img.shields.io/sourceforge/dw/atomes.svg
 [slr]:https://www.ipcms.fr/sebastien-le-roux/
 [cnrs]:https://www.cnrs.fr/
 [ipcms]:https://www.ipcms.fr/
