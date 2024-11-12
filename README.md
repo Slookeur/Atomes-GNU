@@ -3,6 +3,14 @@
 ![License][license]
 ![OpenSSF Best Practices][openssf]
 ![Development Status][dev_status]
+<!-- Begin SF Tag -->
+<div class="sf-root" data-id="3489808" data-badge="oss-rising-star-black" data-metadata="achievement=oss-rising-star" style="width:125px">
+    <a href="https://sourceforge.net/projects/atomes/" target="_blank">Atomes</a>
+</div>
+<script>(function () {var sc=document.createElement('script');sc.async=true;sc.src='https://b.sf-syn.com/badge_js?sf_id=3489808';var p=document.getElementsByTagName('script')[0];p.parentNode.insertBefore(sc, p);})();
+</script>
+[![Download Atomes](https://img.shields.io/sourceforge/dw/atomes.svg)](https://sourceforge.net/projects/atomes/files/latest/download)
+<!-- End SF Tag -->
 
 [Atomes][atomes] is a Free (Open Source) cross-platform software licensed under the terms 
 of the Affero GPL v3+ license. 
