@@ -3,7 +3,7 @@
 ![License][license]
 ![OpenSSF Best Practices][openssf]
 ![Development Status][dev_status]
-[comment]: ![Download Atomes][down_status]
+<!-- ![Download Atomes][down_status] -->
 
 [Atomes][atomes] is a Free (Open Source) cross-platform software licensed under the terms 
 of the Affero GPL v3+ license. 
