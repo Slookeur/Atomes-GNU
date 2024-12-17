@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2022 Sébastien Le Roux -->
+<!-- Copyright 2024 Sébastien Le Roux -->
 <component type="desktop">
   <id>fr.ipcms.atomes</id>
   
@@ -89,14 +89,27 @@
   <content_rating type="oars-1.1"/>
   
   <releases>
-    <release version="1.1.14" date="2024-20-03">
+    <release version="1.1.16" date="2024-12-18">
+      <description>
+        <p>Release of version 1.1.16:</p>
+        <p>- Bug corrections, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.16</url></p>
+      </description>
+    </release>
+    <release version="1.1.15" date="2024-10-14">
+      <description>
+        <p>Release of version 1.1.15:</p>
+        <p>- Bug corrections, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.15</url></p>
+	<p>- Improvements, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.15</url></p>
+      </description>
+    </release>
+    <release version="1.1.14" date="2024-03-20">
       <description>
         <p>Release of version 1.1.14:</p>
         <p>- Bug corrections, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.14</url></p>
 	<p>- Improvements, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.14</url></p>
       </description>
     </release>
-    <release version="1.1.13" date="2024-28-02">
+    <release version="1.1.13" date="2024-02-28">
       <description>
         <p>Release of version 1.1.13:</p>
         <p>- Bug corrections, see: <url>https://github.com/Slookeur/Atomes-GNU/releases/tag/v1.1.13</url></p>
