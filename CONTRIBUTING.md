@@ -1,8 +1,10 @@
 # How to contribute to atomes
 
-[atomes][atomes] developmentg relies on voluntary contributions and everyone is invited to help. 
+[atomes][atomes] development relies on voluntary contributions and everyone is invited to help. 
 
-If your are interested in helping to improve [atomes][atomes] you can contact the developper. 
+If your are interested in helping to improve [atomes][atomes] you are welcome to contact the developper(s): 
+
+[https://atomes.ipcms.fr/about/](https://atomes.ipcms.fr/about/)
 
 ## Software development 
 
