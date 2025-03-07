@@ -3,8 +3,7 @@
 ![License][license]
 ![OpenSSF Best Practices][openssf]
 ![Development Status][dev_status]
-[![Hits Of Code](https://hitsofcode.com/github/Slookeur/Atomes-GNU?branch=main)](https://hitsofcode.com/github/Slookeur/Atomes-GNU/view?branch=main)
-
+![Hits Of Code][hoc]
 
 <!-- ![Download Atomes][down_status] -->
 
@@ -123,6 +122,7 @@ Tutorial are regrouped and hosted on [GitHub][github] here: [Atomes tutorials][a
 [openssf]:https://www.bestpractices.dev/projects/9146/badge
 [dev_status]:https://www.repostatus.org/badges/latest/active.svg
 [down_status]:https://img.shields.io/sourceforge/dw/atomes.svg
+[hoc]:https://hitsofcode.com/github/Slookeur/Atomes-GNU?branch=main
 [slr]:https://www.ipcms.fr/sebastien-le-roux/
 [cnrs]:https://www.cnrs.fr/
 [ipcms]:https://www.ipcms.fr/
