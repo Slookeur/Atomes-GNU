@@ -88,7 +88,7 @@
         "Fortran"
     ],
     "relatedLink": "https://atomes.ipcms.fr/",
-    "schema:releaseNotes": "Release of version 1.1.15\n\n  - Bug corrections:\n\n    - Several MacOS related bugs corrected\n    - Various small bug corrections\n\n  - Improvements:\n\n    - OpenGL testing utility implemented at startup\n    - Shortcuts information dialog for all windows with shortcuts \n    - GTK4 forward transition code wide\n    - MacOS beta version",
+    "schema:releaseNotes": "Release of version 1.1.17\n\n  - Bug corrections \n  - Improvements"
     "softwareRequirements": [
         "libgtk+3.0 or ligtk4 : https://www.gtk.org/",
         "libepoxy : https://github.com/anholt/libepoxy/",
@@ -97,7 +97,7 @@
         "libxml-2 : https://github.com/GNOME/libxml2/",
         "libavutil, libavformat, libavcodec, libswscale : https://www.ffmpeg.org/"
     ],
-    "version": "1.1.15",
+    "version": "1.1.17",
     "developmentStatus": "active",
     "issueTracker": "https://github.com/Slookeur/Atomes-GNU/issues"
 }
